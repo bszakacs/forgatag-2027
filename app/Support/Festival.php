@@ -2,90 +2,71 @@
 
 namespace App\Support;
 
+use App\Enums\FestivalDayKind;
+use App\Models\FestivalDay;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 use RuntimeException;
 
 /**
- * A fesztiválnapok EGYETLEN forrása: seed/festival-days.json. Nincs adatbázis-másolata
- * (egy forrás szabály) — minden olvasó ezen az osztályon át éri el.
- * Hiányzó vagy hibás fájlnál hibával áll meg (néma hiba tilos).
+ * A programnapok olvasója. Az egyetlen forrás a festival_days tábla (az adminban szerkeszthető);
+ * minden olvasó ezen az osztályon át éri el. A fesztivál kezdete/vége a „Fesztiválnap” típusú
+ * napokból számolódik — nincs külön tárolva, ami elcsúszhatna.
  */
 class Festival
 {
-    private static ?array $data = null;
-
-    private static function data(): array
+    /** @return Collection<int, FestivalDay> dátum szerint rendezve */
+    public static function days(): Collection
     {
-        if (self::$data !== null) {
-            return self::$data;
-        }
-
-        $path = base_path('seed/festival-days.json');
-        if (! is_readable($path)) {
-            throw new RuntimeException("Hiányzik a fesztiválnapok forrása: {$path}");
-        }
-
-        $data = json_decode((string) file_get_contents($path), true);
-        if (! is_array($data) || empty($data['days']) || empty($data['festival']['from']) || empty($data['festival']['to'])) {
-            throw new RuntimeException("Hibás a fesztiválnapok forrása (days / festival.from / festival.to hiányzik): {$path}");
-        }
-
-        return self::$data = $data;
+        return FestivalDay::orderBy('date')->get();
     }
 
-    public static function year(): int
+    /** @return list<string> a programnapok azonosítói (Y-m-d) */
+    public static function dayIds(): array
     {
-        return (int) self::data()['year'];
+        return self::days()->map->id()->all();
+    }
+
+    public static function isProgramDay(string $date): bool
+    {
+        return FestivalDay::whereDate('date', $date)->exists();
     }
 
     public static function from(): CarbonImmutable
     {
-        return CarbonImmutable::parse(self::data()['festival']['from']);
+        return self::festivalDays()->first()->date;
     }
 
     public static function to(): CarbonImmutable
     {
-        return CarbonImmutable::parse(self::data()['festival']['to']);
+        return self::festivalDays()->last()->date;
     }
 
-    /** A „Mi van ma?” tartalék célja: a nyitónap, nem a lista első (esetleg előkészítő) napja. */
+    /** A „Mi van ma?” tartalék célja: a nyitónap, nem a lista első (előkészítő) napja. */
     public static function openingDay(): string
     {
-        return self::data()['festival']['from'];
+        return self::from()->format('Y-m-d');
+    }
+
+    public static function year(): int
+    {
+        return self::from()->year;
     }
 
     /** Hajnali óra, ameddig a fesztiválnap tart (a 00:00–03:00 közötti befejezés az előző naphoz tartozik). */
     public static function dayCutHour(): int
     {
-        return (int) (self::data()['dayCutHour'] ?? 3);
+        return (int) config('forgatag.day_cut_hour');
     }
 
-    public static function label(string $locale = 'hu'): string
+    /** @return Collection<int, FestivalDay> */
+    private static function festivalDays(): Collection
     {
-        return self::data()['festival']['label'][$locale] ?? self::data()['festival']['label']['hu'];
-    }
+        $napok = FestivalDay::where('kind', FestivalDayKind::Festival)->orderBy('date')->get();
+        if ($napok->isEmpty()) {
+            throw new RuntimeException('Nincs egyetlen fesztiválnap sem megadva (Admin → Fesztiválnapok).');
+        }
 
-    /**
-     * @return list<array{id: string, weekday: array<string,string>, label: array<string,string>, prep: bool}>
-     */
-    public static function days(): array
-    {
-        $from = self::data()['festival']['from'];
-
-        return array_map(
-            fn (array $day) => $day + ['prep' => $day['id'] < $from],
-            self::data()['days'],
-        );
-    }
-
-    /** @return list<string> a napok azonosítói (Y-m-d) */
-    public static function dayIds(): array
-    {
-        return array_column(self::data()['days'], 'id');
-    }
-
-    public static function isProgramDay(string $date): bool
-    {
-        return in_array($date, self::dayIds(), true);
+        return $napok;
     }
 }

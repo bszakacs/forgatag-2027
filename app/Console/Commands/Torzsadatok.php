@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\FestivalDayKind;
 use App\Models\Category;
+use App\Models\FestivalDay;
 use App\Models\SponsorTier;
 use App\Models\Venue;
 use Illuminate\Console\Attributes\Description;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * A törzsadatok betöltése a seed/ mappából: kategóriák, helyszínek, szponzorszintek.
+ * A törzsadatok betöltése a seed/ mappából: programnapok, kategóriák, helyszínek, szponzorszintek.
  *
  * CSAK ÜRES TÁBLÁBA ír. Ha egy táblában már van adat, ahhoz nem nyúl — így az adminban törölt
  * vagy átírt sor soha nem jön vissza (2026-ban a menü-feltöltés épp ezt csinálta).
@@ -25,6 +27,7 @@ class Torzsadatok extends Command
     public function handle(): int
     {
         try {
+            $this->betolt('programnapok', FestivalDay::class, fn () => $this->programnapok());
             $this->betolt('kategóriák', Category::class, fn () => $this->kategoriak());
             $this->betolt('helyszínek', Venue::class, fn () => $this->helyszinek());
             $this->betolt('szponzorszintek', SponsorTier::class, fn () => $this->szponzorszintek());
@@ -49,6 +52,25 @@ class Torzsadatok extends Command
 
         $db = DB::transaction(fn () => $tolto());
         $this->info("TÖRZSADATOK: {$nev} — {$db} sor betöltve.");
+    }
+
+    private function programnapok(): int
+    {
+        $ut = base_path('seed/festival-days.json');
+        $adat = is_readable($ut) ? json_decode((string) file_get_contents($ut), true) : null;
+        if (! is_array($adat) || empty($adat['days'])) {
+            throw new RuntimeException('seed/festival-days.json hiányzik vagy nincs benne „days” lista.');
+        }
+
+        foreach ($adat['days'] as $i => $nap) {
+            $tipus = FestivalDayKind::tryFrom($nap['kind'] ?? '');
+            if (empty($nap['date']) || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $nap['date']) || $tipus === null) {
+                throw new RuntimeException('seed/festival-days.json ' . ($i + 1) . '. nap: hibás dátum vagy típus (festival | prep).');
+            }
+            FestivalDay::create(['date' => $nap['date'], 'kind' => $tipus]);
+        }
+
+        return count($adat['days']);
     }
 
     private function kategoriak(): int
