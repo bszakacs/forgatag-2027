@@ -1,6 +1,7 @@
 ---
 # A szakasz: csak a cPanel Git "Deploy HEAD Commit" csatornat meri.
-# Celmappa a public_html-en KIVUL: /home/<felhasznalo>/forgatag-proba-cel/
+# Celmappa a public_html-en KIVUL (a tarolo maga: public_html/forgatag2027):
+# /home/<felhasznalo>/forgatag-proba-cel/
 deployment:
   tasks:
     - export DEPLOYPATH=$HOME/forgatag-proba-cel/

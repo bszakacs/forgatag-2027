@@ -1,0 +1,6 @@
+# public_html/forgatag2027/ — az alkalmazas mappaja. A webrol SEMMI nem erheto el belole,
+# kiveve a public/ almappat (az felulirja ezt: public/.htaccess -> Require all granted).
+# Szandekosan NINCS <IfModule> korulotte: ha a szerver nem ismerne, 500-as hibat adjon,
+# ne nemán engedjen at mindent (.env, vendor/, storage/, .git/).
+Require all denied
+Options -Indexes

@@ -1,0 +1,3 @@
+# A webgyoker. Csak ez a mappa erheto el a webrol (a szulo .htaccess mindent tilt).
+Require all granted
+Options -Indexes
