@@ -25,3 +25,10 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /.env.szerverre.txt
+# A cPanel ezeket magatol hozza letre az aldomain gyokereben — nem a mieink, ne zavarjak a git-frissitest.
+/public/.user.ini
+/public/php.ini
+/public/.well-known/
+/.well-known/
+/.user.ini
+/php.ini

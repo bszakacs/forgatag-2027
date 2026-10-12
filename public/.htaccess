@@ -26,3 +26,26 @@ Require all granted
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# A cPanel altal ide generalt PHP-beallitasok (php.ini, .user.ini) a webrol ne legyenek olvashatok.
+<FilesMatch "^(php\.ini|\.user\.ini)$">
+    Require all denied
+</FilesMatch>
+
+# A lenti blokkot a cPanel irja (MultiPHP INI Editor) az aldomain letrehozasakor.
+# BETURE PONTOSAN a szerveri valtozat masolata — ha elter, a git "helyi modositast" lat,
+# es a cPanel megtagadja a frissitest. Ne szerkeszd; ha a cPanel valtoztat rajta, ide is at kell vezetni.
+
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php7_module>
+   php_value error_log "/home/forgatag/logs/php.error.log"
+   php_flag log_errors On
+</IfModule>
+<IfModule lsapi_module>
+   php_value error_log "/home/forgatag/logs/php.error.log"
+   php_flag log_errors On
+</IfModule>
+# END cPanel-generated php ini directives, do not edit
