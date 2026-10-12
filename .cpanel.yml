@@ -8,3 +8,8 @@ deployment:
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp proba.txt $DEPLOYPATH
     - /bin/date -Iseconds > ${DEPLOYPATH}telepitve.txt
+    # A webszerver csak akkor lat be a tarolo-mappaba, ha a jogok szokasosak (mappa 755, fajl 644).
+    # A klonozas/frissites szukebb jogokkal hozza letre oket -> minden telepiteskor visszaallitjuk.
+    # A .git/ kimarad (azt a tarhely amugy is tiltja a webrol).
+    - /usr/bin/find . -path ./.git -prune -o -type d -exec /bin/chmod 755 {} +
+    - /usr/bin/find . -path ./.git -prune -o -type f -exec /bin/chmod 644 {} +
