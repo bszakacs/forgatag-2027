@@ -215,6 +215,13 @@ ha nem megy, a program nem jön létre (+ koordinátori levél). Levelek: `App\S
 A publikus lapok téma-tokenjei IDEIGLENESEN `public/css/tema.css` (amíg a /tema nem publikál).
 Tesztek: `tests/Feature/ProgramBekuldesTest.php` — a `vendor/` dev-csomagok nélkül van a tárolóban, ezért a
 tesztet a konténerben egy másolatban futtatjuk (`/tmp/proj`, ott `composer install`), a `vendor/`-hoz nem nyúlunk.
+**Élesben mérve (proba.forgatag.ro, 2026-10-12):** a levél kimegy (SMTP `noreply@forgatag.ro`,
+`mail.forgatag.ro:465`, `MAIL_SCHEME=smtps` a szerveri .env-ben; a koordinátori levél megérkezett) ·
+9,99 MB-os fotó felmegy, 2,5 mp (PHP: `upload_max_filesize=12M`, `post_max_size=16M`, cPanel
+„Select PHP Version → Options”) · a belépési zárolás működik (a 6. próbára zár). **Csapda:** a szerveri
+.env-ben a `MAIL_MAILER` csak EGYSZER szerepeljen — a Laravel az ELSŐ előfordulást veszi.
+Nem mérve: a jóváhagyási levél (nincs még program-lista az adminban).
+
 **Következő:** „Felhasználók” menücsoport két lappal (admin-felhasználók, programgazdák) — tulajdonosi
 döntés, 2026-10-12. Addig a próba-programgazdát a `forgatag:programgazda` (.env-ből, `.cpanel.yml`) hozza
 létre — **IDEIGLENES**: a lap elkészültével a parancs, a `.cpanel.yml` sora és a `.env` `PROGRAMGAZDA_*`
