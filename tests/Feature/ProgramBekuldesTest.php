@@ -261,10 +261,16 @@ class ProgramBekuldesTest extends TestCase
 
     public function test_jovahagyas_utan_zarolt_es_a_bekuldo_levelet_kap(): void
     {
+        Settings::save(['submission' => array_replace(Settings::block('submission'), ['contact_email' => 'program@forgatag.test'])]);
         $this->bekuld('borkert', $this->adat())->assertOk();
+        // A koordinátori levélre adott válasz a beküldőhöz megy.
+        Mail::assertSent(Mailable::class, fn ($m) => $m->hasTo('koordinator@forgatag.test') && $m->hasReplyTo('teka@example.test'));
         $p = ProgramItem::sole();
         $p->update(['status' => ProgramStatus::Published]);
-        Mail::assertSent(Mailable::class, fn ($m) => $m->hasTo('teka@example.test') && str_contains($m->subject, 'A programodat jóváhagytuk – Vásárhelyi Forgatag 2027'));
+        // A jóváhagyási levélre adott válasz a Beállítások kapcsolattartó címére megy (nem a noreply@-ra).
+        Mail::assertSent(Mailable::class, fn ($m) => $m->hasTo('teka@example.test')
+            && str_contains($m->subject, 'A programodat jóváhagytuk – Vásárhelyi Forgatag 2027')
+            && $m->hasReplyTo('program@forgatag.test'));
 
         $adat = $this->adat();
         unset($adat['photo']);

@@ -129,7 +129,7 @@ class Beallitasok extends Page
                 DateTimePicker::make('submission.deadline')->label('Beküldési határidő')->seconds(false)
                     ->helperText('Ha meg van adva, ezután a beküldés akkor is zárva van, ha a kapcsoló nyitva áll. Üresen: nincs határidő.'),
                 TextInput::make('submission.contact_email')->label('Kapcsolattartó cím a beküldőknek')->email()
-                    ->helperText('A beküldők ezt látják, ha kérdésük van. A koordinátorok értesítési címei az Értesítések blokkban vannak.'),
+                    ->helperText('A beküldők ezt látják, ha kérdésük van, és ide megy a válaszuk a jóváhagyási levélre (a feladó noreply@). Üresen a válasz a noreply@ címre menne. A koordinátorok értesítési címei az Értesítések blokkban vannak.'),
                 // Néma hiba tilos: ha a tárhely nem fogadná a 10 MB-os fotót, itt kiderül, nem élesben.
                 Text::make(fn () => Submission::uploadLimitWarning())->color('danger')->columnSpanFull()
                     ->visible(fn () => Submission::uploadLimitWarning() !== null),

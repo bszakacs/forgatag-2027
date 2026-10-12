@@ -33,7 +33,13 @@ class BekuldesLevelek
             . 'Beküldő: ' . $program->contact_name . ' <' . $program->contact_email . ">\n\n"
             . 'Kérlek, nézd át és hagyd jóvá az adminban.';
 
-        return Notifier::topic(NotificationTopic::ProgramSubmission, new SzovegesLevel($targy, $szoveg));
+        // A koordinátor a „Válasz” gombbal egyből a beküldőnek ír.
+        $level = new SzovegesLevel($targy, $szoveg);
+        if (filled($program->contact_email)) {
+            $level->replyTo($program->contact_email, $program->contact_name);
+        }
+
+        return Notifier::topic(NotificationTopic::ProgramSubmission, $level);
     }
 
     public static function jovahagyva(ProgramItem $program): bool
@@ -47,10 +53,15 @@ class BekuldesLevelek
             . "Köszönjük a beküldést!\n\n"
             . "— {$nev} csapata";
 
-        return Notifier::send(
-            $program->contact_email,
-            new SzovegesLevel('A programodat jóváhagytuk – ' . $nev . ' ' . Festival::year(), $szoveg),
-        );
+        // A feladó noreply@ — ha a beküldő válaszol, a Beállításokban megadott kapcsolattartó címre menjen.
+        // Ha az üres, nincs Reply-To (a válasz a noreply@ címre menne).
+        $level = new SzovegesLevel('A programodat jóváhagytuk – ' . $nev . ' ' . Festival::year(), $szoveg);
+        $valaszcim = Settings::get('submission.contact_email');
+        if (filled($valaszcim)) {
+            $level->replyTo($valaszcim, $nev);
+        }
+
+        return Notifier::send($program->contact_email, $level);
     }
 
     /** A fotó nem ment fel — a program NEM jött létre / NEM módosult; a koordinátor tudjon róla. */
@@ -63,9 +74,9 @@ class BekuldesLevelek
             . 'Program címe: ' . ($cim !== '' ? $cim : '—') . "\n"
             . 'A hiba oka: ' . $ok;
 
-        return Notifier::topic(
-            NotificationTopic::ProgramSubmission,
-            new SzovegesLevel('Programfotó feltöltése nem sikerült – ' . Festival::name(), $szoveg),
-        );
+        $level = new SzovegesLevel('Programfotó feltöltése nem sikerült – ' . Festival::name(), $szoveg);
+        $level->replyTo($beku->email, $beku->name);
+
+        return Notifier::topic(NotificationTopic::ProgramSubmission, $level);
     }
 }
