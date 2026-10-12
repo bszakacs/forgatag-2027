@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\EntryType;
 use App\Enums\ProgramSource;
 use App\Enums\ProgramStatus;
+use App\Support\BekuldesLevelek;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,7 +19,7 @@ class ProgramItem extends Model
         'title', 'description', 'organizer_names', 'status', 'entry_type', 'ticket_info',
         'schedule_note', 'category_id', 'venue_id', 'extra_fields', 'source',
         'program_manager_id', 'contact_name', 'contact_email', 'photographer_credit',
-        'photo_rights_declared',
+        'photo_rights_declared', 'photo_path',
     ];
 
     protected $attributes = [
@@ -45,6 +46,23 @@ class ProgramItem extends Model
                 $program->slug = self::uniqueSlug($program->title);
             }
         });
+
+        // A beküldő a JÓVÁHAGYÁSKOR kap levelet (nem beküldéskor) — bárhonnan történik a jóváhagyás.
+        static::updated(function (self $program): void {
+            $elozo = $program->getOriginal('status');
+            if ($program->wasChanged('status')
+                && $program->status === ProgramStatus::Published
+                && $program->source === ProgramSource::PublicForm
+                && $elozo instanceof ProgramStatus && $elozo->isSubmitterEditable()) {
+                BekuldesLevelek::jovahagyva($program);
+            }
+        });
+    }
+
+    /** Javíthatja-e még a beküldő (jóváhagyásig igen, utána zárolt). */
+    public function isSubmitterEditable(): bool
+    {
+        return $this->status->isSubmitterEditable();
     }
 
     public static function uniqueSlug(string $title): string

@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Enums\NotificationTopic;
 use App\Support\Festival;
 use App\Support\Settings;
+use App\Support\Submission;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -129,6 +130,12 @@ class Beallitasok extends Page
                     ->helperText('Ha meg van adva, ezután a beküldés akkor is zárva van, ha a kapcsoló nyitva áll. Üresen: nincs határidő.'),
                 TextInput::make('submission.contact_email')->label('Kapcsolattartó cím a beküldőknek')->email()
                     ->helperText('A beküldők ezt látják, ha kérdésük van. A koordinátorok értesítési címei az Értesítések blokkban vannak.'),
+                // Néma hiba tilos: ha a tárhely nem fogadná a 10 MB-os fotót, itt kiderül, nem élesben.
+                Text::make(fn () => Submission::uploadLimitWarning())->color('danger')->columnSpanFull()
+                    ->visible(fn () => Submission::uploadLimitWarning() !== null),
+                Text::make('FIGYELEM: a „Programbeküldés — új beküldött program” témához nincs értesítési cím (Értesítések blokk) — így senki nem kap levelet a beküldésekről és a fotóhibákról.')
+                    ->color('danger')->columnSpanFull()
+                    ->visible(fn (Get $get) => array_filter((array) $get('notifications.topics.' . NotificationTopic::ProgramSubmission->value)) === []),
             ]);
     }
 

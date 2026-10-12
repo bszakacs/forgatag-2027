@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ProgramManager;
 use App\Models\User;
 
 return [
@@ -42,6 +43,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // A programbeküldők (programgazdák) KÜLÖN belépése — külön jelszótár (program_managers).
+        // Az admin (Filament) kizárólag a 'web' őrt használja, ide tartozó fiókkal nem lehet belépni.
+        'bekuldo' => [
+            'driver' => 'session',
+            'provider' => 'program_managers',
+        ],
     ],
 
     /*
@@ -65,6 +73,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        'program_managers' => [
+            'driver' => 'eloquent',
+            'model' => ProgramManager::class,
         ],
 
         // 'users' => [

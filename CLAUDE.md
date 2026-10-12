@@ -102,6 +102,11 @@ programot beküldeni. A napokhoz nincs mit szerkeszteni — az esemény kap dát
 **Ha új menüpontot akarsz felvenni, előbb kérdezd meg.** Egy zsúfolt admin ugyanolyan hiba, mint
 egy hiányzó funkció.
 
+**Rokon dolgok menücsoportba kerülnek, nem külön menüpontokba.** Például a „Felhasználók" csoport
+alatt az admin-felhasználók és a programgazdák. Egy csoport két eleme nem két menüpont.
+
+## 3. Állandó szabályok
+
 - **Token-szabály:** oldalra/komponensre szűkített `:root`-felülírás **TILOS**. Minden téma-tulajdonú
   token (szín, betű, forma, mozgás, firka) a `/tema`-ból publikált témából jön. Saját token-NÉV
   megtartható, ha a témára van kötve (`--ink:var(--fg)`). Téma nélkül a kiszolgálás álljon meg hibával.
@@ -198,6 +203,29 @@ Admin-lapok közös alapja: `App\Filament\Resources\Resource`; a gombok magyar c
 
 Később jön: médiatár (nyitott kérdés), szerepkörök + napló (4. fázis), szponzorok logóval.
 **A 2/b elv miatt még átköltözik:** a védett nevek (`do-not-translate.json` → tábla, a fordítási fázisban).
+
+**2. Programbeküldő űrlap — kész helyben (2026-10-12).** `/bekuldes` (belépés: `/bekuldes/belepes`).
+Mezők/szabályok/hibaszövegek a 2026-os `submit-api`-ból; a leírás EGY helyen: `App\Support\SubmissionForm`
+(űrlap + szerver), validáció+mentés: `App\Services\ProgramSubmission`, szövegtisztítás: `App\Support\TextCleaner`
+(párja: `public/js/bekuldes.js`). Belépés: külön `bekuldo` őr (`program_managers`), a Filament `authGuard('web')`.
+Fotó: nem nyilvános tár (`storage/app/private/bekuldesek/`, `program_items.photo_path`) — ELŐBB a fotó, és
+ha nem megy, a program nem jön létre (+ koordinátori levél). Levelek: `App\Support\BekuldesLevelek` →
+`Notifier` (soha nem dob: a mentés utáni levélhiba nem lehet „sikertelen beküldés”). Jóváhagyási levél:
+`ProgramItem::updated` (draft/pending → published). Korlát: `throttle:bekuldes` (30/óra/IP), belépés 5 hiba → 15 perc.
+A publikus lapok téma-tokenjei IDEIGLENESEN `public/css/tema.css` (amíg a /tema nem publikál).
+Tesztek: `tests/Feature/ProgramBekuldesTest.php` — a `vendor/` dev-csomagok nélkül van a tárolóban, ezért a
+tesztet a konténerben egy másolatban futtatjuk (`/tmp/proj`, ott `composer install`), a `vendor/`-hoz nem nyúlunk.
+**Következő:** „Felhasználók” menücsoport két lappal (admin-felhasználók, programgazdák) — tulajdonosi
+döntés, 2026-10-12. Addig a próba-programgazdát a `forgatag:programgazda` (.env-ből, `.cpanel.yml`) hozza
+létre — **IDEIGLENES**: a lap elkészültével a parancs, a `.cpanel.yml` sora és a `.env` `PROGRAMGAZDA_*`
+sorai törlendők.
+
+### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
+
+1. **`public/css/tema.css` IDEIGLENES.** Amikor a /tema elkészül, ennek **nyomtalanul** el kell tűnnie:
+   minden szín a publikált témából jön (token-szabály). Ne maradjon második forrás.
+2. **A beküldő űrlapról hiányzik a világos/sötét váltó** (2026-ban volt ◐). Ez visszalépés — a /tema
+   fázisában pótolni kell.
 
 ### A tárhely mért adottságai és buktatói (próbatelepítés, 2026-10-12)
 

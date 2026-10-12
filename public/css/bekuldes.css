@@ -1,0 +1,167 @@
+/* ============================================================
+   A beküldő lapok (belépés, űrlap, saját beküldéseim) stílusa.
+   A 2026-os submit-api/public/index.html és login.html stílusának átvétele.
+   Színt / betűt / formát CSAK var()-ral használ — a tokenek a tema.css-ben vannak.
+   ============================================================ */
+*{box-sizing:border-box}
+html{scrollbar-gutter:stable}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+::selection{background:color-mix(in oklab,var(--accent-c) 40%,transparent)}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 80px}
+.wrap.narrow{max-width:480px}
+
+/* ---- fejléc-sor ---- */
+.topbar{display:flex;align-items:center;gap:12px;margin:2px 0 14px;flex-wrap:wrap}
+.topbar a.brand{display:inline-flex;align-items:center;gap:10px;color:var(--fg);text-decoration:none}
+.topbar .bname{font-family:var(--font-head);font-weight:800;font-size:15px;letter-spacing:.01em}
+.topbar .sp{flex:1}
+.topbar .who{color:var(--fg-muted);font-size:.85rem;font-weight:600;white-space:nowrap;max-width:38vw;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:520px){.topbar .who{display:none}}
+.topbar form{margin:0}
+
+/* ---- hero ---- */
+.hero{position:relative;overflow:hidden;background:var(--hero-grad);border:1px solid var(--line);
+  border-radius:var(--r-lap);padding:34px 28px 30px;margin-bottom:20px;text-align:left}
+@media (max-width:520px){
+  .hero{padding:26px 20px 24px}
+  .hero .eyebrow{margin-right:44px}
+  .hero svg.d2{display:none} /* keskeny kijelzőn a szövegre csúszna */
+}
+.hero .glow{position:absolute;border-radius:50%;pointer-events:none;opacity:var(--glow-alpha);filter:blur(60px)}
+.hero .g1{left:-6%;top:-30%;width:52%;height:110%;background:radial-gradient(closest-side,var(--doodle-pink),transparent 72%)}
+.hero .g2{right:-8%;bottom:-40%;width:46%;height:100%;background:radial-gradient(closest-side,var(--warn),transparent 72%)}
+.hero svg.doodle{position:absolute;opacity:.85;animation:fgfloat 10s ease-in-out infinite}
+.hero svg.d1{right:18px;top:14px}
+.hero svg.d2{right:64px;bottom:12px;animation-duration:12s;animation-direction:reverse}
+@keyframes fgfloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(3deg)}}
+@media (prefers-reduced-motion: reduce){ .hero svg.doodle{animation:none} }
+.hero .eyebrow{position:relative;display:inline-flex;align-items:center;border:1px solid var(--line-strong);
+  border-radius:999px;padding:6px 14px;font-size:.74rem;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--fg-muted);background:var(--card)}
+.hero .kicker{position:relative;margin:14px 0 0;font-size:.8rem;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--fg-faint)}
+.hero .kicker:first-child{margin-top:0}
+.hero .kicker em{font-family:var(--font-accent);font-style:italic;text-transform:none;letter-spacing:0;
+  font-size:1.06rem;background:linear-gradient(100deg,var(--accent-a),var(--accent-b) 55%,var(--accent-c));
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.hero h1{position:relative;margin:6px 0 6px;font-family:var(--font-head);font-weight:850;font-stretch:118%;
+  font-size:clamp(1.7rem,4.6vw,2.4rem);line-height:1.06;letter-spacing:-.02em;overflow-wrap:anywhere}
+.hero p{position:relative;margin:0;color:var(--fg-muted);font-size:.98rem;max-width:56ch}
+
+/* ---- kártyák ---- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);
+  padding:22px 20px;margin-bottom:16px;box-shadow:0 18px 44px -30px rgba(0,0,0,.5)}
+@media (max-width:520px){.card{padding:18px 16px}}
+.card h2{margin:0 0 14px;font-family:var(--font-head);font-weight:800;font-stretch:116%;
+  font-size:1.02rem;letter-spacing:-.01em}
+label{display:block;font-weight:700;font-size:.9rem;margin:0 0 6px}
+.req::after{content:" *";color:var(--danger)}
+.help{color:var(--fg-muted);font-weight:400;font-size:.84rem;margin:2px 0 0}
+
+input[type=text],input[type=email],input[type=password],input[type=url],input[type=number],select,textarea{
+  width:100%;padding:11px 13px;border:1px solid var(--line-strong);border-radius:var(--r-field);
+  background:var(--field-bg);color:var(--fg);font:inherit;font-size:1rem;outline:0;
+  transition:border-color var(--dur),background var(--dur)}
+input::placeholder,textarea::placeholder{color:var(--fg-faint)}
+input:hover,select:hover,textarea:hover{border-color:color-mix(in oklab,var(--fg) 45%,transparent)}
+input:focus,select:focus,textarea:focus{border-color:var(--focus);outline:2px solid var(--focus);outline-offset:2px}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--fg-muted) 50%),linear-gradient(135deg,var(--fg-muted) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+select option{background:var(--bg-raise);color:var(--fg)}
+textarea{resize:vertical;min-height:96px}
+.field{margin-bottom:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row > *{flex:1;min-width:120px}
+.timepick{display:flex;align-items:center;gap:8px}
+.timepick select{flex:1;min-width:0;padding-right:26px}
+.timepick .tsep{font-weight:800;color:var(--fg-muted)}
+/* Kategóriaválasztó: minden kategória a saját szélességén. */
+#catList{gap:8px 10px}
+#catList > *{flex:0 0 auto;min-width:0}
+/* Kezdés/Vége időválasztók: nagyobb köz a két mezőpár között (szűk kijelzőn egymás alá kerülnek). */
+.time-row{gap:16px 50px}
+.time-row > *{min-width:200px}
+.counter{font-size:.78rem;color:var(--fg-faint);text-align:right;margin-top:3px}
+.counter.bad{color:var(--danger)}
+
+/* ---- gombok ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;
+  padding:12px 24px;font:inherit;font-weight:800;font-size:.98rem;cursor:pointer;
+  text-decoration:none;transition:transform var(--dur) var(--ease),box-shadow var(--dur),background var(--dur)}
+a.btn{color:var(--fg)}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn-sun{background:linear-gradient(100deg,var(--accent-a),var(--accent-b) 55%,var(--accent-c));
+  color:var(--accent-contrast);box-shadow:0 10px 26px -10px color-mix(in oklab,var(--accent-c) 70%,transparent)}
+a.btn-sun{color:var(--accent-contrast)}
+.btn-sun:hover{transform:translateY(-1px);box-shadow:0 14px 30px -10px color-mix(in oklab,var(--accent-c) 80%,transparent)}
+.btn-sun:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none}
+.btn-ghost{background:transparent;border:1px solid var(--line-strong);color:var(--fg)}
+.btn-ghost:hover{background:var(--card-hover)}
+.btn-sm{padding:8px 14px;font-size:.85rem}
+.btn-block{width:100%}
+@media (max-width:520px){ #submitBtn{width:100%} }
+
+/* ---- belépés-típus és napok: pill-kártyák ---- */
+.radio-group{display:flex;gap:10px;flex-wrap:wrap}
+.radio{position:relative;flex:1;min-width:120px;border:1px solid var(--line-strong);border-radius:var(--r-field);
+  padding:12px;cursor:pointer;font-weight:700;text-align:center;background:var(--card);margin:0;
+  transition:border-color var(--dur),background var(--dur),box-shadow var(--dur)}
+.radio:hover{background:var(--card-hover)}
+.radio input{position:absolute;opacity:0;pointer-events:none}
+.radio:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+.radio.sel{border-color:var(--accent-b);background:color-mix(in oklab,var(--accent-b) 14%,transparent);
+  box-shadow:0 0 0 1px var(--accent-b)}
+/* Ismétlődő napok: széles kijelzőn egy sorban; szűken tördelve (a 7. nap ne csússzon ki oldalra). */
+#daysGroup{flex-wrap:nowrap;gap:6px}
+#daysGroup .radio{min-width:0;padding:10px 8px;font-size:.85rem;white-space:nowrap}
+@media (max-width:820px){
+  #daysGroup{flex-wrap:wrap;gap:10px}
+  #daysGroup .radio{padding:12px;font-size:inherit;flex:1 1 calc(50% - 10px)}
+}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:.92rem;cursor:pointer}
+.check input{width:18px;height:18px;margin-top:2px;flex:0 0 auto;accent-color:var(--accent-b)}
+
+/* ---- fotó-mező ---- */
+.photo-drop{border:2px dashed var(--line-strong);border-radius:var(--r-field);padding:20px;
+  text-align:center;background:var(--card);cursor:pointer;color:var(--fg-muted);
+  transition:border-color var(--dur),background var(--dur)}
+.photo-drop:hover{background:var(--card-hover)}
+.photo-drop:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.photo-drop.ok{border-color:var(--ok);background:color-mix(in oklab,var(--ok) 10%,transparent);color:var(--fg)}
+.photo-drop.bad{border-color:var(--danger);background:color-mix(in oklab,var(--danger) 10%,transparent)}
+.photo-prev{max-width:100%;max-height:220px;border-radius:var(--r-field);margin:10px auto 0;display:block}
+
+/* ---- figyelmeztetés + hibák ---- */
+.notice{background:color-mix(in oklab,var(--warn) 12%,transparent);border:1px solid color-mix(in oklab,var(--warn) 55%,transparent);
+  border-left-width:4px;border-radius:var(--r-field);padding:11px 13px;margin:0 0 10px;
+  font-size:.86rem;line-height:1.45;color:var(--fg)}
+.notice strong{color:var(--warn)}
+.msg{border-radius:var(--r-field);padding:12px 14px;margin:0 0 14px;font-size:.9rem;font-weight:600}
+.msg-err{background:color-mix(in oklab,var(--danger) 12%,transparent);color:var(--fg);
+  border:1px solid color-mix(in oklab,var(--danger) 60%,transparent)}
+.msg-err strong{color:var(--danger)}
+.msg-ok{background:color-mix(in oklab,var(--ok) 12%,transparent);color:var(--fg);
+  border:1px solid color-mix(in oklab,var(--ok) 55%,transparent)}
+.msg ul{margin:6px 0 0;padding-left:18px}
+.field-err{color:var(--danger);font-size:.82rem;font-weight:600;margin-top:4px}
+.foot{color:var(--fg-faint);font-size:.82rem;text-align:center;margin-top:18px}
+.hidden{display:none !important}
+.success{text-align:center;padding:30px 26px}
+.success .big{font-size:3rem;filter:drop-shadow(0 6px 24px rgba(232,93,158,.45))}
+.success h2{font-size:1.3rem}
+a{color:var(--accent-a)}
+
+/* ---- saját beküldéseim ---- */
+.plist{list-style:none;margin:0;padding:0}
+.plist li{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  padding:14px 0;border-top:1px solid var(--line)}
+.plist li:first-child{border-top:0;padding-top:0}
+.plist .ptitle{font-weight:800;overflow-wrap:anywhere}
+.plist .pmeta{color:var(--fg-muted);font-size:.84rem}
+.plist .pmain{flex:1 1 260px;min-width:0}
+.badge{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.76rem;font-weight:800;
+  border:1px solid var(--line-strong);color:var(--fg-muted);white-space:nowrap}
+.badge.open{border-color:color-mix(in oklab,var(--warn) 60%,transparent);color:var(--warn)}
+.badge.done{border-color:color-mix(in oklab,var(--ok) 60%,transparent);color:var(--ok)}
+.navrow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}

@@ -107,6 +107,21 @@ class Festival
             : $d->isoFormat('MMM') . ' ' . $d->day . '. (' . $rovid . ')';
     }
 
+    /** A fesztivál időtartama emberi formában, pl. „2027. augusztus 25–29.” (a 2026-os seed-felirat alakja). */
+    public static function spanLabel(): string
+    {
+        $k = self::start()->locale('hu');
+        $z = self::end()->locale('hu');
+        if ($k->year !== $z->year) {
+            return $k->year . '. ' . $k->isoFormat('MMMM') . ' ' . $k->day . '. – ' . $z->year . '. ' . $z->isoFormat('MMMM') . ' ' . $z->day . '.';
+        }
+        if ($k->month !== $z->month) {
+            return $k->year . '. ' . $k->isoFormat('MMMM') . ' ' . $k->day . '. – ' . $z->isoFormat('MMMM') . ' ' . $z->day . '.';
+        }
+
+        return $k->year . '. ' . $k->isoFormat('MMMM') . ' ' . $k->day . ($k->day === $z->day ? '.' : '–' . $z->day . '.');
+    }
+
     public static function weekday(CarbonImmutable $date, string $locale = 'hu'): string
     {
         return $date->locale($locale)->isoFormat('dddd');

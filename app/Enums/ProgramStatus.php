@@ -33,6 +33,15 @@ enum ProgramStatus: string
         return [self::Published->value, self::Changed->value, self::Cancelled->value];
     }
 
+    /**
+     * A beküldő (programgazda) a saját programját CSAK ezekben az állapotokban javíthatja.
+     * Jóváhagyás után zárolódik: onnan csak a koordinátor módosíthat.
+     */
+    public function isSubmitterEditable(): bool
+    {
+        return in_array($this, [self::Draft, self::PendingReview], true);
+    }
+
     /** @return list<string> amelyekre a gépi fordítás fut (már a beküldéskor is) */
     public static function translatableValues(): array
     {

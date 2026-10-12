@@ -15,4 +15,6 @@ RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-avail
  && sed -ri 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf
 
 COPY --from=composer:2.8.9 /usr/bin/composer /usr/bin/composer
+# Feltöltési korlát: a tárhely beállításával egyezően (a 10 MB-os programfotóhoz).
+COPY feltoltes.ini /usr/local/etc/php/conf.d/feltoltes.ini
 WORKDIR /var/www/html

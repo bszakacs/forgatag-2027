@@ -28,6 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // KIZÁRÓLAG az admin-felhasználók őre (users tábla). A programbeküldők a 'bekuldo' őrrel,
+            // külön jelszótárból lépnek be — az ő fiókjukkal ide belépni nem lehet (CLAUDE.md 2. fázis, 2.7).
+            ->authGuard('web')
             ->colors([
                 'primary' => Color::Amber,
             ])
