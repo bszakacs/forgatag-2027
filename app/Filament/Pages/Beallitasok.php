@@ -9,8 +9,6 @@ use App\Support\Submission;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -126,27 +124,41 @@ class Beallitasok extends Page
                     ->helperText('Kikapcsolva a beküldő űrlap azonnal bezár — kódmódosítás és újraindítás nélkül.'),
                 Textarea::make('submission.closed_message')->label('Üzenet zárt állapotban')
                     ->required()->rows(2)->maxLength(500)->columnSpanFull(),
-                DateTimePicker::make('submission.deadline')->label('Beküldési határidő')->seconds(false)
-                    ->helperText('Ha meg van adva, ezután a beküldés akkor is zárva van, ha a kapcsoló nyitva áll. Üresen: nincs határidő.'),
+                DatePicker::make('submission.deadline')->label('Beküldési határidő (utolsó nap)')
+                    ->helperText('Ezen a napon még be lehet küldeni, éjfélkor zár — akkor is, ha a kapcsoló nyitva áll. Üresen: nincs határidő.'),
                 TextInput::make('submission.contact_email')->label('Kapcsolattartó cím a beküldőknek')->email()
                     ->helperText('A beküldők ezt látják, ha kérdésük van, és ide megy a válaszuk a jóváhagyási levélre (a feladó noreply@). Üresen a válasz a noreply@ címre menne. A koordinátorok értesítési címei az Értesítések blokkban vannak.'),
                 // Néma hiba tilos: ha a tárhely nem fogadná a 10 MB-os fotót, itt kiderül, nem élesben.
                 Text::make(fn () => Submission::uploadLimitWarning())->color('danger')->columnSpanFull()
                     ->visible(fn () => Submission::uploadLimitWarning() !== null),
-                Text::make('FIGYELEM: a „Programbeküldés — új beküldött program” témához nincs értesítési cím (Értesítések blokk) — így senki nem kap levelet a beküldésekről és a fotóhibákról.')
+                Text::make('FIGYELEM: nincs koordinátori értesítési cím — senki nem kap levelet a beküldésekről és a fotóhibákról. Lent, az Értesítések blokkban a „Programbeküldés — új beküldött program” mezőbe írd be.')
                     ->color('danger')->columnSpanFull()
-                    ->visible(fn (Get $get) => array_filter((array) $get('notifications.topics.' . NotificationTopic::ProgramSubmission->value)) === []),
+                    ->visible(fn (Get $get) => self::cimek($get('notifications.topics.' . NotificationTopic::ProgramSubmission->value)) === []),
             ]);
     }
 
+    /**
+     * A témánkénti címek egyszerű szövegmezőben (soronként vagy vesszővel elválasztva).
+     * NEM címke-mező: abban az Enter nélkül beírt cím mentéskor némán elveszett (2026-10-12, élesben).
+     */
     private function ertesitesBlokk(): Section
     {
         $temak = array_map(
-            fn (NotificationTopic $t) => TagsInput::make("notifications.topics.{$t->value}")
+            fn (NotificationTopic $t) => Textarea::make("notifications.topics.{$t->value}")
                 ->label($t->label())
-                ->placeholder('E-mail-cím, majd Enter')
-                ->nestedRecursiveRules(['email'])
-                ->validationMessages(['email' => 'Érvénytelen e-mail-cím.'])
+                ->rows(2)
+                ->placeholder('koordinator@pelda.ro')
+                ->helperText('Egy sorba egy cím (vagy vesszővel elválasztva).')
+                ->live(onBlur: true)
+                ->formatStateUsing(fn ($state) => implode("\n", self::cimek($state)))
+                ->dehydrateStateUsing(fn ($state) => self::cimek($state))
+                ->rule(fn () => function (string $attribute, mixed $value, \Closure $fail) {
+                    foreach (self::cimek($value) as $cim) {
+                        if (! filter_var($cim, FILTER_VALIDATE_EMAIL)) {
+                            $fail("Érvénytelen e-mail-cím: {$cim}");
+                        }
+                    }
+                })
                 ->columnSpanFull(),
             NotificationTopic::cases(),
         );
@@ -160,6 +172,14 @@ class Beallitasok extends Page
                 TextInput::make('notifications.from_name')->label('Feladó neve')->maxLength(120),
                 ...$temak,
             ]);
+    }
+
+    /** @return list<string> a címlista tömbből vagy szövegből (sor / vessző / pontosvessző) */
+    private static function cimek(mixed $ertek): array
+    {
+        $darabok = is_array($ertek) ? $ertek : preg_split('/[\s,;]+/', (string) $ertek);
+
+        return array_values(array_unique(array_filter(array_map('trim', $darabok))));
     }
 
     /** Élő előnézet a még mentetlen értékekből is — hogy mentés előtt látszódjon, mi jön ki. */

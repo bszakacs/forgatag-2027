@@ -309,9 +309,32 @@ class ProgramBekuldesTest extends TestCase
     public function test_beallitasok_lap_figyelmeztet_ha_nincs_ertesitesi_cim(): void
     {
         $admin = User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo']);
-        $this->actingAs($admin)->get('/admin/beallitasok')->assertOk()->assertDontSee('témához nincs értesítési cím');
+        $this->actingAs($admin)->get('/admin/beallitasok')->assertOk()->assertDontSee('nincs koordinátori értesítési cím');
         Settings::save(['notifications' => array_replace(Settings::block('notifications'), ['topics' => ['program_submission' => []]])]);
-        $this->actingAs($admin)->get('/admin/beallitasok')->assertOk()->assertSee('témához nincs értesítési cím');
+        $this->actingAs($admin)->get('/admin/beallitasok')->assertOk()->assertSee('nincs koordinátori értesítési cím');
+    }
+
+    public function test_ertesitesi_cim_enter_nelkul_is_mentodik(): void
+    {
+        // 2026-10-12, élesben: a címke-mezőbe Enter nélkül beírt cím mentéskor némán elveszett.
+        $this->actingAs(User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo']));
+        \Livewire\Livewire::test(\App\Filament\Pages\Beallitasok::class)
+            ->set('data.notifications.topics.program_submission', "koord@forgatag.test, masik@forgatag.test\n")
+            ->call('save')
+            ->assertHasNoErrors();
+        Settings::flush();
+        $this->assertSame(['koord@forgatag.test', 'masik@forgatag.test'], Settings::get('notifications.topics.program_submission'));
+
+        \Livewire\Livewire::test(\App\Filament\Pages\Beallitasok::class)
+            ->set('data.notifications.topics.program_submission', 'nem-cim')
+            ->call('save')
+            ->assertHasErrors();
+    }
+
+    public function test_hatarido_napjan_meg_nyitva(): void
+    {
+        Settings::save(['submission' => array_replace(Settings::block('submission'), ['deadline' => now()->format('Y-m-d')])]);
+        $this->bekuld('borkert', $this->adat())->assertOk();
     }
 
     public function test_szovegtisztitas(): void

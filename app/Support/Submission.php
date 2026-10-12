@@ -19,7 +19,8 @@ class Submission
 
         $hatarido = Settings::get('submission.deadline');
 
-        return blank($hatarido) || ($most ?? CarbonImmutable::now())->lt(CarbonImmutable::parse($hatarido));
+        // A határidő egy NAP (óra nélkül): azon a napon még nyitva, éjfélkor zár (helyi idő szerint).
+        return blank($hatarido) || ($most ?? CarbonImmutable::now())->lte(CarbonImmutable::parse($hatarido)->endOfDay());
     }
 
     /**

@@ -50,6 +50,8 @@ Artisan::command('forgatag:admin', function () {
 // (utana ez a parancs, a .cpanel.yml sora es a .env sorai TORLENDOK — negy-hely szabaly).
 // Ugyanaz a minta, mint a forgatag:admin: az adatot a szerveri .env adja, a jelszot a felhasznalo irja be.
 // Ha a fiok mar letezik, a jelszavahoz NEM nyul, csak a kategoriait igazitja.
+// Hibas / kitoltetlen adatnal csak hibat ir a naplora, de 0-val lep ki: a telepites tobbi lepese
+// (filament:optimize, optimize) MINDENKEPP lefusson — 2026-10-12-en epp ez akasztotta meg a telepitest.
 Artisan::command('forgatag:programgazda', function () {
     $email = mb_strtolower(trim((string) env('PROGRAMGAZDA_EMAIL')));
     $nev = (string) env('PROGRAMGAZDA_NEV', 'Proba programgazda');
@@ -64,14 +66,14 @@ Artisan::command('forgatag:programgazda', function () {
     if (str_contains($email, '<<') || str_contains($jelszo, '<<') || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $this->error('PROGRAMGAZDA: a PROGRAMGAZDA_EMAIL / _JELSZO kitoltetlen vagy hibas — a fiok NEM jott letre.');
 
-        return 1;
+        return 0; // NEM allitja meg a telepitest (kulonben az utvonal-gyorsitotar nem frissul)
     }
 
     $kategoriak = \App\Models\Category::whereIn('slug', $slugok)->pluck('id', 'slug');
     if ($hiany = array_diff($slugok, $kategoriak->keys()->all())) {
         $this->error('PROGRAMGAZDA: ismeretlen kategoria: ' . implode(', ', $hiany));
 
-        return 1;
+        return 0;
     }
 
     $m = \App\Models\ProgramManager::where('email', $email)->first();
@@ -79,7 +81,7 @@ Artisan::command('forgatag:programgazda', function () {
         if (strlen($jelszo) < 12) {
             $this->error('PROGRAMGAZDA: a PROGRAMGAZDA_JELSZO hianyzik vagy 12 karakternel rovidebb — a fiok NEM jott letre.');
 
-            return 1;
+            return 0;
         }
         $m = \App\Models\ProgramManager::create(['name' => $nev, 'email' => $email, 'password' => $jelszo, 'active' => true]);
         $this->info("PROGRAMGAZDA: {$email} letrehozva. Most torold a PROGRAMGAZDA_JELSZO sort a .env-bol.");
