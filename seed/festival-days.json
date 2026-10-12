@@ -1,0 +1,44 @@
+{
+  "_forras": "A FESZTIVÁLNAPOK EGYETLEN FORRÁSA. Jövőre CSAK EZT a fájlt kell átírni, utána: php artisan forgatag:torzsadatok",
+  "_olvassak": [
+    "app/Support/Festival.php → a napok listája (űrlap-pipálók, szerver-validáció, napválasztó) — a fájlt közvetlenül olvassa",
+    "app/Console/Commands/Torzsadatok.php → a festival_days tábla feltöltése"
+  ],
+  "_elokeszito": "A festival.from ELŐTTI napok az előkészítő napok. 2027: NYITOTT KÉRDÉS (szervezői döntés), ezért most csak az öt fesztiválnap szerepel. Ha megvan, ide kell felvenni őket, a 2026-os minta szerint.",
+  "_napvagas": "A FESZTIVÁLNAP hajnali dayCutHour óráig tart: a 00:00 és 03:00 közötti befejezés még az ELŐZŐ naphoz tartozik.",
+  "dayCutHour": 3,
+  "year": 2027,
+  "festival": {
+    "from": "2027-08-25",
+    "to": "2027-08-29",
+    "label": { "hu": "2027. augusztus 25–29.", "ro": "25–29 august 2027" }
+  },
+
+  "days": [
+    {
+      "id": "2027-08-25",
+      "weekday": { "hu": "szerda", "ro": "miercuri" },
+      "label": { "hu": "aug. 25. (sze)", "ro": "25 aug. (mi)" }
+    },
+    {
+      "id": "2027-08-26",
+      "weekday": { "hu": "csütörtök", "ro": "joi" },
+      "label": { "hu": "aug. 26. (cs)", "ro": "26 aug. (jo)" }
+    },
+    {
+      "id": "2027-08-27",
+      "weekday": { "hu": "péntek", "ro": "vineri" },
+      "label": { "hu": "aug. 27. (p)", "ro": "27 aug. (vi)" }
+    },
+    {
+      "id": "2027-08-28",
+      "weekday": { "hu": "szombat", "ro": "sâmbătă" },
+      "label": { "hu": "aug. 28. (szo)", "ro": "28 aug. (sâ)" }
+    },
+    {
+      "id": "2027-08-29",
+      "weekday": { "hu": "vasárnap", "ro": "duminică" },
+      "label": { "hu": "aug. 29. (v)", "ro": "29 aug. (du)" }
+    }
+  ]
+}

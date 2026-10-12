@@ -18,6 +18,8 @@ deployment:
     # (NEM optimize:clear: az az adatbazisbeli cache-tablat is uritene, ami ures adatbazisnal meg nem letezik.)
     - $PHP artisan config:clear
     - $PHP artisan migrate --force
+    # Torzsadatok a seed/ mappabol — CSAK ures tablaba ir, a masodik futastol mar csak kihagy.
+    - $PHP artisan forgatag:torzsadatok
     - $PHP artisan forgatag:admin
     - $PHP artisan filament:optimize
     - $PHP artisan optimize

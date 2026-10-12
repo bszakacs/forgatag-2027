@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Bucharest', // a programidopontok helyi (marosvasarhelyi) idok
 
     /*
     |--------------------------------------------------------------------------

@@ -135,20 +135,36 @@ kiveendő, mert a NAS-ra hívott · **a 2026-os programokat nem importáljuk**, 
 
 ## 8. Hol tartunk
 
-**Semmi nem épült még.** A soron következő lépés a **próbatelepítés**, és ez egyben az első commit:
-üres Laravel 13 + Filament 5 + `.cpanel.yml`, felvive cPanel Git-tel egy próba-aldomainre.
+**0. Próbatelepítés — KÉSZ (2026-10-12).** `https://proba.forgatag.ro/admin` él (Laravel 13 + Filament 5).
+Tároló a szerveren: `/home/forgatag/public_html/forgatag2027`, az aldomain gyökere a `public/`.
+Kijuttatás: `git push` → cPanel Git Version Control → **Update from Remote** → **Deploy HEAD Commit**.
 
-🔴 **Ezen áll az egész terv:** a cPanel dokumentációja önmagával ellentmond abban, hogy a
-„Deploy HEAD Commit" működik-e shell-hozzáférés nélkül. Ha nem működik, a kijuttatási lánc
-átalakul és az ütemterv újraírandó. **Ezért ez az első lépés, nem a tervezés.**
+**1. Adatmodell — kész helyben:** kategóriák, helyszínek (hierarchia + térképmezők), programgazdák
+(+ kategória-pivot), programok (+ további kategóriák), időpontok, program-fordítások (valódi FK,
+egyedi kulcs), szponzorszintek; `forgatag:torzsadatok` (csak üres táblába ír). A fesztiválnapok
+NEM adatbázisban vannak: `App\Support\Festival` olvassa a `seed/festival-days.json`-t.
+Később jön: médiatár (nyitott kérdés), szerepkörök + napló (4. fázis), szponzorok logóval.
 
-**A próbatelepítéskor ellenőrizendő:** fut-e a `composer` a telepítési lépésben (ha nem, a `vendor/`
-mappa megy a repóba) · aktív-e az **`ext-intl`** (a Filament kötelező igénye) és a `proc_open` ·
-az aldomain gyökere állítható-e a `public` almappára.
+### A tárhely mért adottságai és buktatói (próbatelepítés, 2026-10-12)
+
+- **PHP:** a web a CloudLinux-féle 8.4.26-ot használja (fiókszintű „Select PHP Version”, `intl` be).
+  A telepítési lépések az `ea-php84`-et (8.4.26, `intl` NINCS, `proc_open` tiltva) — oda nem kell.
+  **MariaDB 10.6.27.** A Docker ezekre van pinnelve. A szerver LiteSpeed.
+- **Bármilyen helyi változás a szerveri munkafán = inaktív Deploy gomb, vagy „could not contact the
+  remote repository” az Update-nél** (félrevezető!). A git akkor is elutasít, ha a helyi módosítás
+  betűre egyezik az érkezővel. Ezért: a cPanel által a `public/.htaccess`-be írt blokk betűre a
+  tárolóban van; a `php.ini`, `.user.ini`, `.well-known`, `error_log` a `.gitignore`-ban.
+  **A MultiPHP Managert erre az aldomainre NE használd** (beír a `.htaccess`-be).
+- **A cPanel 0700-zal klónoz** → a `.cpanel.yml` minden telepítéskor 755/644-re állít.
+- **A `.env` csak a `.gitignore`-t tartalmazó változat lehúzása UTÁN hozható létre** a szerveren.
+- A gyökér `public_html/.htaccess` a létező fájlokat/mappákat átengedi → a `forgatag2027/.htaccess`
+  (`Require all denied`, kivéve `public/`) kötelező. Mérve: `.env`, `vendor/`, `.git` → 403.
+- A Deploy felülete „fut” állapotban ragadhat; a valóságot a `~/.cpanel/logs` napló mutatja.
+- A `vendor/` és a Filament public-assetjei a tárolóban vannak (a szerveren `composer` nem fut).
 
 ## 9. Nyitott kérdések — ne döntsd el magad
 
-- A 2027-es előkészítő napok száma és dátuma.
+- A 2027-es előkészítő napok száma és dátuma (a `seed/festival-days.json`-ban most csak az öt fesztiválnap van).
 - A jóváhagyók személye; a kategóriagazdák névsora.
 - Kik kapnak arculat-szerkesztő fiókot.
 - Melyik médiatár-megoldás (a próbatelepítés után, valós képanyaggal mérve).
