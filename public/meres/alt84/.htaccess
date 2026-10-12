@@ -1,3 +1,0 @@
-# IDEIGLENES meromappa (probatelepites) — a meres utan torlendo.
-# Kiprobalja, hogy ez a PHP-kezelo letezik-e a tarhelyen.
-AddHandler application/x-httpd-alt-php84 .php
