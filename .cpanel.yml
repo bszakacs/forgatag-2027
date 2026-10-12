@@ -10,13 +10,17 @@ deployment:
     - export PHP=/opt/cpanel/ea-php84/root/usr/bin/php
     # Meres a naploba: melyik PHP fut, es aktiv-e az intl / proc_open (1 = igen, 0 = nem).
     - $PHP -r 'echo "PHP ", PHP_VERSION, " intl=", (int) extension_loaded("intl"), " proc_open=", (int) function_exists("proc_open"), PHP_EOL;'
+    # IDEIGLENES meres: milyen PHP 8-ak vannak a tarhelyen, es a CloudLinux-fele alt-php84-ben van-e intl.
+    - /bin/ls -d /opt/cpanel/ea-php8*/root/usr/bin/php /opt/alt/php8*/usr/bin/php || /bin/true
+    - /opt/alt/php84/usr/bin/php -r 'echo "alt-php84 ", PHP_VERSION, " intl=", (int) extension_loaded("intl"), " proc_open=", (int) function_exists("proc_open"), PHP_EOL;' || /bin/echo "alt-php84 NINCS"
 
     # A webszerver csak szokasos jogokkal lat be (a klonozas 0700-zal hozza letre). A .git/ kimarad.
     - /usr/bin/find . -path ./.git -prune -o -type d -exec /bin/chmod 755 {} +
     - /usr/bin/find . -path ./.git -prune -o -type f -exec /bin/chmod 644 {} +
 
-    # A regi gyorsitotar torlese ELOSZOR — kulonben a forgatag:admin nem latna a .env-et.
-    - $PHP artisan optimize:clear
+    # A beallitas-gyorsitotar torlese ELOSZOR — kulonben a forgatag:admin nem latna a .env-et.
+    # (NEM optimize:clear: az az adatbazisbeli cache-tablat is uritene, ami ures adatbazisnal meg nem letezik.)
+    - $PHP artisan config:clear
     - $PHP artisan migrate --force
     - $PHP artisan forgatag:admin
     - $PHP artisan filament:optimize
