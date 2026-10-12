@@ -32,3 +32,5 @@ Thumbs.db
 /.well-known/
 /.user.ini
 /php.ini
+# A tarhely PHP-ja barhol letrehozhat "error_log" fajlt, ahol hiba tortent.
+error_log

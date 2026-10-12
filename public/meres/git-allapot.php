@@ -17,3 +17,10 @@ echo "== HEAD\n", futtat([$git, '-c', 'safe.directory=*', 'log', '-1', '--format
 echo "== status --porcelain (ha nem ures, ez blokkolja a Deploy gombot)\n", futtat([$git, '-c', 'safe.directory=*', 'status', '--porcelain', '--untracked-files=all'], $repo, $env);
 echo "== diff (a modositott, kovetett fajlok)\n", futtat([$git, '-c', 'safe.directory=*', 'diff', '--stat'], $repo, $env);
 echo "== diff public/.htaccess\n", futtat([$git, '-c', 'safe.directory=*', 'diff', '--', 'public/.htaccess'], $repo, $env);
+echo "== error_log (a tarolo gyokereben, utolso 3000 bajt)\n";
+$el = $repo . '/error_log';
+echo is_readable($el) ? substr((string) file_get_contents($el), -3000) . "\n" : "(nincs)\n";
+$naplok = glob('/home/' . get_current_user() . '/.cpanel/logs/*deploy*.log') ?: [];
+usort($naplok, fn ($a, $b) => filemtime($b) <=> filemtime($a));
+echo "== legfrissebb telepitesi naplo: ", $naplok[0] ?? '(nincs)', "\n";
+echo isset($naplok[0]) ? substr((string) file_get_contents($naplok[0]), -6000) : '', "\n";
