@@ -13,7 +13,7 @@ function futtat(array $cmd, string $cwd, array $env): string {
     return $ki === '' ? "(ures)\n" : substr($ki, 0, 6000);
 }
 echo "== repo: $repo | git: $git\n";
-echo "== HEAD\n", futtat([$git, 'log', '-1', '--format=%h %s'], $repo, $env);
-echo "== status --porcelain (ha nem ures, ez blokkolja a Deploy gombot)\n", futtat([$git, 'status', '--porcelain', '--untracked-files=all'], $repo, $env);
-echo "== diff (a modositott, kovetett fajlok)\n", futtat([$git, 'diff', '--stat'], $repo, $env);
-echo "== diff public/.htaccess\n", futtat([$git, 'diff', '--', 'public/.htaccess'], $repo, $env);
+echo "== HEAD\n", futtat([$git, '-c', 'safe.directory=*', 'log', '-1', '--format=%h %s'], $repo, $env);
+echo "== status --porcelain (ha nem ures, ez blokkolja a Deploy gombot)\n", futtat([$git, '-c', 'safe.directory=*', 'status', '--porcelain', '--untracked-files=all'], $repo, $env);
+echo "== diff (a modositott, kovetett fajlok)\n", futtat([$git, '-c', 'safe.directory=*', 'diff', '--stat'], $repo, $env);
+echo "== diff public/.htaccess\n", futtat([$git, '-c', 'safe.directory=*', 'diff', '--', 'public/.htaccess'], $repo, $env);
