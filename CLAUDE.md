@@ -83,9 +83,9 @@ Például:
 | Blokk | Mi van benne |
 |---|---|
 | Fesztivál alapadatai | év, kezdő és záró dátum, előkészítő napok száma, nyitónap, a fesztivál neve HU/RO |
-| Programbeküldés | nyitva/zárva kapcsoló, a zárt állapot üzenete, határidő, értesítési cím |
+| Programbeküldés | nyitva/zárva kapcsoló, a zárt állapot üzenete, határidő (csak nap) |
 | Szabadulószoba | saját mezői: időpont-sávok, koordinátor e-mail-címe, nyitva/zárva |
-| Értesítések | koordinátorok e-mail-címei témánként, feladó cím |
+| Értesítések | koordinátorok e-mail-címei témánként (KI kapja). Feladó NINCS itt: az a szerver SMTP-fiókja (.env). Egy funkció = egy cím. |
 
 **Ha egy blokk új funkcióval jön, ide kerül, nem új menüpontba.**
 
@@ -247,7 +247,7 @@ sorai törlendők.
 ## 9. Nyitott kérdések — ne döntsd el magad
 
 - A 2027-es előkészítő napok pontos száma (most 2 — „kettő biztos”; a Beállításokban átírható).
-- A koordinátorok értesítési címei és a feladó cím (a Beállításokban üresen állnak — nem találunk ki címet).
+- A koordinátorok értesítési címei (a Beállításokban üresen állnak — nem találunk ki címet).
 - A jóváhagyók személye; a kategóriagazdák névsora.
 - Kik kapnak arculat-szerkesztő fiókot.
 - Melyik médiatár-megoldás (a próbatelepítés után, valós képanyaggal mérve).

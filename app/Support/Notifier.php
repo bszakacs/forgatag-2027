@@ -22,7 +22,7 @@ class Notifier
     public static function topic(NotificationTopic $topic, Mailable $mail): bool
     {
         try {
-            $cimek = array_values(array_filter((array) Settings::get("notifications.topics.{$topic->value}", [])));
+            $cimek = self::cimek($topic);
         } catch (Throwable $e) {
             self::naplo('ÉRTESÍTÉS KIMARADT: a beállítások nem olvashatók. ' . $e->getMessage(), ['targy' => $mail->subject]);
 
@@ -39,14 +39,21 @@ class Notifier
         return self::send($cimek, $mail);
     }
 
+    /** @return list<string> a témához beállított koordinátori címek */
+    public static function cimek(NotificationTopic $topic): array
+    {
+        try {
+            return array_values(array_filter((array) Settings::get("notifications.topics.{$topic->value}", [])));
+        } catch (Throwable) {
+            return []; // hiányzó beállítás-blokk: a topic() ezt „kimaradt értesítésként” naplózza
+        }
+    }
+
     /** @param list<string>|string $to */
     public static function send(array|string $to, Mailable $mail): bool
     {
+        // A feladó a szerver levelezési beállítása (.env: MAIL_FROM_ADDRESS = az SMTP-fiók) — nem a Beállítások.
         try {
-            $felado = Settings::get('notifications.from_address');
-            if (filled($felado)) {
-                $mail->from($felado, Settings::get('notifications.from_name') ?: null);
-            }
             Mail::to($to)->send($mail);
 
             return true;

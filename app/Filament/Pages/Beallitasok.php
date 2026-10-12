@@ -126,8 +126,6 @@ class Beallitasok extends Page
                     ->required()->rows(2)->maxLength(500)->columnSpanFull(),
                 DatePicker::make('submission.deadline')->label('Beküldési határidő (utolsó nap)')
                     ->helperText('Ezen a napon még be lehet küldeni, éjfélkor zár — akkor is, ha a kapcsoló nyitva áll. Üresen: nincs határidő.'),
-                TextInput::make('submission.contact_email')->label('Kapcsolattartó cím a beküldőknek')->email()
-                    ->helperText('A beküldők ezt látják, ha kérdésük van, és ide megy a válaszuk a jóváhagyási levélre (a feladó noreply@). Üresen a válasz a noreply@ címre menne. A koordinátorok értesítési címei az Értesítések blokkban vannak.'),
                 // Néma hiba tilos: ha a tárhely nem fogadná a 10 MB-os fotót, itt kiderül, nem élesben.
                 Text::make(fn () => Submission::uploadLimitWarning())->color('danger')->columnSpanFull()
                     ->visible(fn () => Submission::uploadLimitWarning() !== null),
@@ -148,7 +146,7 @@ class Beallitasok extends Page
                 ->label($t->label())
                 ->rows(2)
                 ->placeholder('koordinator@pelda.ro')
-                ->helperText('Egy sorba egy cím (vagy vesszővel elválasztva).')
+                ->helperText('Egy sorba egy cím (vagy vesszővel elválasztva). Ha a beküldő válaszol a rendszer levelére, a válasza is ide jön.')
                 ->live(onBlur: true)
                 ->formatStateUsing(fn ($state) => implode("\n", self::cimek($state)))
                 ->dehydrateStateUsing(fn ($state) => self::cimek($state))
@@ -164,14 +162,10 @@ class Beallitasok extends Page
         );
 
         return Section::make('Értesítések')
+            // EGY funkció = EGY cím: itt csak az áll, KI kapja a levelet. A feladó (noreply@) a szerver
+            // levelezési beállítása (.env, SMTP) — azt itt nem kell, és nem is lehet megadni.
             ->description('Témánként azok a koordinátorok, akik értesítést kapnak. Egy témához több cím is megadható.')
-            ->columns(2)
-            ->schema([
-                TextInput::make('notifications.from_address')->label('Feladó cím')->email()
-                    ->helperText('Ezzel a címmel mennek ki a rendszer levelei.'),
-                TextInput::make('notifications.from_name')->label('Feladó neve')->maxLength(120),
-                ...$temak,
-            ]);
+            ->schema($temak);
     }
 
     /** @return list<string> a címlista tömbből vagy szövegből (sor / vessző / pontosvessző) */

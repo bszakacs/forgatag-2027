@@ -53,12 +53,11 @@ class BekuldesLevelek
             . "Köszönjük a beküldést!\n\n"
             . "— {$nev} csapata";
 
-        // A feladó noreply@ — ha a beküldő válaszol, a Beállításokban megadott kapcsolattartó címre menjen.
-        // Ha az üres, nincs Reply-To (a válasz a noreply@ címre menne).
+        // A feladó noreply@ — ha a beküldő válaszol, a válasz a programbeküldés koordinátorához menjen
+        // (ugyanaz a cím, amely a beküldésekről értesítést kap: egy funkció = egy cím).
         $level = new SzovegesLevel('A programodat jóváhagytuk – ' . $nev . ' ' . Festival::year(), $szoveg);
-        $valaszcim = Settings::get('submission.contact_email');
-        if (filled($valaszcim)) {
-            $level->replyTo($valaszcim, $nev);
+        foreach (Notifier::cimek(NotificationTopic::ProgramSubmission) as $cim) {
+            $level->replyTo($cim, $nev);
         }
 
         return Notifier::send($program->contact_email, $level);

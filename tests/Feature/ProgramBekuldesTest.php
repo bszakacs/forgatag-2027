@@ -41,8 +41,8 @@ class ProgramBekuldesTest extends TestCase
                 'opening_day' => '2027-08-25', 'name_hu' => 'Vásárhelyi Forgatag', 'name_ro' => 'Vâltoarea Mureșeană',
                 'day_cut_hour' => 3,
             ],
-            'submission' => ['open' => true, 'closed_message' => 'A programbeküldés jelenleg zárva van.', 'deadline' => null, 'contact_email' => null],
-            'notifications' => ['from_address' => 'program@forgatag.test', 'from_name' => 'Vásárhelyi Forgatag',
+            'submission' => ['open' => true, 'closed_message' => 'A programbeküldés jelenleg zárva van.', 'deadline' => null],
+            'notifications' => [
                 'topics' => ['program_submission' => ['koordinator@forgatag.test']]],
         ]);
         Storage::fake('local');
@@ -261,16 +261,15 @@ class ProgramBekuldesTest extends TestCase
 
     public function test_jovahagyas_utan_zarolt_es_a_bekuldo_levelet_kap(): void
     {
-        Settings::save(['submission' => array_replace(Settings::block('submission'), ['contact_email' => 'program@forgatag.test'])]);
         $this->bekuld('borkert', $this->adat())->assertOk();
         // A koordinátori levélre adott válasz a beküldőhöz megy.
         Mail::assertSent(Mailable::class, fn ($m) => $m->hasTo('koordinator@forgatag.test') && $m->hasReplyTo('teka@example.test'));
         $p = ProgramItem::sole();
         $p->update(['status' => ProgramStatus::Published]);
-        // A jóváhagyási levélre adott válasz a Beállítások kapcsolattartó címére megy (nem a noreply@-ra).
+        // A jóváhagyási levélre adott válasz a programbeküldés koordinátorához megy (nem a noreply@-ra).
         Mail::assertSent(Mailable::class, fn ($m) => $m->hasTo('teka@example.test')
             && str_contains($m->subject, 'A programodat jóváhagytuk – Vásárhelyi Forgatag 2027')
-            && $m->hasReplyTo('program@forgatag.test'));
+            && $m->hasReplyTo('koordinator@forgatag.test'));
 
         $adat = $this->adat();
         unset($adat['photo']);
