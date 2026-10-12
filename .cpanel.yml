@@ -1,15 +1,23 @@
 ---
-# A szakasz: csak a cPanel Git "Deploy HEAD Commit" csatornat meri.
-# Celmappa a public_html-en KIVUL (a tarolo maga: public_html/forgatag2027):
-# /home/<felhasznalo>/forgatag-proba-cel/
+# Telepites a cPanel Git Version Control "Deploy HEAD Commit" gombjara.
+# A tarolo maga az alkalmazas: /home/forgatag/public_html/forgatag2027 (helyben fut, nincs masolas).
+# A vendor/ a taroloban van — a szerveren composer NEM fut.
 deployment:
   tasks:
-    - export DEPLOYPATH=$HOME/forgatag-proba-cel/
-    - /bin/mkdir -p $DEPLOYPATH
-    - /bin/cp proba.txt $DEPLOYPATH
-    - /bin/date -Iseconds > ${DEPLOYPATH}telepitve.txt
-    # A webszerver csak akkor lat be a tarolo-mappaba, ha a jogok szokasosak (mappa 755, fajl 644).
-    # A klonozas/frissites szukebb jogokkal hozza letre oket -> minden telepiteskor visszaallitjuk.
-    # A .git/ kimarad (azt a tarhely amugy is tiltja a webrol).
+    # --- PHP utvonala. Ha az elso lepes "No such file" hibaval all meg, csereld a kovetkezok egyikere:
+    #       /opt/alt/php84/usr/bin/php          (CloudLinux PHP Selector)
+    #       /usr/local/bin/php                  (cPanel alap — a rendszer ALAPverziojat adhatja, nem 8.4-et!)
+    - export PHP=/opt/cpanel/ea-php84/root/usr/bin/php
+    # Meres a naploba: melyik PHP fut, es aktiv-e az intl / proc_open (1 = igen, 0 = nem).
+    - $PHP -r 'echo "PHP ", PHP_VERSION, " intl=", (int) extension_loaded("intl"), " proc_open=", (int) function_exists("proc_open"), PHP_EOL;'
+
+    # A webszerver csak szokasos jogokkal lat be (a klonozas 0700-zal hozza letre). A .git/ kimarad.
     - /usr/bin/find . -path ./.git -prune -o -type d -exec /bin/chmod 755 {} +
     - /usr/bin/find . -path ./.git -prune -o -type f -exec /bin/chmod 644 {} +
+
+    # A regi gyorsitotar torlese ELOSZOR — kulonben a forgatag:admin nem latna a .env-et.
+    - $PHP artisan optimize:clear
+    - $PHP artisan migrate --force
+    - $PHP artisan forgatag:admin
+    - $PHP artisan filament:optimize
+    - $PHP artisan optimize

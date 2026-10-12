@@ -1,0 +1,24 @@
+# Helyi fejlesztes. Verziok a tarhelyhez igazitva (cPanel Server Information, 2026-10-12):
+# MariaDB 10.6.27, PHP 8.4.
+services:
+  app:
+    build: ./docker/php
+    ports:
+      - "8027:80"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+  db:
+    image: mariadb:10.6.27
+    environment:
+      MARIADB_DATABASE: forgatag
+      MARIADB_USER: forgatag
+      MARIADB_PASSWORD: forgatag_helyi
+      MARIADB_ROOT_PASSWORD: forgatag_helyi_root
+    ports:
+      - "33027:3306"
+    volumes:
+      - db-adat:/var/lib/mysql
+volumes:
+  db-adat:
