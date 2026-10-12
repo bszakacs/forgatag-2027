@@ -12,9 +12,9 @@ merül fel, döntsd el a legkonzervatívabb irányba, csináld meg, és egy sorb
 
 ## 1. Kanonikus tények (SOHA nem kitalált adat)
 
-- **Fesztivál: 2027. augusztus 25–29.** (szerda–vasárnap). Szervezői adat. Konfigurálható mezőként
-  kezelendő, nem beégetve. Az előkészítő napok számát a szervezők adják meg — a napok egyetlen
-  forrása a `seed/festival-days.json` marad.
+- **Fesztivál: 2027. augusztus 25–29.** (szerda–vasárnap). Szervezői adat, soha nem beégetve.
+  **A fesztiválnapok az adatbázisban élnek és az adminban szerkeszthetők** — a feliratokat a
+  rendszer számolja a dátumból. Az előkészítő napok számát a szervezők adják meg.
 - **A fesztivál román neve: `Vâltoarea Mureșeană`.** Rövid alak: `Vâltoarea`.
   **Ragozás:** alanyeset `Vâltoarea Mureșeană` · elöljárószó után `Vâltoare` (*la Vâltoare*,
   *în Vâltoare*) · birtokos `Vâltorii Mureșene`. **A `Vâltoarei` alak MINDIG hibás.**
@@ -56,7 +56,51 @@ Directus · Inertia/React/Vue · statikus oldalgenerálás.
    **Most:** egy alkalmazás, egy belépés.
 4. **Új beküldő aldomain NAS-beállítást igényelt** → **most:** tiszta cPanel-munka, ~15 perc.
 
-## 3. Állandó szabályok
+## 2/b. A `seed/` fájlok szerepe — KEZDŐ TARTALOM, nem igazságforrás
+
+**Semmilyen szervezői adat nem él fájlban.** A `seed/` fájlok (fesztiválnapok, kategóriák,
+helyszínek, szponzorszintek, védett nevek) **egyszer töltődnek be** az adatbázisba a projekt
+indulásakor. Onnantól **az adatbázis az igazság**, és minden az adminban szerkeszthető.
+
+**Miért más ez, mint 2026-ban:** akkor három külön program olvasta ugyanazt (Astro build,
+beküldő űrlap, séma-eszköz), és a JSON-fájl volt az egyetlen közös pont. Most **egy alkalmazás van
+és egy adatbázis** — az indok megszűnt.
+
+**Következmény:** ha egy adat évről évre vagy menet közben változhat, akkor **adatbázisba kerül**,
+nem fájlba. Kódban csak az marad, ami a rendszer szerkezete (státuszok, szerepkörnevek, útvonalak).
+
+### DE: az adatbázisban lenni ≠ külön menüpont
+
+⛔ **Az admin menüje szűk és tiszta marad.** Csak az kap saját menüpontot, amit **rendszeresen
+szerkesztenek**: programok, hírek, helyszínek, kategóriák, médiatár, támogatók, felhasználók.
+
+**Minden más EGYETLEN „Beállítások" lapra megy.** Ez a lap a fesztivállal kapcsolatos minden
+beállítás otthona — nem keletkezik több menüpont, ahogy a rendszer nő.
+
+**A lap felépítése: tematikus blokkokra osztva.** Egy blokk = egy téma, saját címmel, egymás alatt.
+Például:
+
+| Blokk | Mi van benne |
+|---|---|
+| Fesztivál alapadatai | év, kezdő és záró dátum, előkészítő napok száma, nyitónap, a fesztivál neve HU/RO |
+| Programbeküldés | nyitva/zárva kapcsoló, a zárt állapot üzenete, határidő, értesítési cím |
+| Szabadulószoba | saját mezői: időpont-sávok, koordinátor e-mail-címe, nyitva/zárva |
+| Értesítések | koordinátorok e-mail-címei témánként, feladó cím |
+
+**Ha egy blokk új funkcióval jön, ide kerül, nem új menüpontba.**
+
+**Amikor már sok lesz a mező, akkor — és csak akkor — vezetünk be füleket** ezen az EGY lapon belül.
+Addig egyszerű, egymás alatti blokkok. **Új menüpontot akkor se.**
+
+⚠️ A `/tema` **külön marad**, mert saját szerepköre van (arculat-szerkesztő). Aki a színeket állítja,
+az ne tudja lekapcsolni a programbeküldést.
+
+**Konkrétan a fesztiválnapok:** NEM külön gyűjtemény és NEM külön menüpont. A Beállítások lapon
+megadott dátumokból a rendszer **számolja** a napokat, és azok határolják be, mely dátumokra lehet
+programot beküldeni. A napokhoz nincs mit szerkeszteni — az esemény kap dátumot, és kész.
+
+**Ha új menüpontot akarsz felvenni, előbb kérdezd meg.** Egy zsúfolt admin ugyanolyan hiba, mint
+egy hiányzó funkció.
 
 - **Token-szabály:** oldalra/komponensre szűkített `:root`-felülírás **TILOS**. Minden téma-tulajdonú
   token (szín, betű, forma, mozgás, firka) a `/tema`-ból publikált témából jön. Saját token-NÉV
@@ -109,7 +153,7 @@ kategória- és helyszínnevek, menü) **kézzel** fordítjuk.
 
 | Mit | Honnan |
 |---|---|
-| Törzsadatok: kategóriák, helyszínek, szponzorszintek, napok, védett nevek | `seed/` |
+| Kezdő tartalom: kategóriák, helyszínek, szponzorszintek, napok, védett nevek — **egyszeri betöltéshez**, lásd a 2/b pontot | `seed/` |
 | CSS-tokenrendszer, Amphora-arculat | `frontend/src/styles/` |
 | Önhostolt betűk (Archivo, Instrument Serif, Tingler Print) | `frontend/public/fonts/` |
 | Várstérkép SVG | `frontend/public/terkep/varterkep-vektor.svg` |
@@ -141,9 +185,19 @@ Kijuttatás: `git push` → cPanel Git Version Control → **Update from Remote*
 
 **1. Adatmodell — kész helyben:** kategóriák, helyszínek (hierarchia + térképmezők), programgazdák
 (+ kategória-pivot), programok (+ további kategóriák), időpontok, program-fordítások (valódi FK,
-egyedi kulcs), szponzorszintek; `forgatag:torzsadatok` (csak üres táblába ír). A fesztiválnapok
-NEM adatbázisban vannak: `App\Support\Festival` olvassa a `seed/festival-days.json`-t.
+egyedi kulcs), szponzorszintek; `forgatag:torzsadatok` (csak üres táblába ír; a beállításoknál
+csak a hiányzó blokkot hozza létre).
+
+**Beállítások (2/b):** `settings` tábla, blokkonként egy sor (`festival`, `submission`,
+`notifications`), kezdőérték: `seed/settings.json`. Lap: `App\Filament\Pages\Beallitasok`
+(új blokk = új Section + a `BLOKKOK` lista + a seed). Olvasók: `App\Support\Settings`,
+`App\Support\Festival` (a napokat SZÁMOLJA: kezdő − előkészítő napok … záró),
+`App\Support\Submission::isOpen()` (kapcsoló ÉS határidő — az űrlap és a szerver is ezt kérdezi).
+Értesítési témák: `App\Enums\NotificationTopic` (a téma kód, a címek a Beállításokban).
+Admin-lapok közös alapja: `App\Filament\Resources\Resource`; a gombok magyar címe az `AppServiceProvider`-ben.
+
 Később jön: médiatár (nyitott kérdés), szerepkörök + napló (4. fázis), szponzorok logóval.
+**A 2/b elv miatt még átköltözik:** a védett nevek (`do-not-translate.json` → tábla, a fordítási fázisban).
 
 ### A tárhely mért adottságai és buktatói (próbatelepítés, 2026-10-12)
 
@@ -164,7 +218,8 @@ Később jön: médiatár (nyitott kérdés), szerepkörök + napló (4. fázis)
 
 ## 9. Nyitott kérdések — ne döntsd el magad
 
-- A 2027-es előkészítő napok száma és dátuma (a `seed/festival-days.json`-ban most csak az öt fesztiválnap van).
+- A 2027-es előkészítő napok pontos száma (most 2 — „kettő biztos”; a Beállításokban átírható).
+- A koordinátorok értesítési címei és a feladó cím (a Beállításokban üresen állnak — nem találunk ki címet).
 - A jóváhagyók személye; a kategóriagazdák névsora.
 - Kik kapnak arculat-szerkesztő fiókot.
 - Melyik médiatár-megoldás (a próbatelepítés után, valós képanyaggal mérve).

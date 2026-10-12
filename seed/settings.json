@@ -1,0 +1,29 @@
+{
+  "_forras": "KEZDŐ TARTALOM (CLAUDE.md 2/b). A forgatag:torzsadatok blokkonként EGYSZER tölti be: csak azt a blokkot, amelyik még nincs az adatbázisban. Utána az admin Beállítások lapja az igazság — ezt a fájlt átírni nem változtat semmin.",
+  "_ures_mezok": "Az üresen (null / []) hagyott e-mail-címek szándékosak: nem találunk ki címet, a szervezők adják meg a Beállításokban.",
+
+  "festival": {
+    "start_date": "2027-08-25",
+    "end_date": "2027-08-29",
+    "prep_days": 2,
+    "opening_day": "2027-08-25",
+    "name_hu": "Vásárhelyi Forgatag",
+    "name_ro": "Vâltoarea Mureșeană",
+    "day_cut_hour": 3
+  },
+
+  "submission": {
+    "open": false,
+    "closed_message": "A programbeküldés jelenleg zárva van.",
+    "deadline": null,
+    "contact_email": null
+  },
+
+  "notifications": {
+    "from_address": null,
+    "from_name": "Vásárhelyi Forgatag",
+    "topics": {
+      "program_submission": []
+    }
+  }
+}

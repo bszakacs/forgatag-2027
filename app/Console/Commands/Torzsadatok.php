@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\FestivalDayKind;
 use App\Models\Category;
-use App\Models\FestivalDay;
 use App\Models\SponsorTier;
 use App\Models\Venue;
+use App\Support\Settings;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -14,9 +13,10 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * A törzsadatok betöltése a seed/ mappából: programnapok, kategóriák, helyszínek, szponzorszintek.
+ * A kezdő tartalom betöltése a seed/ mappából (CLAUDE.md 2/b): beállítások, kategóriák,
+ * helyszínek, szponzorszintek.
  *
- * CSAK ÜRES TÁBLÁBA ír. Ha egy táblában már van adat, ahhoz nem nyúl — így az adminban törölt
+ * CSAK ÜRES TÁBLÁBA ír (a beállításoknál: csak a hiányzó blokkot). Ha egy táblában már van adat, ahhoz nem nyúl — így az adminban törölt
  * vagy átírt sor soha nem jön vissza (2026-ban a menü-feltöltés épp ezt csinálta).
  * A telepítés (.cpanel.yml) minden alkalommal futtatja; a második futástól már csak kihagy.
  */
@@ -27,7 +27,7 @@ class Torzsadatok extends Command
     public function handle(): int
     {
         try {
-            $this->betolt('programnapok', FestivalDay::class, fn () => $this->programnapok());
+            $this->beallitasok();
             $this->betolt('kategóriák', Category::class, fn () => $this->kategoriak());
             $this->betolt('helyszínek', Venue::class, fn () => $this->helyszinek());
             $this->betolt('szponzorszintek', SponsorTier::class, fn () => $this->szponzorszintek());
@@ -54,23 +54,30 @@ class Torzsadatok extends Command
         $this->info("TÖRZSADATOK: {$nev} — {$db} sor betöltve.");
     }
 
-    private function programnapok(): int
+    /**
+     * A Beállítások blokkjai: BLOKKONKÉNT csak a még hiányzót tölti be — így egy később érkező új
+     * blokk (pl. szabadulószoba) magától bekerül, a meglévő, adminban átírt blokkhoz viszont nem nyúl.
+     */
+    private function beallitasok(): void
     {
-        $ut = base_path('seed/festival-days.json');
+        $ut = base_path('seed/settings.json');
         $adat = is_readable($ut) ? json_decode((string) file_get_contents($ut), true) : null;
-        if (! is_array($adat) || empty($adat['days'])) {
-            throw new RuntimeException('seed/festival-days.json hiányzik vagy nincs benne „days” lista.');
+        if (! is_array($adat)) {
+            throw new RuntimeException('seed/settings.json hiányzik vagy hibás JSON.');
         }
 
-        foreach ($adat['days'] as $i => $nap) {
-            $tipus = FestivalDayKind::tryFrom($nap['kind'] ?? '');
-            if (empty($nap['date']) || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $nap['date']) || $tipus === null) {
-                throw new RuntimeException('seed/festival-days.json ' . ($i + 1) . '. nap: hibás dátum vagy típus (festival | prep).');
+        foreach ($adat as $blokk => $ertek) {
+            if (str_starts_with($blokk, '_')) {
+                continue; // magyarázó mező
             }
-            FestivalDay::create(['date' => $nap['date'], 'kind' => $tipus]);
-        }
+            if (Settings::has($blokk)) {
+                $this->line("TÖRZSADATOK: beállítások / {$blokk} — már megvan, nem nyúltam hozzá.");
 
-        return count($adat['days']);
+                continue;
+            }
+            Settings::save([$blokk => $ertek]);
+            $this->info("TÖRZSADATOK: beállítások / {$blokk} — betöltve.");
+        }
     }
 
     private function kategoriak(): int
