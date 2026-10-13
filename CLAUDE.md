@@ -232,6 +232,24 @@ lát a jelszóval. **Elfelejtett jelszó:** `/bekuldes/jelszo` (`JelszoControlle
 egyszer használható. Az ideiglenes `forgatag:programgazda` kivezetve (kód, `.cpanel.yml`, minta-.env;
 a szerveri .env `PROGRAMGAZDA_*` sorait a felhasználó törli).
 
+**Programlista + jóváhagyási sor — kész helyben (2026-10-13).** `ProgramItems\ProgramItemResource`
+(`/admin/programok`, a menü első pontja, jelvény: hány vár jóváhagyásra). Fülek: Teendő (alap) ·
+Közzétéve · Mind; szűrők: állapot, kategória (elsődleges), helyszín, nap, fotó, elavult fordítás.
+Mobilon csak cím (alatta kategória + első nap) és állapot; a sor maga a link.
+**Lépések EGY helyen: `App\Services\ProgramReview`** — draft →(Jóváhagyásra küldés)→ pending_review
+→(Jóváhagyás)→ published; **Visszaküldés javításra** (draftból és pending-ből, kötelező indok, levél a
+beküldőnek a javítás linkjével) → draft. Jóváhagyni csak pending_review-ból lehet, és csak ha nincs
+akadály (`approvalBlockers`: fotó + a FÁJLJA is megvan, jog-nyilatkozat, kategória, helyszín, időpont) —
+a szerver is ellenőrzi, nem csak a gomb szürke. A jóváhagyási levelet továbbra is a modell `updated`
+eseménye küldi; az eredménye (`$approvalMailSent`) a gomb visszajelzésében látszik (kiment / NEM ment ki).
+**Napló:** `program_review_events`, APPEND-ONLY (a modell tiltja a módosítást/törlést); a beküldés és a
+beküldő javítása is ide ír. A visszaküldés indokának egyetlen helye ez — a beküldő a „Saját
+beküldéseim” lapon ebből látja (`ProgramItem::openReturn`).
+**Fotó az adminnak:** `/admin/programok/{id}/foto` (`Admin\ProgramFotoController`), a panel
+`authenticatedRoutes`-ában — csak belépett admin. **Elavult fordítás:** piros jelvény a listában, piros
+figyelmeztetés + kiemelt sor a program lapján (a fordítás szekció előkészítve, ma még üres).
+Szerkesztés és új program felvitele az adminban: még NINCS (későbbi kör).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. **`public/css/tema.css` IDEIGLENES.** Amikor a /tema elkészül, ennek **nyomtalanul** el kell tűnnie:
@@ -258,10 +276,12 @@ a szerveri .env `PROGRAMGAZDA_*` sorait a felhasználó törli).
 
 ### Feljegyezve a későbbi fázisokra (tulajdonosi rögzítés, 2026-10-13)
 
-- **4. fázis (programlista): A KOORDINÁTOR MA NEM LÁTJA A FOTÓT.** A beküldött kép a nem nyilvános
-  tárban van (`storage/app/private/bekuldesek/`) — ez helyes —, de nincs útvonal, amely az adminban
-  megmutatná. Jóváhagyni fotó nélkül nem lehet. Kell: admin-őr (`web`) mögötti képútvonal + előnézet a
-  program lapján. (A beküldő a sajátját már látja: `bekuldes.foto`.)
+- **KÖVETKEZŐ LÉPÉS: sor-szintű jog (kategóriagazda) — KÜLÖN lépés, mert szerepkörök is kellenek hozzá.**
+  Ma minden admin-fiók teljes jogú, ezért a programlista most nem szivárogtat. A szűkítés helye: a
+  `ProgramItem` modell **globális scope**-ja (a lista, a globális kereső, a kapcsolat-kezelők és a
+  fotó-útvonal mind a modellen át kérdez — külön kód nélkül szűkülnek). A scope CSAK a `web` őr
+  kategóriagazdájára hathat — a beküldő (`bekuldo` őr) saját programjait nem szűkítheti el. Export/import
+  ma nincs; ha lesz, az import soronként is ellenőrizzen (a Filament `ImportAction` alapból nem teszi).
 - **Napi automatikus adatbázis-mentés — ÁPRILISIG KÖTELEZŐ** (`ATALLAS-TERV.md` kockázati pont). Amint
   valódi beküldések érkeznek, működnie kell (cPanel backup + letöltés a NAS-ra). Még nem sürgős, de
   nem csúszhat a beküldés megnyitása utánra.

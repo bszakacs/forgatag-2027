@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\EntryType;
 use App\Enums\ProgramSource;
 use App\Enums\ProgramStatus;
+use App\Enums\ReviewAction;
 use App\Models\Category;
 use App\Models\ProgramItem;
 use App\Models\ProgramManager;
@@ -267,7 +268,10 @@ class ProgramSubmission
                 if ($newPath !== null) {
                     $program->photo_path = $newPath;
                 }
+                $uj = ! $program->exists;
                 $program->save();
+
+                ProgramReview::log($program, $uj ? ReviewAction::Submitted : ReviewAction::Resubmitted, manager: $this->manager);
 
                 $this->syncOccurrences($program, $c['days'], $c['start_time'], $c['end_time'], $c['schedule_note']);
 

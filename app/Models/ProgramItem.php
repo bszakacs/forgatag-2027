@@ -5,16 +5,26 @@ namespace App\Models;
 use App\Enums\EntryType;
 use App\Enums\ProgramSource;
 use App\Enums\ProgramStatus;
+use App\Enums\ReviewAction;
+use App\Enums\TranslationStatus;
 use App\Support\BekuldesLevelek;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class ProgramItem extends Model
 {
+    /**
+     * A jóváhagyási levél eredménye ebben a kérésben (nem tárolt mező): true = kiment, false = nem ment ki,
+     * null = nem kellett levél. A jóváhagyó gomb ebből mondja meg, mi történt (néma hiba tilos).
+     */
+    public ?bool $approvalMailSent = null;
+
     protected $fillable = [
         'title', 'description', 'organizer_names', 'status', 'entry_type', 'ticket_info',
         'schedule_note', 'category_id', 'venue_id', 'extra_fields', 'source',
@@ -54,7 +64,7 @@ class ProgramItem extends Model
                 && $program->status === ProgramStatus::Published
                 && $program->source === ProgramSource::PublicForm
                 && $elozo instanceof ProgramStatus && $elozo->isSubmitterEditable()) {
-                BekuldesLevelek::jovahagyva($program);
+                $program->approvalMailSent = BekuldesLevelek::jovahagyva($program);
             }
         });
     }
@@ -63,6 +73,27 @@ class ProgramItem extends Model
     public function isSubmitterEditable(): bool
     {
         return $this->status->isSubmitterEditable();
+    }
+
+    /** Megvan-e a fotó FÁJLJA is (nem csak a hivatkozás). A hiányzó fájl nem lehet néma. */
+    public function hasPhotoFile(): bool
+    {
+        if (blank($this->photo_path)) {
+            return false;
+        }
+        try {
+            return Storage::disk('local')->exists($this->photo_path);
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
+    /** A legutóbbi visszaküldés, ha azóta a beküldő még nem javított és nem történt más lépés. */
+    public function openReturn(): ?ProgramReviewEvent
+    {
+        $utolso = $this->reviewEvents()->reorder('id', 'desc')->first();
+
+        return $utolso?->action === ReviewAction::Returned ? $utolso : null;
     }
 
     public static function uniqueSlug(string $title): string
@@ -80,6 +111,12 @@ class ProgramItem extends Model
     public function scopePublicVisible(Builder $query): void
     {
         $query->whereIn('status', ProgramStatus::publicValues());
+    }
+
+    /** Programok, amelyeknek van elavult (outdated) fordítása — a jóváhagyási sor ezt feltűnően mutatja. */
+    public function scopeWithOutdatedTranslation(Builder $query): void
+    {
+        $query->whereHas('translations', fn (Builder $t) => $t->where('status', TranslationStatus::Outdated->value));
     }
 
     public function category(): BelongsTo
@@ -110,5 +147,11 @@ class ProgramItem extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(ProgramItemTranslation::class);
+    }
+
+    /** Jóváhagyási napló, időrendben (append-only). */
+    public function reviewEvents(): HasMany
+    {
+        return $this->hasMany(ProgramReviewEvent::class)->orderBy('id');
     }
 }

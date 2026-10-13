@@ -27,6 +27,24 @@ enum ProgramStatus: string
         };
     }
 
+    /** Az admin jelvényszíne (Filament színnév). */
+    public function color(): string
+    {
+        return match ($this) {
+            self::PendingReview => 'warning',
+            self::Published => 'success',
+            self::Changed => 'info',
+            self::Cancelled => 'danger',
+            self::Draft, self::Archived => 'gray',
+        };
+    }
+
+    /** @return list<string> a jóváhagyási sor („Teendő”): ezekkel kell még a szervezőknek foglalkozniuk */
+    public static function queueValues(): array
+    {
+        return [self::PendingReview->value, self::Draft->value];
+    }
+
     /** @return list<string> a publikus oldalon megjelenő státuszok */
     public static function publicValues(): array
     {

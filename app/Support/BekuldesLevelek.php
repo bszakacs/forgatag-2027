@@ -124,6 +124,30 @@ class BekuldesLevelek
         return Notifier::send($program->contact_email, $level);
     }
 
+    /** Visszaküldés javításra: az indok + a javítás linkje. A válasz a koordinátorhoz megy. */
+    public static function visszakuldve(ProgramItem $program, string $indok): bool
+    {
+        if (blank($program->contact_email)) {
+            return false;
+        }
+        $nev = Festival::name();
+        $szoveg = 'Kedves ' . $program->contact_name . "!\n\n"
+            . 'A(z) „' . $program->title . '” című programodat a szervezők átnézték, és javítást kérnek, mielőtt jóváhagynák:' . "\n\n"
+            . $indok . "\n\n";
+        $szoveg .= Submission::isOpen()
+            ? "A programot itt javíthatod (a beküldő felület adataival lépj be):\n" . route('bekuldes.szerkesztes', $program) . "\n\n"
+                . "A javítás után a szervezők újra átnézik.\n\n"
+            : "A programbeküldés jelenleg zárva van, ezért a felületen most nem tudod javítani. Kérlek, válaszolj erre a levélre.\n\n";
+        $szoveg .= "— {$nev} csapata";
+
+        $level = new SzovegesLevel('Javítást kérünk a programodon – ' . $nev, $szoveg);
+        foreach (Notifier::cimek(NotificationTopic::ProgramSubmission) as $cim) {
+            $level->replyTo($cim, $nev);
+        }
+
+        return Notifier::send($program->contact_email, $level);
+    }
+
     /** A fotó nem ment fel — a program NEM jött létre / NEM módosult; a koordinátor tudjon róla. */
     public static function fotoHiba(ProgramManager $beku, string $kategoria, string $cim, string $ok): bool
     {

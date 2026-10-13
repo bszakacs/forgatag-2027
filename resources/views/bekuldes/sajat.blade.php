@@ -20,7 +20,10 @@
     @else
       <ul class="plist">
         @foreach ($programok as $p)
-          @php $nyitott = $p->isSubmitterEditable(); @endphp
+          @php
+            $nyitott = $p->isSubmitterEditable();
+            $vissza = $nyitott ? $p->openReturn() : null;
+          @endphp
           <li>
             <div class="pmain">
               <div class="ptitle">{{ $p->title }}</div>
@@ -31,8 +34,11 @@
                   · {{ substr($p->occurrences->first()->start_time, 0, 5) }}
                 @endif
               </div>
+              @if ($vissza)
+                <div class="pmeta pvissza"><strong>A szervezők javítást kérnek:</strong> {{ $vissza->note }}</div>
+              @endif
             </div>
-            <span @class(['badge', 'open' => $nyitott, 'done' => ! $nyitott])>{{ $nyitott ? 'Jóváhagyásra vár' : $p->status->label() }}</span>
+            <span @class(['badge', 'open' => $nyitott, 'done' => ! $nyitott])>{{ $vissza ? 'Javítást kérnek' : ($nyitott ? 'Jóváhagyásra vár' : $p->status->label()) }}</span>
             @if ($nyitott && $nyitva)
               <a class="btn btn-ghost btn-sm" href="{{ route('bekuldes.szerkesztes', $p) }}">Javítás</a>
             @endif
