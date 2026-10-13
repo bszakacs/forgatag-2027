@@ -222,10 +222,15 @@ tesztet a konténerben egy másolatban futtatjuk (`/tmp/proj`, ott `composer ins
 .env-ben a `MAIL_MAILER` csak EGYSZER szerepeljen — a Laravel az ELSŐ előfordulást veszi.
 Nem mérve: a jóváhagyási levél (nincs még program-lista az adminban).
 
-**Következő:** „Felhasználók” menücsoport két lappal (admin-felhasználók, programgazdák) — tulajdonosi
-döntés, 2026-10-12. Addig a próba-programgazdát a `forgatag:programgazda` (.env-ből, `.cpanel.yml`) hozza
-létre — **IDEIGLENES**: a lap elkészültével a parancs, a `.cpanel.yml` sora és a `.env` `PROGRAMGAZDA_*`
-sorai törlendők.
+**„Felhasználók” menücsoport — kész helyben (2026-10-13).** Két lap: `Users\UserResource`
+(admin-felhasználók; saját magát senki nem törölheti) és `ProgramManagers\ProgramManagerResource`
+(programgazdák: név, e-mail, jelszó, aktív, kategóriák). Új programgazda → **üdvözlő levél** a belépési
+címmel, a jelszóval és a kategóriák linkjeivel (`BekuldesLevelek::udvozlo`); üres jelszómezőnél a rendszer
+generál (`ProgramManager::generatePassword`). Ha a levél nem megy ki, a koordinátor tartós figyelmeztetést
+lát a jelszóval. **Elfelejtett jelszó:** `/bekuldes/jelszo` (`JelszoController`), külön jelszókezelő
+(`program_managers`) és külön token-tábla; a válasz nem árulja el, létezik-e a cím; a link 60 percig él,
+egyszer használható. Az ideiglenes `forgatag:programgazda` kivezetve (kód, `.cpanel.yml`, minta-.env;
+a szerveri .env `PROGRAMGAZDA_*` sorait a felhasználó törli).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
@@ -250,6 +255,16 @@ sorai törlendők.
   (`Require all denied`, kivéve `public/`) kötelező. Mérve: `.env`, `vendor/`, `.git` → 403.
 - A Deploy felülete „fut” állapotban ragadhat; a valóságot a `~/.cpanel/logs` napló mutatja.
 - A `vendor/` és a Filament public-assetjei a tárolóban vannak (a szerveren `composer` nem fut).
+
+### Feljegyezve a későbbi fázisokra (tulajdonosi rögzítés, 2026-10-13)
+
+- **4. fázis (programlista): A KOORDINÁTOR MA NEM LÁTJA A FOTÓT.** A beküldött kép a nem nyilvános
+  tárban van (`storage/app/private/bekuldesek/`) — ez helyes —, de nincs útvonal, amely az adminban
+  megmutatná. Jóváhagyni fotó nélkül nem lehet. Kell: admin-őr (`web`) mögötti képútvonal + előnézet a
+  program lapján. (A beküldő a sajátját már látja: `bekuldes.foto`.)
+- **Napi automatikus adatbázis-mentés — ÁPRILISIG KÖTELEZŐ** (`ATALLAS-TERV.md` kockázati pont). Amint
+  valódi beküldések érkeznek, működnie kell (cPanel backup + letöltés a NAS-ra). Még nem sürgős, de
+  nem csúszhat a beküldés megnyitása utánra.
 
 ## 9. Nyitott kérdések — ne döntsd el magad
 

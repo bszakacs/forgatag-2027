@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Bekuldes\BelepesController;
+use App\Http\Controllers\Bekuldes\JelszoController;
 use App\Http\Controllers\Bekuldes\UrlapController;
 use App\Http\Middleware\BekuldoBelepve;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,12 @@ Route::prefix('bekuldes')->name('bekuldes.')->group(function () {
     Route::get('belepes', [BelepesController::class, 'show'])->name('belepes');
     Route::post('belepes', [BelepesController::class, 'login'])->middleware('throttle:bekuldes-belepes');
     Route::post('kilepes', [BelepesController::class, 'logout'])->name('kilepes');
+
+    // Elfelejtett jelszó (belépés nélkül). A kérések IP-nként korlátozva, mint a belépés.
+    Route::get('jelszo', [JelszoController::class, 'keres'])->name('jelszo');
+    Route::post('jelszo', [JelszoController::class, 'kuld'])->middleware('throttle:bekuldes-belepes')->name('jelszo.kuld');
+    Route::get('jelszo/uj/{token}', [JelszoController::class, 'uj'])->name('jelszo.uj');
+    Route::post('jelszo/uj', [JelszoController::class, 'ment'])->middleware('throttle:bekuldes-belepes')->name('jelszo.ment');
 
     Route::middleware(BekuldoBelepve::class)->group(function () {
         Route::get('/', [UrlapController::class, 'kezdo'])->name('kezdo');

@@ -21,7 +21,5 @@ deployment:
     # Torzsadatok a seed/ mappabol — CSAK ures tablaba ir, a masodik futastol mar csak kihagy.
     - $PHP artisan forgatag:torzsadatok
     - $PHP artisan forgatag:admin
-    # IDEIGLENES (amig nincs Programgazdak lap): proba-programgazda a .env-bol.
-    - $PHP artisan forgatag:programgazda
     - $PHP artisan filament:optimize
     - $PHP artisan optimize

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\BekuldesLevelek;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -39,5 +40,26 @@ class ProgramManager extends Authenticatable
     public function programItems(): HasMany
     {
         return $this->hasMany(ProgramItem::class);
+    }
+
+    /**
+     * Az elfelejtett-jelszó levele — magyarul, a rendszer saját levélútján (Notifier), nem a Laravel
+     * angol alapértelmezett értesítőjével.
+     */
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        BekuldesLevelek::jelszoLink($this, $token);
+    }
+
+    /** Generált jelszó, ha a koordinátor üresen hagyja a mezőt (a 2026-os karakterkészlet: nincs 0/O/1/l/I). */
+    public static function generatePassword(int $hossz = 12): string
+    {
+        $karakterek = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
+        $jelszo = '';
+        for ($i = 0; $i < $hossz; $i++) {
+            $jelszo .= $karakterek[random_int(0, strlen($karakterek) - 1)];
+        }
+
+        return $jelszo;
     }
 }

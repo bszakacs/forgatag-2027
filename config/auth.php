@@ -112,6 +112,15 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+
+        // A programgazdák elfelejtett-jelszó folyamata (/bekuldes/jelszo) — külön token-tábla.
+        // A link 60 percig él; ugyanarra a címre 60 másodpercen belül nem megy új levél.
+        'program_managers' => [
+            'provider' => 'program_managers',
+            'table' => 'program_manager_password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
 
     /*
