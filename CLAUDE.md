@@ -220,7 +220,7 @@ tesztet a konténerben egy másolatban futtatjuk (`/tmp/proj`, ott `composer ins
 9,99 MB-os fotó felmegy, 2,5 mp (PHP: `upload_max_filesize=12M`, `post_max_size=16M`, cPanel
 „Select PHP Version → Options”) · a belépési zárolás működik (a 6. próbára zár). **Csapda:** a szerveri
 .env-ben a `MAIL_MAILER` csak EGYSZER szerepeljen — a Laravel az ELSŐ előfordulást veszi.
-Nem mérve: a jóváhagyási levél (nincs még program-lista az adminban).
+A jóváhagyási levél: élesben mérve 2026-10-21 (lásd a programlista bekezdését).
 
 **„Felhasználók” menücsoport — kész helyben (2026-10-13).** Két lap: `Users\UserResource`
 (admin-felhasználók; saját magát senki nem törölheti) és `ProgramManagers\ProgramManagerResource`
@@ -249,6 +249,9 @@ beküldéseim” lapon ebből látja (`ProgramItem::openReturn`).
 `authenticatedRoutes`-ában — csak belépett admin. **Elavult fordítás:** piros jelvény a listában, piros
 figyelmeztetés + kiemelt sor a program lapján (a fordítás szekció előkészítve, ma még üres).
 Szerkesztés és új program felvitele az adminban: még NINCS (későbbi kör).
+**Élesben mérve (proba.forgatag.ro, 2026-10-21):** a teljes út (beküldés → jóváhagyásra küldés →
+jóváhagyás) működik; a fotó az admin program-lapján látszik; a gomb zöld visszajelzést adott, és a
+jóváhagyási levél pár másodperc alatt megérkezett a programgazda postafiókjába.
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
