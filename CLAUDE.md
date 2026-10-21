@@ -313,6 +313,14 @@ jóváhagyási levél pár másodperc alatt megérkezett a programgazda postafi�
 - **Napi automatikus adatbázis-mentés — ÁPRILISIG KÖTELEZŐ** (`ATALLAS-TERV.md` kockázati pont). Amint
   valódi beküldések érkeznek, működnie kell (cPanel backup + letöltés a NAS-ra). Még nem sürgős, de
   nem csúszhat a beküldés megnyitása utánra.
+  ⚠ A 2026-os NAS-mentés tanulsága: a `pg_dump | gzip` a gzip sikerét jelzi, nem a pg_dumpét —
+  az új mentés a zárójelet („dump complete”) is ellenőrizze, különben a félbeszakadt mentés néma.
+
+### A 2026-os adatok mentése (2026-10-21) — az ALAPANYAG
+**Helye: `E:\Work\mysites\forgatag.ro\MENTES-2026\2026-10-21\`** (a fejlesztőgépen; NEM git-tároló,
+személyes adatot tartalmaz). Teljes PostgreSQL-mentés (visszatöltve ellenőrizve), a Directus fájltára
+eredeti méretben (1091 fájl, sha256-tal), a téma-JSON külön (`tema/theme-data.json`).
+Mi van benne és mi gyanús: **`MENTES-LELTAR.md`**. Importnál innen dolgozz, ne a NAS-ról.
 
 ## 9. Nyitott kérdések — ne döntsd el magad
 
