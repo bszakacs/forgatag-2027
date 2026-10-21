@@ -111,6 +111,43 @@ class TemaTest extends TestCase
         $this->assertSame(1, ThemeVersion::count(), 'Hibás publikálás nem hozhat létre verziót.');
     }
 
+    /** A Tingler Print csak 400-as: ha mást kérünk, Androidon körvonalas lesz (2026-os hiba). */
+    public function test_a_tingler_print_mindenhol_400_as_vastagsagot_kap(): void
+    {
+        $css = ThemeCss::generate(Theme::data());
+        $this->assertStringContainsString('--head-wght:400;', $css);
+        $this->assertStringContainsString('--head-wght-2:400;', $css);
+        $this->assertStringContainsString('--accent-wght:400;', $css);
+        $this->assertStringContainsString('--accent-style:normal;', $css, 'A Tinglernek nincs dőlt változata.');
+
+        $d = Theme::data();
+        $d['type']['headWght'] = 700;
+        $this->expectException(RuntimeException::class);
+        ThemeCss::generate($d);
+    }
+
+    /**
+     * Minden CSS-szabály, ami a cím- vagy hangsúly-betűt használja, a témából vegye a vastagságot
+     * (különben a környező szöveg 700/800-át örökli), és a mesterséges vastagítás tiltva legyen.
+     */
+    public function test_a_cimbetus_szabalyok_a_tema_vastagsagat_hasznaljak_es_nincs_mesterseges_vastagitas(): void
+    {
+        $fonts = (string) file_get_contents(public_path('fonts/fonts.css'));
+        $this->assertMatchesRegularExpression('/html\s*\{\s*font-synthesis:\s*none;?\s*\}/', $fonts);
+        $this->assertMatchesRegularExpression("/font-family:'Tingler Print';[^}]*font-weight:400;/", $fonts);
+
+        foreach (glob(public_path('css/*.css')) as $fajl) {
+            preg_match_all('/([^{}]+)\{([^}]*)\}/', (string) file_get_contents($fajl), $m, PREG_SET_ORDER);
+            foreach ($m as [, $sel, $body]) {
+                foreach (['--font-head' => '/font-weight:var\(--head-wght(-2)?\)/', '--font-accent' => '/font-weight:var\(--accent-wght\)/'] as $tok => $kell) {
+                    if (str_contains($body, "font-family:var({$tok})")) {
+                        $this->assertMatchesRegularExpression($kell, $body, basename($fajl) . ' ' . trim($sel) . ": a {$tok} mellé a téma vastagsága kell.");
+                    }
+                }
+            }
+        }
+    }
+
     public function test_hianyzo_firka_vagy_logo_nem_publikalhato(): void
     {
         $d = Theme::data();

@@ -60,10 +60,19 @@ class Theme
     /** A generált téma-CSS címe. Ha a fájl hiányzik (pl. új generátor-kód), itt íródik ki. */
     public static function cssUrl(): string
     {
+        return asset(self::DISK . '/' . self::ensureCss());
+    }
+
+    /**
+     * A kint lévő téma CSS-fájljának kiírása, ha még nincs meg; a fájlnevet adja vissza. A telepítés
+     * is hívja (forgatag:tema-css), így egy generátor-változás után nem a látogató első kérése írja ki.
+     */
+    public static function ensureCss(): string
+    {
         self::$css ??= self::cssFor(self::data());
         self::writeCss(self::$css['name'], self::$css['css']);
 
-        return asset(self::DISK . '/' . self::$css['name']);
+        return self::$css['name'];
     }
 
     /** Egy arculati fájl (logo / logoHeader / favicon) címe. */

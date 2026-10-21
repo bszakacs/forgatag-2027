@@ -15,12 +15,17 @@ use RuntimeException;
  */
 class ThemeCss
 {
-    /** Az önhostolt betűk (public/fonts) — a stack végi rendszer-betű pótolja a román ș/ț-t, ahol hiányzik. */
+    /**
+     * Az önhostolt betűk (public/fonts) — a stack végi rendszer-betű pótolja a román ș/ț-t, ahol hiányzik.
+     * `wght`: a TÉNYLEG meglévő vastagság-tartomány, `italic`: van-e valódi dőlt változat. Ezekből számol a
+     * generátor, hogy SOHA ne kérjünk nem létező vastagságot/dőlést — mert akkor a böngésző mesterségesen
+     * rajzolja meg, és Androidon körvonalas lesz a betű (a Tingler Printtel 2026-ban konkrét hiba volt).
+     */
     public const FONTS = [
-        'Archivo' => ['stack' => "'Archivo',sans-serif", 'preload' => 'fonts/Archivo-var-latin.woff2'],
-        'Instrument Serif' => ['stack' => "'Instrument Serif',serif", 'preload' => 'fonts/InstrumentSerif-italic-latin.woff2'],
-        'Hanken Grotesk' => ['stack' => "'Hanken Grotesk',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/HankenGrotesk-400-latin.woff2'],
-        'Tingler Print' => ['stack' => "'Tingler Print',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/TinglerPrint-Regular.woff2'],
+        'Archivo' => ['stack' => "'Archivo',sans-serif", 'preload' => 'fonts/Archivo-var-latin.woff2', 'wght' => [100, 900], 'italic' => false],
+        'Instrument Serif' => ['stack' => "'Instrument Serif',serif", 'preload' => 'fonts/InstrumentSerif-italic-latin.woff2', 'wght' => [400, 400], 'italic' => true],
+        'Hanken Grotesk' => ['stack' => "'Hanken Grotesk',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/HankenGrotesk-400-latin.woff2', 'wght' => [400, 800], 'italic' => false],
+        'Tingler Print' => ['stack' => "'Tingler Print',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/TinglerPrint-Regular.woff2', 'wght' => [400, 400], 'italic' => false],
     ];
 
     private const DENSITY_MUL = ['compact' => 0.85, 'default' => 1, 'airy' => 1.15];
@@ -126,9 +131,23 @@ class ThemeCss
             $vars['--head-wdth'] = self::szam($wdth);
             $vars['--head-wdth-2'] = self::szam(max(100, $wdth - 2));
         }
-        if ($wght !== null) {
+        // Vastagság CSAK a betű valódi tartományán belül. A címbetűnél a téma rossz értéke HIBA (nem
+        // igazítjuk csendben); a kisebb címsorok „-2” változata a tartományba szorul (Tinglernél 400 marad).
+        $headFont = self::FONTS[data_get($doc, 'type.head')] ?? null;
+        if ($wght !== null && $headFont !== null) {
+            [$min, $max] = $headFont['wght'];
+            if ($wght < $min || $wght > $max) {
+                throw new RuntimeException("Téma: a(z) „" . data_get($doc, 'type.head') . "” címbetű csak {$min}–{$max} vastagságban létezik, a téma {$wght}-at kér (Androidon körvonalas lenne).");
+            }
             $vars['--head-wght'] = self::szam($wght);
-            $vars['--head-wght-2'] = self::szam(max(100, $wght - 20));
+            $vars['--head-wght-2'] = self::szam(max($min, $wght - 20));
+        }
+        // A hangsúly-betű (kiemelt szavak) vastagsága és dőlése: a betű saját adottsága, nem a környező
+        // szövegé — különben egy 800-as sorban a Tingler is 800-at kapna.
+        $accentFont = self::FONTS[data_get($doc, 'type.accent')] ?? null;
+        if ($accentFont !== null) {
+            $vars['--accent-wght'] = self::szam(max($accentFont['wght'][0], min($accentFont['wght'][1], 400)));
+            $vars['--accent-style'] = $accentFont['italic'] ? 'italic' : 'normal';
         }
         $vars['--type-scale'] = self::szam($kell('type.scale'));
         if ($track !== null) {

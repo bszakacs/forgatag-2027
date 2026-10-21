@@ -20,6 +20,8 @@ deployment:
     - $PHP artisan migrate --force
     # Torzsadatok a seed/ mappabol — CSAK ures tablaba ir, a masodik futastol mar csak kihagy.
     - $PHP artisan forgatag:torzsadatok
+    # A tema CSS-fajlja (a nevben a tartalom lenyomata) — a generator-valtozas utan itt irodik ki.
+    - $PHP artisan forgatag:tema-css
     - $PHP artisan forgatag:admin
     - $PHP artisan filament:optimize
     - $PHP artisan optimize

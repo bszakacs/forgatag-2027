@@ -143,6 +143,48 @@ a „MA" jelvény lüktetését és a firkák lebegését, három fokozattal. Va
 publikáltat (`schema-bot`, 2026-09-02 13:04). Az öt megőrzött verzió mezőnként azonos volt (csak a
 `version` számláló változott) — lásd `MENTES-LELTAR.md` 14. Megépítve: lásd a 8. pont „Téma-alap” bekezdését.
 
+## 2/d. Médiatár (tulajdonosi döntés, 2026-10-21)
+
+**Megoldás:** a Filament rácsos médiakezelője (Curator) — WordPress-szerű böngésző, újrafelhasználható
+képek, automatikus méretváltozatok. **A saját mezőink** a mi tábláinkban: jogtulajdonos, licenc,
+fotós-kredit, fókuszpont. *(Kockázat: közösségi bővítmény. Elviseljük, mert az adat a mi
+tábláinkban van — ha a bővítmény elhal, csak a böngésző-felületet kell pótolni.)*
+
+### A licenc kötelezősége — KÉT külön eset
+
+| Honnan jön a kép | Licenc |
+|---|---|
+| **Publikus beküldő űrlapról** (külsős forrás) | **KÖTELEZŐ mező.** „Ismeretlen" jogállású kép **nem publikálható.** A fotós nevét és a jogi nyilatkozatot az űrlap már ma is kéri. |
+| **Adminban feltöltve** (saját forrás) | **Nem kötelező.** A Forgatag csapata vállalja érte a felelősséget; az alapérték saját forrás legyen, és ne álljon az útba. |
+
+### Gyűjtemények — „mappák", de csak vizuálisan
+
+A Curatorban **nincs mappafa**, és nem is kell: a fizikai tárolón ne legyen mappa-rendezés.
+Helyette **egy „gyűjtemény" mező + szűrő**, baloldali listával, ami mappák benyomását kelti.
+
+**Alapértelmezés: a gyűjtemény abból jön, HONNAN töltötték fel.** Ha egy képet egy hír vagy egy
+program szerkesztőlapjáról töltenek fel, az **magától a „Hírek", illetve „Programok" gyűjteménybe
+kerül** — a felhasználónak nem kell semmit csinálnia. Ugyanígy a támogatók, a galériák, az arculat.
+
+**A médiatárba közvetlenül feltöltött kép „Rendezetlen"**, és utólag gyűjteménybe tehető.
+Elsőre elég egy többszörös kijelölés + „Áthelyezés gyűjteménybe" művelet; a fogd-és-vidd csak akkor,
+ha ez kevésnek bizonyul.
+
+**Előny a valódi mappához képest:** egy kép **több gyűjteménybe is tartozhat.**
+
+*Megjegyzés a mennyiségről:* az 1091 képből a legtöbb nem szabadon álló — 467 galériakép, 112 logó,
+241 programborító a saját rekordján keresztül érhető el. A médiatárban böngészendő anyag néhány száz.
+
+*Bónusz:* a Curator tud **képenként elmentett vágásokat**. Ez válasz a „kép csak egyszer vágódik"
+szabályra, és részben kiváltja a fókuszpontot.
+
+### Tárolás — szándékosan kétfelé
+
+- **A médiatár nyilvános mappában.** Így nem kell szimbolikus link, amit a cPanel Fájlkezelő nem
+  tud létrehozni.
+- **A még jóvá nem hagyott beküldött fotó a ZÁRT tárban marad.** Jóváhagyáskor kerül át a médiatárba.
+  **Így egy visszautasított program fotója sosem lesz nyilvánosan elérhető.**
+
 ## 3. Állandó szabályok
 
 - **Token-szabály:** oldalra/komponensre szűkített `:root`-felülírás **TILOS**. Minden téma-tulajdonú
@@ -328,13 +370,20 @@ jóváhagyási levél pár másodperc alatt megérkezett a programgazda postafi�
 - **CSS:** `App\Support\ThemeCss::generate` (a 2026-os `themeToCss` átirata, SZIGORÚ: hiányzó kötelező
   mező → hiba, nincs tartalék). Fájlba íródik: `public/arculat/tema-<a CSS tartalmának lenyomata>.css`
   — bármilyen változás (adat VAGY generátor-kód) új fájlnevet ad, a gyorsítótár magától frissül.
-  Ha a fájl hiányzik, az első kérés kiírja (`Theme::cssUrl`). Téma nélkül a lap 500-zal áll meg.
+  A telepítés kiírja (`forgatag:tema-css` a `.cpanel.yml`-ben); ha mégis hiányzik, az első kérés
+  (`Theme::cssUrl`). Téma nélkül a lap 500-zal áll meg.
 - **Fájlok:** logó, fejléc-logó, favicon, 6 firka = valódi fájl a `public/arculat/fajlok/` alatt,
   lenyomatos névvel (`Theme::storeAsset`; az SVG tisztítva). A téma-adat csak ilyen helyi útvonalat
   fogadhat el; `admin.forgatag.ro`/`elo.forgatag.ro` a publikáláskor tiltott. A `public/arculat/`
   a `.gitignore`-ban van (a szerveren keletkezik — nem piszkítja a munkafát).
 - **Olvasók:** `Theme::cssUrl()`, `assetUrl('logo'|'logoHeader'|'favicon')`, `motifSvg(0–5)`,
-  `fontPreloads()`, `get('colors.bg.dark')`. Betűk: `ThemeCss::FONTS` (csak önhostolt). A firka-dekor
+  `fontPreloads()`, `get('colors.bg.dark')`. Betűk: `ThemeCss::FONTS` (csak önhostolt, a valódi
+  vastagság-tartománnyal és dőlt-adottsággal). **Címbetű-szabály (6. pont, Tingler csak 400):** ahol
+  `var(--font-head)` szerepel, oda `font-weight:var(--head-wght)` / `var(--head-wght-2)`; ahol
+  `var(--font-accent)`, oda `font-weight:var(--accent-wght)` + `font-style:var(--accent-style)` —
+  különben a környező szöveg 700/800-át örökli. A generátor a betű tartományán kívüli vastagságot
+  hibával elutasítja; a `fonts.css` tiltja a mesterséges vastagítást (`font-synthesis:none`); a
+  `TemaTest` minden `public/css/*.css` szabályt végigellenőriz. A firka-dekor
   jelölése a lapokon: `[data-decor="hero"|"ambient"]` réteg + `.decor` elem (a téma sűrűség/mozgás
   beállítása erre hat).
 - Tesztek: `tests/Feature/TemaTest.php`; a `tests/TestCase.php` minden adatbázisos tesztnek betölti a

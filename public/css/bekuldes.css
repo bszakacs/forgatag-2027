@@ -43,7 +43,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);
 .hero .kicker{position:relative;margin:14px 0 0;font-size:.8rem;font-weight:800;letter-spacing:.08em;
   text-transform:uppercase;color:var(--fg-faint)}
 .hero .kicker:first-child{margin-top:0}
-.hero .kicker em{font-family:var(--font-accent);font-style:italic;text-transform:none;letter-spacing:0;
+.hero .kicker em{font-family:var(--font-accent);font-weight:var(--accent-wght);font-style:var(--accent-style);text-transform:none;letter-spacing:0;
   font-size:1.06rem;background:var(--accent-grad-text);
   -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .hero h1{position:relative;margin:6px 0 6px;font-family:var(--font-head);font-weight:var(--head-wght);
