@@ -2,7 +2,7 @@
 
 **A mentés helye:** `E:\Work\mysites\forgatag.ro\MENTES-2026\2026-10-21\` (688 MB, nem git-tároló).
 Benne: `OLVASS-EL.txt`, `SHA256SUMS.txt` (1097 fájl). **Személyes adatot tartalmaz.**
-**Második példány: ⏳ még nincs** — a felhasználó készíti (lásd lent).
+**Második példány: ✅ elkészült** (a felhasználó, 2026-10-21; `sha256sum -c` hibátlan). Helyét a felhasználó tudja.
 
 ## Mi lett kimentve, és honnan tudjuk, hogy ép
 
