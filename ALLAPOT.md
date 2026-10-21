@@ -48,10 +48,19 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   ⚠ **A beküldő űrlap kinézete ezzel megváltozott** (a régi `tema.css` az űrlap saját 2026-os
   színeit hordozta, nem a publikált témát): világosabb lila, narancs gomb, Tingler Print címek.
 
+- **Arculat-szerkesztő** (`/admin/tema`, menü: „Arculat”, `PROMPT-06`, 2026-10-21) — 11 szekció a
+  2026-os feliratokkal; élő előnézet a böngészőben (csúszkahúzás közben 0 szerverhívás, mérve);
+  piszkozat külön a kint lévőtől; publikálás előtt különbség-lista; kontraszt-őr (4.5:1 alatt csak
+  írásos felülbírálással, a szerver is ellenőrzi); utolsó 10 verzió visszaállítással; JSON export/import;
+  gyári visszaállítás (egészben és fájlonként). Az arculat-szerkesztő csak ezt a lapot éri el.
+  **Kategóriacsoport-színek kivezetve** (tulajdonosi döntés: a csoportokat 2026 júliusában megszüntették).
+  **◐ világos/sötét váltó a beküldő űrlapon** (a 2026-os űrlap világos palettájával).
+  Élesben: lásd a „MOST folyik” pontot.
+
 ## Ami MOST folyik
 
-Nincs folyó kör — a következő az alábbi lista 1. pontja.
-**A `/tema` szerkesztő MÉG NINCS** (a 4. pontban jön); addig a téma módosítása fejlesztői feladat.
+**Az Arculat-szerkesztő élesítése** — a kód kint van a GitHubon; telepítés (cPanel) és az élő
+próba (arculat-szerkesztő fiókkal, közvetlen címekkel) a felhasználóval együtt.
 
 ## Ami ezután jön, ebben a sorrendben
 
@@ -60,7 +69,7 @@ Nincs folyó kör — a következő az alábbi lista 1. pontja.
 2. **A publikus váz** — keretfájl, fejléc, lábléc, egy lap, a valódi token-forrásra kötve.
    *Itt dől el, hogy a Blade + htmx + az áthozott CSS együtt működik-e. Ma bizonyítatlan.*
 3. **A programkereső** — a legnagyobb és legösszetettebb darab.
-4. **A három egyedi szerkesztő** — `/tema`, `/szerkeszto`, térkép-szerkesztő.
+4. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
 5. **A fordítási lánc.**
 6. **A maradék publikus lapok.**
 7. **Átkapcsolás** — lásd lentebb.
@@ -81,8 +90,8 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
 ## Adósságok
 
 1. ~~`public/css/tema.css` ideiglenes~~ — **törlesztve 2026-10-21** (a fájl törölve, nincs rá hivatkozás).
-2. **Hiányzik a világos/sötét váltó** a beküldő űrlapon (2026-ban volt). Pótlás a `/tema` körében.
-   Figyelem: az átvett témában **csak sötét színek vannak** — a világoshoz színkészlet is kell.
+2. ~~Hiányzik a világos/sötét váltó a beküldő űrlapon~~ — **törlesztve 2026-10-21** (◐, a 2026-os
+   űrlap világos palettájával; az Arculat-szerkesztőben a „Világos” oszlop állítja).
 3. **A koordinátor nem látja a fotót** olyan felületen, ahol még nincs megoldva — új felület
    építésekor ellenőrizni.
 4. **Export, import és helyszín-lap** még nem létezik; amikor megépül, **kategóriagazda-fiókkal

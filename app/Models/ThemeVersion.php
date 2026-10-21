@@ -10,7 +10,7 @@ class ThemeVersion extends Model
 {
     public const UPDATED_AT = null;
 
-    protected $fillable = ['data', 'css_file', 'user_id', 'published_by', 'comment'];
+    protected $fillable = ['data', 'css_file', 'user_id', 'published_by', 'comment', 'contrast_override'];
 
     protected function casts(): array
     {

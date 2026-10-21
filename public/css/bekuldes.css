@@ -5,7 +5,7 @@
    (generált téma-CSS, App\Support\Theme). Itt :root-felülírás és téma-token értékadás TILOS.
    ============================================================ */
 *{box-sizing:border-box}
-html{scrollbar-gutter:stable;color-scheme:dark}
+html{scrollbar-gutter:stable} /* a color-scheme (sötét/világos) a témából jön */
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.5;
   -webkit-font-smoothing:antialiased}
 ::selection{background:color-mix(in oklab,var(--accent-c) 40%,transparent)}
@@ -20,6 +20,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);
 .topbar .who{color:var(--fg-muted);font-size:.85rem;font-weight:600;white-space:nowrap;max-width:38vw;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:520px){.topbar .who{display:none}}
 .topbar form{margin:0}
+.topbar .theme-toggle{font-size:1.05rem;line-height:1;padding:7px 11px}
 
 /* ---- hero ---- */
 .hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--bg-raise),var(--bg));border:var(--border-w) solid var(--line);
@@ -152,7 +153,7 @@ a.btn-sun{color:var(--accent-contrast)}
 .success{text-align:center;padding:30px 26px}
 .success .big{font-size:3rem;filter:drop-shadow(0 6px 24px color-mix(in oklab,var(--accent-c) 45%,transparent))}
 .success h2{font-size:1.3rem}
-a{color:var(--accent-a)}
+a{color:var(--link)}
 
 /* ---- saját beküldéseim ---- */
 .plist{list-style:none;margin:0;padding:0}

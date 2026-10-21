@@ -4,9 +4,15 @@
     $fesztNev = \App\Support\Festival::name();
 @endphp
 <!doctype html>
-<html lang="hu">
+<html lang="hu" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<script>
+  // Világos/sötét mód villanás nélkül (2026-os beküldő űrlap: ugyanaz a kulcs és logika; alap a sötét).
+  // A két mód színei a témából jönnek (:root és :root[data-theme="light"]).
+  (function(){try{var s=localStorage.getItem('forgatag-theme');
+    document.documentElement.dataset.theme=(s==='light'||s==='dark')?s:'dark';}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="robots" content="noindex">
@@ -28,6 +34,7 @@
   <div class="topbar">
     <a class="brand" href="https://forgatag.ro" rel="noopener"><span class="bname">{{ $fesztNev }}</span></a>
     <span class="sp"></span>
+    <button class="btn btn-ghost btn-sm theme-toggle" type="button" id="themeToggle" aria-label="Világos/sötét mód váltása" title="Világos/sötét mód">◐</button>
     @if ($beku)
       <span class="who">Belépve: {{ $beku->name }}</span>
       <form method="post" action="{{ route('bekuldes.kilepes') }}">
@@ -47,6 +54,13 @@
 
   @yield('content')
 </div>
+<script>
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var r = document.documentElement, next = r.dataset.theme === 'dark' ? 'light' : 'dark';
+    r.dataset.theme = next;
+    try { localStorage.setItem('forgatag-theme', next); } catch (e) {}
+  });
+</script>
 @stack('scripts')
 </body>
 </html>

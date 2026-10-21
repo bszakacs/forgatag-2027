@@ -1,0 +1,117 @@
+/* ============================================================
+   Az Arculat-szerkesztő (/admin/tema) felülete — az ADMIN része, nem a publikus oldalé.
+   Saját, te- előtagú osztályok és --te-* változók a .te-app-on (ezek a szerkesztő kezelőfelületének
+   színei, NEM téma-tokenek). A Filament világos/sötét módját követi (.dark a <html>-en).
+   ============================================================ */
+.te-app{--te-bg:#fff;--te-bg2:#f6f6f8;--te-fg:#1d1b26;--te-muted:#5f5b70;--te-line:#dedbe6;--te-pri:#d97706;
+  --te-pri-fg:#fff;--te-ok:#15803d;--te-warn:#a16207;--te-bad:#b91c1c;--te-warn-bg:#fef3c7;--te-bad-bg:#fee2e2;
+  color:var(--te-fg);font-size:14px;line-height:1.45;container-type:inline-size;container-name:te}
+.dark .te-app{--te-bg:#18181b;--te-bg2:#232327;--te-fg:#f4f4f5;--te-muted:#a1a1aa;--te-line:#3f3f46;--te-pri:#f59e0b;
+  --te-pri-fg:#1c1102;--te-ok:#4ade80;--te-warn:#fbbf24;--te-bad:#f87171;--te-warn-bg:#3b2f0b;--te-bad-bg:#3b1212}
+.te-app *{box-sizing:border-box}
+.te-sp{flex:1}
+
+.te-bar{position:sticky;top:64px;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;
+  background:var(--te-bg);border:1px solid var(--te-line);border-radius:12px;margin-bottom:10px}
+.te-state{font-weight:700;padding:4px 10px;border-radius:999px;background:var(--te-bg2);border:1px solid var(--te-line)}
+.te-state.draft{background:var(--te-warn-bg);border-color:var(--te-warn);color:var(--te-fg)}
+.te-state.dirty::after{content:" · mentetlen módosítás";font-weight:600;color:var(--te-bad)}
+.te-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--te-line);background:var(--te-bg2);color:var(--te-fg);
+  border-radius:8px;padding:7px 12px;font:inherit;font-weight:600;cursor:pointer;list-style:none}
+.te-btn::-webkit-details-marker{display:none}
+.te-btn:disabled{opacity:.45;cursor:not-allowed}
+.te-btn-primary{background:var(--te-pri);border-color:var(--te-pri);color:var(--te-pri-fg)}
+.te-btn-ghost{background:transparent}
+.te-btn-danger{background:var(--te-bad);border-color:var(--te-bad);color:#fff}
+.te-btn:focus-visible,.te-app button:focus-visible,.te-app input:focus-visible,.te-app select:focus-visible{outline:2px solid var(--te-pri);outline-offset:2px}
+.te-more{position:relative}
+.te-more-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;display:flex;flex-direction:column;min-width:210px;
+  background:var(--te-bg);border:1px solid var(--te-line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.te-more-menu button,.te-more-menu label{all:unset;cursor:pointer;padding:8px 10px;border-radius:6px}
+.te-more-menu button:hover,.te-more-menu label:hover{background:var(--te-bg2)}
+
+.te-alert,.te-guard{border-radius:10px;padding:10px 12px;margin-bottom:10px;border:1px solid}
+.te-alert.info{background:var(--te-bg2);border-color:var(--te-line)}
+.te-alert.warn,.te-guard{background:var(--te-warn-bg);border-color:var(--te-warn)}
+.te-alert.bad{background:var(--te-bad-bg);border-color:var(--te-bad)}
+.te-alert.ok{border-color:var(--te-ok)}
+.te-guard ul{margin:6px 0 0;padding-left:18px}
+.te-alert button{margin-left:8px}
+
+.te-grid{display:grid;grid-template-columns:minmax(340px,440px) 1fr;gap:14px;align-items:start}
+/* A szerkesztő SAJÁT szélessége dönt (az oldalsáv miatt az ablakszélesség félrevezető). */
+@container te (max-width:900px){ .te-grid{grid-template-columns:1fr} .te-preview{order:-1;position:relative;top:0} #te-frame{height:56vh;min-height:320px} }
+.te-controls{display:flex;flex-direction:column;gap:8px;min-width:0}
+.te-sec{background:var(--te-bg);border:1px solid var(--te-line);border-radius:12px;overflow:hidden}
+.te-sec-h{all:unset;box-sizing:border-box;display:flex;width:100%;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;font-weight:700}
+.te-sec-h::after{content:"▸";margin-left:auto;transition:transform .15s}
+.te-sec-h[aria-expanded="true"]::after{transform:rotate(90deg)}
+.te-sec-h .te-dot{width:8px;height:8px;border-radius:50%;background:var(--te-pri);visibility:hidden}
+.te-sec-h.changed .te-dot{visibility:visible}
+.te-sec-b{padding:4px 14px 14px;display:flex;flex-direction:column;gap:12px}
+.te-sec-note{color:var(--te-muted);font-size:13px;margin:0}
+
+.te-ctl{display:flex;flex-direction:column;gap:5px;min-width:0}
+.te-ctl-h{display:flex;align-items:baseline;gap:8px}
+.te-ctl-h label,.te-ctl-h .te-lab{font-weight:600}
+.te-ctl.changed .te-lab::after,.te-ctl.changed label.te-lab::after{content:" ●";color:var(--te-pri)}
+.te-val{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--te-muted)}
+.te-hint{color:var(--te-muted);font-size:12.5px;margin:0}
+.te-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.te-row > *{min-width:0}
+.te-app input[type=text],.te-app input[type=url],.te-app select{width:100%;border:1px solid var(--te-line);background:var(--te-bg2);
+  color:var(--te-fg);border-radius:8px;padding:7px 9px;font:inherit}
+.te-app input[type=range]{width:100%;accent-color:var(--te-pri)}
+.te-app input[type=color]{width:38px;height:34px;padding:0;border:1px solid var(--te-line);border-radius:8px;background:none;flex:0 0 auto}
+.te-color{display:flex;gap:6px;align-items:center;flex:1 1 150px}
+.te-color input[type=text]{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.te-mode{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--te-muted);min-width:52px}
+.te-ctr{font-size:12.5px;font-weight:600}
+.te-ctr.ok{color:var(--te-ok)}
+.te-ctr.bad{color:var(--te-bad)}
+.te-seg{display:inline-flex;border:1px solid var(--te-line);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.te-seg button{all:unset;cursor:pointer;padding:6px 10px;font-weight:600}
+.te-seg button.on{background:var(--te-pri);color:var(--te-pri-fg)}
+.te-media{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.te-media img,.te-media .te-svg{width:64px;height:64px;object-fit:contain;background:repeating-conic-gradient(#8883 0 25%,transparent 0 50%) 0 0/12px 12px;
+  border:1px solid var(--te-line);border-radius:8px;flex:0 0 auto}
+.te-media .te-svg{display:flex;align-items:center;justify-content:center;padding:4px}
+.te-media .te-svg svg{max-width:100%;max-height:100%}
+.te-media .te-file{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--te-muted);word-break:break-all;flex:1 1 140px}
+.te-motifs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.te-motif{border:1px solid var(--te-line);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.te-presets{display:flex;flex-wrap:wrap;gap:6px}
+
+.te-preview{position:sticky;top:128px;background:var(--te-bg);border:1px solid var(--te-line);border-radius:12px;overflow:hidden;min-width:0}
+.te-preview-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--te-line);flex-wrap:wrap}
+#te-frame{display:block;width:100%;height:calc(100vh - 230px);min-height:420px;border:0;background:#111}
+.te-note{margin:0;padding:8px 12px;color:var(--te-muted);font-size:12.5px}
+
+.te-dlg{border:1px solid var(--te-line);border-radius:14px;padding:0;max-width:min(720px,calc(100vw - 24px));width:100%;
+  background:var(--te-bg);color:var(--te-fg)}
+.te-dlg::backdrop{background:rgba(0,0,0,.45)}
+.te-dlg-in{padding:16px;display:flex;flex-direction:column;gap:12px;max-height:85vh;overflow:auto}
+.te-dlg h2{margin:0;font-size:18px;font-weight:700}
+.te-dlg-foot{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.te-dlg textarea,.te-dlg input[type=text]{width:100%;border:1px solid var(--te-line);background:var(--te-bg2);color:var(--te-fg);border-radius:8px;padding:8px;font:inherit}
+.te-diff{display:flex;flex-direction:column;border:1px solid var(--te-line);border-radius:10px;max-height:42vh;overflow:auto}
+.te-diff div{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:10px;padding:7px 10px;border-top:1px solid var(--te-line)}
+.te-diff div:first-child{border-top:0}
+.te-diff code{font-size:12px;word-break:break-all}
+.te-sw{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid var(--te-line);vertical-align:-1px;margin-right:4px}
+.te-ver{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:9px 10px;border-top:1px solid var(--te-line)}
+.te-ver:first-child{border-top:0}
+.te-ver .te-tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--te-pri);color:var(--te-pri-fg)}
+.te-ver .te-muted{color:var(--te-muted);font-size:12.5px;width:100%}
+.te-toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:60;background:var(--te-fg);color:var(--te-bg);
+  padding:10px 16px;border-radius:10px;font-weight:600;max-width:calc(100vw - 24px)}
+/* Telefonon: a sáv nem ragad (különben a képernyő ötödét elvenné), az előnézet alacsonyabb,
+   hogy a vezérlők is beférjenek; az előnézetben görgetni továbbra is lehet. */
+@container te (max-width:600px){
+  .te-bar{position:static}
+  #te-frame{height:42vh;min-height:280px}
+  .te-btn{padding:7px 10px}
+}
+/* Egymás alatti elrendezésben az előnézet NEM ragad (különben a vezérlőkre takarna). A fájl végén áll,
+   mert a fenti .te-preview{position:sticky} különben felülírná. */
+@container te (max-width:900px){ .te-preview{position:relative;top:0} }

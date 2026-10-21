@@ -1,0 +1,45 @@
+/* ============================================================
+   Az Arculat-szerkesztő előnézeti lapjának kiegészítő elemei (a többit a bekuldes.css adja).
+   CSAK var()-ral dolgozik — a tokenek a téma-CSS-ből jönnek (a szerkesztő írja be élőben).
+   ============================================================ */
+.pv-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:14px;height:66px;padding:0 16px;
+  background:color-mix(in oklab,var(--bg) 82%,transparent);backdrop-filter:blur(var(--navbar-blur));
+  -webkit-backdrop-filter:blur(var(--navbar-blur));border-bottom:var(--border-w) solid var(--line)}
+.pv-logo-h{height:var(--logo-header-mobile);width:auto;align-self:flex-start;margin-top:6px;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+@media (min-width:721px){ .pv-head{height:80px} .pv-logo-h{height:var(--logo-header)} }
+.pv-nav{display:flex;gap:14px;font-weight:700;font-size:.92rem}
+.pv-nav a{color:var(--fg);text-decoration:none}
+@media (max-width:520px){ .pv-nav{display:none} }
+.pv-sp{flex:1}
+.wrap{padding-top:22px}
+.pv-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0 0}
+.pv-focus{border-color:var(--focus)!important;outline:2px solid var(--focus)!important;outline-offset:2px}
+.pv-ma{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.76rem;font-weight:800;
+  background:var(--badge-ma-bg);color:var(--badge-ma-fg);animation:pv-pulse var(--pulse-dur) ease-in-out infinite}
+@keyframes pv-pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in oklab,var(--badge-ma-bg) 55%,transparent)}
+  50%{box-shadow:0 0 0 7px transparent}}
+@media (prefers-reduced-motion: reduce){ .pv-ma{animation:none} }
+.pv-lap{background:var(--lap-band-bg);color:var(--lap-fg);border-top:var(--border-w) solid var(--lap-band-line-top);
+  border-radius:var(--r-lap);padding:22px 20px;margin:0 0 16px}
+.pv-lap h2{margin:0 0 8px;font-family:var(--font-head);font-weight:var(--head-wght-2);font-size:calc(1.1rem * var(--type-scale));
+  letter-spacing:var(--head-track-2)}
+.pv-lap p{margin:0 0 12px}
+.pv-lap-muted{color:var(--lap-muted)}
+.pv-lap-card{background:var(--lap-card);border:var(--border-w) solid var(--lap-line);border-radius:var(--r-card);padding:14px 16px}
+.pv-small{margin:0 0 10px;font-family:var(--font-head);font-weight:var(--head-wght-2);font-size:calc(1rem * var(--type-scale));
+  letter-spacing:var(--head-track-2)}
+.pv-motifs-wrap{margin:0 0 16px}
+.pv-motifs{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:center}
+@media (max-width:520px){ .pv-motifs{grid-template-columns:repeat(3,1fr)} }
+.pv-motif{height:84px;display:flex;align-items:center;justify-content:center;opacity:var(--doodle-opacity);
+  animation:pv-float 6s ease-in-out infinite}
+.pv-motif:nth-child(2n){animation-duration:8s;animation-direction:reverse}
+.pv-motif svg{max-width:100%;max-height:84px;width:auto;height:auto}
+@keyframes pv-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion: reduce){ .pv-motif{animation:none} }
+.pv-foot{display:flex;align-items:center;gap:18px;flex-wrap:wrap;color:var(--fg-faint);font-size:.84rem;padding:6px 0 24px}
+.pv-logo{height:84px;width:auto}
+.pv-favicon{display:inline-flex;align-items:center;gap:8px;border:var(--border-w) solid var(--line);
+  border-radius:8px 8px 0 0;padding:6px 10px;background:var(--bg-raise)}
+.pv-favicon img{width:16px;height:16px}

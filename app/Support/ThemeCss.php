@@ -6,32 +6,40 @@ use RuntimeException;
 
 /**
  * Téma-adat → CSS. EGYETLEN forrás minden téma-tulajdonú tokenhez (szín, betű, forma, mozgás, firka).
- * A 2026-os frontend/src/lib/theme-css.ts (themeToCss) átirata, két szándékos eltéréssel:
+ * A 2026-os frontend/src/lib/theme-css.ts (themeToCss) átirata, szándékos eltérésekkel:
  *  · SZIGORÚ: ha egy kötelező mező hiányzik, hibával áll meg — nincs csendes beépített tartalék
  *    (CLAUDE.md 2/c). 2026-ban a generátor a hiányzó mezőt kihagyta, és a lap CSS-e „pótolta”.
  *  · A „Komponensek” szekció megszűnt: a „MA” jelvény színei a színek közé kerültek
  *    (colors.badgeMaBg / badgeMaFg), a fejléc üveghatása a fejléchez (header.navbarBlur).
+ *  · A kategóriacsoport-színek (colors.groups, --grp-*) MEGSZŰNTEK (tulajdonosi döntés, 2026-10-21):
+ *    a csoport-fogalmat 2026 júliusában elhagyták, a hét szín azóta gazdátlan volt, és betűre
+ *    egyezett a firka-palettával. Díszítőszín a --doodle-* tokenekből jön.
+ *  · VILÁGOS mód: a LIGHT_COLORS tokeneknek, az akcentnek és a fénynek `light` fele is van (a 2026-os
+ *    beküldő űrlap világos palettája) → `:root[data-theme="light"]{…}`. A többi token közös.
  * A kimenet determinisztikus: ugyanabból az adatból betűre ugyanaz a CSS (erre épül a fájlnév-lenyomat).
+ * A JS-párja: public/js/tema-css.js — BETŰRE ugyanazt kell adnia; a szerkesztő ezt minden
+ * betöltéskor ellenőrzi, és eltérésnél figyelmeztet (az élő előnézet ebből fut, szerver nélkül).
  */
 class ThemeCss
 {
     /**
      * Az önhostolt betűk (public/fonts) — a stack végi rendszer-betű pótolja a román ș/ț-t, ahol hiányzik.
-     * `wght`: a TÉNYLEG meglévő vastagság-tartomány, `italic`: van-e valódi dőlt változat. Ezekből számol a
-     * generátor, hogy SOHA ne kérjünk nem létező vastagságot/dőlést — mert akkor a böngésző mesterségesen
-     * rajzolja meg, és Androidon körvonalas lesz a betű (a Tingler Printtel 2026-ban konkrét hiba volt).
+     * `wght`: a TÉNYLEG meglévő vastagság-tartomány, `italic`: van-e valódi dőlt változat, `wdth`: van-e
+     * szélesség-tengely. Ezekből számol a generátor, hogy SOHA ne kérjünk nem létező vastagságot/dőlést —
+     * mert akkor a böngésző mesterségesen rajzolja meg, és Androidon körvonalas lesz a betű (a Tingler
+     * Printtel 2026-ban konkrét hiba volt).
      */
     public const FONTS = [
-        'Archivo' => ['stack' => "'Archivo',sans-serif", 'preload' => 'fonts/Archivo-var-latin.woff2', 'wght' => [100, 900], 'italic' => false],
-        'Instrument Serif' => ['stack' => "'Instrument Serif',serif", 'preload' => 'fonts/InstrumentSerif-italic-latin.woff2', 'wght' => [400, 400], 'italic' => true],
-        'Hanken Grotesk' => ['stack' => "'Hanken Grotesk',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/HankenGrotesk-400-latin.woff2', 'wght' => [400, 800], 'italic' => false],
-        'Tingler Print' => ['stack' => "'Tingler Print',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/TinglerPrint-Regular.woff2', 'wght' => [400, 400], 'italic' => false],
+        'Archivo' => ['stack' => "'Archivo',sans-serif", 'preload' => 'fonts/Archivo-var-latin.woff2', 'wght' => [100, 900], 'italic' => false, 'wdth' => true],
+        'Instrument Serif' => ['stack' => "'Instrument Serif',serif", 'preload' => 'fonts/InstrumentSerif-italic-latin.woff2', 'wght' => [400, 400], 'italic' => true, 'wdth' => false],
+        'Hanken Grotesk' => ['stack' => "'Hanken Grotesk',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/HankenGrotesk-400-latin.woff2', 'wght' => [400, 800], 'italic' => false, 'wdth' => false],
+        'Tingler Print' => ['stack' => "'Tingler Print',system-ui,'Segoe UI',Roboto,sans-serif", 'preload' => 'fonts/TinglerPrint-Regular.woff2', 'wght' => [400, 400], 'italic' => false, 'wdth' => false],
     ];
 
-    private const DENSITY_MUL = ['compact' => 0.85, 'default' => 1, 'airy' => 1.15];
+    public const DENSITY_MUL = ['compact' => 0.85, 'default' => 1, 'airy' => 1.15];
 
-    /** Színtokenek: CSS-név => adat-útvonal (sötét-only: a pár `dark` fele). */
-    private const COLORS = [
+    /** Színtokenek: CSS-név => adat-útvonal (a pár `dark` fele; a világos fél: LIGHT_COLORS). */
+    public const COLORS = [
         '--bg' => 'colors.bg', '--bg-raise' => 'colors.bgRaise', '--panel' => 'colors.panel',
         '--card' => 'colors.card', '--card-hover' => 'colors.cardHover',
         '--line' => 'colors.line', '--line-strong' => 'colors.lineStrong',
@@ -43,20 +51,21 @@ class ThemeCss
         '--badge-ma-bg' => 'colors.badgeMaBg', '--badge-ma-fg' => 'colors.badgeMaFg',
     ];
 
-    private const DOODLE_COLORS = ['green', 'lime', 'orange', 'red', 'pink', 'yellow', 'blue', 'purple'];
+    /** Azok a színtokenek, amelyeknek világos módban saját értékük van (`.light` — kötelező). */
+    public const LIGHT_COLORS = [
+        '--bg', '--bg-raise', '--panel', '--card', '--card-hover', '--line', '--line-strong',
+        '--fg', '--fg-muted', '--fg-faint', '--accent-contrast', '--focus', '--ok', '--warn', '--danger',
+    ];
 
-    /**
+    public const DOODLE_COLORS = ['green', 'lime', 'orange', 'red', 'pink', 'yellow', 'blue', 'purple'];
+
+    /*
      * A firka-dekor jelölése a lapokon (2027-es szerződés, minden lapra ugyanaz):
      *  · `[data-decor="hero"]` — a nyitókép/fejléc-sáv dekor-rétege,
      *  · `[data-decor="ambient"]` — a lapon szórt dekor-réteg,
      *  · `.decor` — egy firka-elem bármelyik rétegben,
      *  · `.pc-doodle` — a fotó nélküli kártyák sarok-firkája.
      */
-    private const D_LAYERS = '[data-decor]';
-
-    private const D_HERO = '[data-decor="hero"]';
-
-    private const D_ITEMS = '[data-decor] .decor';
 
     /** @param array<string, mixed> $doc */
     public static function generate(array $doc): string
@@ -73,40 +82,43 @@ class ThemeCss
 
             return $v;
         };
-        $szin = function (string $path) use ($kell) {
-            $v = $kell($path . '.dark');
+        $szin = function (string $path, string $mod = 'dark') use ($kell) {
+            $v = $kell($path . '.' . $mod);
 
-            return is_string($v) ? self::tiszta($v, $path) : null;
+            return is_string($v) ? self::tiszta($v, $path . '.' . $mod) : null;
         };
 
+        $vars['color-scheme'] = 'dark';
         foreach (self::COLORS as $var => $path) {
             $vars[$var] = $szin($path);
         }
-        foreach ((array) data_get($doc, 'colors.groups', []) as $slug => $p) {
-            if (! preg_match('/^[a-z0-9-]+$/', (string) $slug)) {
-                throw new RuntimeException("Téma: érvénytelen kategóriacsoport-kulcs: „{$slug}”.");
-            }
-            $vars["--grp-{$slug}"] = $szin("colors.groups.{$slug}");
-        }
 
-        // Akcent-gradiens. A `-text` változat szándékosan kétállomású (a harmadik, sötét stop a
-        // gradienses szöveg végét olvashatatlanná tenné).
-        $acc = $kell('colors.accent.dark');
+        // Akcent-gradiens (mindkét módra). A `-text` változat szándékosan kétállomású (a harmadik,
+        // sötét stop a gradienses szöveg végét olvashatatlanná tenné).
         $angle = $kell('colors.accent.angle');
-        $from = $szin('colors.accentGradFrom');
-        if (is_array($acc) && count($acc) === 3 && $angle !== null && $from !== null) {
-            [$a, $b, $c] = array_map(fn ($x) => self::tiszta((string) $x, 'colors.accent.dark'), $acc);
-            $deg = self::szam($angle) . 'deg';
-            $vars += [
+        $deg = $angle !== null ? self::szam($angle) . 'deg' : '';
+        $akcent = function (string $mod) use ($kell, $szin, $deg, &$hianyzik): array {
+            $acc = $kell("colors.accent.{$mod}");
+            $from = $szin('colors.accentGradFrom', $mod);
+            if (! is_array($acc) || count($acc) !== 3) {
+                $hianyzik[] = "colors.accent.{$mod} (3 szín)";
+
+                return [];
+            }
+            [$a, $b, $c] = array_map(fn ($x) => self::tiszta((string) $x, "colors.accent.{$mod}"), array_values($acc));
+
+            return [
                 '--accent-a' => $a, '--accent-b' => $b, '--accent-c' => $c,
-                '--accent-angle' => $deg,
                 '--accent-grad-from' => $from,
                 '--accent-grad' => "linear-gradient({$deg},{$from} 0%,{$b} 55%,{$c} 100%)",
                 '--accent-grad-text' => "linear-gradient({$deg},{$from},{$b})",
             ];
-        } elseif ($acc !== null) {
-            $hianyzik[] = 'colors.accent.dark (3 szín)';
-        }
+        };
+        $vars += $akcent('dark');
+        $vars['--accent-angle'] = $deg;
+        // A link színe: sötéten az „a” akcent, világoson a „c” (a 2026-os beküldő űrlap szerint —
+        // a világos „a” fehéren nem éri el a 4.5:1-et).
+        $vars['--link'] = 'var(--accent-a)';
 
         // „Nappali lap” sáv: a lap- és firka-tokenekből keverve (a /tema erre is hat).
         $vars['--lap-band-bg'] = 'linear-gradient(180deg,'
@@ -137,7 +149,7 @@ class ThemeCss
         if ($wght !== null && $headFont !== null) {
             [$min, $max] = $headFont['wght'];
             if ($wght < $min || $wght > $max) {
-                throw new RuntimeException("Téma: a(z) „" . data_get($doc, 'type.head') . "” címbetű csak {$min}–{$max} vastagságban létezik, a téma {$wght}-at kér (Androidon körvonalas lenne).");
+                throw new RuntimeException('Téma: a(z) „' . data_get($doc, 'type.head') . "” címbetű csak {$min}–{$max} vastagságban létezik, a téma {$wght}-at kér (Androidon körvonalas lenne).");
             }
             $vars['--head-wght'] = self::szam($wght);
             $vars['--head-wght-2'] = self::szam(max($min, $wght - 20));
@@ -190,39 +202,55 @@ class ThemeCss
         }
         $dd = $kell('doodles.density');
         if ($dd === 'none') {
-            $extra[] = self::D_LAYERS . '{display:none}';
+            $extra[] = '[data-decor]{display:none}';
         } elseif ($dd === 'subtle') {
             $extra[] = '[data-decor="ambient"] .decor:nth-child(2n){display:none}';
         } elseif ($dd !== null && $dd !== 'default') {
             throw new RuntimeException("Téma: ismeretlen firka-sűrűség: „{$dd}”.");
         }
         if ($kell('doodles.zones.hero') === false) {
-            $extra[] = self::D_HERO . '{display:none}';
+            $extra[] = '[data-decor="hero"]{display:none}';
         }
         if ($kell('doodles.zones.noPhotoCards') === false) {
             $extra[] = '.pc-doodle{display:none}';
         }
         if ($lessMotion) {
             // A firka-lebegést a lap JS-e inline is írhatja — a kikapcsolás csak !important-tal biztos.
-            $extra[] = self::D_ITEMS . '{animation:none!important}';
+            $extra[] = '[data-decor] .decor{animation:none!important}';
         }
 
         $vars['--navbar-blur'] = self::szam($kell('header.navbarBlur')) . 'px';
         $vars['--logo-header'] = self::szam($kell('logo.headerSize')) . 'px';
         $vars['--logo-header-mobile'] = self::szam($kell('logo.headerSizeMobile')) . 'px';
 
+        // VILÁGOS mód: csak a módfüggő tokenek (a többi a :root-ból öröklődik).
+        $light = ['color-scheme' => 'light'];
+        foreach (self::LIGHT_COLORS as $var) {
+            $light[$var] = $szin(self::COLORS[$var], 'light');
+        }
+        $light += $akcent('light');
+        $light['--link'] = 'var(--accent-c)';
+        $light['--glow-alpha'] = self::szam($kell('glow.alpha.light'));
+
         if ($hianyzik) {
             throw new RuntimeException('Téma: hiányzó kötelező mező(k): ' . implode(', ', array_unique($hianyzik)) . '.');
         }
 
+        return '/* Forgatag OS — generált téma-CSS (App\Support\ThemeCss). Kézzel ne szerkeszd. */' . "\n"
+            . ':root{' . self::blokk($vars) . "}\n"
+            . ':root[data-theme="light"]{' . self::blokk($light) . "}\n"
+            . ($extra ? implode("\n", $extra) . "\n" : '');
+    }
+
+    /** @param array<string, string> $v */
+    private static function blokk(array $v): string
+    {
         $sor = [];
-        foreach ($vars as $k => $v) {
-            $sor[] = "{$k}:{$v}";
+        foreach ($v as $k => $x) {
+            $sor[] = "{$k}:{$x}";
         }
 
-        return '/* Forgatag OS — generált téma-CSS (App\Support\ThemeCss). Kézzel ne szerkeszd. */' . "\n"
-            . ':root{' . implode(';', $sor) . "}\n"
-            . ($extra ? implode("\n", $extra) . "\n" : '');
+        return implode(';', $sor);
     }
 
     /** Szín/érték: CSS-be csak ártalmatlan karakter mehet (nincs `;`, `{`, `}`, `<`, url()). */
@@ -236,7 +264,7 @@ class ThemeCss
         return $v;
     }
 
-    private static function szam(mixed $v): string
+    public static function szam(mixed $v): string
     {
         if ($v === null) {
             return '';

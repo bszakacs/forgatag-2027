@@ -135,6 +135,16 @@ töltsük be a témába. Onnantól cserélhetők.
 gyűjtőfiók maradt: a chat-gomb kapcsolója a chatbot többi beállításához kerül, a „MA" jelvény
 háttérszíne pedig a színek közé.
 
+**A „Kategóriacsoportok” szekció és a csoportszínek MEGSZŰNTEK** (tulajdonosi döntés, 2026-10-21).
+A csoport-fogalmat már 2026. július 22-én elhagyták (forgatag-os `70c5ca6`); a hét `--grp-*` szín azóta
+gazdátlan volt, és betűre egyezett a firka-palettával. Díszítőszín a `--doodle-*` tokenekből jön.
+**Csoportokat ne találj ki** — ha valaha kell, a kategóriákhoz kerül, a tulajdonos megadja.
+
+**Világos mód (◐) — CSAK a beküldő űrlapon** (2. adósság, 2026-10-21). A témában a fő színeknek
+`light` fele is van — a 2026-os beküldő űrlap tényleges világos palettája (forgatag-os
+`submit-api/public/index.html`). A publikus oldal 2026-ban szándékosan sötét-only lett; hogy a 2027-es
+publikus oldalon legyen-e váltó, az a publikus váz körének kérdése — kérdezd a tulajdonost.
+
 **A „Mozgás" szekció marad.** Ez szabályozza a kártyák felúszását, a gombok reakciósebességét,
 a „MA" jelvény lüktetését és a firkák lebegését, három fokozattal. Valódi haszna, hogy mozgásra
 érzékeny látogatóknak levehető.
@@ -360,8 +370,7 @@ Szerkesztés és új program felvitele az adminban: még NINCS (későbbi kör).
 jóváhagyás) működik; a fotó az admin program-lapján látszik; a gomb zöld visszajelzést adott, és a
 jóváhagyási levél pár másodperc alatt megérkezett a programgazda postafiókjába.
 
-**Téma-alap — kész helyben (2026-10-21).** A téma mint ADATFORRÁS; a `/tema` szerkesztő még NINCS
-(addig a téma módosítása fejlesztői feladat: `Theme::publish(...)`).
+**Téma-alap — kész, élesben mérve (2026-10-21).** A téma mint ADATFORRÁS; a szerkesztője lent.
 - **Adat:** `theme_versions` tábla, APPEND-ONLY (`App\Models\ThemeVersion`); a LEGUTOLSÓ sor a kint lévő
   téma. Kezdőérték: `seed/tema/tema.json` + `seed/tema/fajlok/` — a `forgatag:torzsadatok` tölti be
   (`Theme::importSeed`, csak üres táblába). A 2026-os adathoz képest: a „Komponensek” megszűnt
@@ -387,14 +396,36 @@ jóváhagyási levél pár másodperc alatt megérkezett a programgazda postafi�
   jelölése a lapokon: `[data-decor="hero"|"ambient"]` réteg + `.decor` elem (a téma sűrűség/mozgás
   beállítása erre hat).
 - Tesztek: `tests/Feature/TemaTest.php`; a `tests/TestCase.php` minden adatbázisos tesztnek betölti a
-  kezdő témát (hamis arculati tárba).
+  kezdő témát (hamis arculati tárba), és törli a `Settings` statikus gyorsítótárát (különben a tesztek
+  között átszivárog, és elrejti, ha egy teszt nem állítja be a beállításait).
+
+**Arculat-szerkesztő (`/admin/tema`) — kész helyben (2026-10-21).** Filament-lap (`App\Filament\Pages\Tema`,
+menüpont: „Arculat” — kivételes saját menüpont, PROMPT-06), 11 szekció a 2026-os feliratokkal.
+- **A leírás EGY helyen:** `App\Support\ThemeEditorSpec` — szekciók, feliratok, súgók, tartományok,
+  kontraszt-szabályok. Ebből épül a felület, ÉS ebből ellenőriz a szerver (`validate`: a megengedett
+  SZERKEZET a `seed/tema/tema.json` — ismeretlen mező hiba, így kivezetett kulcs importtal sem jön vissza).
+- **Élő előnézet szerver nélkül:** `public/js/tema-szerkeszto.js` + `public/js/tema-css.js` (a PHP
+  `ThemeCss` BETŰHŰ párja; a táblázatokat a szerver adja). A szerkesztő betöltéskor összeveti a két
+  generátor kimenetét, eltérésnél piros figyelmeztetés. **Ha a `ThemeCss`-t módosítod, a JS-t is.**
+  Az előnézet iframe: `resources/views/tema/elonezet.blade.php` (a valódi publikus CSS-sel, Filament nélkül).
+- **Végpontok:** `Admin\TemaController` (`/admin/tema-api/*`): vázlat, publikálás, feltöltés, gyári,
+  verzió, előnézet. A JSON-t NYERSEN olvassa (a `ConvertEmptyStringsToNull` az üres szöveget null-ra
+  cserélné — a témában az üres szöveg érvényes érték).
+- **Piszkozat:** `theme_drafts` (egy közös sor, `base_version_id`-val; ha közben más publikált, figyelmeztet).
+  **Publikálás:** `Theme::publish` — szerkezet + értékek + fájlok + **kontraszt** (`ThemeContrast`, mindkét
+  mód); hiba esetén csak írásos (≥10 karakteres) felülbírálással, ami a verzión marad (`contrast_override`).
+  **Előzmény:** az utolsó 10, „Betöltés” → a szerkesztőbe, kikerülni publikálással (különbséggel).
+- **Jog:** `UserRole::canEditTheme` (szuperadmin, arculat-szerkesztő). Az arculat-szerkesztőnek a
+  nyitólap (`App\Filament\Pages\Dashboard`) a `/admin/tema`-ra irányít; minden más lap 403/404.
+- Tesztek: `tests/Feature/TemaSzerkesztoTest.php` (jog szerepkörönként külön futásban — egy teszten belüli
+  felhasználóváltást az `AuthenticateSession` kiléptetésnek venné).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a
    generált téma-CSS-ből dolgozik (lásd „Téma-alap”).
-2. **A beküldő űrlapról hiányzik a világos/sötét váltó** (2026-ban volt ◐). Ez visszalépés — a /tema
-   fázisában pótolni kell.
+2. ~~**A beküldő űrlapról hiányzik a világos/sötét váltó.**~~ **Törlesztve (2026-10-21):** ◐ gomb a
+   beküldő lapok fejlécében (kulcs: `forgatag-theme`, alap: sötét), a színek a téma `light` feléből.
 
 ### A tárhely mért adottságai és buktatói (próbatelepítés, 2026-10-12)
 

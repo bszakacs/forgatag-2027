@@ -3,11 +3,11 @@
 namespace App\Providers\Filament;
 
 use App\Http\Controllers\Admin\ProgramFotoController;
+use App\Http\Controllers\Admin\TemaController;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -41,9 +41,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
+            // A nyitólap a saját Dashboard-unk (app/Filament/Pages — a felfedezés regisztrálja): az
+            // arculat-szerkesztőt egyenesen a /tema-ra küldi.
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
@@ -64,7 +63,20 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             // Belépett admin-útvonalak (a panel belépés-ellenőrzése mögött). A nem nyilvános programfotó:
-            ->authenticatedRoutes(fn () => Route::get('programok/{program}/foto', ProgramFotoController::class)
-                ->whereNumber('program')->name('program-foto'));
+            ->authenticatedRoutes(function () {
+                Route::get('programok/{program}/foto', ProgramFotoController::class)
+                    ->whereNumber('program')->name('program-foto');
+                // Az Arculat-szerkesztő (/admin/tema) végpontjai — mind a TemaController jog-őre mögött.
+                // Az élő előnézet NEM hív szervert; ezek csak a mentés/publikálás/feltöltés útjai.
+                Route::prefix('tema-api')->name('tema.')->controller(TemaController::class)->group(function () {
+                    Route::get('elonezet', 'elonezet')->name('elonezet');
+                    Route::post('vazlat', 'vazlat')->name('vazlat');
+                    Route::delete('vazlat', 'vazlatEldob')->name('vazlat.eldob');
+                    Route::post('publikalas', 'publikalas')->name('publikalas');
+                    Route::post('feltoltes', 'feltoltes')->name('feltoltes');
+                    Route::get('gyari', 'gyari')->name('gyari');
+                    Route::get('verzio/{version}', 'verzio')->whereNumber('version')->name('verzio');
+                });
+            });
     }
 }

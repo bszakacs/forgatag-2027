@@ -174,6 +174,12 @@ class TemaTest extends TestCase
     public function test_a_bekuldo_lap_a_generalt_tema_css_t_es_a_tema_faviconjat_hasznalja(): void
     {
         $v = ThemeVersion::latest('id')->first();
+        \App\Support\Settings::save([
+            'festival' => ['start_date' => '2027-08-25', 'end_date' => '2027-08-29', 'prep_days' => 2, 'opening_day' => '2027-08-25',
+                'name_hu' => 'Vásárhelyi Forgatag', 'name_ro' => 'Vâltoarea Mureșeană', 'day_cut_hour' => 3],
+            'submission' => ['open' => true, 'closed_message' => 'Zárva.', 'deadline' => null],
+            'notifications' => ['topics' => []],
+        ]);
         $this->get('/bekuldes/belepes')
             ->assertOk()
             ->assertSee('/arculat/' . $v->css_file, false)

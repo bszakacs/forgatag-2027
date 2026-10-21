@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Models\ThemeVersion;
 use App\Models\User;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
@@ -103,28 +104,111 @@ class Theme
     }
 
     /**
-     * Publikálás: ellenőrzés → CSS generálás és fájlba írás → új verzió-sor. Ha bármi nem sikerül,
-     * nem keletkezik verzió (a kint lévő téma marad).
+     * Publikálás: ellenőrzés (szerkezet, értékek, fájlok, KONTRASZT) → CSS generálás és fájlba írás →
+     * új verzió-sor → a piszkozat törlése. Ha bármi nem sikerül, nem keletkezik verzió (a kint lévő
+     * téma marad). Kontraszt-hiba csak írásos felülbírálással mehet ki; az indoklás a verzión marad.
      *
      * @param  array<string, mixed>  $data
      */
-    public static function publish(array $data, ?User $user, string $comment, ?string $byName = null): ThemeVersion
+    public static function publish(array $data, ?User $user, string $comment, ?string $byName = null, ?string $contrastOverride = null): ThemeVersion
     {
-        $data = array_filter($data, fn ($k) => ! str_starts_with((string) $k, '_'), ARRAY_FILTER_USE_KEY);
+        $data = self::clean($data);
         self::validate($data);
+        $hibak = ThemeContrast::failures($data);
+        $override = trim((string) $contrastOverride);
+        if ($hibak && mb_strlen($override) < 10) {
+            throw new ThemeContrastException($hibak);
+        }
         ['name' => $name, 'css' => $css] = self::cssFor($data);
         self::writeCss($name, $css);
 
-        $v = ThemeVersion::create([
-            'data' => $data,
-            'css_file' => $name,
-            'user_id' => $user?->id,
-            'published_by' => $byName ?? $user?->email,
-            'comment' => $comment,
-        ]);
+        $v = DB::transaction(function () use ($data, $name, $user, $byName, $comment, $hibak, $override) {
+            $v = ThemeVersion::create([
+                'data' => $data,
+                'css_file' => $name,
+                'user_id' => $user?->id,
+                'published_by' => $byName ?? $user?->email,
+                'comment' => mb_substr(trim($comment), 0, 255) ?: null,
+                'contrast_override' => $hibak ? $override : null,
+            ]);
+            DB::table('theme_drafts')->delete();
+
+            return $v;
+        });
         self::flush();
 
         return $v;
+    }
+
+    /** A közös piszkozat (egy van; bárki folytathatja, aki a /tema-hoz fér). */
+    public static function draft(): ?object
+    {
+        return DB::table('theme_drafts')->first();
+    }
+
+    /**
+     * Piszkozat mentése. Ugyanúgy ellenőrizzük, mint a publikálást (a kontrasztot kivéve — azt a
+     * publikálás kapuja nézi), hogy egy hibás import ne csak a publikáláskor derüljön ki.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public static function saveDraft(array $data, User $user, int $baseVersionId): void
+    {
+        $data = self::clean($data);
+        self::validate($data);
+        DB::transaction(function () use ($data, $user, $baseVersionId) {
+            DB::table('theme_drafts')->delete();
+            DB::table('theme_drafts')->insert([
+                'data' => json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                'base_version_id' => $baseVersionId,
+                'user_id' => $user->id,
+                'saved_by' => $user->email,
+                'updated_at' => now(),
+            ]);
+        });
+    }
+
+    public static function discardDraft(): void
+    {
+        DB::table('theme_drafts')->delete();
+    }
+
+    /** Az utolsó N publikált verzió (legújabb elöl). @return \Illuminate\Support\Collection<int, ThemeVersion> */
+    public static function history(int $n = 10)
+    {
+        return ThemeVersion::query()->latest('id')->limit($n)->get();
+    }
+
+    /**
+     * A gyári téma (seed/tema/) — a fájlok RENDES feltöltésként kerülnek a tárba (azonos tartalom =
+     * azonos név, tehát újrahívva sem keletkezik másolat). Ebből indul a kezdő téma, és ez a
+     * szerkesztő „Gyári” visszaállítása (egészben vagy fájl-mezőnként).
+     *
+     * @return array<string, mixed>
+     */
+    public static function factoryData(): array
+    {
+        $ut = base_path('seed/tema/tema.json');
+        $adat = is_readable($ut) ? json_decode((string) file_get_contents($ut), true) : null;
+        if (! is_array($adat)) {
+            throw new RuntimeException('seed/tema/tema.json hiányzik vagy hibás JSON.');
+        }
+        $fajl = fn (mixed $nev) => base_path('seed/tema/fajlok/' . basename((string) $nev));
+
+        foreach (['logo' => 'logo', 'logoHeader' => 'logo-fejlec', 'favicon' => 'favicon'] as $kulcs => $hely) {
+            $adat['assets'][$kulcs] = self::storeAsset($fajl($adat['assets'][$kulcs] ?? ''), $hely);
+        }
+        foreach (array_values((array) ($adat['doodles']['motifs'] ?? [])) as $i => $nev) {
+            $adat['doodles']['motifs'][$i] = self::storeAsset($fajl($nev), 'firka-' . ($i + 1));
+        }
+
+        return self::clean($adat);
+    }
+
+    /** @param array<string, mixed> $data @return array<string, mixed> */
+    private static function clean(array $data): array
+    {
+        return array_filter($data, fn ($k) => ! str_starts_with((string) $k, '_'), ARRAY_FILTER_USE_KEY);
     }
 
     /**
@@ -160,21 +244,7 @@ class Theme
      */
     public static function importSeed(string $byName): ThemeVersion
     {
-        $ut = base_path('seed/tema/tema.json');
-        $adat = is_readable($ut) ? json_decode((string) file_get_contents($ut), true) : null;
-        if (! is_array($adat)) {
-            throw new RuntimeException('seed/tema/tema.json hiányzik vagy hibás JSON.');
-        }
-        $fajl = fn (mixed $nev) => base_path('seed/tema/fajlok/' . basename((string) $nev));
-
-        foreach (['logo' => 'logo', 'logoHeader' => 'logo-fejlec', 'favicon' => 'favicon'] as $kulcs => $hely) {
-            $adat['assets'][$kulcs] = self::storeAsset($fajl($adat['assets'][$kulcs] ?? ''), $hely);
-        }
-        foreach (array_values((array) ($adat['doodles']['motifs'] ?? [])) as $i => $nev) {
-            $adat['doodles']['motifs'][$i] = self::storeAsset($fajl($nev), 'firka-' . ($i + 1));
-        }
-
-        return self::publish($adat, null, 'A 2026-os rendszer utolsó publikált témájának átvétele (schema-bot, 2026-09-02)', $byName);
+        return self::publish(self::factoryData(), null, 'A 2026-os rendszer utolsó publikált témájának átvétele (schema-bot, 2026-09-02)', $byName);
     }
 
     /** @param array<string, mixed> $data */
@@ -199,6 +269,7 @@ class Theme
                 throw new RuntimeException("Téma: a(z) {$i}. firka-motívum nem érvényes SVG.");
             }
         }
+        ThemeEditorSpec::validate($data); // szerkezet (ismeretlen/hiányzó mező) + értéktartományok
         ThemeCss::generate($data); // hiányzó/hibás token → hiba
     }
 

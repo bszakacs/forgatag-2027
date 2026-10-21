@@ -38,7 +38,7 @@ enum UserRole: string
             self::Coordinator => 'Minden programot lát, jóváhagy és visszaküld; kezeli a programgazdákat és a Beállításokat.',
             self::CategoryOwner => 'CSAK a saját kategóriái programjait látja; átnézi, jóváhagyásra küldi vagy visszaküldi őket. Jóváhagyni nem tud.',
             self::Translator => 'Minden programot lát (olvasásra); a fordítás-szerkesztés a fordítási körben jön.',
-            self::ThemeEditor => 'Csak az arculatszerkesztőhöz fér hozzá (a /tema még nem készült el).',
+            self::ThemeEditor => 'CSAK az arculat-szerkesztőhöz (Arculat / /admin/tema) fér hozzá, semmi máshoz.',
             self::ReadOnly => 'Minden programot lát, de semmit nem módosíthat.',
         };
     }
@@ -79,6 +79,18 @@ enum UserRole: string
     public function canEditSettings(): bool
     {
         return in_array($this, [self::SuperAdmin, self::Coordinator], true);
+    }
+
+    /** Az arculat (/admin/tema) szerkesztése és publikálása. */
+    public function canEditTheme(): bool
+    {
+        return in_array($this, [self::SuperAdmin, self::ThemeEditor], true);
+    }
+
+    /** Az irányítópult (az admin nyitólapja) — az arculat-szerkesztő a /tema-ra érkezik helyette. */
+    public function canSeeDashboard(): bool
+    {
+        return $this !== self::ThemeEditor;
     }
 
     /** Sor-szintű szűkítés alatt áll-e (csak a hozzárendelt kategóriák programjai). */

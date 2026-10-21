@@ -1,10 +1,11 @@
 {
-  "_forras": "A 2026-os rendszer UTOLSO publikalt temaja (schema-bot, 2026-09-02T13:04:01.944Z, 2026-os verzio: 11). Mentes: MENTES-2026/2026-10-21/tema/theme-data.json. Atalakitas: a Komponensek szekcio megszunt (a MA jelveny szinei -> colors.badgeMaBg/badgeMaFg, a fejlec-uveghatas -> header.navbarBlur, a chat-gomb kapcsoloja kimaradt); az assets es a doodles.motifs a seed/tema/fajlok/ fajlneveit adja (a betoltes valodi feltoltott fajlla teszi oket); a version/_fgv/meta helyett a theme_versions tabla sora a verzio.",
+  "_forras": "A 2026-os rendszer UTOLSO publikalt temaja (schema-bot, 2026-09-02T13:04:01.944Z, 2026-os verzio: 11). Mentes: MENTES-2026/2026-10-21/tema/theme-data.json. Atalakitas: a Komponensek szekcio megszunt (a MA jelveny szinei -> colors.badgeMaBg/badgeMaFg, a fejlec-uveghatas -> header.navbarBlur, a chat-gomb kapcsoloja kimaradt); az assets es a doodles.motifs a seed/tema/fajlok/ fajlneveit adja (a betoltes valodi feltoltott fajlla teszi oket); a version/_fgv/meta helyett a theme_versions tabla sora a verzio. 2026-10-21 (PROMPT-06): a colors.groups (kategoriacsoport-szinek) kivezetve - a csoport-fogalom 2026 juliusaban megszunt; a vilagos mod (.light) ertekei a 2026-os bekuldo urlap [data-theme=light] palettajabol (forgatag-os/submit-api/public/index.html), a gradiens indito szine ott nem volt kulon, ezert = az a szin.",
   "name": "Gyári — Amphora",
   "glow": {
     "blur": 80,
     "alpha": {
-      "dark": 0.5
+      "dark": 0.5,
+      "light": 0.2
     }
   },
   "logo": {
@@ -37,25 +38,32 @@
   },
   "colors": {
     "bg": {
-      "dark": "#322D55"
+      "dark": "#322D55",
+      "light": "#F1F1F7"
     },
     "fg": {
-      "dark": "#F6F1E9"
+      "dark": "#F6F1E9",
+      "light": "#232037"
     },
     "ok": {
-      "dark": "#8DC63F"
+      "dark": "#8DC63F",
+      "light": "#177A45"
     },
     "card": {
-      "dark": "#2C2560"
+      "dark": "#2C2560",
+      "light": "#FFFFFF"
     },
     "line": {
-      "dark": "rgba(255,255,255,.10)"
+      "dark": "rgba(255,255,255,.10)",
+      "light": "#E3E1EE"
     },
     "warn": {
-      "dark": "#F2C31C"
+      "dark": "#F2C31C",
+      "light": "#95610A"
     },
     "focus": {
-      "dark": "#FFB84D"
+      "dark": "#FFB84D",
+      "light": "#B4530F"
     },
     "lapBg": {
       "dark": "#FFFFFF"
@@ -64,7 +72,8 @@
       "dark": "#221C47"
     },
     "panel": {
-      "dark": "#2C2560"
+      "dark": "#2C2560",
+      "light": "#FFFFFF"
     },
     "accent": {
       "dark": [
@@ -72,42 +81,28 @@
         "#F5911E",
         "#E37A0C"
       ],
-      "angle": 135
+      "angle": 135,
+      "light": [
+        "#E0731F",
+        "#D9424E",
+        "#B0338A"
+      ]
     },
     "danger": {
-      "dark": "#E13E42"
-    },
-    "groups": {
-      "zene": {
-        "dark": "#E5389E"
-      },
-      "sport": {
-        "dark": "#3AA0E0"
-      },
-      "csaladi": {
-        "dark": "#F2C31C"
-      },
-      "gasztro": {
-        "dark": "#E03A3E"
-      },
-      "kozelet": {
-        "dark": "#F5911E"
-      },
-      "szinhaz": {
-        "dark": "#6B4FBB"
-      },
-      "tudomany": {
-        "dark": "#8DC63F"
-      }
+      "dark": "#E13E42",
+      "light": "#C22B2B"
     },
     "bgRaise": {
-      "dark": "#36315D"
+      "dark": "#36315D",
+      "light": "#FFFFFF"
     },
     "fgFaint": {
-      "dark": "#867EAD"
+      "dark": "#867EAD",
+      "light": "#807C97"
     },
     "fgMuted": {
-      "dark": "#B4ADD6"
+      "dark": "#B4ADD6",
+      "light": "#5C5875"
     },
     "lapCard": {
       "dark": "#FFFFFF"
@@ -119,16 +114,20 @@
       "dark": "#6A6390"
     },
     "cardHover": {
-      "dark": "#37306F"
+      "dark": "#37306F",
+      "light": "#F8F7FC"
     },
     "lineStrong": {
-      "dark": "rgba(255,255,255,.18)"
+      "dark": "rgba(255,255,255,.18)",
+      "light": "#C8C5DA"
     },
     "accentContrast": {
-      "dark": "#2A1C04"
+      "dark": "#2A1C04",
+      "light": "#FFFFFF"
     },
     "accentGradFrom": {
-      "dark": "#FFC661"
+      "dark": "#FFC661",
+      "light": "#E0731F"
     },
     "badgeMaBg": {
       "dark": "#FFAE4D"
