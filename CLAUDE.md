@@ -154,6 +154,9 @@ jogosultságot soronként.
   felhasználót. Nyers `DB::table()` / `Builder::insert()` megkerüli a modellt — admin-felületen tilos.
 - Tesztek: `tests/Feature/SorSzintuJogTest.php` — a hat felület külön-külön. **Ellenpróbával mérve:** a
   szűkítést kikapcsolva 9 teszt elbukik.
+- **Élesben mérve (proba.forgatag.ro, 2026-10-21), kategóriagazda-fiókkal, böngészőből:** idegen
+  kategóriájú program → a lista üres · a globális kereső nem találja · a begépelt `/admin/programok/{id}`
+  404 · a `/foto` 404.
 
 ## 5. Fordítás
 
