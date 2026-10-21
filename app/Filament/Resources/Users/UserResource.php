@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users;
 
+use App\Enums\UserRole;
 use App\Filament\Resources\Resource;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
@@ -9,17 +10,21 @@ use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Models\User;
 use BackedEnum;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 /**
- * Az admin (Filament) felhasználói. A szerepkörök a 4. fázisban jönnek; addig minden admin-felhasználó
- * mindent lát. A programgazdák NEM itt vannak (külön jelszótár, külön lap ugyanebben a menücsoportban).
+ * Az admin (Filament) felhasználói, szerepkörrel (App\Enums\UserRole — ott a jogosultsági mátrix).
+ * A kategóriagazda a hozzárendelt kategóriáit kapja (sor-szintű jog: App\Models\Scopes\RowAccess).
+ * A programgazdák NEM itt vannak (külön jelszótár, külön lap ugyanebben a menücsoportban).
  */
 class UserResource extends Resource
 {
@@ -49,6 +54,17 @@ class UserResource extends Resource
                 TextInput::make('email')->label('E-mail (belépési azonosító)')->email()->required()->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->validationMessages(['unique' => 'Ezzel a címmel már van admin-felhasználó.']),
+                Select::make('role')->label('Szerepkör')->required()
+                    ->options(UserRole::options())->default(UserRole::ReadOnly->value)->native(false)->live()
+                    // Saját szerepkörét senki nem változtathatja (különben kizárhatja magát, akár az utolsó szuperadmint is).
+                    ->disabled(fn (?User $record) => $record?->is(auth('web')->user()) ?? false)
+                    ->helperText(fn (Get $get) => self::szerep($get('role'))?->description()),
+                Select::make('categories')->label('Kategóriái (csak ezek programjait látja)')
+                    ->relationship('categories', 'name_hu', fn (Builder $query) => $query->orderBy('sort'))
+                    ->multiple()->preload()->searchable()->columnSpanFull()
+                    ->visible(fn (Get $get) => self::szerep($get('role')) === UserRole::CategoryOwner)
+                    ->required(fn (Get $get) => self::szerep($get('role')) === UserRole::CategoryOwner)
+                    ->validationMessages(['required' => 'Kategória nélkül a kategóriagazda semmit nem lát — jelölj be legalább egyet.']),
                 TextInput::make('password')->label('Jelszó')->password()->revealable()
                     ->minLength(self::MIN_JELSZO)
                     ->required(fn (string $operation) => $operation === 'create')
@@ -60,6 +76,12 @@ class UserResource extends Resource
         ]);
     }
 
+    /** Az űrlap állapotában a szerepkör hol szöveg, hol enum — egy helyen alakítjuk. */
+    private static function szerep(mixed $state): ?UserRole
+    {
+        return $state instanceof UserRole ? $state : UserRole::tryFrom((string) $state);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -67,6 +89,8 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('name')->label('Név')->searchable()->sortable(),
                 TextColumn::make('email')->label('E-mail')->searchable()->copyable(),
+                TextColumn::make('role')->label('Szerepkör')->badge()->formatStateUsing(fn (UserRole $state) => $state->label()),
+                TextColumn::make('categories.name_hu')->label('Kategóriái')->badge()->wrap()->visibleFrom('md'),
                 TextColumn::make('created_at')->label('Létrehozva')->date('Y. m. d.')->sortable(),
             ])
             ->recordActions([

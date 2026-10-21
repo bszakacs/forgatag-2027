@@ -137,6 +137,24 @@ import). Ha egyet kihagyunk, az adatszivárgás. **Kötelező: modell-szintű gl
 felületenkénti felülírás.** Külön figyelem: a Filament `ImportAction` alapból nem ellenőriz
 jogosultságot soronként.
 
+**Így van megépítve (2026-10-21) — ehhez igazodj, ne kerüld meg:**
+- **Mit tehet** egy szerepkör: `App\Enums\UserRole` (a mátrix EGY helyen) → `app/Policies` (az alap
+  `Policy` mindent tilt). A panel `strictAuthorization()`-nel fut: policy nélküli új modell lapja hibával
+  áll meg, nem nyílik ki mindenkinek. **Új modell = új policy.** Új lap (Page) = saját `canAccess()`.
+- **Melyik sorokon:** `App\Models\Scopes\RowAccess` (egy forrás) → `ProgramScope` a programon,
+  `ProgramChildScope` (`RowRestrictedChild` trait) az időponton, fordításon, naplón. **Írásra is**: a
+  modellek `saving`/`deleting` őre idegen kategóriába nem enged írni (ez fedi az importot soronként).
+  Az elsődleges kategória dönt; kategória nélküli kategóriagazda SEMMIT nem lát. Ha új modell programhoz
+  tartozik, kapja meg a `RowRestrictedChild` traitet.
+- **Szivárgás-biztos alapállás:** a szűkítés minden kérésben hat, ahol a belépett admin kategóriagazda.
+  A beküldő lapok (`BekuldoBelepve`) a `bekuldo` őrre állnak át. ⚠ A jövőbeli **publikus oldal** kéréseiben
+  ugyanígy át kell állni (különben egy belépett kategóriagazda kevesebb programot látna a nyilvános lapon).
+- ⚠ **Belépett felhasználó nélkül NINCS szűkítés** (parancssor, ütemező, sorba tett feladat). Ezért
+  **export/import CSAK szinkron futhat** (`QUEUE_CONNECTION=sync`), vagy a feladat maga állítsa be a
+  felhasználót. Nyers `DB::table()` / `Builder::insert()` megkerüli a modellt — admin-felületen tilos.
+- Tesztek: `tests/Feature/SorSzintuJogTest.php` — a hat felület külön-külön. **Ellenpróbával mérve:** a
+  szűkítést kikapcsolva 9 teszt elbukik.
+
 ## 5. Fordítás
 
 HU a forrásnyelv, RO a fordítás. **Gépi fordítás Claude API-val**, hatóköre **CSAK a beküldött
@@ -232,6 +250,12 @@ lát a jelszóval. **Elfelejtett jelszó:** `/bekuldes/jelszo` (`JelszoControlle
 egyszer használható. Az ideiglenes `forgatag:programgazda` kivezetve (kód, `.cpanel.yml`, minta-.env;
 a szerveri .env `PROGRAMGAZDA_*` sorait a felhasználó törli).
 
+**Szerepkörök + sor-szintű jog — kész helyben (2026-10-21).** Részletek a 4. pontban. `users.role`
+(új fiók: csak olvasó; a migráció a MEGLÉVŐ fiókokat szuperadminná tette), `category_user` pivot.
+Kategóriagazda: csak a saját kategóriái, átnéz/jóváhagyásra küld/visszaküld, **jóváhagyni nem tud**.
+Koordinátor: mindent lát, jóváhagy, programgazdák + Beállítások. Admin-felhasználók: csak szuperadmin.
+Saját szerepkörét senki nem állíthatja át (kizárás ellen).
+
 **Programlista + jóváhagyási sor — kész helyben (2026-10-13).** `ProgramItems\ProgramItemResource`
 (`/admin/programok`, a menü első pontja, jelvény: hány vár jóváhagyásra). Fülek: Teendő (alap) ·
 Közzétéve · Mind; szűrők: állapot, kategória (elsődleges), helyszín, nap, fotó, elavult fordítás.
@@ -279,12 +303,10 @@ jóváhagyási levél pár másodperc alatt megérkezett a programgazda postafi�
 
 ### Feljegyezve a későbbi fázisokra (tulajdonosi rögzítés, 2026-10-13)
 
-- **KÖVETKEZŐ LÉPÉS: sor-szintű jog (kategóriagazda) — KÜLÖN lépés, mert szerepkörök is kellenek hozzá.**
-  Ma minden admin-fiók teljes jogú, ezért a programlista most nem szivárogtat. A szűkítés helye: a
-  `ProgramItem` modell **globális scope**-ja (a lista, a globális kereső, a kapcsolat-kezelők és a
-  fotó-útvonal mind a modellen át kérdez — külön kód nélkül szűkülnek). A scope CSAK a `web` őr
-  kategóriagazdájára hathat — a beküldő (`bekuldo` őr) saját programjait nem szűkítheti el. Export/import
-  ma nincs; ha lesz, az import soronként is ellenőrizzen (a Filament `ImportAction` alapból nem teszi).
+- **Export, import, helyszín-lap (kapcsolat-kezelő) MÉG NINCS.** A szűkítés modell-szintű, tehát
+  ezekre is hatni fog — de amikor elkészülnek, a kategóriagazda fiókjával böngészőből is végig kell
+  próbálni őket (a `SorSzintuJogTest` mintájára tesztet is kapnak), és lásd a 4. pont sorba tett
+  feladatokra vonatkozó figyelmeztetését.
 - **Napi automatikus adatbázis-mentés — ÁPRILISIG KÖTELEZŐ** (`ATALLAS-TERV.md` kockázati pont). Amint
   valódi beküldések érkeznek, működnie kell (cPanel backup + letöltés a NAS-ra). Még nem sürgős, de
   nem csúszhat a beküldés megnyitása utánra.

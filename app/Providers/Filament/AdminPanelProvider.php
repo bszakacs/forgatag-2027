@@ -33,6 +33,9 @@ class AdminPanelProvider extends PanelProvider
             // KIZÁRÓLAG az admin-felhasználók őre (users tábla). A programbeküldők a 'bekuldo' őrrel,
             // külön jelszótárból lépnek be — az ő fiókjukkal ide belépni nem lehet (CLAUDE.md 2. fázis, 2.7).
             ->authGuard('web')
+            // Szigorú jogosultság: policy nélküli modell lapja NEM nyílik meg mindenkinek, hanem hibával áll meg
+            // (app/Policies — az alap mindent tilt, amit a szerepkör-mátrix, App\Enums\UserRole, meg nem enged).
+            ->strictAuthorization()
             ->colors([
                 'primary' => Color::Amber,
             ])

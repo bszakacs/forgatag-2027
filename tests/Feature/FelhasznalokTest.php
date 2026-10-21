@@ -38,7 +38,7 @@ class FelhasznalokTest extends TestCase
         Mail::fake();
         Category::create(['slug' => 'borkert', 'name_hu' => 'Borkert', 'sort' => 1]);
         Category::create(['slug' => 'tekaforgatag', 'name_hu' => 'TékaForgatag', 'sort' => 2]);
-        $this->admin = User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo-hosszu']);
+        $this->admin = User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo-hosszu', 'role' => 'superadmin']);
     }
 
     /** @return array{0: SzovegesLevel, 1: string} az elküldött levél és a törzse */
@@ -161,7 +161,7 @@ class FelhasznalokTest extends TestCase
 
     public function test_admin_sajat_magat_nem_torolheti(): void
     {
-        $masik = User::create(['name' => 'Másik', 'email' => 'masik@forgatag.test', 'password' => 'masik-jelszo-hosszu']);
+        $masik = User::create(['name' => 'Másik', 'email' => 'masik@forgatag.test', 'password' => 'masik-jelszo-hosszu', 'role' => 'superadmin']);
         $this->actingAs($this->admin);
         Livewire::test(EditUser::class, ['record' => $this->admin->getKey()])->assertActionHidden('delete');
         Livewire::test(EditUser::class, ['record' => $masik->getKey()])->assertActionVisible('delete');

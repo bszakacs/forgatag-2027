@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\RowRestrictedChild;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProgramOccurrence extends Model
 {
+    use RowRestrictedChild;
+
     protected $fillable = ['program_item_id', 'date', 'start_time', 'end_time', 'note'];
 
     protected function casts(): array

@@ -11,6 +11,7 @@ use App\Models\ProgramReviewEvent;
 use App\Models\User;
 use App\Support\BekuldesLevelek;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * A jóváhagyási sor lépései, EGY helyen (az admin gombjai csak ezt hívják):
@@ -134,6 +135,13 @@ class ProgramReview
     {
         return DB::transaction(function () use ($program, $user, $action, $to, $refuse, $note) {
             $p = ProgramItem::whereKey($program->id)->lockForUpdate()->firstOrFail();
+            // A jog itt is (nem csak a gomb láthatóságában): közzétenni csak a jóváhagyó tud (ProgramItemPolicy).
+            $jog = $action === ReviewAction::Approved ? 'approve' : 'review';
+            if (Gate::forUser($user)->denies($jog, $p)) {
+                throw new ReviewStepRefused($jog === 'approve'
+                    ? 'Jóváhagyni csak a programkoordinátor tud. Te jóváhagyásra küldheted vagy visszaküldheted.'
+                    : 'Ehhez a programhoz nincs jogosultságod.');
+            }
             if (($ok = $refuse($p)) !== null) {
                 throw new ReviewStepRefused($ok);
             }

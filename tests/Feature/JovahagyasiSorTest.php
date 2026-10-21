@@ -59,7 +59,7 @@ class JovahagyasiSorTest extends TestCase
         $this->borkert = Category::create(['slug' => 'borkert', 'name_hu' => 'Borkert', 'sort' => 1]);
         $this->teka = Category::create(['slug' => 'tekaforgatag', 'name_hu' => 'TékaForgatag', 'sort' => 2]);
         $this->var = Venue::create(['slug' => 'var', 'name' => 'Vár']);
-        $this->admin = User::create(['name' => 'Koordinátor', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo-hosszu']);
+        $this->admin = User::create(['name' => 'Koordinátor', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo-hosszu', 'role' => 'superadmin']);
         $this->beku = ProgramManager::create(['name' => 'Teleki Téka', 'email' => 'teka@example.test', 'password' => 'titok-jelszo', 'active' => true]);
         $this->beku->categories()->attach([$this->borkert->id, $this->teka->id]);
     }

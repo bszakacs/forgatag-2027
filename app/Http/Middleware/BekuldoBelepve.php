@@ -29,6 +29,10 @@ class BekuldoBelepve
                 : redirect()->guest(route('bekuldes.belepes'));
         }
 
+        // A kérés további részében a programgazda a „felhasználó” — egy ugyanabban a böngészőben belépett
+        // admin-fiók sor-szintű szűkítése (RowAccess) itt nem hathat a programgazda saját programjaira.
+        Auth::shouldUse('bekuldo');
+
         return $next($request);
     }
 }

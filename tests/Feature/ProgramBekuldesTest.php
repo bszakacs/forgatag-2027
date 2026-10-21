@@ -307,7 +307,7 @@ class ProgramBekuldesTest extends TestCase
 
     public function test_beallitasok_lap_figyelmeztet_ha_nincs_ertesitesi_cim(): void
     {
-        $admin = User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo']);
+        $admin = User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo', 'role' => 'superadmin']);
         $this->actingAs($admin)->get('/admin/beallitasok')->assertOk()->assertDontSee('nincs koordinátori értesítési cím');
         Settings::save(['notifications' => array_replace(Settings::block('notifications'), ['topics' => ['program_submission' => []]])]);
         $this->actingAs($admin)->get('/admin/beallitasok')->assertOk()->assertSee('nincs koordinátori értesítési cím');
@@ -316,7 +316,7 @@ class ProgramBekuldesTest extends TestCase
     public function test_ertesitesi_cim_enter_nelkul_is_mentodik(): void
     {
         // 2026-10-12, élesben: a címke-mezőbe Enter nélkül beírt cím mentéskor némán elveszett.
-        $this->actingAs(User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo']));
+        $this->actingAs(User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'admin-jelszo', 'role' => 'superadmin']));
         \Livewire\Livewire::test(\App\Filament\Pages\Beallitasok::class)
             ->set('data.notifications.topics.program_submission', "koord@forgatag.test, masik@forgatag.test\n")
             ->call('save')

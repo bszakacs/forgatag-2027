@@ -7,6 +7,8 @@ use App\Enums\ProgramSource;
 use App\Enums\ProgramStatus;
 use App\Enums\ReviewAction;
 use App\Enums\TranslationStatus;
+use App\Models\Scopes\ProgramScope;
+use App\Models\Scopes\RowAccess;
 use App\Support\BekuldesLevelek;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -50,6 +52,17 @@ class ProgramItem extends Model
 
     protected static function booted(): void
     {
+        // SOR-SZINTŰ JOG (CLAUDE.md 4.): olvasásra a globális scope, írásra/törlésre az őr — modell-szinten,
+        // tehát minden felületre (lista, kereső, kapcsolatok, közvetlen cím, fotó, export, import) egyszerre.
+        static::addGlobalScope(new ProgramScope);
+        static::saving(function (self $program): void {
+            RowAccess::assertCategory($program->category_id);
+            if ($program->exists && $program->isDirty('category_id')) {
+                RowAccess::assertCategory($program->getOriginal('category_id')); // idegenből se lehessen „áthozni”
+            }
+        });
+        static::deleting(fn (self $program) => RowAccess::assertCategory($program->getOriginal('category_id')));
+
         // A slug a címből EGYSZER készül, és utána nem változik (a megosztott linkek ne törjenek el).
         static::creating(function (self $program): void {
             if (blank($program->slug)) {

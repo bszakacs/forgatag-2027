@@ -40,7 +40,7 @@ Artisan::command('forgatag:admin', function () {
         return 1;
     }
 
-    \App\Models\User::create(['name' => 'Admin', 'email' => $email, 'password' => $jelszo]);
+    \App\Models\User::create(['name' => 'Admin', 'email' => $email, 'password' => $jelszo, 'role' => \App\Enums\UserRole::SuperAdmin]);
     $this->info("ADMIN: {$email} letrehozva. Most torold az ADMIN_PASSWORD sort a .env-bol.");
 
     return 0;

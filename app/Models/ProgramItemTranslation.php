@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Enums\TranslatableField;
 use App\Enums\TranslationStatus;
+use App\Models\Concerns\RowRestrictedChild;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProgramItemTranslation extends Model
 {
+    use RowRestrictedChild;
+
     protected $fillable = [
         'program_item_id', 'locale', 'field', 'translated_text', 'source_text_hash', 'status', 'check_note',
     ];

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ProgramStatus;
 use App\Enums\ReviewAction;
+use App\Models\Concerns\RowRestrictedChild;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use LogicException;
@@ -11,6 +12,8 @@ use LogicException;
 /** A jóváhagyási napló egy sora. APPEND-ONLY: módosítani és törölni nem lehet. */
 class ProgramReviewEvent extends Model
 {
+    use RowRestrictedChild;
+
     public const UPDATED_AT = null;
 
     protected $fillable = [

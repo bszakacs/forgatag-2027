@@ -12,6 +12,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * Egy program lapja = a jóváhagyás helye. Fent a figyelmeztetések (miért nem hagyható jóvá,
@@ -37,7 +38,7 @@ class ViewProgramItem extends ViewRecord
     {
         return [
             Action::make('jovahagy')->label('Jóváhagyás és közzététel')->color('success')->icon('heroicon-o-check-circle')
-                ->visible(fn () => ProgramReview::canApprove($this->program()))
+                ->visible(fn () => ProgramReview::canApprove($this->program()) && Gate::allows('approve', $this->program()))
                 ->disabled(fn () => ProgramReview::approvalBlockers($this->program()) !== [])
                 ->tooltip(fn () => ProgramReview::approvalBlockers($this->program()) !== [] ? 'Előbb a lap tetején jelzett hiányokat kell pótolni.' : null)
                 ->requiresConfirmation()
@@ -60,7 +61,7 @@ class ViewProgramItem extends ViewRecord
                 })),
 
             Action::make('kuld')->label('Jóváhagyásra küldés')->color('warning')->icon('heroicon-o-arrow-up-circle')
-                ->visible(fn () => ProgramReview::canSendToReview($this->program()))
+                ->visible(fn () => ProgramReview::canSendToReview($this->program()) && Gate::allows('review', $this->program()))
                 ->requiresConfirmation()
                 ->modalHeading('Jóváhagyásra küldöd?')
                 ->modalDescription('Átnézted, rendben van — a jóváhagyó a „Jóváhagyásra vár” sorban látja. A beküldő a jóváhagyásig még javíthat.')
@@ -71,7 +72,7 @@ class ViewProgramItem extends ViewRecord
                 })),
 
             Action::make('vissza')->label('Visszaküldés javításra')->color('danger')->outlined()->icon('heroicon-o-arrow-uturn-left')
-                ->visible(fn () => ProgramReview::canReturn($this->program()))
+                ->visible(fn () => ProgramReview::canReturn($this->program()) && Gate::allows('review', $this->program()))
                 ->modalHeading('Visszaküldés javításra')
                 ->modalDescription(fn () => 'A beküldő (' . $this->program()->contact_email . ') levelet kap az indokkal és a javítás linkjével. A program vázlat lesz.'
                     . (Submission::isOpen() ? '' : ' FIGYELEM: a programbeküldés most ZÁRVA van, ezért a beküldő a felületen nem tud javítani — a levél arra kéri, hogy válaszoljon.'))

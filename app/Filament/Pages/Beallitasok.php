@@ -48,6 +48,14 @@ class Beallitasok extends Page
     /** @var array<string, mixed> */
     public ?array $data = [];
 
+    /** Szuperadmin és koordinátor (App\Enums\UserRole::canEditSettings). */
+    public static function canAccess(): bool
+    {
+        $u = auth('web')->user();
+
+        return $u instanceof \App\Models\User && $u->role->canEditSettings();
+    }
+
     public function mount(): void
     {
         $this->form->fill(array_intersect_key(Settings::all(), array_flip(self::BLOKKOK)));
