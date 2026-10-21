@@ -73,9 +73,12 @@ Benne: `OLVASS-EL.txt`, `SHA256SUMS.txt` (1097 fájl). **Személyes adatot tarta
 **Napló, működés:**
 13. A **jóváhagyási és változási napló üres** (`approval_log`, `change_log` = 0) — 2026-ban nem írt bele semmi;
     ki-mikor-hagyta-jóvá adat nincs.
-14. A téma utolsó publikálása **gépi próba**: `schema-bot`, 2026-09-02, megjegyzés: „nyelvváltó — végpontok közötti
-    próba”. Előtte 4 előzmény-verzió van benne (2026-08-26 … 09-02); hogy a bot-publikálás tartalmilag
-    egyezik-e az utolsó emberivel, NEM ellenőriztem.
+14. A téma utolsó KÉT publikálása **gépi próba** (`schema-bot`, 2026-09-02 12:50 és 13:04, „nyelvváltó —
+    végpontok közötti próba”). **Mezőnként összevetve (2026-10-21):** az öt megőrzött verzió (08-26 22:14,
+    08-27 09:56, 09-02 11:56, 12:50, 13:04 — mind 88 mező) között **csak a `version` számláló változott**
+    (7 → 11); minden más érték betűre azonos. A `header.showLangSwitch` mind az ötben `true` — a gépi
+    próba a nyelvváltót sem állította át, semmit nem változtatott. **Az aktuális verzió átvehető.**
+    Ami a 08-26-i előtt volt, az nincs meg (az előzmény csak 4 verziót őriz).
 15. **A NAS napi mentésében rejtett hiba:** `pg_dump | gzip` — a sikert a gzip adja vissza, nem a pg_dump, ezért
     egy félbeszakadt mentés is „kész”-nek látszhat. A mostani mentés ép (zárójel + visszatöltés), de a régiekre ez nem garancia.
 16. A Portik SSH-felhasználó a NAS-on **már nem futtathat Docker-parancsot** (júliusban még tudott) —
