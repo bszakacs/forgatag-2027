@@ -34,3 +34,5 @@ Thumbs.db
 /php.ini
 # A tarhely PHP-ja barhol letrehozhat "error_log" fajlt, ahol hiba tortent.
 error_log
+# A tema generalt CSS-e es feltoltott fajljai (App\Support\Theme) — a szerveren keletkeznek, nem a taroloban.
+/public/arculat/

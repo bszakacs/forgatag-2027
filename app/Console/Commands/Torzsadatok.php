@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 
 use App\Models\Category;
 use App\Models\SponsorTier;
+use App\Models\ThemeVersion;
 use App\Models\Venue;
 use App\Support\Settings;
+use App\Support\Theme;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -14,7 +16,7 @@ use RuntimeException;
 
 /**
  * A kezdő tartalom betöltése a seed/ mappából (CLAUDE.md 2/b): beállítások, kategóriák,
- * helyszínek, szponzorszintek.
+ * helyszínek, szponzorszintek, a kezdő téma.
  *
  * CSAK ÜRES TÁBLÁBA ír (a beállításoknál: csak a hiányzó blokkot). Ha egy táblában már van adat, ahhoz nem nyúl — így az adminban törölt
  * vagy átírt sor soha nem jön vissza (2026-ban a menü-feltöltés épp ezt csinálta).
@@ -31,6 +33,7 @@ class Torzsadatok extends Command
             $this->betolt('kategóriák', Category::class, fn () => $this->kategoriak());
             $this->betolt('helyszínek', Venue::class, fn () => $this->helyszinek());
             $this->betolt('szponzorszintek', SponsorTier::class, fn () => $this->szponzorszintek());
+            $this->betolt('téma', ThemeVersion::class, fn () => $this->tema());
         } catch (RuntimeException $e) {
             $this->error('TÖRZSADATOK: ' . $e->getMessage());
 
@@ -126,6 +129,14 @@ class Torzsadatok extends Command
         }
 
         return count($sorok);
+    }
+
+    /** A kezdő téma (seed/tema/) — lásd Theme::importSeed. */
+    private function tema(): int
+    {
+        Theme::importSeed('forgatag:torzsadatok');
+
+        return 1;
     }
 
     /**

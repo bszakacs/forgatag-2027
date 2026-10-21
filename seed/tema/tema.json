@@ -1,0 +1,192 @@
+{
+  "_forras": "A 2026-os rendszer UTOLSO publikalt temaja (schema-bot, 2026-09-02T13:04:01.944Z, 2026-os verzio: 11). Mentes: MENTES-2026/2026-10-21/tema/theme-data.json. Atalakitas: a Komponensek szekcio megszunt (a MA jelveny szinei -> colors.badgeMaBg/badgeMaFg, a fejlec-uveghatas -> header.navbarBlur, a chat-gomb kapcsoloja kimaradt); az assets es a doodles.motifs a seed/tema/fajlok/ fajlneveit adja (a betoltes valodi feltoltott fajlla teszi oket); a version/_fgv/meta helyett a theme_versions tabla sora a verzio.",
+  "name": "Gyári — Amphora",
+  "glow": {
+    "blur": 80,
+    "alpha": {
+      "dark": 0.5
+    }
+  },
+  "logo": {
+    "headerSize": 118,
+    "headerSizeMobile": 84
+  },
+  "type": {
+    "body": "Hanken Grotesk",
+    "head": "Tingler Print",
+    "scale": 1,
+    "accent": "Tingler Print",
+    "headWdth": 100,
+    "headWght": 400,
+    "headTracking": -0.015
+  },
+  "shape": {
+    "rLap": 32,
+    "rCard": 20,
+    "rField": 14,
+    "borderW": 1
+  },
+  "space": {
+    "density": "default",
+    "contentMax": 1180
+  },
+  "assets": {
+    "logo": "logo.png",
+    "logoHeader": "logo-fejlec.png",
+    "favicon": "favicon.png"
+  },
+  "colors": {
+    "bg": {
+      "dark": "#322D55"
+    },
+    "fg": {
+      "dark": "#F6F1E9"
+    },
+    "ok": {
+      "dark": "#8DC63F"
+    },
+    "card": {
+      "dark": "#2C2560"
+    },
+    "line": {
+      "dark": "rgba(255,255,255,.10)"
+    },
+    "warn": {
+      "dark": "#F2C31C"
+    },
+    "focus": {
+      "dark": "#FFB84D"
+    },
+    "lapBg": {
+      "dark": "#FFFFFF"
+    },
+    "lapFg": {
+      "dark": "#221C47"
+    },
+    "panel": {
+      "dark": "#2C2560"
+    },
+    "accent": {
+      "dark": [
+        "#FFB84D",
+        "#F5911E",
+        "#E37A0C"
+      ],
+      "angle": 135
+    },
+    "danger": {
+      "dark": "#E13E42"
+    },
+    "groups": {
+      "zene": {
+        "dark": "#E5389E"
+      },
+      "sport": {
+        "dark": "#3AA0E0"
+      },
+      "csaladi": {
+        "dark": "#F2C31C"
+      },
+      "gasztro": {
+        "dark": "#E03A3E"
+      },
+      "kozelet": {
+        "dark": "#F5911E"
+      },
+      "szinhaz": {
+        "dark": "#6B4FBB"
+      },
+      "tudomany": {
+        "dark": "#8DC63F"
+      }
+    },
+    "bgRaise": {
+      "dark": "#36315D"
+    },
+    "fgFaint": {
+      "dark": "#867EAD"
+    },
+    "fgMuted": {
+      "dark": "#B4ADD6"
+    },
+    "lapCard": {
+      "dark": "#FFFFFF"
+    },
+    "lapLine": {
+      "dark": "rgba(30,20,70,.08)"
+    },
+    "lapMuted": {
+      "dark": "#6A6390"
+    },
+    "cardHover": {
+      "dark": "#37306F"
+    },
+    "lineStrong": {
+      "dark": "rgba(255,255,255,.18)"
+    },
+    "accentContrast": {
+      "dark": "#2A1C04"
+    },
+    "accentGradFrom": {
+      "dark": "#FFC661"
+    },
+    "badgeMaBg": {
+      "dark": "#FFAE4D"
+    },
+    "badgeMaFg": {
+      "dark": "#2A1206"
+    }
+  },
+  "header": {
+    "ctaLabel": {
+      "hu": "",
+      "ro": ""
+    },
+    "showSearch": false,
+    "showLangSwitch": true,
+    "navbarBlur": 16
+  },
+  "motion": {
+    "dur1": 0.22,
+    "dur2": 0.65,
+    "level": "full",
+    "stagger": 80,
+    "pulseDur": 1.8,
+    "doodleFloat": true
+  },
+  "social": {
+    "tiktok": "",
+    "youtube": "https://www.youtube.com/channel/UCKwGlz-GOb2sfitTVPVxuKw",
+    "facebook": "https://www.facebook.com/forgatag",
+    "instagram": "https://www.instagram.com/forgatag/"
+  },
+  "doodles": {
+    "zones": {
+      "hero": true,
+      "noPhotoCards": true
+    },
+    "density": "default",
+    "opacity": 0.72,
+    "palette": {
+      "red": "#E03A3E",
+      "blue": "#3AA0E0",
+      "lime": "#8DC63F",
+      "pink": "#E5389E",
+      "green": "#3E7D2C",
+      "orange": "#F5911E",
+      "purple": "#6B4FBB",
+      "yellow": "#F2C31C"
+    },
+    "motifs": [
+      "firka-1.svg",
+      "firka-2.svg",
+      "firka-3.svg",
+      "firka-4.svg",
+      "firka-5.svg",
+      "firka-6.svg"
+    ]
+  },
+  "analytics": {
+    "gtmId": "GTM-NL935857"
+  }
+}

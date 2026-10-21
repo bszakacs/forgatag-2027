@@ -1,5 +1,14 @@
 # Vásárhelyi Forgatag 2027 — Forgatag OS v2
 
+> ## 📍 ELŐSZÖR AZ `ALLAPOT.md`-T OLVASD EL
+> Abban van, hol tartunk, mi készült el, mi a következő lépés, és mik a nyitott pontok.
+> **Ez a fájl a szabályokat tartalmazza, az `ALLAPOT.md` az állapotot.** Ne a mappát analizáld
+> végig — ebből a két fájlból kiderül minden, és onnan tudod, melyik további dokumentum kell.
+>
+> 🔴 **Minden kör VÉGÉN frissítsd az `ALLAPOT.md`-t.** Ez nem opcionális. A 2026-os `HANDOFF.md`
+> azért vált használhatatlanná, mert senki nem frissítette, és a végén rossz irányba küldte
+> volna a munkát.
+
 Fesztivál-operációs rendszer a Vásárhelyi Forgataghoz (magyar közösségi fesztivál,
 Marosvásárhely/Târgu Mureș). **A felhasználó (Portik) magyarul dolgozik és nem fejlesztő** —
 magyarázz laikusbarátan, tömören, magyarul. Döntéskérő dokumentumot ne írj: ahol részletkérdés
@@ -104,6 +113,35 @@ egy hiányzó funkció.
 
 **Rokon dolgok menücsoportba kerülnek, nem külön menüpontokba.** Például a „Felhasználók" csoport
 alatt az admin-felhasználók és a programgazdák. Egy csoport két eleme nem két menüpont.
+
+## 2/c. A téma (`/tema`) — döntések a 2026-os tapasztalat alapján
+
+🔴 **NINCS láthatatlan beépített alapérték.** Amit az oldal használ — logó, fejléc-logó, favicon,
+firka-motívumok —, az **valódi, feltöltött fájl** legyen az első perctől, és **látszódjon a
+szerkesztőben**.
+
+**Miért:** 2026-ban a téma logó-mezője üres volt, miközben az oldalon végig ott volt a logó, mert a
+kódból jött. Ugyanez a firkáknál: a hat hely üres, a kiment motívumok beépítettek. Következmény:
+**a szerkesztőből nem lehetett megtudni, mi van valójában kint.** Ez egyszerre sérti az „egy forrás"
+és a „néma hiba tilos" szabályt.
+
+**Teendő induláskor:** a 2026-os logót és a beépített firka-motívumokat **rendes feltöltésként**
+töltsük be a témába. Onnantól cserélhetők.
+
+**A favicon átvehető** a 2026-os témából — de a tárolt értéke ma **teljes címmel a NAS-ra mutat**
+(`https://admin.forgatag.ro/assets/…`), ami a NAS nélkül eltörik. Importkor saját fájllá kell tenni.
+
+**A „Komponensek" szekció KIMARAD** (tulajdonosi döntés, 2026-10-21). Két dolog volt benne, és
+gyűjtőfiók maradt: a chat-gomb kapcsolója a chatbot többi beállításához kerül, a „MA" jelvény
+háttérszíne pedig a színek közé.
+
+**A „Mozgás" szekció marad.** Ez szabályozza a kártyák felúszását, a gombok reakciósebességét,
+a „MA" jelvény lüktetését és a firkák lebegését, három fokozattal. Valódi haszna, hogy mozgásra
+érzékeny látogatóknak levehető.
+
+**Melyik téma-verziót vettük át — ELDÖNTVE (tulajdonosi döntés, 2026-10-21):** a LEGUTOLSÓ
+publikáltat (`schema-bot`, 2026-09-02 13:04). Az öt megőrzött verzió mezőnként azonos volt (csak a
+`version` számláló változott) — lásd `MENTES-LELTAR.md` 14. Megépítve: lásd a 8. pont „Téma-alap” bekezdését.
 
 ## 3. Állandó szabályok
 
@@ -233,7 +271,7 @@ Fotó: nem nyilvános tár (`storage/app/private/bekuldesek/`, `program_items.ph
 ha nem megy, a program nem jön létre (+ koordinátori levél). Levelek: `App\Support\BekuldesLevelek` →
 `Notifier` (soha nem dob: a mentés utáni levélhiba nem lehet „sikertelen beküldés”). Jóváhagyási levél:
 `ProgramItem::updated` (draft/pending → published). Korlát: `throttle:bekuldes` (30/óra/IP), belépés 5 hiba → 15 perc.
-A publikus lapok téma-tokenjei IDEIGLENESEN `public/css/tema.css` (amíg a /tema nem publikál).
+A lapok szín/betű/forma/mozgás tokenjei a publikált témából jönnek (lásd „Téma-alap”).
 Tesztek: `tests/Feature/ProgramBekuldesTest.php` — a `vendor/` dev-csomagok nélkül van a tárolóban, ezért a
 tesztet a konténerben egy másolatban futtatjuk (`/tmp/proj`, ott `composer install`), a `vendor/`-hoz nem nyúlunk.
 **Élesben mérve (proba.forgatag.ro, 2026-10-12):** a levél kimegy (SMTP `noreply@forgatag.ro`,
@@ -280,10 +318,32 @@ Szerkesztés és új program felvitele az adminban: még NINCS (későbbi kör).
 jóváhagyás) működik; a fotó az admin program-lapján látszik; a gomb zöld visszajelzést adott, és a
 jóváhagyási levél pár másodperc alatt megérkezett a programgazda postafiókjába.
 
+**Téma-alap — kész helyben (2026-10-21).** A téma mint ADATFORRÁS; a `/tema` szerkesztő még NINCS
+(addig a téma módosítása fejlesztői feladat: `Theme::publish(...)`).
+- **Adat:** `theme_versions` tábla, APPEND-ONLY (`App\Models\ThemeVersion`); a LEGUTOLSÓ sor a kint lévő
+  téma. Kezdőérték: `seed/tema/tema.json` + `seed/tema/fajlok/` — a `forgatag:torzsadatok` tölti be
+  (`Theme::importSeed`, csak üres táblába). A 2026-os adathoz képest: a „Komponensek” megszűnt
+  (`colors.badgeMaBg`/`badgeMaFg`, `header.navbarBlur`; a chat-gomb kapcsolója kimaradt), a firkák
+  `doodles.motifs` (6 fájl, a 2026-os `custom` helyett), a `version/_fgv/meta` helyett a tábla sora.
+- **CSS:** `App\Support\ThemeCss::generate` (a 2026-os `themeToCss` átirata, SZIGORÚ: hiányzó kötelező
+  mező → hiba, nincs tartalék). Fájlba íródik: `public/arculat/tema-<a CSS tartalmának lenyomata>.css`
+  — bármilyen változás (adat VAGY generátor-kód) új fájlnevet ad, a gyorsítótár magától frissül.
+  Ha a fájl hiányzik, az első kérés kiírja (`Theme::cssUrl`). Téma nélkül a lap 500-zal áll meg.
+- **Fájlok:** logó, fejléc-logó, favicon, 6 firka = valódi fájl a `public/arculat/fajlok/` alatt,
+  lenyomatos névvel (`Theme::storeAsset`; az SVG tisztítva). A téma-adat csak ilyen helyi útvonalat
+  fogadhat el; `admin.forgatag.ro`/`elo.forgatag.ro` a publikáláskor tiltott. A `public/arculat/`
+  a `.gitignore`-ban van (a szerveren keletkezik — nem piszkítja a munkafát).
+- **Olvasók:** `Theme::cssUrl()`, `assetUrl('logo'|'logoHeader'|'favicon')`, `motifSvg(0–5)`,
+  `fontPreloads()`, `get('colors.bg.dark')`. Betűk: `ThemeCss::FONTS` (csak önhostolt). A firka-dekor
+  jelölése a lapokon: `[data-decor="hero"|"ambient"]` réteg + `.decor` elem (a téma sűrűség/mozgás
+  beállítása erre hat).
+- Tesztek: `tests/Feature/TemaTest.php`; a `tests/TestCase.php` minden adatbázisos tesztnek betölti a
+  kezdő témát (hamis arculati tárba).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
-1. **`public/css/tema.css` IDEIGLENES.** Amikor a /tema elkészül, ennek **nyomtalanul** el kell tűnnie:
-   minden szín a publikált témából jön (token-szabály). Ne maradjon második forrás.
+1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a
+   generált téma-CSS-ből dolgozik (lásd „Téma-alap”).
 2. **A beküldő űrlapról hiányzik a világos/sötét váltó** (2026-ban volt ◐). Ez visszalépés — a /tema
    fázisában pótolni kell.
 

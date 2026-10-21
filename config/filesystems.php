@@ -30,6 +30,17 @@ return [
 
     'disks' => [
 
+        // A téma (arculat) fájljai: generált CSS + feltöltött logó, favicon, firkák (App\Support\Theme).
+        // Közvetlenül a public/ alatt (nincs storage:link-symlink); a .gitignore-ban van, tehát a
+        // szerveri munkafát nem „piszkítja” (a cPanel-deploy nem akad el rajta).
+        'arculat' => [
+            'driver' => 'local',
+            'root' => public_path('arculat'),
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
