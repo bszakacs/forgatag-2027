@@ -18,11 +18,14 @@ use Illuminate\Contracts\Support\Htmlable;
  */
 enum NavigationGroup: string implements HasIcon, HasLabel
 {
+    // A sorrend a menü sorrendje (a Filament a felsorolás sorrendjében rakja ki a csoportokat).
+    case Mediatar = 'mediatar';
     case Felhasznalok = 'felhasznalok';
 
     public function getLabel(): string
     {
         return match ($this) {
+            self::Mediatar => 'Médiatár',
             self::Felhasznalok => 'Felhasználók',
         };
     }
@@ -30,6 +33,7 @@ enum NavigationGroup: string implements HasIcon, HasLabel
     public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return match ($this) {
+            self::Mediatar => Heroicon::OutlinedPhoto,
             self::Felhasznalok => Heroicon::OutlinedUsers,
         };
     }

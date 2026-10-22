@@ -32,7 +32,10 @@ class Torzsadatok extends Command
             $this->beallitasok();
             $this->betolt('kategóriák', Category::class, fn () => $this->kategoriak());
             $this->betolt('helyszínek', Venue::class, fn () => $this->helyszinek());
-            $this->betolt('szponzorszintek', SponsorTier::class, fn () => $this->szponzorszintek());
+            // Csak az év nélküli (2027-es kezdő) szintek számítanak: a 2026-ból behozott szintek (year=2026,
+            // forgatag:mediatar-import) ne akadályozzák meg a kezdőlista betöltését.
+            $this->betolt('szponzorszintek', SponsorTier::class, fn () => $this->szponzorszintek(),
+                fn () => SponsorTier::whereNull('year')->count());
             $this->betolt('téma', ThemeVersion::class, fn () => $this->tema());
         } catch (RuntimeException $e) {
             $this->error('TÖRZSADATOK: ' . $e->getMessage());
@@ -44,9 +47,9 @@ class Torzsadatok extends Command
     }
 
     /** @param class-string<\Illuminate\Database\Eloquent\Model> $model */
-    private function betolt(string $nev, string $model, callable $tolto): void
+    private function betolt(string $nev, string $model, callable $tolto, ?callable $szamlalo = null): void
     {
-        $meglevo = $model::count();
+        $meglevo = $szamlalo ? $szamlalo() : $model::count();
         if ($meglevo > 0) {
             $this->line("TÖRZSADATOK: {$nev} — már van {$meglevo} sor, nem nyúltam hozzá.");
 

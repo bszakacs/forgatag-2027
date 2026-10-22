@@ -200,6 +200,14 @@ szabályra, és részben kiváltja a fókuszpontot.
 - **A még jóvá nem hagyott beküldött fotó a ZÁRT tárban marad.** Jóváhagyáskor kerül át a médiatárba.
   **Így egy visszautasított program fotója sosem lesz nyilvánosan elérhető.**
 
+### A 2026-os programborítók — „Programok 2026” (tulajdonosi döntés, 2026-10-22)
+A 241 borító **NEM** programhoz kötve jön át (a 2026-os programok nem jönnek át, 7. pont), hanem a külön
+**„Programok 2026”** gyűjteménybe, eredet-jelöléssel és a jogállás-adataival. Külsős fotók, „minden jog
+fenntartva” — a jogot a tavalyi programra adták: **2027-es programhoz NEM rendelhetők** (modell-őr:
+`ProgramItem::saving`). Megőrizzük, mert egy visszatérő programgazda kérheti ugyanazt a képet.
+
+**Megépítve: lásd a 8. pont „Médiatár” bekezdését.**
+
 ## 3. Állandó szabályok
 
 - **Token-szabály:** oldalra/komponensre szűkített `:root`-felülírás **TILOS**. Minden téma-tulajdonú
@@ -317,7 +325,7 @@ csak a hiányzó blokkot hozza létre).
 Értesítési témák: `App\Enums\NotificationTopic` (a téma kód, a címek a Beállításokban).
 Admin-lapok közös alapja: `App\Filament\Resources\Resource`; a gombok magyar címe az `AppServiceProvider`-ben.
 
-Később jön: médiatár (nyitott kérdés), szerepkörök + napló (4. fázis), szponzorok logóval.
+A médiatár, a galériák és a támogatók (logóval) elkészültek — lásd lent, „Médiatár”.
 **A 2/b elv miatt még átköltözik:** a védett nevek (`do-not-translate.json` → tábla, a fordítási fázisban).
 
 **2. Programbeküldő űrlap — kész helyben (2026-10-12).** `/bekuldes` (belépés: `/bekuldes/belepes`).
@@ -425,6 +433,50 @@ menüpont: „Arculat” — kivételes saját menüpont, PROMPT-06), 11 szekci�
 - Tesztek: `tests/Feature/TemaSzerkesztoTest.php` (jog szerepkörönként külön futásban — egy teszten belüli
   felhasználóváltást az `AuthenticateSession` kiléptetésnek venné).
 
+**Médiatár — kész helyben, a 2026-os képanyaggal (2026-10-22, PROMPT-07).** Döntések: 2/d.
+- **Csomag:** Curator 5.6 (`awcodes/filament-curator`). Beállítás: `config/curator.php` (lemez, a mi
+  modellünk/lapjaink). A Glide-kulcs: `CURATOR_GLIDE_TOKEN`, ha nincs, az `APP_KEY`-ből származtatva — így
+  egy környezet sem indulhat nélküle, és titok nem kerül a tárolóba.
+- **Tárolás:** `mediatar` lemez = `public/mediatar/` (nyilvános, symlink nélkül; `.gitignore`-ban, csak a
+  szkript-tiltó `.htaccess` van a tárolóban). Méretváltozatok: `/curator/...` (Glide, gyorsítótár:
+  `storage/app/.cache`). A 16 MP fölötti képekhez ezen az útvonalon 512 MB memória (`AppServiceProvider`).
+  **A tárhelyen GD kell** (Select PHP Version) — a helyi Docker-képbe bekerült (gd, exif).
+- **Modell:** `App\Models\Media` (a Curator `curator` táblája + `rights_holder`, `license`, `photographer_credit`,
+  `origin`, `legacy_id`, `legacy_note`). **Jogállás-őr EGY helyen:** `Media::jogallasHiba()` — `origin=bekuldes`
+  → licenc kötelező, `ismeretlen` tilos, jogtulajdonos kötelező; adminban feltöltött → alapérték „Saját forrás”.
+  **Törlés-őr:** `Media::usages()` (galéria, logó, borító, arculat) — használt kép nem törölhető (policy + modell + FK restrict).
+- **Gyűjtemények:** `media_collections` + pivot. Rendszer-gyűjtemények: `App\Enums\Gyujtemeny` (a kód ezekre hivatkozik,
+  nem törölhetők/nevezhetők át); a felhasználó sajátot is létrehozhat. **„Rendezetlen” = egyetlen gyűjteményben sincs**
+  (nem tárolt). **A gyűjtemény a feltöltés helyéből:** `App\Filament\Forms\MediaPicker::make(...)->gyujtemeny(...)`
+  → `App\Livewire\MediaPanel` (zárolt tulajdonság). ⚠ A Curator a feltöltést `self::createMediaFiles()`-szel hívja,
+  ezért a panel az `addFilesAction` testét veszi át — csomagfrissítéskor összevetendő.
+- **Admin:** „Médiatár” menücsoport (Képek és fájlok · Galériák) + „Támogatók” menüpont. A médiatár lapja:
+  `App\Filament\Mediatar\*` — SZÁNDÉKOSAN a felfedezett `Resources` mappán kívül (a bővítmény regisztrálja; különben
+  kétszer kerülne a menübe). Bal oldalt gyűjtemény-lista (mobilon vízszintes sor), tömeges „Áthelyezés gyűjteménybe” /
+  „Hozzáadás gyűjteményhez” / „Kivétel”. Jog: `UserRole::canManageMedia` (szuperadmin, koordinátor).
+- **Az admin saját témája:** `resources/css/filament/admin/theme.css` → **`npm run admin-tema`** →
+  `public/css/admin-tema.css` (a tárolóban; a szerveren nincs Node). A Curator nézetei Tailwind-osztályokat
+  használnak — **új Filament-nézet/osztály után újra kell fordítani**, különben az új osztály hatástalan.
+  ⚠ A Filament closure-paramétereit NÉV szerint adja (`$query`, `$record`): más névvel üres Builder jön, némán.
+- **Jóváhagyáskor zárt tár → médiatár:** `App\Services\ProgramPhoto::publish` (a `ProgramReview::approve` lépésében,
+  a státuszváltás ELŐTT; ha nem sikerül, a jóváhagyás sem, a levél sem megy). A beküldött eredeti a zárt tárban marad;
+  a program `cover_media_id`-je a médiatár-képre mutat („Programok”, `origin=bekuldes`, „minden jog fenntartva”,
+  jogtulajdonos = a programgazda). A program lapja mutatja, megtörtént-e.
+- **Arculat (6. adósság törlesztve):** a téma fájljai ugyanott maradnak (`public/arculat/fajlok/`), a médiatár egy sort
+  kap róluk (`disk=arculat`, „Arculat” gyűjtemény) — `App\Support\ArculatMedia`, a `Theme::storeAsset` hívja. Nem
+  törölhetők, nem cserélhetők a médiatárból (a /tema-ban cserélhetők).
+- **Galéria, támogató:** `galleries` + `gallery_media` (sorrend), `sponsors` (évhez kötve, `logo_media_id`).
+  `sponsor_tiers.year`: év nélkül = a 2027-es kezdőlista; `2026` = a 2026-os szintek (más nevek!).
+- **A 2026-os behozatal:** `forgatag:mediatar-csomag` (FEJLESZTŐGÉPEN, a mentésből) → `database/import/mediatar-2026.json`
+  (minden fájl sorsa; személyes adat nincs benne) + `import-2026-N.zip`-ek (a mentés mellé, `MENTES-2026/import-csomag/`).
+  `forgatag:mediatar-import` (a TELEPÍTÉS utolsó lépése): a `storage/app/import-2026/` zip-jeiből, sha256-tal
+  ellenőrizve, ismétlés-biztosan (`legacy_id`); a teljesen behozott zip-et törli; számszerű jelentés a médiatár
+  lapján (`storage/app/import-2026/jelentes.json`), hiánynál piros és a parancs hibával lép ki.
+  **Helyben mérve:** 1091 = 1031 médiatár + 26 zárt tár + 34 kihagyott; galéria 467/467, logó 112/112; ~70 mp.
+  A hír-, csapat-, kézműves-, aloldal-képek eredete a `legacy_id`/`legacy_note`-ban — a tartalmi kör ezen köt be.
+- Tesztek: `tests/Feature/MediatarTest.php` (15 teszt: feltöltés-hely → gyűjtemény, áthelyezés, licenc két esete,
+  jóváhagyás/visszaküldés, Programok-2026-őr, törlés-őr, arculat, jog, behozatal + sérült fájl).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a
@@ -473,4 +525,8 @@ Mi van benne és mi gyanús: **`MENTES-LELTAR.md`**. Importnál innen dolgozz, n
 - A koordinátorok értesítési címei (a Beállításokban üresen állnak — nem találunk ki címet).
 - A jóváhagyók személye; a kategóriagazdák névsora.
 - Kik kapnak arculat-szerkesztő fiókot.
-- Melyik médiatár-megoldás (a próbatelepítés után, valós képanyaggal mérve).
+- ~~Melyik médiatár-megoldás~~ — eldöntve (2/d), megépítve (8. pont, „Médiatár”).
+- A szponzorszintek: a 2027-es kezdőlista a 2025-ös 9 szint (román név nélkül), 2026-ban viszont 11 szint volt,
+  más nevekkel (pl. „Szervezők”, „Médiapartnerek”, „Társszervezők”). Melyik legyen a 2027-es lista?
+- A behozott, semmihez nem kötött képek sorsa: 34 demó-kép (2026-os próbatartalom) és 25 egyéb, „Rendezetlen”-ben.
+- A zárt tárba tett 26 beküldött fotó (2026-ban meg nem jelent programoké): megtartsuk-e?

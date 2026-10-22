@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-10-21
+**Utolsó frissítés:** 2026-10-22
 
 ---
 
@@ -57,15 +57,36 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   **◐ világos/sötét váltó a beküldő űrlapon** (a 2026-os űrlap világos palettájával).
   Élesben: lásd a „MOST folyik” pontot.
 
+- **Médiatár** (`PROMPT-07`, 2026-10-22) — **kész és helyben mérve, élesben MÉG NEM** (lásd „MOST folyik”).
+  Curator + saját mezők (jogtulajdonos, licenc, fotós, eredet); menü: „Médiatár” csoport (Képek és fájlok ·
+  Galériák) + „Támogatók”. A gyűjtemény a feltöltés helyéből jön (galéria/támogató lapjáról magától oda;
+  közvetlen feltöltés → „Rendezetlen”); tömeges „Áthelyezés gyűjteménybe”. Licenc: beküldött képnél kötelező,
+  adminban nem áll az útba. Jóváhagyáskor a beküldött fotó a zárt tárból a médiatárba („Programok”) kerül;
+  visszaküldött program fotója nem. A téma fájljai az „Arculat” gyűjteményben (**6. adósság törlesztve**).
+  **A 2026-os képanyag helyben behozva:** 1091 fájlból 1031 a médiatárba, 26 a zárt tárba, 34 szándékosan
+  kihagyva (önkéntesek személyes mellékletei); galéria-kapcsolat 467/467, logó-kapcsolat 112/112; 241 borító
+  a „Programok 2026”-ba (eredet-jelöléssel, 2027-es programhoz nem rendelhető — tulajdonosi döntés). 375 px-en
+  ellenőrizve. Részletek: `CLAUDE.md` 8. pont „Médiatár”. 111 teszt zöld.
+
 ## Ami MOST folyik
 
-**Az Arculat-szerkesztő élesítése** — a kód kint van a GitHubon; telepítés (cPanel) és az élő
-próba (arculat-szerkesztő fiókkal, közvetlen címekkel) a felhasználóval együtt.
+1. **A médiatár élesítése — a felhasználóra vár, ebben a sorrendben:**
+   a) **lemezkvóta** a cPanelben (kell ~1,3 GB szabad hely a feltöltés idejére; utána ~0,7 GB marad foglalva).
+      **Ha nincs meg: állj meg**, ne induljon a feltöltés.
+   b) a **GD** bővítmény bekapcsolva a „Select PHP Version → Extensions” alatt (a bélyegképekhez).
+   c) a 3 zip feltöltése (`MENTES-2026/import-csomag/`) ide: `public_html/forgatag2027/storage/app/import-2026/`
+      (a mappát a Fájlkezelőben kell létrehozni). **Kicsomagolni nem kell.**
+   d) Git Version Control → Update from Remote → Deploy HEAD Commit. A behozatal a telepítés utolsó lépése
+      (~1–2 perc); a jelentés a Médiatár lapjának tetején, számokkal.
+   e) élő próba: a számok, egy galéria, a támogatók logói, 375 px, egy jóváhagyás.
+2. **Az Arculat-szerkesztő élő próbája** (arculat-szerkesztő fiókkal) — ha még nem volt meg.
 
 ## Ami ezután jön, ebben a sorrendben
 
-1. **Az admin tartalmi gyűjteményei** — hírek, menü, támogatók, aloldalak, galéria.
+1. **Az admin tartalmi gyűjteményei** — hírek, menü, aloldalak (a galéria és a támogatók váza kész).
    *Ez a publikus oldal előfeltétele: enélkül nincs mit megjeleníteni.*
+   A 2026-os hír-, csapat-, kézműves- és aloldal-képek már a médiatárban vannak, eredet-jelöléssel
+   (`legacy_id`) — ezen keresztül kell bekötni őket, nem újra feltölteni.
 2. **A publikus váz** — keretfájl, fejléc, lábléc, egy lap, a valódi token-forrásra kötve.
    *Itt dől el, hogy a Blade + htmx + az áthozott CSS együtt működik-e. Ma bizonyítatlan.*
 3. **A programkereső** — a legnagyobb és legösszetettebb darab.
@@ -98,8 +119,12 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
    végig kell próbálni**, a közvetlen címet is begépelve.
 5. **Élő hiba:** a beküldő űrlap extra mezői olyan kategória-slugra is hivatkoznak, ami 2026-ban
    megszűnt (`kerekasztal-beszelgetesek`). Ma csendben nem ad extra mezőket.
-6. **A téma fájljai ma külön tárban vannak** (`public/arculat/`), nem a médiatárban. Amikor a
-   Curator (2/d) megépül, el kell dönteni, hogy az „Arculat” gyűjteménybe költöznek-e — egy forrás.
+6. ~~A téma fájljai külön tárban vannak~~ — **törlesztve 2026-10-22**: a médiatár „Arculat” gyűjteményében
+   látszanak (ugyanaz a fájl, nem másolat); cserélni továbbra is a /tema-ban lehet.
+7. **Az admin témáját kézzel kell fordítani** (`npm run admin-tema`, a fejlesztőgépen), ha új Filament-nézet
+   új Tailwind-osztályt használ — különben az új osztály a szerveren hatástalan. A lefordított fájl a tárolóban van.
+8. **A Curator két részletét átvettük** (a panel „Fájlok hozzáadása” művelete, a képválasztó panel-indítója) —
+   a csomag frissítésekor össze kell vetni a sajátunkat az újjal (`App\Livewire\MediaPanel`, `App\Filament\Forms\MediaPicker`).
 
 ## Amit a mentés leltára felszínre hozott
 
@@ -117,8 +142,17 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
 
 - A 2027-es fesztiválnapok pontos dátumai és az előkészítő napok száma.
 - A valódi kategóriagazdák és jóváhagyók személye.
-- ~~A médiatár megoldása~~ — **eldöntve 2026-10-21**, lásd a `CLAUDE.md` 2/d pontját.
-  Röviden: Curator + saját mezők; a licenc **csak a beküldött képeknél kötelező**, az adminban
-  feltöltött kép saját forrás; a jóvá nem hagyott beküldött fotó zárt tárban marad.
+- ~~A médiatár megoldása~~ — **eldöntve 2026-10-21, megépítve 2026-10-22** (`CLAUDE.md` 2/d és 8. pont).
+- ~~A 2026-os programborítók helye~~ — **eldöntve 2026-10-22**: „Programok 2026” gyűjtemény, eredet-jelöléssel,
+  2027-es programhoz nem rendelhető. (A PROMPT-07 ezzel ellentétes sora javítva.)
+- **ÚJ — a szponzorszintek:** a 2027-es kezdőlista a 2025-ös 9 szint, román név nélkül; 2026-ban 11 szint
+  volt, más nevekkel („Szervezők”, „Médiapartnerek”, „Kiemelt partnerek”, „Társszervezők”...). A 2026-os
+  szintek most évhez kötve, külön jöttek át. Melyik legyen a 2027-es lista?
+- **ÚJ — a „Rendezetlen” 59 képe:** 34 demó-kép (2026-os próbatartalom) és 25 egyéb, amire semmi nem
+  hivatkozott (pl. 3 logó PDF-ben, néhány fotó). Törölhetők, vagy rendezzük őket?
+- **ÚJ — a zárt tár 26 fotója:** 2026-ban beküldött, de meg nem jelent programok fotói
+  (`storage/app/private/bekuldesek-2026/`, mellettük `LISTA.json`). Megtartsuk vagy töröljük?
+- **ÚJ — az önkéntesek 34 melléklete** (szülői hozzájárulás, motivációs levél) szándékosan NEM jött át
+  (személyes adat). A mentésben megvannak; ha az önkéntes-űrlap köre kéri, onnan hozható.
 - Napi automatikus adatbázis-mentés: **be kell állítani, és egyszer vissza is kell tölteni.**
   Nem elég beállítani — lásd a NAS tanulságát.

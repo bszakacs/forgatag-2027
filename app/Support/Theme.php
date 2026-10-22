@@ -233,6 +233,8 @@ class Theme
         }
         $path = 'fajlok/' . $slot . '-' . substr(hash('sha256', $tartalom), 0, 12) . '.' . $ext;
         self::disk()->put($path, $tartalom);
+        // A médiatár „Arculat” gyűjteményében is látszik — ugyanaz a fájl, nem másolat (6. adósság).
+        ArculatMedia::register($path);
 
         return $path;
     }

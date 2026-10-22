@@ -36,3 +36,7 @@ Thumbs.db
 error_log
 # A tema generalt CSS-e es feltoltott fajljai (App\Support\Theme) — a szerveren keletkeznek, nem a taroloban.
 /public/arculat/
+# A mediatar fajljai (App\Models\Media, 'mediatar' lemez) — a szerveren keletkeznek, nem a taroloban.
+# Csak a vedo .htaccess van a taroloban.
+/public/mediatar/*
+!/public/mediatar/.htaccess

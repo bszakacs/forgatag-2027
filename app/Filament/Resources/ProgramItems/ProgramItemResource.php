@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProgramItems;
 
+use App\Filament\Mediatar\MediatarResource;
 use App\Enums\ProgramStatus;
 use App\Enums\TranslatableField;
 use App\Enums\TranslationStatus;
@@ -191,6 +192,13 @@ class ProgramItemResource extends Resource
                 TextEntry::make('photo_rights_declared')->label('Felhasználási jog')->inlineLabel()
                     ->state(fn (ProgramItem $r) => $r->photo_rights_declared ? 'A beküldő nyilatkozott róla' : 'NINCS nyilatkozat')
                     ->color(fn (ProgramItem $r) => $r->photo_rights_declared ? null : 'danger'),
+                // Jóváhagyáskor a fotó a zárt tárból a médiatárba kerül (App\Services\ProgramPhoto) — itt látszik, hogy megtörtént.
+                TextEntry::make('mediatar')->label('Médiatár')->inlineLabel()
+                    ->state(fn (ProgramItem $r) => $r->cover
+                        ? 'Közzétéve a médiatárban („Programok”) — licenc: ' . $r->cover->license->label() . ', jogtulajdonos: ' . ($r->cover->rights_holder ?? '—')
+                        : 'Még nincs a médiatárban (a fotó a zárt tárban van, jóváhagyáskor kerül át).')
+                    ->url(fn (ProgramItem $r) => $r->cover && auth()->user()?->can('update', $r->cover)
+                        ? MediatarResource::getUrl('edit', ['record' => $r->cover]) : null),
             ]),
 
             Section::make('Program')->columnSpanFull()->columns(['default' => 1, 'md' => 2])->schema([

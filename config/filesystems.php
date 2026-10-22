@@ -36,6 +36,20 @@ return [
         'arculat' => [
             'driver' => 'local',
             'root' => public_path('arculat'),
+            // A médiatár „Arculat” gyűjteménye is ezeket a fájlokat mutatja (App\Support\ArculatMedia) —
+            // ugyanaz a fájl, nem másolat. A cím a médiatár előnézetéhez kell.
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/arculat',
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => false,
+        ],
+
+        // A MÉDIATÁR (CLAUDE.md 2/d): nyilvános mappa, szimbolikus link nélkül (a cPanel Fájlkezelő nem tud
+        // linket létrehozni). A jóvá nem hagyott beküldött fotó NEM ide kerül, hanem a 'local' (zárt) tárba.
+        'mediatar' => [
+            'driver' => 'local',
+            'root' => public_path('mediatar'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/mediatar',
             'visibility' => 'public',
             'throw' => true,
             'report' => false,

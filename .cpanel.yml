@@ -8,7 +8,7 @@ deployment:
     #       Alternativa: /opt/alt/php84/usr/bin/php (CloudLinux, 8.4.26, intl VAN) — a web is ezt a fajtat hasznalja.
     - export PHP=/opt/cpanel/ea-php84/root/usr/bin/php
     # Meres a naploba: melyik PHP fut, es aktiv-e az intl / proc_open (1 = igen, 0 = nem).
-    - $PHP -r 'echo "PHP ", PHP_VERSION, " intl=", (int) extension_loaded("intl"), " proc_open=", (int) function_exists("proc_open"), PHP_EOL;'
+    - $PHP -r 'echo "PHP ", PHP_VERSION, " intl=", (int) extension_loaded("intl"), " proc_open=", (int) function_exists("proc_open"), " zip=", (int) class_exists("ZipArchive"), " gd=", (int) extension_loaded("gd"), PHP_EOL;'
 
     # A webszerver csak szokasos jogokkal lat be (a klonozas 0700-zal hozza letre). A .git/ kimarad.
     - /usr/bin/find . -path ./.git -prune -o -type d -exec /bin/chmod 755 {} +
@@ -25,3 +25,7 @@ deployment:
     - $PHP artisan forgatag:admin
     - $PHP artisan filament:optimize
     - $PHP artisan optimize
+    # A mediatar: az arculat fajljai az Arculat gyujtemenybe + a 2026-os kepanyag behozatala, HA a felhasznalo
+    # feltoltotte a csomagot (storage/app/import-2026/*.zip). Csomag nelkul csak kihagy; mar bent levo kepnel csak
+    # ellenoriz. SZANDEKOSAN az utolso lepes: ha hiany/hiba van, hibaval all meg (a jelentes a mediatar lapjan).
+    - $PHP artisan forgatag:mediatar-import

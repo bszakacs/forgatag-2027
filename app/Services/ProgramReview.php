@@ -12,6 +12,8 @@ use App\Models\User;
 use App\Support\BekuldesLevelek;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 /**
  * A jóváhagyási sor lépései, EGY helyen (az admin gombjai csak ezt hívják):
@@ -83,14 +85,28 @@ class ProgramReview
      */
     public static function approve(ProgramItem $program, User $user): ?bool
     {
-        $kesz = self::step($program, $user, ReviewAction::Approved, ProgramStatus::Published, function (ProgramItem $p) {
-            if (! self::canApprove($p)) {
-                return 'Csak „Jóváhagyásra vár” állapotú program hagyható jóvá.';
-            }
-            $hibak = self::approvalBlockers($p);
+        $foto = null;
+        try {
+            $kesz = self::step($program, $user, ReviewAction::Approved, ProgramStatus::Published, function (ProgramItem $p) {
+                if (! self::canApprove($p)) {
+                    return 'Csak „Jóváhagyásra vár” állapotú program hagyható jóvá.';
+                }
+                $hibak = self::approvalBlockers($p);
 
-            return $hibak === [] ? null : implode(' ', $hibak);
-        });
+                return $hibak === [] ? null : implode(' ', $hibak);
+            }, before: function (ProgramItem $p) use (&$foto) {
+                // A fotó a zárt tárból MOST kerül át a nyilvános médiatárba (CLAUDE.md 2/d) — a státuszváltás
+                // és a levél ELŐTT: ha ez nem sikerül, a jóváhagyás sem történik meg.
+                $foto = ProgramPhoto::publish($p);
+            });
+        } catch (Throwable $e) {
+            // A tranzakció visszagördült (a médiatár-sor is), de a nyilvános fájl már kint lehet — ne maradjon ott.
+            if ($foto !== null && $foto->wasRecentlyCreated) {
+                Storage::disk($foto->disk)->delete($foto->path);
+            }
+
+            throw $e;
+        }
 
         return $kesz->approvalMailSent;
     }
@@ -129,11 +145,12 @@ class ProgramReview
      * Egy lépés zárolt sorral: a beküldő javítása és a jóváhagyás nem futhat át egymáson.
      *
      * @param  callable(ProgramItem): ?string  $refuse  ha nem null: a lépés elutasításának oka
+     * @param  callable(ProgramItem): void|null  $before  a jog- és állapot-ellenőrzés UTÁN, a státuszváltás ELŐTT fut
      */
     private static function step(ProgramItem $program, User $user, ReviewAction $action, ProgramStatus $to,
-        callable $refuse, ?string $note = null): ProgramItem
+        callable $refuse, ?string $note = null, ?callable $before = null): ProgramItem
     {
-        return DB::transaction(function () use ($program, $user, $action, $to, $refuse, $note) {
+        return DB::transaction(function () use ($program, $user, $action, $to, $refuse, $note, $before) {
             $p = ProgramItem::whereKey($program->id)->lockForUpdate()->firstOrFail();
             // A jog itt is (nem csak a gomb láthatóságában): közzétenni csak a jóváhagyó tud (ProgramItemPolicy).
             $jog = $action === ReviewAction::Approved ? 'approve' : 'review';
@@ -144,6 +161,9 @@ class ProgramReview
             }
             if (($ok = $refuse($p)) !== null) {
                 throw new ReviewStepRefused($ok);
+            }
+            if ($before !== null) {
+                $before($p);
             }
             $from = $p->status;
             $p->status = $to;

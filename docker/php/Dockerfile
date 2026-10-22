@@ -3,9 +3,11 @@
 ARG PHP_IMAGE=php:8.4.26-apache
 FROM ${PHP_IMAGE}
 
+# gd + exif: a médiatár méretváltozatai (Curator/Glide) — a tárhelyen is kell a gd (Select PHP Version).
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libicu-dev libzip-dev unzip git \
- && docker-php-ext-install intl pdo_mysql zip bcmath \
+ && apt-get install -y --no-install-recommends libicu-dev libzip-dev unzip git libjpeg62-turbo-dev libpng-dev libwebp-dev libfreetype6-dev \
+ && docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype \
+ && docker-php-ext-install intl pdo_mysql zip bcmath gd exif \
  && a2enmod rewrite \
  && rm -rf /var/lib/apt/lists/*
 

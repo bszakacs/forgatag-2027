@@ -87,3 +87,23 @@ Benne: `OLVASS-EL.txt`, `SHA256SUMS.txt` (1097 fájl). **Személyes adatot tarta
 **Személyes adat a mentésben:** programok kapcsolattartói (241 e-mail), 14 programgazda, 69 önkéntes
 (szülői hozzájárulás-fájlokkal), 18 szabadulószoba-foglalás, 20 admin-fiók (jelszó-hash, statikus tokenek
 nyílt szövegben a `directus_users.token`-ben), a Directus-napló (IP-címek).
+
+## A fájlok behozatala a médiatárba (PROMPT-07, 2026-10-22)
+
+Minden fájl pontosan egy „sorsot” kapott (`database/import/mediatar-2026.json`, `forgatag:mediatar-csomag`).
+A mentés leltárához képest pontosítás: a fenti 8. pont „52 hivatkozás nélküli fájl”-ja más számolás volt —
+a teljes besorolás:
+
+| Sors | Fájl |
+|---|---:|
+| galériakép → a galériájához | 467 |
+| programborító → „Programok 2026” (nem programhoz kötve, 7. pont) | 241 |
+| támogatói logó → a támogatóhoz | 112 |
+| kézműves-kép · csapattag-fotó · aloldal-kép · hírborító (eredet jelölve, a tartalmi kör köti be) | 67 · 55 · 17 · 12 |
+| a 2026-os téma faviconja → „Arculat” | 1 |
+| semmi nem hivatkozott rá → „Rendezetlen” (ebből 34 `demo-*` próbakép, 25 egyéb) | 59 |
+| beküldött fotó, aminek a programja 2026-ban nem jelent meg → ZÁRT tár (`storage/app/private/bekuldesek-2026`) | 26 |
+| önkéntes-mellékletek (szülői hozzájárulás, motivációs levél) — **személyes adat, NEM jön át** | 34 |
+| **Összesen** | **1091** |
+
+A 9. pont két „… másolata” fájlja a tartalma alapján JPEG, ill. PNG — a típusuk javítva.

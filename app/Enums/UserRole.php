@@ -81,6 +81,15 @@ enum UserRole: string
         return in_array($this, [self::SuperAdmin, self::Coordinator], true);
     }
 
+    /**
+     * A médiatár és a képes tartalmak (galériák, támogatók) kezelése. A kategóriagazda NEM: a médiatár nem
+     * sor-szintű, egy közös tár — benne más kategóriák programjainak borítói is.
+     */
+    public function canManageMedia(): bool
+    {
+        return in_array($this, [self::SuperAdmin, self::Coordinator], true);
+    }
+
     /** Az arculat (/admin/tema) szerkesztése és publikálása. */
     public function canEditTheme(): bool
     {

@@ -1,0 +1,117 @@
+.checkered {
+    background-color: var(--gray-200);
+    background-image:
+        repeating-linear-gradient(45deg, var(--gray-300) 25%, transparent 25%, transparent 75%, var(--gray-300) 75%, var(--gray-300)),
+        repeating-linear-gradient(45deg, var(--gray-300) 25%, var(--gray-200) 25%, var(--gray-200) 75%, var(--gray-300) 75%, var(--gray-300));
+
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+}
+
+.dark .checkered {
+    background-color: var(--gray-800);
+    background-image:
+        repeating-linear-gradient(45deg, var(--gray-700) 25%, transparent 25%, transparent 75%, var(--gray-700) 75%, var(--gray-700)),
+        repeating-linear-gradient(45deg, var(--gray-700) 25%, var(--gray-800) 25%, var(--gray-800) 75%, var(--gray-700) 75%, var(--gray-700));
+}
+
+.fi-resource-media {
+    .fi-forms-tabs-component-header {
+        @apply bg-gray-100 dark:bg-gray-900;
+    }
+
+    .fi-ta {
+        .fi-ta-record:has(.curator-grid-column) {
+            @apply block p-0;
+
+            &.fi-selected {
+                @apply ring-primary-600 dark:ring-primary-500;
+            }
+
+            .fi-ta-record-checkbox {
+                @apply absolute top-0 left-0 z-10 bg-black;
+
+                &:checked {
+                    @apply bg-primary-500;
+                }
+            }
+
+            .fi-ta-record-content-ctn {
+                @apply p-0 overflow-hidden relative gap-0;
+
+                > div:first-child {
+                    @apply flex flex-col p-0;
+                }
+
+                .fi-ta-record-content {
+                    @apply h-[9.5rem] w-full p-0 aspect-video;
+
+                    > div:first-child {
+                        @apply h-full w-full relative;
+                    }
+                }
+
+                label {
+                    @apply w-full h-auto aspect-video;
+                    z-index: 1;
+                }
+
+                input:not(:checked) {
+                    @apply bg-white dark:bg-gray-800;
+                }
+
+                .fi-ta-actions {
+                    @apply flex flex-row p-3;
+                }
+            }
+        }
+    }
+}
+
+.curator-panel.dragging::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background-color: var(--info-500);
+    opacity: 0.25;
+}
+
+.curator-panel-sidebar {
+    .fi-fo-component-ctn {
+        @apply gap-4;
+
+        label {
+            @apply text-sm;
+        }
+    }
+
+    .filepond--root {
+        min-height: 300px;
+    }
+}
+
+.curator-picker-grid {
+    @apply grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10;
+}
+
+.filepond--panel {
+    @apply bg-transparent border-dashed border-2 border-gray-950/5 dark:border-white/20;
+}
+
+.fi-modal-window:has(.curator-panel) {
+    @apply !p-0;
+
+    .fi-modal-header {
+        @apply hidden;
+    }
+}
+
+.fi-modal-window:has(.curation) {
+    .fi-input-wrp-prefix {
+        @apply w-20 flex justify-center;
+    }
+}

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EntryType;
+use App\Enums\Gyujtemeny;
 use App\Enums\ProgramSource;
 use App\Enums\ProgramStatus;
 use App\Enums\ReviewAction;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Throwable;
 
 class ProgramItem extends Model
@@ -62,6 +64,15 @@ class ProgramItem extends Model
             }
         });
         static::deleting(fn (self $program) => RowAccess::assertCategory($program->getOriginal('category_id')));
+
+        // A „Programok 2026” képei a tavalyi programra kapott joggal élnek — 2027-es programhoz NEM rendelhetők
+        // (tulajdonosi döntés, 2026-10-22). Modell-szinten, hogy semmilyen felületről ne csússzon át.
+        static::saving(function (self $program): void {
+            if ($program->isDirty('cover_media_id') && $program->cover_media_id !== null
+                && Media::query()->whereKey($program->cover_media_id)->inCollection(Gyujtemeny::Programok2026)->exists()) {
+                throw new RuntimeException('Ez a kép a „Programok 2026” gyűjteményből való: a felhasználási jogot a tavalyi programra adták, 2027-es programhoz nem rendelhető.');
+            }
+        });
 
         // A slug a címből EGYSZER készül, és utána nem változik (a megosztott linkek ne törjenek el).
         static::creating(function (self $program): void {
@@ -145,6 +156,12 @@ class ProgramItem extends Model
     public function venue(): BelongsTo
     {
         return $this->belongsTo(Venue::class);
+    }
+
+    /** A KÖZZÉTETT borító a médiatárban (jóváhagyáskor jön létre a zárt tárban lévő beküldött fotóból). */
+    public function cover(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'cover_media_id');
     }
 
     public function programManager(): BelongsTo

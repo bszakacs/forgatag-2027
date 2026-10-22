@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProgramFotoController;
 use App\Enums\NavigationGroup;
 use App\Http\Controllers\Admin\TemaController;
 use App\Support\Theme;
+use Awcodes\Curator\CuratorPlugin;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\HtmlString;
 use Filament\Http\Middleware\Authenticate;
@@ -84,6 +85,13 @@ class AdminPanelProvider extends PanelProvider
                 '<style>.fi-sidebar-nav-groups{row-gap:calc(var(--spacing) * 1)}</style>'
             ))
             ->navigationGroups(NavigationGroup::class)
+            // A médiatár (CLAUDE.md 2/d) — a Curator. Az erőforrása (App\Filament\Mediatar) szándékosan a
+            // felfedezett mappán KÍVÜL van: a bővítmény regisztrálja, különben kétszer kerülne a menübe.
+            ->plugin(CuratorPlugin::make())
+            // Az admin saját témája (a Curator nézeteinek Tailwind-osztályaival) — forrás:
+            // resources/css/filament/admin/theme.css, fordítás a fejlesztőgépen: npm run admin-tema.
+            // A ?v= a fájl tartalmából: új fordítás → új cím, a böngésző nem a régit mutatja.
+            ->theme(asset('css/admin-tema.css') . '?v=' . substr((string) @md5_file(public_path('css/admin-tema.css')), 0, 8))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             // A nyitólap a saját Dashboard-unk (app/Filament/Pages — a felfedezés regisztrálja): az
