@@ -118,3 +118,16 @@
 /* A kontraszt-mérés a színmező ALATT, jobbra igazítva, kisebb betűvel (2026-10-22, felhasználói kérés). */
 .te-ctl [data-ctr]{text-align:right;margin-top:-2px}
 .te-ctl [data-ctr] .te-ctr{font-size:11px}
+/* Akcent-hármas (4. szekció): „Sötét” + a három szín egy sorban; ha nem fér ki, a felirat fölé kerül.
+   Minden szín egy kis doboz: felül a színminta (kattintva színválasztó), alatta a kód. */
+.te-trio-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:4px 8px}
+.te-trio-row > .te-mode{flex:0 0 52px;padding-bottom:9px}
+.te-trio{flex:1 1 250px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.te-trio-cell{display:flex;flex-direction:column;gap:2px;min-width:0}
+.te-trio-lab{font-size:11px;font-weight:700;color:var(--te-muted);text-align:center}
+.te-trio .te-color{flex-direction:column;align-items:stretch;gap:3px}
+.te-trio .te-color input[type=color]{width:100%;height:28px}
+.te-trio .te-color input[type=text]{padding:4px 5px;font-size:11.5px;text-align:center}
+.te-trio .te-color{flex:none}
+.te-trio-row{align-items:center}
+.te-trio-row > .te-mode{padding-bottom:0;padding-top:14px}

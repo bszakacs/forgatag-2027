@@ -333,14 +333,18 @@
         });
         x.hint(c.hint); break;
       case 'accentTrio':
+        // Mód-felirat, mellette (ha nem fér: alatta) a három szín egy sorban, egyforma kis dobozokban.
         ['dark', 'light'].forEach(function (m) {
-          var row = el('div', 'te-row'); row.appendChild(modeLabel(m));
-          [0, 1, 2].forEach(function (i) {
-            row.appendChild(colorField((get(doc, c.path + '.' + m) || [])[i], function (v) {
+          var row = el('div', 'te-trio-row'); row.appendChild(modeLabel(m));
+          var trio = el('div', 'te-trio');
+          ['a', 'b', 'c'].forEach(function (betu, i) {
+            var cell = el('div', 'te-trio-cell'); cell.appendChild(el('span', 'te-trio-lab', betu));
+            cell.appendChild(colorField((get(doc, c.path + '.' + m) || [])[i], function (v) {
               var a = (get(doc, c.path + '.' + m) || []).slice(); a[i] = v; set(doc, c.path + '.' + m, a); changed();
             }));
+            trio.appendChild(cell);
           });
-          w.appendChild(row);
+          row.appendChild(trio); w.appendChild(row);
         });
         var pr = el('div', 'te-presets');
         SPEC.presets.forEach(function (p) {
