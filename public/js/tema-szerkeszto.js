@@ -18,6 +18,9 @@
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
 
+  /** A verzió kiírt alakja (a tábla sorszáma → 2.0.0). */
+  function ver(id) { return id + '.0.0'; }
+
   function set(o, path, v) {
     var k = path.split('.'), x = o;
     for (var i = 0; i < k.length - 1; i++) { if (x[k[i]] == null || typeof x[k[i]] !== 'object') x[k[i]] = {}; x = x[k[i]]; }
@@ -125,17 +128,10 @@
   // ---------------------------------------------------------------- állapotsáv
   function updateState() {
     var s = $('te-state');
-    if (draftMeta) {
-      s.className = 'te-state draft';
-      s.textContent = 'VÁZLAT' + (draftMeta.updated_at ? ' · mentve ' + String(draftMeta.updated_at).slice(0, 16) : '') + (draftMeta.saved_by ? ' (' + draftMeta.saved_by + ')' : '') + ' · a látogatók még a #' + published.id + '-et látják';
-    } else if (dirty) {
-      s.className = 'te-state draft';
-      s.textContent = 'MÓDOSÍTOD a kint lévő témát (#' + published.id + ')';
-    } else {
-      s.className = 'te-state';
-      s.textContent = 'A KINT LÉVŐ TÉMA (#' + published.id + ')';
-    }
-    if (dirty) s.classList.add('dirty');
+    var t = 'Téma verziószám: ' + ver(published.id);
+    if (draftMeta) t += ' · vázlat mentve' + (draftMeta.updated_at ? ' ' + String(draftMeta.updated_at).slice(0, 16) : '') + (draftMeta.saved_by ? ' (' + draftMeta.saved_by + ')' : '') + ' — a látogatók a ' + ver(published.id) + '-t látják';
+    s.className = 'te-state' + (draftMeta ? ' draft' : '') + (dirty ? ' dirty' : '');
+    s.textContent = t;
     $('te-save').disabled = !dirty;
     $('te-discard').hidden = !(draftMeta || dirty);
   }
@@ -410,7 +406,7 @@
   }
   $('te-save').onclick = function () { saveDraft(false); };
   $('te-discard').onclick = function () {
-    if (!confirm('Eldobod a vázlatot? A szerkesztő visszaáll a kint lévő témára (#' + published.id + ').')) return;
+    if (!confirm('Eldobod a vázlatot? A szerkesztő visszaáll a kint lévő témára (' + ver(published.id) + ').')) return;
     api('DELETE', CFG.urls.vazlat).then(function (r) {
       if (!r.ok) return alertBox('bad', '<strong>Nem sikerült eldobni:</strong> ' + esc(r.error));
       draftMeta = null; dirty = false; doc = clone(published.data); $('te-alert').hidden = true;
@@ -460,9 +456,9 @@
     var rows = diffRows(published.data, doc);
     var body = '';
     if (draftMeta && draftMeta.base_version_id && draftMeta.base_version_id !== published.id) {
-      body += '<div class="te-alert warn">Ez a vázlat a #' + draftMeta.base_version_id + ' verzióra épül, de közben a #' + published.id + ' került ki. Nézd át a különbséget: amit más azóta publikált, azt most visszaírnád.</div>';
+      body += '<div class="te-alert warn">Ez a vázlat a ' + ver(draftMeta.base_version_id) + ' verzióra épül, de közben a ' + ver(published.id) + ' került ki. Nézd át a különbséget: amit más azóta publikált, azt most visszaírnád.</div>';
     }
-    body += '<p><strong>Mi fog változni?</strong> (a kint lévő #' + published.id + ' → a szerkesztőben lévő)</p>';
+    body += '<p><strong>Mi fog változni?</strong> (a kint lévő ' + ver(published.id) + ' → a szerkesztőben lévő)</p>';
     body += rows.length
       ? '<div class="te-diff">' + rows.map(function (r) { return '<div><span>' + esc(r.label) + '</span><span>' + showVal(r.from) + ' → ' + showVal(r.to) + '</span></div>'; }).join('') + '</div>'
       : '<div class="te-alert info">Nincs változás a kint lévő témához képest.</div>';
@@ -492,7 +488,7 @@
       published = { id: r.version.id, data: clone(doc), css: gen(doc) };
       history.forEach(function (h) { h.current = false; }); history.unshift(r.version); history = history.slice(0, 10);
       draftMeta = null; dirty = false; dlg.close(); updateState(); markChanged();
-      alertBox('ok', '<strong>Kint van</strong> (#' + r.version.id + '). Az új téma-CSS: <code>' + esc(r.css_url.split('/').pop()) + '</code> — a böngészők a fájlnév változása miatt magától az újat töltik.');
+      alertBox('ok', '<strong>Kint van</strong> (' + ver(r.version.id) + '). Az új téma-CSS: <code>' + esc(r.css_url.split('/').pop()) + '</code> — a böngészők a fájlnév változása miatt magától az újat töltik.');
     });
   }
 
@@ -501,7 +497,7 @@
     $('te-history').closest('details').open = false;
     var body = '<p>Az utolsó ' + history.length + ' publikálás. A „Betöltés” a verziót a szerkesztőbe teszi — kikerülni csak a Publikálással kerül (előtte látod a különbséget).</p><div class="te-diff">'
       + history.map(function (h) {
-        return '<div class="te-ver"><strong>#' + h.id + '</strong> <span>' + esc(h.at) + '</span> ' + (h.current ? '<span class="te-tag">MOST KINT</span>' : '')
+        return '<div class="te-ver"><strong>' + ver(h.id) + '</strong> <span>' + esc(h.at) + '</span> ' + (h.current ? '<span class="te-tag">MOST KINT</span>' : '')
           + ' <span class="te-sp"></span><button type="button" class="te-btn" data-ver="' + h.id + '">Betöltés</button>'
           + '<span class="te-muted">' + esc(h.by || '—') + (h.comment ? ' · ' + esc(h.comment) : '') + (h.override ? ' · ⚠ kontraszt-felülbírálás: ' + esc(h.override) : '') + '</span></div>';
       }).join('') + '</div>';
@@ -512,7 +508,7 @@
         api('GET', CFG.urls.verzio.replace('__ID__', b.getAttribute('data-ver'))).then(function (r) {
           if (!r.ok) { b.disabled = false; return alertBox('bad', '<strong>A verzió nem tölthető be:</strong> ' + esc(r.error)); }
           doc = clone(r.data); dlg.close(); buildSections(); changed();
-          alertBox('info', 'A <strong>#' + r.version.id + '</strong> verzió (' + esc(r.version.at) + ') a szerkesztőben van. Ha ezt akarod kint látni: <strong>Publikálás…</strong> (előtte megmutatja a különbséget).');
+          alertBox('info', 'A <strong>' + ver(r.version.id) + '</strong> verzió (' + esc(r.version.at) + ') a szerkesztőben van. Ha ezt akarod kint látni: <strong>Publikálás…</strong> (előtte megmutatja a különbséget).');
         });
       };
     });
@@ -557,7 +553,7 @@
     if (mine !== published.css) {
       alertBox('bad', '<strong>Figyelem:</strong> a böngészős előnézet-generátor NEM ugyanazt a CSS-t adja, mint a szerver (public/js/tema-css.js ≠ App\\Support\\ThemeCss). Az előnézet eltérhet attól, ami kikerül — szólj a fejlesztőnek. A publikálás ettől még a szerver CSS-ét teszi ki.', false);
     } else if (draftMeta && draftMeta.base_version_id && draftMeta.base_version_id !== published.id) {
-      alertBox('warn', '<strong>Ez a vázlat egy régebbi témára épül</strong> (#' + draftMeta.base_version_id + '), közben a #' + published.id + ' került ki. Publikálás előtt nézd át a különbséget, vagy dobd el a vázlatot.');
+      alertBox('warn', '<strong>Ez a vázlat egy régebbi témára épül</strong> (' + ver(draftMeta.base_version_id) + '), közben a ' + ver(published.id) + ' került ki. Publikálás előtt nézd át a különbséget, vagy dobd el a vázlatot.');
     }
   })();
   buildSections(); updateState(); runGuards();

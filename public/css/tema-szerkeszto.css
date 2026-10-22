@@ -131,3 +131,9 @@
 .te-trio .te-color{flex:none}
 .te-trio-row{align-items:center}
 .te-trio-row > .te-mode{padding-bottom:0;padding-top:14px}
+/* Eszközsáv: nem teljes szélességű, jobbra zárva; a verziószám kis, sima szöveg (2026-10-22, felhasználói kérés). */
+.te-bar{width:fit-content;max-width:100%;margin-left:auto}
+.te-bar .te-sp{display:none}
+.te-state,.te-state.draft{font-weight:400;font-size:12.5px;padding:0 4px 0 0;border:0;background:none;color:var(--te-muted)}
+.te-state.draft{color:var(--te-warn)}
+.te-state.dirty::after{font-weight:600}
