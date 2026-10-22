@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProgramFotoController;
 use App\Enums\NavigationGroup;
 use App\Http\Controllers\Admin\TemaController;
 use App\Support\Theme;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Support\HtmlString;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -77,6 +78,11 @@ class AdminPanelProvider extends PanelProvider
             // Az oldalsáv asztali nézetben is ikonokra csukható. Ehhez MINDEN menücsoportnak ikon kell —
             // a csoportok egy helyen, ikonnal: App\Enums\NavigationGroup.
             ->sidebarCollapsibleOnDesktop()
+            // A menücsoportok (pl. Felhasználók) ne lógjanak el a többitől: a csoportok közti térköz
+            // ugyanannyi, mint az elemek közti (a Filament alapja 1,75rem).
+            ->renderHook(PanelsRenderHook::HEAD_END, fn () => new HtmlString(
+                '<style>.fi-sidebar-nav-groups{row-gap:calc(var(--spacing) * 1)}</style>'
+            ))
             ->navigationGroups(NavigationGroup::class)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

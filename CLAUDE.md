@@ -355,7 +355,7 @@ Koordinátor: mindent lát, jóváhagy, programgazdák + Beállítások. Admin-f
 Saját szerepkörét senki nem állíthatja át (kizárás ellen).
 
 **Programlista + jóváhagyási sor — kész helyben (2026-10-13).** `ProgramItems\ProgramItemResource`
-(`/admin/programok`, a menü első pontja, jelvény: hány vár jóváhagyásra). Fülek: Teendő (alap) ·
+(`/admin/programok`, a menüben a Vezérlőpult után, jelvény: hány vár jóváhagyásra). Fülek: Teendő (alap) ·
 Közzétéve · Mind; szűrők: állapot, kategória (elsődleges), helyszín, nap, fotó, elavult fordítás.
 Mobilon csak cím (alatta kategória + első nap) és állapot; a sor maga a link.
 **Lépések EGY helyen: `App\Services\ProgramReview`** — draft →(Jóváhagyásra küldés)→ pending_review

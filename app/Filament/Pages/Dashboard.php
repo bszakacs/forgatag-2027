@@ -12,6 +12,9 @@ use Filament\Pages\Dashboard as BaseDashboard;
  */
 class Dashboard extends BaseDashboard
 {
+    /** A menüben MINDIG az első (tulajdonosi kérés, 2026-10-22) — minden más pont sorszáma ennél nagyobb. */
+    protected static ?int $navigationSort = -100;
+
     public static function shouldRegisterNavigation(): bool
     {
         return self::user()?->role->canSeeDashboard() ?? false;
