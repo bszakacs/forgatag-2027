@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Http\Controllers\Admin\ProgramFotoController;
 use App\Http\Controllers\Admin\TemaController;
+use App\Support\Theme;
+use Illuminate\Support\HtmlString;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -23,6 +25,33 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    /** Logó + a panel neve egymás mellett (a Filament a magasságot a brandLogoHeight-ból adja). */
+    private static function brand(): HtmlString
+    {
+        $nev = e(config('app.name'));
+        $logo = self::themeAsset('logo');
+        $kep = $logo ? '<img src="' . e($logo) . '" alt="" style="height:100%;width:auto;flex:none">' : '';
+
+        return new HtmlString('<span style="display:inline-flex;align-items:center;gap:.55rem;height:100%;white-space:nowrap">'
+            . $kep . '<span>' . $nev . '</span></span>');
+    }
+
+    /**
+     * Egy arculati fájl címe a témából. Ha a téma nem olvasható (pl. üres adatbázis telepítés közben),
+     * az admin NE álljon le emiatt — különben épp a javításhoz nem lehetne belépni. Ilyenkor a logó/favicon
+     * egyszerűen elmarad, és a hiba a naplóba kerül (a publikus lapok ettől még hibával állnak meg).
+     */
+    private static function themeAsset(string $key): ?string
+    {
+        try {
+            return Theme::assetUrl($key);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return null;
+        }
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -39,6 +68,11 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            // A márka a TÉMÁBÓL jön (a feltöltött logó és favicon — nincs második példány): kis logó a
+            // név előtt, a fejléc magassága nem nő (2rem). Lásd self::brand().
+            ->brandLogo(fn () => self::brand())
+            ->brandLogoHeight('2rem')
+            ->favicon(fn () => self::themeAsset('favicon'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             // A nyitólap a saját Dashboard-unk (app/Filament/Pages — a felfedezés regisztrálja): az
