@@ -115,3 +115,6 @@
 /* Egymás alatti elrendezésben az előnézet NEM ragad (különben a vezérlőkre takarna). A fájl végén áll,
    mert a fenti .te-preview{position:sticky} különben felülírná. */
 @container te (max-width:900px){ .te-preview{position:relative;top:0} }
+/* A kontraszt-mérés a színmező ALATT, jobbra igazítva, kisebb betűvel (2026-10-22, felhasználói kérés). */
+.te-ctl [data-ctr]{text-align:right;margin-top:-2px}
+.te-ctl [data-ctr] .te-ctr{font-size:11px}
