@@ -2,20 +2,19 @@
 
 namespace App\Filament\Resources\Users;
 
+use App\Enums\NavigationGroup;
 use App\Enums\UserRole;
 use App\Filament\Resources\Resource;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Models\User;
-use BackedEnum;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,9 +31,8 @@ class UserResource extends Resource
 
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;
-
-    protected static string|UnitEnum|null $navigationGroup = 'Felhasználók';
+    // Saját menüikon NINCS: a csoport ikonja képviseli (App\Enums\NavigationGroup — Filament-szabály).
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Felhasznalok;
 
     protected static ?string $navigationLabel = 'Admin-felhasználók';
 

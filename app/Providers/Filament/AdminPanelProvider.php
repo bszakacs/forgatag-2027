@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Http\Controllers\Admin\ProgramFotoController;
+use App\Enums\NavigationGroup;
 use App\Http\Controllers\Admin\TemaController;
 use App\Support\Theme;
 use Illuminate\Support\HtmlString;
@@ -73,6 +74,10 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn () => self::brand())
             ->brandLogoHeight('2rem')
             ->favicon(fn () => self::themeAsset('favicon'))
+            // Az oldalsáv asztali nézetben is ikonokra csukható. Ehhez MINDEN menücsoportnak ikon kell —
+            // a csoportok egy helyen, ikonnal: App\Enums\NavigationGroup.
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups(NavigationGroup::class)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             // A nyitólap a saját Dashboard-unk (app/Filament/Pages — a felfedezés regisztrálja): az

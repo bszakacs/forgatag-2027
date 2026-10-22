@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\ProgramManagers;
 
+use App\Enums\NavigationGroup;
 use App\Filament\Resources\ProgramManagers\Pages\CreateProgramManager;
 use App\Filament\Resources\ProgramManagers\Pages\EditProgramManager;
 use App\Filament\Resources\ProgramManagers\Pages\ListProgramManagers;
 use App\Filament\Resources\Resource;
 use App\Http\Controllers\Bekuldes\JelszoController;
 use App\Models\ProgramManager;
-use BackedEnum;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -16,7 +16,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
@@ -32,10 +31,11 @@ class ProgramManagerResource extends Resource
 {
     protected static ?string $model = ProgramManager::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
-
-    /** Rokon dolgok menücsoportba kerülnek (CLAUDE.md 2/b): Felhasználók → Admin-felhasználók, Programgazdák. */
-    protected static string|UnitEnum|null $navigationGroup = 'Felhasználók';
+    /**
+     * Rokon dolgok menücsoportba kerülnek (CLAUDE.md 2/b): Felhasználók → Admin-felhasználók, Programgazdák.
+     * Saját menüikon NINCS: a csoport ikonja képviseli (App\Enums\NavigationGroup — Filament-szabály).
+     */
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Felhasznalok;
 
     protected static ?string $navigationLabel = 'Programgazdák';
 

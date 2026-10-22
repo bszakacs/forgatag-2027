@@ -113,6 +113,11 @@ egy hiányzó funkció.
 
 **Rokon dolgok menücsoportba kerülnek, nem külön menüpontokba.** Például a „Felhasználók" csoport
 alatt az admin-felhasználók és a programgazdák. Egy csoport két eleme nem két menüpont.
+**A csoportok EGY helyen, ikonnal: `App\Enums\NavigationGroup`.** Az oldalsáv asztali nézetben is
+ikonokra csukható (`sidebarCollapsibleOnDesktop`), ezért MINDEN csoportnak ikon kell (enélkül becsukva
+a csoport felirata eltűnik, az elemei szétszóródnak). Ikonos csoport elemének NEM lehet saját ikonja
+(Filament-szabály — becsukva a csoport ikonja egy legördülőt nyit az elemekkel). Új csoport = új eset
+a felsorolásban, címkével ÉS ikonnal; az erőforrás `$navigationGroup`-ja erre mutat, nem szövegre.
 
 ## 2/c. A téma (`/tema`) — döntések a 2026-os tapasztalat alapján
 
