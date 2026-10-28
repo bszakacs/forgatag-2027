@@ -16,3 +16,57 @@
 @source '../../../../resources/views/mediatar/**/*';
 @source '../../../../vendor/awcodes/filament-curator/resources/**/*.blade.php';
 @source '../../../../vendor/awcodes/filament-curator/src/**/*.php';
+
+/*
+ * A médiatár rácsa. A Curator a saját kártya-szabályait a `.fi-resource-media` lapra köti — a mi lapunk
+ * slugja `mediatar` (osztálya `.fi-resource-mediatar`), ezért azok nálunk nem hatnak. Itt vesszük át őket,
+ * egy eltéréssel: a kép NÉGYZETES (1:1), nem fekvő (tulajdonosi kérés, 2026-10-28).
+ */
+.fi-resource-mediatar {
+    .fi-forms-tabs-component-header {
+        @apply bg-gray-100 dark:bg-gray-900;
+    }
+
+    .fi-ta {
+        .fi-ta-record:has(.curator-grid-column) {
+            @apply block p-0;
+
+            &.fi-selected {
+                @apply ring-primary-600 dark:ring-primary-500;
+            }
+
+            .fi-ta-record-checkbox {
+                @apply absolute top-2 left-2 z-10;
+            }
+
+            .fi-ta-record-content-ctn {
+                @apply p-0 overflow-hidden relative gap-0;
+
+                > div:first-child {
+                    @apply flex flex-col p-0;
+                }
+
+                .fi-ta-record-content {
+                    @apply h-auto w-full p-0 aspect-square;
+
+                    > div:first-child {
+                        @apply h-full w-full relative;
+                    }
+                }
+
+                label {
+                    @apply w-full h-auto aspect-square;
+                    z-index: 1;
+                }
+
+                input:not(:checked) {
+                    @apply bg-white dark:bg-gray-800;
+                }
+
+                .fi-ta-actions {
+                    @apply flex flex-row p-3;
+                }
+            }
+        }
+    }
+}

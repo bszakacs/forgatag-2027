@@ -3,7 +3,7 @@
 @if ($jelentes)
     @php($hiba = $jelentes['hibak'] ?? [])
     @php($teendo = $jelentes['figyelmeztetesek'] ?? [])
-    <details class="mt-jel {{ $hiba ? 'mt-jel--hiba' : '' }}" @if ($hiba || $teendo) open @endif>
+    <details class="mt-jel {{ $hiba ? 'mt-jel--hiba' : '' }}" @if ($hiba) open @endif>
         <style>
             .mt-jel{border:1px solid var(--gray-200);border-radius:.75rem;padding:.75rem 1rem;font-size:.875rem;background:var(--gray-50)}
             .dark .mt-jel{border-color:rgb(255 255 255 / .1);background:rgb(255 255 255 / .03)}
@@ -17,6 +17,7 @@
         <summary>
             2026-os képanyag behozatala ({{ $jelentes['ido'] ?? '' }}):
             {{ $jelentes['osszegzes'] ?? '' }}
+            @if ($teendo)<span style="color:var(--warning-600)"> — {{ count($teendo) }} tennivaló (kattints a részletekért)</span>@endif
         </summary>
         <table>
             @foreach ($jelentes['sorok'] ?? [] as $sor)
