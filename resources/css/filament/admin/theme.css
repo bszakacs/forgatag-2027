@@ -35,6 +35,22 @@
                 @apply ring-primary-600 dark:ring-primary-500;
             }
 
+            /* Rácsnézet: egérrel kiemelődik a kártya, a kép finoman nagyobbodik (tulajdonosi kérés, 2026-10-28). */
+            @apply transition duration-150;
+
+            &:hover {
+                @apply ring-2 ring-primary-400 shadow-lg dark:ring-primary-500;
+
+                .curator-grid-column img {
+                    transform: scale(1.04);
+                }
+            }
+
+            .curator-grid-column img {
+                @apply transition-transform duration-200;
+            }
+
+            /* A jelölőnégyzet MINDEN háttéren látszódjon: fehér alap, sötét keret, árnyék; bejelölve narancs. */
             .fi-ta-record-checkbox {
                 @apply absolute top-2 left-2 z-10;
             }
@@ -57,10 +73,6 @@
                 label {
                     @apply w-full h-auto aspect-square;
                     z-index: 1;
-                }
-
-                input:not(:checked) {
-                    @apply bg-white dark:bg-gray-800;
                 }
 
                 .fi-ta-actions {
@@ -92,5 +104,22 @@
 
     svg {
         @apply text-gray-400 dark:text-gray-500;
+    }
+}
+
+/* Rácsnézet: a jelölőnégyzet MINDEN háttéren látszódjon — fehér alap, fehér + sötét kettős keret, árnyék
+   (a Filament a keretet árnyékkal rajzolja, ezért itt az árnyékot írjuk felül; bejelölve narancs). */
+.fi-resource-mediatar .fi-ta .fi-ta-record:has(.curator-grid-column) .fi-ta-record-checkbox.fi-checkbox-input {
+    width: 1.375rem;
+    height: 1.375rem;
+    border: 0;
+    border-radius: .3rem;
+    background-color: #fff;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px rgb(17 24 39), 0 2px 8px rgb(0 0 0 / .55);
+    cursor: pointer;
+
+    &:checked {
+        background-color: var(--primary-500);
+        box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--primary-700), 0 2px 8px rgb(0 0 0 / .55);
     }
 }
