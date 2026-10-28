@@ -500,6 +500,9 @@ menüpont: „Arculat” — kivételes saját menüpont, PROMPT-06), 11 szekci�
   (`Require all denied`, kivéve `public/`) kötelező. Mérve: `.env`, `vendor/`, `.git` → 403.
 - A Deploy felülete „fut” állapotban ragadhat; a valóságot a `~/.cpanel/logs` napló mutatja.
 - A `vendor/` és a Filament public-assetjei a tárolóban vannak (a szerveren `composer` nem fut).
+- **A telepítő-PHP-ban (ea-php84) NINCS zip** (mérve 2026-10-28: `zip=0 gd=1`); a web PHP-jában (alt-php84,
+  Select PHP Version) VAN. A `.cpanel.yml` ezért a médiatár-behozatalt az alt-php84-gyel futtatja, ha az tud zip-et.
+  A cPanel Deploy felülete ilyenkor is „fut”-ban ragadhat — a valóság a `~/.cpanel/logs` naplóban.
 - **Új composer-csomag után** a szerveren a régi csomaglista (`bootstrap/cache/packages.php`, nincs a tárolóban)
   maradna → az új csomag nem töltődik be (2026-10-28: „No hint path defined for [curator]”, 500). Ezért a
   `.cpanel.yml` minden telepítéskor `package:discover`-t futtat.

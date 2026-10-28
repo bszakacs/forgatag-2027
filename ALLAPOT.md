@@ -57,7 +57,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   **◐ világos/sötét váltó a beküldő űrlapon** (a 2026-os űrlap világos palettájával).
   Élesben: lásd a „MOST folyik” pontot.
 
-- **Médiatár** (`PROMPT-07`, 2026-10-22) — **kész és helyben mérve, élesben MÉG NEM** (lásd „MOST folyik”).
+- **Médiatár** (`PROMPT-07`, 2026-10-22) — **kész; a 2026-os behozatal ÉLESBEN is lefutott (2026-10-28 17:07)**,
+  a számok betűre egyeznek a helyi méréssel (lásd lent). Élő képernyős próba még hátra van (MOST folyik).
   Curator + saját mezők (jogtulajdonos, licenc, fotós, eredet); menü: „Médiatár” csoport (Képek és fájlok ·
   Galériák) + „Támogatók”. A gyűjtemény a feltöltés helyéből jön (galéria/támogató lapjáról magától oda;
   közvetlen feltöltés → „Rendezetlen”); tömeges „Áthelyezés gyűjteménybe”. Licenc: beküldött képnél kötelező,
@@ -70,15 +71,12 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 
 ## Ami MOST folyik
 
-1. **A médiatár élesítése — a felhasználóra vár, ebben a sorrendben:**
-   a) **lemezkvóta** a cPanelben (kell ~1,3 GB szabad hely a feltöltés idejére; utána ~0,7 GB marad foglalva).
-      **Ha nincs meg: állj meg**, ne induljon a feltöltés.
-   b) a **GD** bővítmény bekapcsolva a „Select PHP Version → Extensions” alatt (a bélyegképekhez).
-   c) a 3 zip feltöltése (`MENTES-2026/import-csomag/`) ide: `public_html/forgatag2027/storage/app/import-2026/`
-      (a mappát a Fájlkezelőben kell létrehozni). **Kicsomagolni nem kell.**
-   d) Git Version Control → Update from Remote → Deploy HEAD Commit. A behozatal a telepítés utolsó lépése
-      (~1–2 perc); a jelentés a Médiatár lapjának tetején, számokkal.
-   e) élő próba: a számok, egy galéria, a támogatók logói, 375 px, egy jóváhagyás.
+1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
+   kihagyva; galéria 467/467, logó 112/112; hiba 0; a 3 zip törölve. **Tennivaló (1):** a „Balázs Ferenc Önképző Kör”
+   logója 14765×7384 (109 MP) — a bélyegképe nem készül el, kisebbre kell cserélni (a kép „Csere” fülén).
+   Hátra van (a felhasználóval, az ő belépésével): egy galéria, a támogatók logói, 375 px, egy jóváhagyás élesben.
+   **Tanulságok az élesítésből** (`CLAUDE.md` „A tárhely mért adottságai”): a telepítő-PHP-ban (ea-php84) nincs zip,
+   ezért a behozatal az alt-php84-gyel fut; új composer-csomag után `package:discover` kell (most a telepítés része).
 2. **Az Arculat-szerkesztő élő próbája** (arculat-szerkesztő fiókkal) — ha még nem volt meg.
 
 ## Ami ezután jön, ebben a sorrendben
