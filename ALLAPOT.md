@@ -69,7 +69,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   a „Programok 2026”-ba (eredet-jelöléssel, 2027-es programhoz nem rendelhető — tulajdonosi döntés). 375 px-en
   ellenőrizve. Részletek: `CLAUDE.md` 8. pont „Médiatár”. 111 teszt zöld.
 
-- **Tartalom: hírek, menü, aloldalak** (`PROMPT-08`, 2026-10-28) — **kész helyben, élesítésre vár** (lásd „MOST folyik”).
+- **Tartalom: hírek, menü, aloldalak** (`PROMPT-08`, 2026-10-28) — **kész, élesben telepítve 2026-10-28** (az élő próba vége: „MOST folyik”).
   Új **„Tartalom” menücsoport**: Hírek · Menü · Aloldalak · Galériák · Támogatók (a Médiatár önálló menüpont lett —
   egyelemű csoport nem maradhatott). Csak szuperadmin és koordinátor éri el.
   - **Menü:** saját fa-szerkesztő (`/admin/menu`), bővítmény nélkül: fogd-és-vidd + nyíl-gombok (fel/le/beljebb/
@@ -98,11 +98,10 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **Tanulságok az élesítésből** (`CLAUDE.md` „A tárhely mért adottságai”): a telepítő-PHP-ban (ea-php84) nincs zip,
    ezért a behozatal az alt-php84-gyel fut; új composer-csomag után `package:discover` kell (most a telepítés része).
 2. **Az Arculat-szerkesztő élő próbája** (arculat-szerkesztő fiókkal) — ha még nem volt meg.
-3. **A Tartalom élesítése** (PROMPT-08) — a kód a GitHubon; a telepítés (*Update from Remote → Deploy*) maga lefuttatja
-   a migrációt, a kategória-igazítást és a behozatalt (`forgatag:tartalom-import`, a naplóban „TARTALOM:” sorok).
-   Utána megnézni: Tartalom → Menü / Aloldalak / Hírek, és a nyitólap piros „Tesztadat” sávja.
-   ⚠ A proba adatbázisában a kategória-igazítás a megszűnt 5 kategóriából csak a használatlant törli; ha valamelyikre
-   program/programgazda/kategóriagazda mutat, marad, és a telepítési napló kiírja.
+3. **A Tartalom élő próbája** (PROMPT-08) — **telepítve, 2026-10-28, a napló hibátlan:** migráció kész, kategóriák 23
+   (a megszűnt 5 mind törölhető volt, egyik sem maradt bent), 13 lap, 2 menü / 21 menüpont, 4 teszthír; a menük az
+   adminban látszanak (a tulajdonos saját böngészőjéből). **Hátra van (a felhasználóval):** az Aloldalak lapon a Rólunk
+   képei, a Hírek TESZT jelvénye, a nyitólap piros „Tesztadat” sávja, egy menüpont áthúzása, 375 px.
 
 ## Ami ezután jön, ebben a sorrendben
 
