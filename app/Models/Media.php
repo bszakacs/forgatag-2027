@@ -146,6 +146,17 @@ class Media extends CuratorMedia
         foreach (DB::table('program_items')->where('cover_media_id', $this->id)->pluck('title') as $p) {
             $hol[] = "program borítója: {$p}";
         }
+        foreach (DB::table('news_items')->where('cover_media_id', $this->id)->pluck('title_hu') as $h) {
+            $hol[] = "hír borítója: {$h}";
+        }
+        foreach (DB::table('pages')->where('hero_media_id', $this->id)->pluck('title_hu') as $l) {
+            $hol[] = "aloldal nyitóképe: {$l}";
+        }
+        $lapKepek = DB::table('page_texts')->join('pages', 'pages.id', '=', 'page_texts.page_id')->where('media_id', $this->id)->pluck('pages.title_hu')
+            ->merge(DB::table('page_blocks')->join('pages', 'pages.id', '=', 'page_blocks.page_id')->where('media_id', $this->id)->pluck('pages.title_hu'));
+        foreach ($lapKepek->unique() as $l) {
+            $hol[] = "aloldal képe: {$l}";
+        }
         if ($this->origin === MediaOrigin::Arculat) {
             $hol[] = 'az arculat (téma) fájlja';
         }

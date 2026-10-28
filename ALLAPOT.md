@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-10-22
+**Utolsó frissítés:** 2026-10-28 (PROMPT-08, tartalmi gyűjtemények)
 
 ---
 
@@ -59,8 +59,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 
 - **Médiatár** (`PROMPT-07`, 2026-10-22) — **kész; a 2026-os behozatal ÉLESBEN is lefutott (2026-10-28 17:07)**,
   a számok betűre egyeznek a helyi méréssel (lásd lent). Élő képernyős próba még hátra van (MOST folyik).
-  Curator + saját mezők (jogtulajdonos, licenc, fotós, eredet); menü: „Médiatár” csoport (Képek és fájlok ·
-  Galériák) + „Támogatók”. A gyűjtemény a feltöltés helyéből jön (galéria/támogató lapjáról magától oda;
+  Curator + saját mezők (jogtulajdonos, licenc, fotós, eredet); menü: „Médiatár” (2026-10-28 óta önálló
+  menüpont; a Galériák és a Támogatók a „Tartalom” csoportban). A gyűjtemény a feltöltés helyéből jön (galéria/támogató lapjáról magától oda;
   közvetlen feltöltés → „Rendezetlen”); tömeges „Áthelyezés gyűjteménybe”. Licenc: beküldött képnél kötelező,
   adminban nem áll az útba. Jóváhagyáskor a beküldött fotó a zárt tárból a médiatárba („Programok”) kerül;
   visszaküldött program fotója nem. A téma fájljai az „Arculat” gyűjteményben (**6. adósság törlesztve**).
@@ -68,6 +68,26 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   kihagyva (önkéntesek személyes mellékletei); galéria-kapcsolat 467/467, logó-kapcsolat 112/112; 241 borító
   a „Programok 2026”-ba (eredet-jelöléssel, 2027-es programhoz nem rendelhető — tulajdonosi döntés). 375 px-en
   ellenőrizve. Részletek: `CLAUDE.md` 8. pont „Médiatár”. 111 teszt zöld.
+
+- **Tartalom: hírek, menü, aloldalak** (`PROMPT-08`, 2026-10-28) — **kész helyben, élesítésre vár** (lásd „MOST folyik”).
+  Új **„Tartalom” menücsoport**: Hírek · Menü · Aloldalak · Galériák · Támogatók (a Médiatár önálló menüpont lett —
+  egyelemű csoport nem maradhatott). Csak szuperadmin és koordinátor éri el.
+  - **Menü:** saját fa-szerkesztő (`/admin/menu`), bővítmény nélkül: fogd-és-vidd + nyíl-gombok (fel/le/beljebb/
+    kijjebb — mobilon ez a biztos út), **HU/RO gomb soronként = nyelvenkénti elrejtés**, legfeljebb 2 szint (a 3. szintet
+    emberi üzenettel elutasítja, a fa visszaugrik).
+  - **Aloldalak:** cím, bevezető, SEO, nyitókép, **szerkeszthető szövegek** (a sablon kulcsai, képpel is), **blokkok**
+    (szöveg, kép, gomb, elválasztó, YouTube-videók), blokk nyelvenként rejthető. Rendszerlap nem törölhető, slugja fix.
+  - **Hírek:** HU/RO, borító a médiatárból, piszkozat/publikált, megjelenés dátuma.
+  - **Behozva a 2026-ból — számra:** menü 2/2, menüpont 21/21, lap 13/13, szerkeszthető szöveg 85 (köztük **16/16 kép
+    a médiatárból**, `legacy_id`-n át, nem újrafeltöltve), videó 26/26 (3 csoport → 3 videós blokk a „Videó archívum”
+    lapon), **teszthír 4** (12-ből; 8 szándékosan nem). **Lapblokk 0/9 — szándékosan:** mind a 9 egy nem létező laphoz
+    tartozott, és próbaszemét volt („dsadsa”, „Teszte csere”). Csomag: `database/import/tartalom-2026.json`.
+  - **TESZTADAT — felismerhető, egy lépésben törölhető:** `is_test` jelölés hírnél ÉS programnál; TESZT jelvény a
+    listában és a szerkesztőlapon, piros figyelmeztetés a nyitólapon, törlés: **Beállítások → Tesztadatok** (vagy
+    `php artisan forgatag:tesztadat-torles`). A teszthír-behozatal jelölése fájlban van, így az élesítés előtti
+    adatbázis-ürítés + telepítés után **nem jönnek vissza**.
+  - **5. adósság törlesztve** (lent). Kategóriagazda-fiókkal böngészőből végigpróbálva: az új lapok (közvetlen címmel is)
+    403, a menüben nem látszanak. 375 px-en minden új lap használható. 122 teszt zöld.
 
 ## Ami MOST folyik
 
@@ -78,15 +98,20 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **Tanulságok az élesítésből** (`CLAUDE.md` „A tárhely mért adottságai”): a telepítő-PHP-ban (ea-php84) nincs zip,
    ezért a behozatal az alt-php84-gyel fut; új composer-csomag után `package:discover` kell (most a telepítés része).
 2. **Az Arculat-szerkesztő élő próbája** (arculat-szerkesztő fiókkal) — ha még nem volt meg.
+3. **A Tartalom élesítése** (PROMPT-08) — a kód a GitHubon; a telepítés (*Update from Remote → Deploy*) maga lefuttatja
+   a migrációt, a kategória-igazítást és a behozatalt (`forgatag:tartalom-import`, a naplóban „TARTALOM:” sorok).
+   Utána megnézni: Tartalom → Menü / Aloldalak / Hírek, és a nyitólap piros „Tesztadat” sávja.
+   ⚠ A proba adatbázisában a kategória-igazítás a megszűnt 5 kategóriából csak a használatlant törli; ha valamelyikre
+   program/programgazda/kategóriagazda mutat, marad, és a telepítési napló kiírja.
 
 ## Ami ezután jön, ebben a sorrendben
 
-1. **Az admin tartalmi gyűjteményei** — hírek, menü, aloldalak (a galéria és a támogatók váza kész).
-   *Ez a publikus oldal előfeltétele: enélkül nincs mit megjeleníteni.*
-   A 2026-os hír-, csapat-, kézműves- és aloldal-képek már a médiatárban vannak, eredet-jelöléssel
-   (`legacy_id`) — ezen keresztül kell bekötni őket, nem újra feltölteni.
-2. **A publikus váz** — keretfájl, fejléc, lábléc, egy lap, a valódi token-forrásra kötve.
+1. **A publikus váz** — keretfájl, fejléc, lábléc, egy lap, a valódi token-forrásra kötve.
    *Itt dől el, hogy a Blade + htmx + az áthozott CSS együtt működik-e. Ma bizonyítatlan.*
+   **A tartalom már kész hozzá:** menü (`Menu`/`MenuItem::target()`, `show_hu`/`show_ro` szerint szűrve), lapok
+   (`Page` + `PageText` kulcsok + `PageBlock`), hírek (`NewsItem`, csak `published`). ⚠ A publikus lapon a
+   TESZT-hír is látszik (szándékosan, hogy tesztelni lehessen) — élesítés előtt a Tesztadatok törlése kötelező.
+2. **A beégetett szövegek pótlása a lapokon** (9. adósság) — a publikus sablonok megépítésével együtt.
 3. **A programkereső** — a legnagyobb és legösszetettebb darab.
 4. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
 5. **A fordítási lánc.**
@@ -114,19 +139,29 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
 3. **A koordinátor nem látja a fotót** olyan felületen, ahol még nincs megoldva — új felület
    építésekor ellenőrizni.
 4. **Export, import és helyszín-lap** még nem létezik; amikor megépül, **kategóriagazda-fiókkal
-   végig kell próbálni**, a közvetlen címet is begépelve.
-5. **Élő hiba:** a beküldő űrlap extra mezői olyan kategória-slugra is hivatkoznak, ami 2026-ban
-   megszűnt (`kerekasztal-beszelgetesek`). Ma csendben nem ad extra mezőket.
+   végig kell próbálni**, a közvetlen címet is begépelve. *(A PROMPT-08 új lapjai — hírek, menü, aloldalak —
+   így végigpróbálva, 2026-10-28: mind 403.)*
+5. ~~**Élő hiba:** a beküldő űrlap extra mezői megszűnt kategória-slugra hivatkoznak~~ — **törlesztve 2026-10-28.**
+   A kezdő kategórialista (`seed/categories.csv`) most a 2026-os végleges 23 (román névvel); a meglévő adatbázist egy
+   migráció igazítja (a megszűnt 5-ből csak a használatlant törli). Átnézve: a `kerekasztal-beszelgetesek` volt az
+   EGYETLEN megszűnt slug az extra mezők között; a 4 új kategóriának 2026-ban sem volt extra mezője (nem találtunk ki).
+   **Védelem:** ha a leírás nem létező kategóriára hivatkozik (törölt/átnevezett), **piros figyelmeztetés a nyitólapon**
+   (`App\Filament\Widgets\Figyelmeztetesek`), és a teszt a seed-listával is összeveti.
 6. ~~A téma fájljai külön tárban vannak~~ — **törlesztve 2026-10-22**: a médiatár „Arculat” gyűjteményében
    látszanak (ugyanaz a fájl, nem másolat); cserélni továbbra is a /tema-ban lehet.
 7. **Az admin témáját kézzel kell fordítani** (`npm run admin-tema`, a fejlesztőgépen), ha új Filament-nézet
    új Tailwind-osztályt használ — különben az új osztály a szerveren hatástalan. A lefordított fájl a tárolóban van.
 8. **A Curator két részletét átvettük** (a panel „Fájlok hozzáadása” művelete, a képválasztó panel-indítója) —
    a csomag frissítésekor össze kell vetni a sajátunkat az újjal (`App\Livewire\MediaPanel`, `App\Filament\Forms\MediaPicker`).
+9. **A 2026-os aloldalak szövegének nagy része BEÉGETETT magyar** (tulajdonosi rögzítés, 2026-10-28 — MOST NEM javítjuk).
+   A 2026-os Astro-sablonokban a szöveg zöme nem szerkeszthető kulcson volt; a fesztiválrend lapján például a szövegnek
+   csak **18%-a** szerkeszthető. Átjött, ami szerkeszthető volt (85 kulcs, az aloldal lapján „Szerkeszthető szövegek”);
+   **a többi a publikus sablonok körében pótlandó** (forrás: `..\forgatag-os\frontend\src\rolunk\`, `fesztivalrend\`,
+   `videoarchivum\`, `home-v7\` stb. — csak olvasásra), úgy, hogy minden szöveg kulcsra kerüljön, HU/RO.
 
 ## Amit a mentés leltára felszínre hozott
 
-- **Kategóriák: 23, nem 24.** Öt megszűnt, négy új jött.
+- **Kategóriák: 23, nem 24.** Öt megszűnt, négy új jött. *(2026-10-28: a kezdőlista már ez a 23.)*
 - **Egyetlen helyszínnek sincs GPS-koordinátája** (46/46 üres).
 - **A 12 hír egyikének sincs román szövege.**
 - **A program román címe két helyen van**, és 3 programnál eltér — importkor tisztázni kell.
@@ -135,6 +170,8 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
   Ne kerüljön felhőbe szinkronizált mappába.
 - **A NAS napi mentése hibás volt** (`pg_dump | gzip` — a sikert a gzip adta vissza). A mostani
   mentés ép, de a régebbiekre nem lehet támaszkodni.
+- **A 9 lapblokk mind gazdátlan volt** (egy nem létező laphoz kötve, próbaszöveggel) — nem jött át (2026-10-28).
+- **A menü két pontja („Programok”, „Médiatár”) 2026-ban cím nélküli „link” volt** — most „csak almenü-fejléc” típus.
 
 ## Nyitott kérdések — ne döntsd el magad
 
@@ -152,5 +189,7 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
   (`storage/app/private/bekuldesek-2026/`, mellettük `LISTA.json`). Megtartsuk vagy töröljük?
 - **ÚJ — az önkéntesek 34 melléklete** (szülői hozzájárulás, motivációs levél) szándékosan NEM jött át
   (személyes adat). A mentésben megvannak; ha az önkéntes-űrlap köre kéri, onnan hozható.
+- **ÚJ — a „Kedvenc programjaim” lap:** 2026-ban a NAS-ra hívott (kedvencek-API); a 13 lappal együtt átjött
+  (egy az egyben), de a funkció a 2027-es rendszerben még nincs meg. Kell-e 2027-ben kedvenclista?
 - Napi automatikus adatbázis-mentés: **be kell állítani, és egyszer vissza is kell tölteni.**
   Nem elég beállítani — lásd a NAS tanulságát.

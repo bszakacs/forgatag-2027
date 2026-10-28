@@ -1,0 +1,1281 @@
+{
+    "forras": "MENTES-2026/2026-10-21 (Directus PostgreSQL-mentés)",
+    "szamok": {
+        "menü": 2,
+        "menüpont": 21,
+        "lap": 13,
+        "szerkeszthető szöveg/kép": 85,
+        "videócsoport → videós blokk": 3,
+        "videó": 26,
+        "teszthír": 4
+    },
+    "kihagyva": {
+        "hír": {
+            "db": 8,
+            "ok": "tulajdonosi döntés: időhöz kötött 2026-os bejelentések, a 2026-os archívum őrzi őket"
+        },
+        "lapblokk": {
+            "db": 9,
+            "ok": "egyik sem tartozik létező laphoz (a laphoz nem kötött blokkok próbatartalmak: „dsadsa”, „Teszte csere”)"
+        },
+        "rejtett videó": {
+            "db": 0,
+            "ok": "2026-ban sem látszott"
+        }
+    },
+    "menuk": [
+        {
+            "id": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "slug": "main",
+            "title_hu": "Főmenü",
+            "title_ro": "Meniu principal",
+            "sort": 1
+        },
+        {
+            "id": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "slug": "archive",
+            "title_hu": "Archívum",
+            "title_ro": "Arhivă",
+            "sort": 2
+        }
+    ],
+    "menupontok": [
+        {
+            "id": "0ebf91fb-5ad7-429a-a573-22ed28a69df7",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": null,
+            "sort": 1,
+            "label_hu": "Rólunk",
+            "label_ro": "Despre noi",
+            "type": "link",
+            "page": null,
+            "url": "/rolunk",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "1c7dfba0-bcdb-4409-b642-60c700189d83",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 1,
+            "label_hu": "2025",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "https://forgatag.ro/forgatag2025/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "391ec2e1-b9d0-410c-9d19-0c4d2615cb94",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 2,
+            "label_hu": "2024",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "https://forgatag.ro/forgatag2024/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "124249c7-7306-4812-958e-4db799f2983c",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": null,
+            "sort": 2,
+            "label_hu": "Programok",
+            "label_ro": "Program",
+            "type": "group",
+            "page": null,
+            "url": null,
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "38596f30-afbd-4ba3-88ff-00f5af4e5073",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 3,
+            "label_hu": "2023",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "https://forgatag.ro/forgatag2023/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "cb2fd614-2b06-4715-bf71-94dd51fd4981",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": null,
+            "sort": 3,
+            "label_hu": "Hírek",
+            "label_ro": "Știri",
+            "type": "link",
+            "page": null,
+            "url": "/hirek",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": false
+        },
+        {
+            "id": "a653923d-e56d-4b02-9007-01bd4aca8e7a",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 4,
+            "label_hu": "2022",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "https://forgatag.ro/forgatag2022/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "9a42952c-1ede-4d58-b78c-56daf286d6ba",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": null,
+            "sort": 4,
+            "label_hu": "Médiatár",
+            "label_ro": "Mediatecă",
+            "type": "group",
+            "page": null,
+            "url": null,
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "1bb6fa9f-ea59-4214-a810-4594be8eacfb",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 5,
+            "label_hu": "2021",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "https://forgatag.ro/forgatag2021/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "51e28e59-92a7-4a6c-a12a-34a97aac1a29",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": null,
+            "sort": 5,
+            "label_hu": "Vásár-Hely",
+            "label_ro": "Webshop",
+            "type": "link",
+            "page": null,
+            "url": "https://vasarhely.forgatag.ro",
+            "new_tab": true,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "645d42a4-a6f1-4aaa-9e74-4d3b1f28ffb6",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 6,
+            "label_hu": "2019",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "https://forgatag.ro/forgatag2019/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "7826b6e3-3961-46d8-b007-cd0b4ec74854",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 7,
+            "label_hu": "2018",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "http://forgatag.ro/forgatag2018/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "3b4e75b5-da2e-4439-ba5a-d93044758115",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 8,
+            "label_hu": "2017",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "http://forgatag.ro/forgatag2017/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "1b402646-1aa2-42e1-9ce8-63a740fc51e3",
+            "menu": "62d60e79-5fdc-461b-9f8f-80c64df96fa1",
+            "parent": null,
+            "sort": 9,
+            "label_hu": "2016",
+            "label_ro": null,
+            "type": "link",
+            "page": null,
+            "url": "http://forgatag.ro/forgatag2016/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "bfde9409-3a32-4275-a5de-cec947185c2c",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": "9a42952c-1ede-4d58-b78c-56daf286d6ba",
+            "sort": 1,
+            "label_hu": "Galéria",
+            "label_ro": "Galerie",
+            "type": "link",
+            "page": null,
+            "url": "/galeria",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "92595c1d-409c-4d07-9318-f636d93740a5",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": "124249c7-7306-4812-958e-4db799f2983c",
+            "sort": 1,
+            "label_hu": "Programkereső",
+            "label_ro": "Căutare program",
+            "type": "link",
+            "page": null,
+            "url": "/programok/",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "c1c52e75-9380-4bc2-942d-6c90e61c944d",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": "0ebf91fb-5ad7-429a-a573-22ed28a69df7",
+            "sort": 1,
+            "label_hu": "A Forgatag története",
+            "label_ro": "Povestea Vâltorii",
+            "type": "link",
+            "page": null,
+            "url": "/rolunk",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "3689248d-f362-4ced-94dd-fd62240047cb",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": "124249c7-7306-4812-958e-4db799f2983c",
+            "sort": 2,
+            "label_hu": "Kézműves vásár",
+            "label_ro": "Târg meșteșugăresc",
+            "type": "page",
+            "page": "a9d5c7a0-cea2-459c-b8f7-fafcc50ca298",
+            "url": null,
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "8b5b632f-39f4-49d0-94ef-c1a8807eec71",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": "9a42952c-1ede-4d58-b78c-56daf286d6ba",
+            "sort": 2,
+            "label_hu": "Videó archívum",
+            "label_ro": "Arhivă video",
+            "type": "link",
+            "page": null,
+            "url": "/videoarchivum",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "a5e7f7e4-cf8d-4cf7-8a88-f39bbc971c1c",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": "0ebf91fb-5ad7-429a-a573-22ed28a69df7",
+            "sort": 2,
+            "label_hu": "Támogatók és partnerek",
+            "label_ro": "Susținători și parteneri",
+            "type": "link",
+            "page": null,
+            "url": "/tamogatok",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        },
+        {
+            "id": "e8876d10-e484-4622-b6a5-0a2e1110d8b0",
+            "menu": "f6ca4361-80f2-4dec-86e6-ae3a1058ba21",
+            "parent": "0ebf91fb-5ad7-429a-a573-22ed28a69df7",
+            "sort": 3,
+            "label_hu": "Fesztiválrend",
+            "label_ro": "Regulamentul festivalului",
+            "type": "link",
+            "page": null,
+            "url": "/fesztivalrend",
+            "new_tab": false,
+            "show_hu": true,
+            "show_ro": true
+        }
+    ],
+    "lapok": [
+        {
+            "id": "da40d5fa-e178-44ae-9118-4525d7ae223b",
+            "slug": "home",
+            "title_hu": "Kezdőlap",
+            "title_ro": "Pagina principală",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": "A Vásárhelyi Forgatag teljes programja: öt nap, több száz program Marosvásárhelyen.",
+            "seo_description_ro": "Programul complet al Vâltoarei Mureșene: cinci zile, sute de programe în Târgu Mureș.",
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 1,
+            "szovegek": [
+                {
+                    "key": "home_numbers_title_a",
+                    "hu": "A Forgatag",
+                    "ro": "Vâltoarea",
+                    "kep": null
+                },
+                {
+                    "key": "home_highlight_1_title",
+                    "hu": "Parno Graszt koncert",
+                    "ro": "Concert Parno Graszt",
+                    "kep": null
+                },
+                {
+                    "key": "home_media_cta_mestersegem",
+                    "hu": "Mesterségem: vásárhelyi",
+                    "ro": "Seria \"Mesterségem Vásárhelyi\"",
+                    "kep": null
+                },
+                {
+                    "key": "home_hero_slide_1",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "a3f316bd-0d9f-4d66-b2df-0439eaaa2a02"
+                },
+                {
+                    "key": "home_hero_slide_2",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "9584e4ef-1c07-4806-9fe1-79d68dbd0fb8"
+                },
+                {
+                    "key": "home_hero_slide_3",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "f8b76890-57cb-424b-931f-16d32d0e5803"
+                },
+                {
+                    "key": "home_hero_slide_4",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "79b8b80a-618c-4a88-b36b-beb352d483f6"
+                },
+                {
+                    "key": "home_hero_slide_5",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "99d85658-e941-40e9-bff1-043a3702e9c7"
+                },
+                {
+                    "key": "home_highlight_1_img",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "bf22b299-9d4d-42c4-a635-d001efb2e387"
+                },
+                {
+                    "key": "home_highlight_2_img",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "b1f1100f-7b69-45f9-8a5b-78361bc3ed83"
+                },
+                {
+                    "key": "home_highlight_3_img",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "04ccb323-9400-4abc-9f95-42335def8164"
+                },
+                {
+                    "key": "home_highlight_4_img",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "152ba9a5-e613-43d9-ab40-5fefc09bbc59"
+                },
+                {
+                    "key": "home_highlight_5_img",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "fb2bfa74-8ece-41a0-96df-a65ac07b4b7f"
+                },
+                {
+                    "key": "home_highlight_6_img",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "8929c131-dfb0-486e-8fba-85b3f2081f66"
+                },
+                {
+                    "key": "home_highlight_2_title",
+                    "hu": "Megnyitó a Duna Művészegyüttessel",
+                    "ro": "Gala de deschidere cu Ansamblul Artistic \"Duna\" din Budapesta",
+                    "kep": null
+                },
+                {
+                    "key": "home_highlight_3_title",
+                    "hu": "Vásárhelyi Forgatag Sportkupák",
+                    "ro": "Cupele sportive Vâltoarea Mureșeană",
+                    "kep": null
+                },
+                {
+                    "key": "home_highlight_4_title",
+                    "hu": "III. Családi Olimpia",
+                    "ro": "III. Olimpiada Familiilor",
+                    "kep": null
+                },
+                {
+                    "key": "home_highlight_5_title",
+                    "hu": "Borkert",
+                    "ro": "Grădina de vinuri cu muzică live",
+                    "kep": null
+                },
+                {
+                    "key": "home_highlight_6_title",
+                    "hu": "Kolompos együttes – gyermekkoncert",
+                    "ro": "Formația Kolompos – concert pentru copii",
+                    "kep": null
+                },
+                {
+                    "key": "home_hero_title_a",
+                    "hu": "2027. augusztus 25-29.",
+                    "ro": "Ne revedem",
+                    "kep": null
+                },
+                {
+                    "key": "home_hero_title_b",
+                    "hu": " között újra találkozunk!",
+                    "ro": " între 25 și 29 august 2027!",
+                    "kep": null
+                },
+                {
+                    "key": "home_hero_countdown_foot",
+                    "hu": "Ott találkozunk!",
+                    "ro": "Ne vedem acolo!",
+                    "kep": null
+                },
+                {
+                    "key": "home_news_title_a",
+                    "hu": "Ami a forgatag körül",
+                    "ro": null,
+                    "kep": null
+                },
+                {
+                    "key": "home_numbers_title_b",
+                    "hu": "számokban",
+                    "ro": "în cifre",
+                    "kep": null
+                },
+                {
+                    "key": "home_media_title_b",
+                    "hu": "képekben",
+                    "ro": "în imagini",
+                    "kep": null
+                },
+                {
+                    "key": "home_highlight_title_a",
+                    "hu": null,
+                    "ro": "Momente",
+                    "kep": null
+                },
+                {
+                    "key": "home_highlight_title_b",
+                    "hu": null,
+                    "ro": "de interes",
+                    "kep": null
+                },
+                {
+                    "key": "home_stats_label_programs",
+                    "hu": null,
+                    "ro": "programe",
+                    "kep": null
+                },
+                {
+                    "key": "home_stats_label_venues",
+                    "hu": null,
+                    "ro": "locații",
+                    "kep": null
+                },
+                {
+                    "key": "home_stats_label_days",
+                    "hu": null,
+                    "ro": "zile",
+                    "kep": null
+                },
+                {
+                    "key": "home_stats_label_partners",
+                    "hu": null,
+                    "ro": "parteneri",
+                    "kep": null
+                },
+                {
+                    "key": "home_stats_label_meetings",
+                    "hu": null,
+                    "ro": "întâlniri",
+                    "kep": null
+                },
+                {
+                    "key": "home_numbers_cta",
+                    "hu": null,
+                    "ro": "Povestea Vâltorii",
+                    "kep": null
+                },
+                {
+                    "key": "home_media_title_a",
+                    "hu": null,
+                    "ro": "Vâltoarea",
+                    "kep": null
+                },
+                {
+                    "key": "home_media_videos_title",
+                    "hu": null,
+                    "ro": "Retrospective video",
+                    "kep": null
+                },
+                {
+                    "key": "home_media_gallery_title",
+                    "hu": null,
+                    "ro": "Imagini din fiecare an",
+                    "kep": null
+                },
+                {
+                    "key": "home_media_cta_szinejava",
+                    "hu": null,
+                    "ro": "Seria \"Vásárhely színe-java\"",
+                    "kep": null
+                },
+                {
+                    "key": "home_organizers_title_a",
+                    "hu": null,
+                    "ro": "Iniţiatorii",
+                    "kep": null
+                },
+                {
+                    "key": "home_organizers_title_b",
+                    "hu": null,
+                    "ro": "Vâltorii Mureşene",
+                    "kep": null
+                },
+                {
+                    "key": "home_organizers_rail_title",
+                    "hu": null,
+                    "ro": "Asociații organizatoare",
+                    "kep": null
+                },
+                {
+                    "key": "home_organizers_cta",
+                    "hu": null,
+                    "ro": "Povestea Vâltorii",
+                    "kep": null
+                },
+                {
+                    "key": "home_sponsors_rail_title",
+                    "hu": "Partnereink és támogatóink",
+                    "ro": "Partenerii și susținătorii noștri",
+                    "kep": null
+                }
+            ],
+            "blokkok": []
+        },
+        {
+            "id": "f144edce-3925-4d41-9724-e1009eb419ed",
+            "slug": "kategoriak",
+            "title_hu": "Kategóriák",
+            "title_ro": "Categorii",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 10,
+            "szovegek": [],
+            "blokkok": []
+        },
+        {
+            "id": "2dc6c101-bf6d-4c22-a110-45a808d7d1aa",
+            "slug": "helyszinek",
+            "title_hu": "Helyszínek",
+            "title_ro": "Locații",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 20,
+            "szovegek": [],
+            "blokkok": []
+        },
+        {
+            "id": "c7820708-6a1a-4008-8915-44ea9ed91fc1",
+            "slug": "terkep",
+            "title_hu": "Térkép",
+            "title_ro": "Hartă",
+            "lead_hu": "A fesztivál helyszínei a térképen. A jelölőre kattintva megnyílik a helyszín oldala. A koordináták egy része közelítő.",
+            "lead_ro": "Locațiile festivalului pe hartă. Apasă pe marcaj pentru pagina locației. O parte din coordonate sunt aproximative.",
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 30,
+            "szovegek": [],
+            "blokkok": []
+        },
+        {
+            "id": "7562493e-0ae6-4e9c-b11e-17979264168e",
+            "slug": "tamogatok",
+            "title_hu": "Támogatóink",
+            "title_ro": "Sponsorii noștri",
+            "lead_hu": "Köszönjük támogatóinknak, hogy segítik a Vásárhelyi Forgatagot!",
+            "lead_ro": "Mulțumim sponsorilor noștri pentru sprijinul acordat Vâltoarei!",
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 40,
+            "szovegek": [],
+            "blokkok": []
+        },
+        {
+            "id": "2be953fd-3f43-45f3-b074-99b288c0e9e2",
+            "slug": "hirek",
+            "title_hu": "Hírek",
+            "title_ro": "Știri",
+            "lead_hu": "Friss hírek, összefoglalók és beharangozók a Vásárhelyi Forgatagról.",
+            "lead_ro": "Știri proaspete, rezumate și anunțuri despre Vâltoarea Mureșeană.",
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 50,
+            "szovegek": [],
+            "blokkok": []
+        },
+        {
+            "id": "7f5f4664-fdc7-4830-9fe0-b54e88edce80",
+            "slug": "kedvencek",
+            "title_hu": "Kedvenc programjaim",
+            "title_ro": "Programele mele favorite",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 60,
+            "szovegek": [
+                {
+                    "key": "fav_title_a",
+                    "hu": null,
+                    "ro": "Vâltoarea",
+                    "kep": null
+                },
+                {
+                    "key": "fav_title_b",
+                    "hu": null,
+                    "ro": "mea",
+                    "kep": null
+                },
+                {
+                    "key": "fav_locked_text",
+                    "hu": null,
+                    "ro": "Lista ta există deja aici, în acest browser — și fără adresă de e-mail. Dacă vrei să vezi aceeași listă și pe telefon sau pe alt calculator, scrie adresa ta de e-mail: de atunci lista aparține acelei adrese. Fără parolă, fără cod, fără înregistrare.",
+                    "kep": null
+                },
+                {
+                    "key": "fav_locked_cta",
+                    "hu": null,
+                    "ro": "Vizibil și pe alt dispozitiv",
+                    "kep": null
+                }
+            ],
+            "blokkok": []
+        },
+        {
+            "id": "62c95d50-a57a-435a-85fd-6f6fc81a041e",
+            "slug": "kereses",
+            "title_hu": "Keresés a programban",
+            "title_ro": "Caută în program",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 70,
+            "szovegek": [],
+            "blokkok": []
+        },
+        {
+            "id": "f2050203-92ec-43cb-99d3-d0ab8209b30d",
+            "slug": "fesztivalrend",
+            "title_hu": "Fesztiválrend",
+            "title_ro": "Regulamentul festivalului",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 80,
+            "szovegek": [
+                {
+                    "key": "fesztivalrend_quick_place_p",
+                    "hu": null,
+                    "ro": "Locația principală a programelor Vâltorii Mureșene este Cetatea Medievală și centrul istoric al orașului. Pe subpagina Programe poți vedea toate locațiile și poți lista punctele de program care au loc acolo.",
+                    "kep": null
+                }
+            ],
+            "blokkok": []
+        },
+        {
+            "id": "005447c9-731e-4baa-82db-b6bdd1cbe298",
+            "slug": "galeria",
+            "title_hu": "Galéria",
+            "title_ro": "Galerie",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 90,
+            "szovegek": [],
+            "blokkok": []
+        },
+        {
+            "id": "b946270b-fc09-497b-bf1f-cf6d434bb0bd",
+            "slug": "rolunk",
+            "title_hu": "Rólunk",
+            "title_ro": "Despre noi",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 95,
+            "szovegek": [
+                {
+                    "key": "about_related_status2",
+                    "hu": "Hamarosan",
+                    "ro": "în curând",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_p6",
+                    "hu": "Ez a Vásárhelyi Forgatag: egy közösség által teremtett ünnep, amely évről évre hazahív, találkozásokat szül, élményeket ad és közös emlékeket teremt. Mert a Forgatag több mint rendezvény: összeköt minket.",
+                    "ro": "Aceasta este Vâltoarea Mureșeană: o sărbătoare creată de comunitate, care ne cheamă acasă an de an, dă naștere întâlnirilor, oferă experiențe și creează amintiri comune. Pentru că Vâltoarea este mai mult decât un eveniment: ne unește.összeköt minket.",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_p3",
+                    "hu": "A történet a Maros-parton kezdődött, ott telt meg először a tér zenével, vásári zajjal, nevetéssel és élettel. A Forgatag később a Ligetbe költözött, ott tovább növekedett, egyre gazdagabb programkínálattal és mind több látogatóval, végül megérkezett a marosvásárhelyi Várba, amely történelmével, hangulatával és méltóságával valódi otthonává vált a rendezvénynek. Tadmm",
+                    "ro": "Povestea a început pe malul Mureșului, acolo unde spațiul s-a umplut pentru prima dată de muzică, forfota târgului, râsete și viață. Mai târziu, Vâltoarea s-a mutat în Parcul Municipal, unde a continuat să crească, cu un program tot mai bogat și tot mai mulți participanți, pentru ca în cele din urmă să ajungă în Cetatea Târgu Mureș, care, prin istoria, atmosfera și prestanța sa, a devenit adevărata casă a evenimentului.",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_p2",
+                    "hu": "Ezt a hagyományt a Marosvásárhelyért Egyesület indította útjára 2013-ban, amikor létrehozta a Vásárhelyi Forgatagot. A kezdeményezés kezdettől fogva több volt egy fesztiválnál: olyan közösségi ünnepet álmodott meg, amely összehozza az itt élőket, a környékbelieket és azokat is, akiket messzire sodort az élet, de akiknek Marosvásárhely ma is az otthont jelenti.",
+                    "ro": "Această tradiție a fost inițiată de Asociația pentru Târgu Mureș în 2013, odată cu organizarea primei ediții a Vâltorii Mureșene. Încă de la început, inițiativa a fost mai mult decât un festival: a fost gândită ca o sărbătoare a comunității, menită să îi aducă împreună pe cei care trăiesc aici, pe cei din împrejurimi, dar și pe cei pe care viața i-a purtat departe, însă pentru care Târgu Mureș înseamnă și astăzi acasă.",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_p1",
+                    "hu": "Vannak hagyományok, amelyeket örököl az ember, és vannak olyanok, amelyeket egy közösség együtt teremt meg. A Vásárhelyi Forgatag ilyen történet.",
+                    "ro": "Există tradiții pe care le moștenim și există tradiții pe care o comunitate le creează împreună. Vâltoarea Mureșeană este o astfel de poveste.",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_year1",
+                    "hu": "2013",
+                    "ro": null,
+                    "kep": null
+                },
+                {
+                    "key": "about_story_year5",
+                    "hu": "2025",
+                    "ro": null,
+                    "kep": null
+                },
+                {
+                    "key": "about_story_photo1",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "33786ec1-d828-4d52-9321-f2614dc60fe9"
+                },
+                {
+                    "key": "about_story_photo2",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "24dd005f-1236-47d1-a99b-4a9c19fbb4fa"
+                },
+                {
+                    "key": "about_story_photo3",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "b8e4315b-1acb-46dd-80e5-879987938de6"
+                },
+                {
+                    "key": "about_story_photo4",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "fc6b4d69-b966-42d2-9d38-40b004a46686"
+                },
+                {
+                    "key": "about_story_photo5",
+                    "hu": null,
+                    "ro": null,
+                    "kep": "598448f4-e60d-4b12-bfef-f26446ac1a4f"
+                },
+                {
+                    "key": "about_story_p4",
+                    "hu": "A Forgatag azonban sosem szorul egyetlen helyszín falai közé. Miközben a rendezvény szíve a Várban dobog, Marosvásárhely számos pontja egyszerre kapcsolódik be az ünnepbe. Kulturális intézmények, kiállítóterek, könyvtárak, közösségi terek, udvarok és történelmi épületek nyitják meg kapuikat, így néhány napra maga a város válik a Forgatag színterévé. A látogatók nemcsak egyik programról a másikra sétálnak, hanem közben újra felfedezik Marosvásárhely épített örökségét, kulturális értékeit és rejtett kincseit is.",
+                    "ro": "Vâltoarea însă nu se lasă niciodată cuprinsă între zidurile unui singur loc. În timp ce inima evenimentului bate în Cetate, numeroase alte spații din Târgu Mureș devin, în același timp, parte a sărbătorii. Instituții de cultură, spații expoziționale, biblioteci, locuri comunitare, curți și clădiri istorice își deschid porțile, astfel încât, pentru câteva zile, orașul însuși devine scena Vâltorii Mureșene. Vizitatorii nu se deplasează doar de la un program la altul, ci redescoperă, pe parcurs, patrimoniul construit al orașului, valorile sale culturale și comorile mai puțin cunoscute.",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_year4",
+                    "hu": "2023",
+                    "ro": null,
+                    "kep": null
+                },
+                {
+                    "key": "about_story_caption4",
+                    "hu": "Megérkezés a Várba",
+                    "ro": "Sosirea în Cetate",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_p5",
+                    "hu": "Az első Forgatag óta minden augusztus végén új ritmusra ébred a város. Megtelnek a terek zenével, a színpadok történetekkel, az udvarok gyermekkacajjal. Táncosok perdülnek, kézművesek alkotnak, művészek, gondolkodók és közösségek mutatják meg mindazt, amit értéknek tartanak. Régi barátok találnak egymásra, családok indulnak közös felfedezőútra, az elszármazottak pedig néhány napra ismét hazatérnek.",
+                    "ro": "De la prima ediție a Vâltorii, la fiecare sfârșit de august, orașul se trezește într-un ritm nou. Piețele se umplu de muzică, scenele de povești, iar curțile de râsetele copiilor. Dansatorii se prind în joc, meșteșugarii creează, iar artiștii, gânditorii și comunitățile își prezintă valorile în care cred. Vechi prieteni se regăsesc, familiile pornesc împreună în noi descoperiri, iar cei plecați departe se întorc, pentru câteva zile, din nou acasă.",
+                    "kep": null
+                },
+                {
+                    "key": "about_organizers_title_accent",
+                    "hu": "egyesületek",
+                    "ro": "organizatoare",
+                    "kep": null
+                },
+                {
+                    "key": "about_hero_line1",
+                    "hu": null,
+                    "ro": "Vâltoarea Mureșeană",
+                    "kep": null
+                },
+                {
+                    "key": "about_hero_line2",
+                    "hu": null,
+                    "ro": "evenimentul, care",
+                    "kep": null
+                },
+                {
+                    "key": "about_hero_line3",
+                    "hu": null,
+                    "ro": "conectează orașul",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_caption2",
+                    "hu": null,
+                    "ro": "O comunitate în creștere",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_caption1",
+                    "hu": null,
+                    "ro": "Începuturile, pe malul Mureșului",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_caption3",
+                    "hu": null,
+                    "ro": "Anii din Parcul Munucipal",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_caption5",
+                    "hu": null,
+                    "ro": "Sărbătoarea unui întreg oraș",
+                    "kep": null
+                },
+                {
+                    "key": "about_organizers_title",
+                    "hu": null,
+                    "ro": "Asociații",
+                    "kep": null
+                },
+                {
+                    "key": "about_related_title",
+                    "hu": null,
+                    "ro": "Familia Vâltorii",
+                    "kep": null
+                },
+                {
+                    "key": "about_related_title_accent",
+                    "hu": null,
+                    "ro": "",
+                    "kep": null
+                },
+                {
+                    "key": "about_borkert_title",
+                    "hu": null,
+                    "ro": "Grădina de vinuri",
+                    "kep": null
+                },
+                {
+                    "key": "about_borkert_p1",
+                    "hu": null,
+                    "ro": "Grădina de vinuri este unul dintre cele mai aparte locații ale Vâltorii Mureșene. Un spațiu cu atmosferă în Cetatea Medievală din Târgu Mureș, unde vinurile excelente din Bazinul Carpatic, muzica live, gustările delicioase și conversațiile între prieteni creează împreună una dintre cele mai îndrăgite atmosfere ale festivalului.",
+                    "kep": null
+                },
+                {
+                    "key": "about_borkert_p2",
+                    "hu": null,
+                    "ro": "Grădina de vinuri s-a născut din dorința de a crea, în mijlocul agitației festivalului, un loc în care să te poți opri la un pahar de vin, să te întâlnești cu vechi prieteni, să legi noi prietenii sau pur și simplu să te bucuri de farmecul serilor de vară. Aici, vinul nu este doar o băutură, ci o experiență care îi aduce pe oameni împreună.",
+                    "kep": null
+                },
+                {
+                    "key": "about_borkert_p3",
+                    "hu": null,
+                    "ro": "An de an, crame renumite vin în Grădina de vinuri pentru a-și prezenta vinurile și poveștile. Oferta este completată de specialități gastronomice atent selecționate, astfel încât fiecare vizitator să poată descoperi aromele care se potrivesc cel mai bine vinurilor.",
+                    "kep": null
+                },
+                {
+                    "key": "about_borkert_p4",
+                    "hu": null,
+                    "ro": "Când apune soarele, Grădina de vinuri capătă o nouă înfățișare. Serile prind viață cu muzică live, concerte și programe comunitare, care fac timpul petrecut împreună și mai special. Atmosfera este în același timp familiară și vibrantă – una dintre acele vibe-uri pentru care mulți revin an de an.",
+                    "kep": null
+                },
+                {
+                    "key": "about_story_closing_highlight",
+                    "hu": null,
+                    "ro": "Aceasta este Vâltoarea Mureșeană: o sărbătoare creată de comunitate, care ne cheamă acasă an de an, dă naștere întâlnirilor, oferă experiențe și creează amintiri comune. Pentru că Vâltoarea este mai mult decât un eveniment: ne unește!",
+                    "kep": null
+                }
+            ],
+            "blokkok": []
+        },
+        {
+            "id": "b4c0d199-199d-412a-ba13-b72b1ef70b4c",
+            "slug": "videoarchivum",
+            "title_hu": "Videó archívum",
+            "title_ro": "Arhivă video",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 96,
+            "szovegek": [
+                {
+                    "key": "videos_hero_title",
+                    "hu": null,
+                    "ro": "Arhivă",
+                    "kep": null
+                },
+                {
+                    "key": "videos_hero_title_accent",
+                    "hu": null,
+                    "ro": "video",
+                    "kep": null
+                },
+                {
+                    "key": "videos_aftermovie_title",
+                    "hu": null,
+                    "ro": "After",
+                    "kep": null
+                },
+                {
+                    "key": "videos_szinejava_title",
+                    "hu": null,
+                    "ro": "Seria: Vásárhely",
+                    "kep": null
+                },
+                {
+                    "key": "videos_mestersegem_title",
+                    "hu": null,
+                    "ro": "Seria: Mesterségem:",
+                    "kep": null
+                }
+            ],
+            "blokkok": [
+                {
+                    "id": "a8a20bda-7dd8-4c8c-8e17-4b1513018698",
+                    "type": "videos",
+                    "sort": 1,
+                    "title_hu": "Aftermovie",
+                    "title_ro": "Aftermovie",
+                    "show_hu": true,
+                    "show_ro": true,
+                    "videos": [
+                        {
+                            "title_hu": "Forgatag Aftermovie 2025",
+                            "title_ro": "Aftermovie Vâltoare 2025",
+                            "youtube_id": "2rgLZmOLN5A"
+                        },
+                        {
+                            "title_hu": "Forgatag Aftermovie 2024",
+                            "title_ro": "Aftermovie Vâltoare 2024",
+                            "youtube_id": "A_o-c__dznA"
+                        },
+                        {
+                            "title_hu": "Forgatag Aftermovie 2023",
+                            "title_ro": "Aftermovie Vâltoare 2023",
+                            "youtube_id": "C7Q0f6QHMJ8"
+                        },
+                        {
+                            "title_hu": "Forgatag Aftermovie 2022",
+                            "title_ro": "Aftermovie Vâltoare 2022",
+                            "youtube_id": "qv--UeQZ8qo"
+                        },
+                        {
+                            "title_hu": "Forgatag Aftermovie 2021",
+                            "title_ro": "Aftermovie Vâltoare 2021",
+                            "youtube_id": "OL9NpSB2ppE"
+                        },
+                        {
+                            "title_hu": "Forgatag Aftermovie 2019",
+                            "title_ro": "Aftermovie Vâltoare 2019",
+                            "youtube_id": "xgn7Fd3j46w"
+                        },
+                        {
+                            "title_hu": "Forgatag Aftermovie 2018",
+                            "title_ro": "Aftermovie Vâltoare 2018",
+                            "youtube_id": "zUxztwILBBY"
+                        },
+                        {
+                            "title_hu": "Forgatag Aftermovie 2015",
+                            "title_ro": "Aftermovie Vâltoare 2015",
+                            "youtube_id": "qkbvYY_n6Wg"
+                        }
+                    ]
+                },
+                {
+                    "id": "b5b6e823-f301-48eb-a071-5c653f76a93b",
+                    "type": "videos",
+                    "sort": 2,
+                    "title_hu": "Vásárhely színe-java",
+                    "title_ro": "Vásárhely színe-java",
+                    "show_hu": true,
+                    "show_ro": false,
+                    "videos": [
+                        {
+                            "title_hu": "Ambrus Laura",
+                            "title_ro": null,
+                            "youtube_id": "x-5xqXjUS7Y"
+                        },
+                        {
+                            "title_hu": "Daray Erzsébet",
+                            "title_ro": null,
+                            "youtube_id": "B5Ll-s3dbPQ"
+                        },
+                        {
+                            "title_hu": "Jakab Zoli",
+                            "title_ro": null,
+                            "youtube_id": "14Jq-SxMhkg"
+                        },
+                        {
+                            "title_hu": "Kakasi Mihály",
+                            "title_ro": null,
+                            "youtube_id": "7jm4HiFzfnM"
+                        },
+                        {
+                            "title_hu": "Kádár Zoltán",
+                            "title_ro": null,
+                            "youtube_id": "1MgMHA2EZTk"
+                        },
+                        {
+                            "title_hu": "Kelemen Márton",
+                            "title_ro": null,
+                            "youtube_id": "CMnAtAgcvIE"
+                        },
+                        {
+                            "title_hu": "Ötvös Sándor (Sanci)",
+                            "title_ro": null,
+                            "youtube_id": "-AyV7UF0LUk"
+                        },
+                        {
+                            "title_hu": "Takács Zoltán (Takszi)",
+                            "title_ro": null,
+                            "youtube_id": "rdBjNVTBGT8"
+                        },
+                        {
+                            "title_hu": "Pál Attila",
+                            "title_ro": null,
+                            "youtube_id": "dhwM32yGLO4"
+                        },
+                        {
+                            "title_hu": "Portik Vilmos",
+                            "title_ro": null,
+                            "youtube_id": "6--SbKcaQuQ"
+                        },
+                        {
+                            "title_hu": "dr. Szabó Béla",
+                            "title_ro": null,
+                            "youtube_id": "97cRgu0U6ek"
+                        },
+                        {
+                            "title_hu": "Szakács Boti",
+                            "title_ro": null,
+                            "youtube_id": "eJve_iNeWYo"
+                        },
+                        {
+                            "title_hu": "Szász Károly Attila (Dümbi)",
+                            "title_ro": null,
+                            "youtube_id": "Qd9cBWnDzQ4"
+                        }
+                    ]
+                },
+                {
+                    "id": "1c3fe695-7614-4181-bd41-eb5739883464",
+                    "type": "videos",
+                    "sort": 3,
+                    "title_hu": "Mesterségem: vásárhelyi",
+                    "title_ro": "Mesterségem: vásárhelyi",
+                    "show_hu": true,
+                    "show_ro": false,
+                    "videos": [
+                        {
+                            "title_hu": "Csiky Boldizsár",
+                            "title_ro": null,
+                            "youtube_id": "KNeLs3PMw34"
+                        },
+                        {
+                            "title_hu": "Fekete Zsolt (Lovacska)",
+                            "title_ro": null,
+                            "youtube_id": "GCOL8O6sxkk"
+                        },
+                        {
+                            "title_hu": "Janka Tamás",
+                            "title_ro": null,
+                            "youtube_id": "bO9KAhCFawk"
+                        },
+                        {
+                            "title_hu": "Kilyén Ilka",
+                            "title_ro": null,
+                            "youtube_id": "rE6gANeulk0"
+                        },
+                        {
+                            "title_hu": "Moga Annamária",
+                            "title_ro": null,
+                            "youtube_id": "8CdkfzkxOgM"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "a9d5c7a0-cea2-459c-b8f7-fafcc50ca298",
+            "slug": "kezmuvesek",
+            "title_hu": "Kézműves vásár",
+            "title_ro": "Târg de meșteșugari",
+            "lead_hu": null,
+            "lead_ro": null,
+            "seo_description_hu": null,
+            "seo_description_ro": null,
+            "hero": null,
+            "status": "published",
+            "is_system": true,
+            "sort": 97,
+            "szovegek": [],
+            "blokkok": []
+        }
+    ],
+    "hirek": [
+        {
+            "id": "927e50af-227d-45ef-98b8-70b16bf7e011",
+            "slug": "ott-talalkounk",
+            "title_hu": "Ott találkozunk!",
+            "title_ro": null,
+            "excerpt_hu": "A Vásárhelyi Forgatag egy biztos pont. Egy közös hagyomány. Az a néhány nap, amikor a rohanás helyét a találkozások veszik át, és amikor a város újra emlékeztet bennünket arra, milyen jó együtt. Itt valahogy minden – és talán egy kicsit mindenki is – újra a helyére kerül.",
+            "excerpt_ro": null,
+            "body_hu": "Van egy szó, amely szinte észrevétlenül beköltözik a hétköznapjainkba.\n\nMajd.\n\nMajd meglesz. Majd bepótoljuk. Majd beszélünk. Majd összefutunk. Nem az időnk lett kevesebb, csak egyre több minden versenyez érte. És közben, szinte észrevétlenül, távolodni kezdünk egymástól.\nNemcsak kilométerekben. Hanem a rohanó reggelekben. A mókuskerékben. Soha véget nem érő teendőinkben. Elhalasztott beszélgetésekben. Megválaszolatlan üzenetekben. Elmulasztott látogatásokban. Kimondott, de be nem váltott ígéretekben.\n\nElmarad a régóta tervezett kávé. Az esti telefonhívás. A látogatás a távoli rokonokhoz. A beszélgetés a messzire költözött baráttal. Közben telnek a hetek, a hónapok. Mire észbe kapunk, már megint eltelt egy év.\n\nVan azonban egy hét, amelyre nem kell külön időpontot egyeztetni.\n\nEgy hét, amikor a város mintha közösen lassítana egy kicsit. Amikor a találkozások nem naptárbejegyzések, hanem egyszerűen megtörténnek. Egy koncert előtt. Egy kézműves standnál. A vár udvarán. Egy közös programon vagy egy pohár bor mellett.\n\nA Forgatag éppen ezért nem csupán programokat kínál. Alkalmat teremt. Arra, hogy a hazalátogatók újra otthon érezzék magukat. Hogy a régi osztálytársak végre ne csak üzenetekben tartsák a kapcsolatot. Hogy a nagyszülők együtt fedezzék fel a Forgatagot az unokáikkal. Hogy azok is összefussanak, akik egész évben ugyanabban a városban élnek, mégis ritkán jutnak tovább egy köszönésnél.\n\nTizenhárom éve ez a hét újra és újra visszatér augusztus végén. És visszahozza nekünk azokat a pillanatokat, amelyekre az év többi részében olyan nehezen találunk időt.\n\nA Vásárhelyi Forgatag egy biztos pont. Egy közös hagyomány. Az a néhány nap, amikor a rohanás helyét a találkozások veszik át, és amikor a város újra emlékeztet bennünket arra, milyen jó együtt. Itt valahogy minden – és talán egy kicsit mindenki is – újra a helyére kerül.\n\nAhol a sok „majd” helyét végre átveszi egy sokkal egyszerűbb mondat:\n\n„Ott találkozunk.”",
+            "body_ro": null,
+            "date": "2026-07-28",
+            "cover": "8a68777c-9659-4cdf-8b10-9dbbace9463f",
+            "status": "published"
+        },
+        {
+            "id": "1e9f67f7-43cd-42ff-b45c-01240297091e",
+            "slug": "parno-graszt-ahol-a-hangszereknek-is-helyuk-van-a-csaladi-asztalnal",
+            "title_hu": "Parno Graszt: ahol a hangszereknek is helyük van a családi asztalnál.",
+            "title_ro": null,
+            "excerpt_hu": "Kevés zenekar mondhatja el magáról, hogy a családi együttlétekből indulva jutott el a világ nagy színpadaira. A Parno Graszt több mint 35 éve viszi tovább a paszabi cigányzenei hagyományt, idén pedig a 13. Vásárhelyi Forgatag közönségét is magával ragadja sodró ritmusaival, örömzenéjével és utánozhatatlan energiájával.",
+            "excerpt_ro": null,
+            "body_hu": "Kevés zenekar mondhatja el magáról, hogy a családi együttlétekből indulva jutott el a világ nagy színpadaira. A Parno Graszt több mint 35 éve viszi tovább a paszabi cigányzenei hagyományt, idén pedig a 13. Vásárhelyi Forgatag közönségét is magával ragadja sodró ritmusaival, örömzenéjével és utánozhatatlan energiájával.\n\nA Szabolcs-Szatmár-Bereg vármegyei Paszabról indult zenekar neve – Parno Graszt, vagyis „fehér ló” – mára egyet jelent az autentikus cigányzenével, a felszabadult örömzenéléssel és azzal a különleges energiával, amely koncertjeiken pillanatok alatt magával ragadja a közönséget.\n\nZenéjük ma is abból a közegből táplálkozik, ahol minden elkezdődött. A hagyomány náluk nem múzeumi emlék, hanem a mindennapok része: családi történetek, közösen megélt ünnepek és generációról generációra öröklődő dallamok élnek tovább minden fellépésükön.\n\nNem véletlen, hogy az elmúlt években a legkülönfélébb előadókkal dolgoztak együtt. A Bagossy Brothers Company, a Bohemian Betyars, a Punnany Massif, DÁNIELFY, a Honeybeast, Pogány Induló vagy a Magyar Banda mellett is megmutatták, hogy a hagyományos cigányzene és a modern könnyűzene kiválóan megfér egymás mellett.\n\nA Parno Graszt koncertjei azonban nem csupán zenei élményt jelentenek. A közös éneklés, a tánc és a sodró lendület néhány perc alatt közösséggé formálja a közönséget – kortól és zenei ízléstől függetlenül.\n\nA 13. Vásárhelyi Forgatagon is pontosan erre számíthatunk. Egy olyan estére, ahol a hagyomány, az örömzene és a közös ünneplés találkozik, és ahol szinte lehetetlen egy helyben maradni. Ha szeretnéd átélni, milyen, amikor egy családi örökségből született zene több ezer embert köt össze, a Parno Graszt koncertjét semmiképpen sem érdemes kihagyni.",
+            "body_ro": null,
+            "date": "2026-07-28",
+            "cover": "68ae75a7-5843-43bf-99b5-1f5c984d24e8",
+            "status": "published"
+        },
+        {
+            "id": "461affd8-a3bf-4dc4-a30b-e79f0651ea5d",
+            "slug": "a-tekaforgatag-programjai-a-13-vasarhelyi-forgatagon",
+            "title_hu": "A Tékaforgatag programjai a 13. Vásárhelyi Forgatagon",
+            "title_ro": null,
+            "excerpt_hu": "Városi séták és filmvetítés, könyves beszélgetések, gyerekfoglalkozások és Mohács-évforduló – erről szól 2026-ban a Tékaforgatag programja. Bár a Várban csak pénteken kezdünk, de a Tékaforgatag már hétfőn elkezdi a pörgést!",
+            "excerpt_ro": null,
+            "body_hu": "Városi séták és filmvetítés, könyves beszélgetések, gyerekfoglalkozások és Mohács-évforduló – erről szól 2026-ban a Tékaforgatag programja. Bár a Várban csak pénteken kezdünk, de a Tékaforgatag már hétfőn elkezdi a pörgést! \n\nHétfőn 18 órától városi séta László Lóránttal: a reformkori Vásárhely különböző helyszíneit járjuk végig a Királyi Táblától a Kaszinóig, köztük azokat a helyeket, amelyek végül az 1848-49-es forradalomban is szerepet kaptak.\n\nKedden 18 órától kávéházi vetített sétára invitáljuk a vásárhelyieket, Sebestyén-Spielmann Mihály az egykori vásárhelyi szórakozóhelyekről mesél a Teleki Téka udvarán. \n\nKedden 20 órától Maksay Ágnes és László Loránd „Hallgass zúgó szél, hadd beszéljek én…” – Petőfi Erdélyben (Videopontes) c. filmjét vetítjük a Teleki Téka udvarán, Petőfi életének erdélyi helyszíneit járhatjuk végig a könyvtár barokk udvarának hűvösében.\n\nSzerdai programjaink Mohácsról szólnak, a Maros Megyei Múzeummal közös szervezésben. 18 órától a Teleki-Bolyai Könyvtár Mohács 500 erdélyi perspektívából c. kamarakiállítását nyitja meg Kimpián Annamária, a kiállítás kurátora,19 órától pedig Győrfi Zalán történész beszélget Varga Szabolccsal, az ELTE HTK Történettudományi Kutatóintézet munkatársával.\n\nCsütörtökön 11 órától Főúri palota és tudományok hajléka címmel vezetett séta Bányai Rékával a könyvtár rejtett tereiben. A  kertből induló séta során  a résztvevők megismerkedhetnek a Teleki Téka épületének és lakóinak történetével, beléphetnek máskor nem látogatható terekbe, megcsodálható a falfestményekkel díszített,  egykori díszterem és természetesen az intézmény szívében elhelyezkedő múzeumkönyvtár is.\n\nPénteken nyílik a Könyvudvar a Várban, illetve 11 órától könyves gyerekfoglalkozásokra és mesekuckóba várja a gyerekeket Márton Krisztina és Lázok Klára a Könyvudvar előtti megszokott helyen. \nPénteken délután 16 órától a Gemma Könyvklub könyves kibeszélője: Kuncz Aladár Fekete kolostor c. művéről beszélgethetnek H. Szabó Gyulával és György Andreával a Helikon 100 évfordulós év jegyében.\n17 órától a Mentor Könyvek Kiadó Időtár V/6 c. kötetének bemutatóján a szerzőpárost, Spielmann Mihályt és Diamantstein Györgyöt kérdezi Káli Király István és Király István.\n\nSzombaton 10 és 14 óra között a Teleki Téka udvarán friss tanulmánykötetekről és Marosvásárhelyhez köthető személyiségeket tárgyaló monográfiákról beszélgetünk. \n\n10 órától a Kolozsvári Protestáns Teológia kiadójának Ősz Sándor Előd (szerk.): „Áldó hatalmak oltalmába rejtve”. Tanulmányok Visky Sándor Béla 65. születésnapjára és Ősz Sándor Előd (szerk.): Nehéz idők, nagy emberek. Egyháztörténeti tanulmányok című, 2026-ban megjelent tanulmánykötetét,  mutatja be Ősz Sándor Előd, a kötetek szerkesztője. \n\n11 órától a Kriterion Könyvkiadó igazgatója, H. Szabó Gyula beszélget Vécsi Nagy Zoltán művészettörténésszel Kemény Jánosról és a Kriterion Könyvkiadónál nemrég megjelent köteteiről.\n12 órától az Erdélyi Múzeum-Egyesület kiadójának szervezésében Biró Annamária: Aranka György levelezése c. kötetéről, illetve Kerti József: Aranka György költészete c. monográfiájáról beszélget Biró Annamária, a kiadó vezetője, Egyed Emese irodalomtörténész és Lázok Klára, a Teleki Téka osztályvezető könyvtárosa.\n\n13 órától további két EME-kiadvánnyal ismerkedhetnek meg: Bartha Katalin Ágnes Történeti játékstílus és gyakorlat: Prielle Kornélia pályafutásának színházművészeti és társadalmi dimenziói c. monográfiáját Egyed Emese irodalomtörténész mutatja be. Ezt követi Miholcsa Gyula Villanyvilágítás Erdélyben c. munkájának bemutatása, a szerzővel Gagyi József társadalomtörténész beszélget.\n\nVasárnap 12 órától a Várban várja a Tékaforgatag az érdeklődőket. A Maros Megyei Múzeum Fejezetek egy múzeum történetéből. Példák Marosvásárhelyről című kiadványát mutatja be Lázok Klára, illetve beszélget a monográfia szerzőjével, Sárándi Tamással.\n\n13 órától az Anya olvas közösség Nyári olvasmányok c. könyves kibeszélőjével zárjuk a Forgatag 2026-os könyves programjait. ",
+            "body_ro": null,
+            "date": "2026-08-20",
+            "cover": "a95fcb7e-4ed3-41ad-bd18-e36295be71f2",
+            "status": "published"
+        },
+        {
+            "id": "a5b2d50f-085c-4284-833d-2c297f1e70a5",
+            "slug": "hol-terem-a-hagyomany",
+            "title_hu": "Hol terem a hagyomány?",
+            "title_ro": null,
+            "excerpt_hu": "A Forgatag nemcsak a jelen pillanat találkozásai miatt fontos számunkra. A zene, a tánc és a népszokások révén régi közösségi emlékeket is újra közénk hív – olyan örökségeket, amelyek generációkon át formálódtak, és ma is összekapcsolnak bennünket.",
+            "excerpt_ro": null,
+            "body_hu": "A Forgatag nemcsak a jelen pillanat találkozásai miatt fontos számunkra. A zene, a tánc és a népszokások révén régi közösségi emlékeket is újra közénk hív – olyan örökségeket, amelyek generációkon át formálódtak, és ma is összekapcsolnak bennünket.\n\nKallós Zoltán Kossuth-díjas néprajzkutató egész életében az élő hagyomány nyomában járt. Faluról falura haladt, beszélgetett az emberekkel, meghallgatta a dalaikat, figyelte a táncaikat, és megismerte a közösségek életét. A Mezőségen, Kalotaszegen, Moldvában és Gyimesben gyűjtött népdalokat, hangszeres zenét, táncokat, népszokásokat és történeteket.\n\nAzt kereste, amit az emberek nem könyvekből tanultak, hanem egymástól örököltek tovább.\nKallós azonban nemcsak összegyűjtötte ezeket az értékeket. Azt is fontosnak tartotta, hogy másokhoz is eljussanak. Gyűjtéseit megosztotta zenészekkel, táncosokkal és kutatókkal. Így a régi dallamok újra megszólalhattak, a táncok pedig új közönség elé kerülhettek.\n\nEzért fontos számunkra ma is a munkája. Amit ő egykor falvakban hallott és rögzített, az nem maradt a gyűjteményekben. Továbbindult. Eljutott új közösségekhez és új generációkhoz, és ma is ott van a zenében, a táncban és a közösen megélt hagyományokban.\n\nKallós Zoltán születésének 100. évfordulóján a 13. Vásárhelyi Forgatag megnyitó gálájának műsora is előtte tiszteleg.\n\nAugusztus 27-én a Duna Művészegyüttes és a Göncöl zenekar Magyar táncképek című előadása érkezik a Marosvásárhelyi Nemzeti Színházba. A Kárpát-medence különböző tájainak táncait és zenei hagyományait idézi meg. Ezen az estén nemcsak régi dallamok és táncok kerülnek színpadra. Egy hosszú történet is folytatódik: azé az örökségé, amelyet valaki egykor meghallgatott, megőrzött és továbbadott.\n\nMert a hagyomány akkor marad velünk, ha újra megszólal, mozgásba lendül, és közös élménnyé, találkozássá elevendik.",
+            "body_ro": null,
+            "date": "2026-08-06",
+            "cover": "8aa1108e-4255-440d-a3b8-edc120770127",
+            "status": "published"
+        }
+    ]
+}

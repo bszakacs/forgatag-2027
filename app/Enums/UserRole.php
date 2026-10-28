@@ -90,6 +90,15 @@ enum UserRole: string
         return in_array($this, [self::SuperAdmin, self::Coordinator], true);
     }
 
+    /**
+     * A „Tartalom” menücsoport: hírek, menü, aloldalak (a galériák és támogatók a canManageMedia alatt — ugyanaz
+     * a kör). A kategóriagazda NEM: a saját tartalom nem kategóriához kötött, közös.
+     */
+    public function canManageContent(): bool
+    {
+        return in_array($this, [self::SuperAdmin, self::Coordinator], true);
+    }
+
     /** Az arculat (/admin/tema) szerkesztése és publikálása. */
     public function canEditTheme(): bool
     {

@@ -1,0 +1,54 @@
+/* A menü-szerkesztő (resources/views/filament/pages/menuk*.blade.php). Saját fgm- osztályok, a Filament
+   színváltozóira kötve (--gray-*, --primary-*, --danger-*) — világos és sötét admin-módban is. */
+.fgm-sugo { font-size: .875rem; color: var(--gray-600); margin: 0 0 .75rem; }
+.dark .fgm-sugo { color: var(--gray-400); }
+.fgm-ures { color: var(--gray-500); padding: 1rem 0; }
+
+.fgm-tabok { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.fgm-tab { padding: .4rem .9rem; border-radius: 999px; font-size: .875rem; font-weight: 600;
+    border: 1px solid var(--gray-300); background: transparent; color: var(--gray-700); cursor: pointer; }
+.fgm-tab-akt { background: var(--primary-500); border-color: var(--primary-500); color: #fff; }
+.dark .fgm-tab { border-color: var(--gray-700); color: var(--gray-300); }
+.dark .fgm-tab-akt { background: var(--primary-500); border-color: var(--primary-500); color: var(--gray-950); }
+
+.fgm-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .4rem; }
+/* Az almenü listája üresen is célpont legyen a húzásnak (különben nem lehetne alá húzni). */
+.fgm-kids { margin: .4rem 0 0 1.75rem; min-height: .6rem; padding-left: .5rem;
+    border-left: 2px dashed var(--gray-200); }
+.dark .fgm-kids { border-left-color: var(--gray-700); }
+
+.fgm-sor { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; padding: .55rem .7rem;
+    border-radius: .6rem; background: #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / .08); }
+.dark .fgm-sor { background: var(--gray-900); box-shadow: 0 0 0 1px rgb(255 255 255 / .1); }
+.fgm-rejtett { opacity: .55; }
+.fi-sortable-ghost > .fgm-sor { box-shadow: 0 0 0 2px var(--primary-500); }
+
+.fgm-fogo { cursor: grab; font-size: 1.25rem; line-height: 1; color: var(--gray-400); padding: .35rem .25rem;
+    touch-action: none; user-select: none; }
+.fgm-szoveg { display: flex; flex-direction: column; min-width: 0; flex: 1 1 12rem; }
+.fgm-cim { font-weight: 600; }
+.fgm-ro { font-size: .8rem; color: var(--gray-500); }
+.fgm-cel { font-size: .8rem; color: var(--gray-500); overflow-wrap: anywhere; }
+.fgm-hiba { color: var(--danger-600); font-weight: 600; }
+
+.fgm-gombok { display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; }
+.fgm-nyelv { min-width: 2.4rem; height: 2rem; border-radius: .45rem; font-size: .75rem; font-weight: 700;
+    border: 1px solid var(--primary-500); background: var(--primary-500); color: #fff; cursor: pointer; }
+.fgm-nyelv-ki { background: transparent; color: var(--gray-500); border-color: var(--gray-300);
+    text-decoration: line-through; }
+.dark .fgm-nyelv { color: var(--gray-950); }
+.dark .fgm-nyelv-ki { color: var(--gray-400); border-color: var(--gray-600); }
+.fgm-nyilak { display: inline-flex; gap: .15rem; }
+.fgm-nyil { width: 2rem; height: 2rem; border-radius: .45rem; border: 1px solid var(--gray-300);
+    background: transparent; color: var(--gray-700); cursor: pointer; font-size: .95rem; }
+.fgm-nyil:disabled { opacity: .3; cursor: default; }
+.dark .fgm-nyil { border-color: var(--gray-600); color: var(--gray-300); }
+
+/* Mobil (375 px): a gombsor a felirat alá törik, a nyilak elférnek. */
+@media (max-width: 480px) {
+    .fgm-sor { padding: .5rem .55rem; gap: .4rem; }
+    .fgm-gombok { width: 100%; gap: .2rem; }
+    .fgm-nyelv { min-width: 2.2rem; }
+    .fgm-nyil { width: 1.85rem; }
+    .fgm-kids { margin-left: .6rem; padding-left: .4rem; }
+}

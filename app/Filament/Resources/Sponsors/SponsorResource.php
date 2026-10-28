@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Sponsors;
 
 use App\Enums\Gyujtemeny;
+use App\Enums\NavigationGroup;
 use App\Filament\Forms\MediaPicker;
 use App\Filament\Resources\Resource;
 use App\Filament\Resources\Sponsors\Pages\CreateSponsor;
@@ -11,21 +12,20 @@ use App\Filament\Resources\Sponsors\Pages\ListSponsors;
 use App\Models\Sponsor;
 use App\Models\SponsorTier;
 use App\Support\Festival;
-use BackedEnum;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use UnitEnum;
 
 /**
- * Támogatók (CLAUDE.md 2/b: saját menüpontot kaphat — rendszeresen szerkesztik). Évhez kötve: a 2026-os
+ * Támogatók — a „Tartalom” menücsoportban (CLAUDE.md 2/b; ikonos csoport elemének nincs saját ikonja). Évhez kötve: a 2026-os
  * támogatók nem 2027-esek. A logó a médiatárban él; ami innen kerül fel, magától a „Támogatók”
  * gyűjteménybe kerül. A szint az adott év szintlistájából választható (a 2026-os szintek másképp hívtak).
  */
@@ -33,7 +33,7 @@ class SponsorResource extends Resource
 {
     protected static ?string $model = Sponsor::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Tartalom;
 
     protected static ?string $navigationLabel = 'Támogatók';
 
@@ -43,7 +43,7 @@ class SponsorResource extends Resource
 
     protected static ?string $slug = 'tamogatok';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'name';
 

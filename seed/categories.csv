@@ -1,25 +1,24 @@
-slug,name_hu
-bolyai-muhely,Bolyai Műhely
-borkert,Borkert
-csicsergo-csaladi-es-gyermekprogramok,Csicsergő családi- és gyermekprogramok
-duma-ter,Duma tér
-egeszsegforgatag,Egészségforgatag
-erdelyi-neptanc-antologia,Erdélyi Néptánc Antológia
-filmforgatag,Filmforgatag
-folkudvar-az-erdelyi-hagyomanyok-hazaval,Folkudvar az Erdélyi Hagyományok Házával
-fomco-udvar,FomCo udvar
-ifi-setany,Ifi Sétány
-kandake-a-forgatagon,Kandake a Forgatagon
-kerekasztal-beszelgetesek,Kerekasztal-beszélgetések
-kiallitasforgatag,Kiállításforgatag
-koncertforgatag,Koncertforgatag
-mcc-sator,MCC-sátor
-muzeumforgatag,MúzeumForgatag
-sportforgatag,Sportforgatag
-szinhazi-forgatag,Színházi forgatag
-szoforgatag,Szóforgatag
-tekaforgatag,TékaForgatag
-torteno-sator,TörtéNő sátor
-veltol-szuperhosok-zoldenergia-oazisa,VELTOL szuperhősök zöldenergia-oázisa
-verbunk,Verbunk
-zsido-ormeny-gasztrokulturalis-mix,Zsidó-örmény GasztroKulturális mix
+slug,name_hu,name_ro
+bolyai-muhely,Bolyai Műhely,Atelierul Bolyai
+borkert,Borkert,Grădina de vinuri
+csicsergo-csaladi-es-gyermekprogramok,Csicsergő családi- és gyermekprogramok,Programe pentru familii și copii „Csicsergő”
+duma-ter,Duma tér,For de discuții
+egeszsegforgatag,Egészségforgatag,Vâltoarea sănătății
+filmforgatag,FilmForgatag,Film la Vâltoare
+folkudvar-az-erdelyi-hagyomanyok-hazaval,Folkudvar az Erdélyi Hagyományok Házával,Folk cu Fundația Casa Tradițiilor Ardelenești
+folk-forgo,FolkForgó,Folclor la Vâltoare
+fomco-udvar,FomCo udvar,FomCo la Vâltoare
+pulzus-by-rmdsz-maros,Pulzus by RMDSZ Maros,Pulzus by UDMR Mureș
+kiallitasforgatag,Kiállításforgatag,Expoziții la Vâltoare
+koncertforgatag,Koncertforgatag,Concerte
+mcc-sator,MCC-sátor,Cortul MCC
+muzeumforgatag,MúzeumForgatag,Vâltoarea muzeului
+sportforgatag,Sportforgatag,Vâltoarea sportivă
+szenior-sziget,Szenior Sziget,Insula Seniorilor
+szinhazi-forgatag,Színházi Forgatag,Vâltoarea teatrală
+szoforgatag,SzóForgatag,Vâltoarea Cuvintelor
+tekaforgatag,TékaForgatag,Vâltoarea Telekiană
+torteno-sator,TörtéNő sátor,Cortul TörtéNő
+veltol-szuperhosok-zoldenergia-oazisa,VELTOL szuperhősök zöldenergia-oázisa,Oaza de energie verde a supereroilor VELTOL
+zsido-ormeny-gasztrokulturalis-mix,Zsidó-örmény GasztroKulturális mix,Mix Gastrocultural evreu-armean
+kezmuves-vasar,Kézműves vásár,Târg de meșteșugari

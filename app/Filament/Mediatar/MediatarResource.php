@@ -2,15 +2,15 @@
 
 namespace App\Filament\Mediatar;
 
-use App\Enums\NavigationGroup;
 use Awcodes\Curator\Resources\Media\MediaResource;
 use BackedEnum;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 use UnitEnum;
 
 /**
- * A médiatár admin-lapja (CLAUDE.md 2/d) — a Curator erőforrása magyar feliratokkal, a „Médiatár”
- * menücsoportban (App\Enums\NavigationGroup; ikonos csoport elemének nincs saját ikonja).
+ * A médiatár admin-lapja (CLAUDE.md 2/d) — a Curator erőforrása magyar feliratokkal. Önálló menüpont
+ * (2026-10-28 óta: a galériák és a támogatók a „Tartalom” csoportba kerültek, egyelemű csoport nem maradt).
  * Beállítás: config/curator.php; a saját mezők és szabályok: App\Models\Media.
  */
 class MediatarResource extends MediaResource
@@ -36,21 +36,21 @@ class MediatarResource extends MediaResource
 
     public static function getNavigationLabel(): string
     {
-        return 'Képek és fájlok';
+        return 'Médiatár';
     }
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return NavigationGroup::Mediatar;
+        return null;
     }
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
-        return null;
+        return Heroicon::OutlinedPhoto;
     }
 
     public static function getNavigationSort(): ?int
     {
-        return 1;
+        return 10;
     }
 }

@@ -22,13 +22,13 @@ use UnitEnum;
 /**
  * Galériák (évenként egy): a képek a médiatárban élnek, a galéria a sorrendjüket tartja.
  * Ami a galéria lapjáról kerül fel, magától a „Galériák” gyűjteménybe kerül (MediaPicker).
- * A „Médiatár” menücsoportban (ikonos csoport elemének nincs saját ikonja).
+ * A „Tartalom” menücsoportban (ikonos csoport elemének nincs saját ikonja).
  */
 class GalleryResource extends Resource
 {
     protected static ?string $model = Gallery::class;
 
-    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Mediatar;
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Tartalom;
 
     protected static ?string $navigationLabel = 'Galériák';
 
@@ -38,7 +38,7 @@ class GalleryResource extends Resource
 
     protected static ?string $slug = 'galeriak';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $recordTitleAttribute = 'title_hu';
 

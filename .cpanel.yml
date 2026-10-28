@@ -37,3 +37,8 @@ deployment:
     # zip-eket a Fajlkezeloben kell kicsomagolni: storage/app/import-2026/fajlok/).
     - export ALTPHP=/opt/alt/php84/usr/bin/php
     - if [ -x "$ALTPHP" ] && "$ALTPHP" -r 'exit((int) ! class_exists("ZipArchive"));'; then echo "MEDIATAR - alt-php84, zip VAN"; "$ALTPHP" artisan forgatag:mediatar-import; else echo "MEDIATAR - ea-php84, zip NINCS"; $PHP artisan forgatag:mediatar-import; fi
+    # A 2026-os menu, aloldalak (szerkesztheto szovegekkel, videokkal) es a TESZT-hirek — a mediatar UTAN, mert a
+    # kepek a mediatar legacy_id-jen at kotodnek. Csak egyszer: a lapok/menuk csak ures tablaba jonnek, a teszthirek
+    # jelolese fajlban van (storage/app/import-2026/tartalom.json), hogy az elesites elotti adatbazis-urites utan ne
+    # jojjenek vissza. Hianyzo kepnel semmit nem ir, hibaval all meg.
+    - $PHP artisan forgatag:tartalom-import

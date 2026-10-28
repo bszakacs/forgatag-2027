@@ -450,7 +450,7 @@ menüpont: „Arculat” — kivételes saját menüpont, PROMPT-06), 11 szekci�
   (nem tárolt). **A gyűjtemény a feltöltés helyéből:** `App\Filament\Forms\MediaPicker::make(...)->gyujtemeny(...)`
   → `App\Livewire\MediaPanel` (zárolt tulajdonság). ⚠ A Curator a feltöltést `self::createMediaFiles()`-szel hívja,
   ezért a panel az `addFilesAction` testét veszi át — csomagfrissítéskor összevetendő.
-- **Admin:** „Médiatár” menücsoport (Képek és fájlok · Galériák) + „Támogatók” menüpont. A médiatár lapja:
+- **Admin:** „Médiatár” önálló menüpont; a Galériák és a Támogatók 2026-10-28 óta a „Tartalom” csoportban. A médiatár lapja:
   `App\Filament\Mediatar\*` — SZÁNDÉKOSAN a felfedezett `Resources` mappán kívül (a bővítmény regisztrálja; különben
   kétszer kerülne a menübe). Bal oldalt gyűjtemény-lista (mobilon vízszintes sor), tömeges „Áthelyezés gyűjteménybe” /
   „Hozzáadás gyűjteményhez” / „Kivétel”. Jog: `UserRole::canManageMedia` (szuperadmin, koordinátor).
@@ -476,6 +476,30 @@ menüpont: „Arculat” — kivételes saját menüpont, PROMPT-06), 11 szekci�
   A hír-, csapat-, kézműves-, aloldal-képek eredete a `legacy_id`/`legacy_note`-ban — a tartalmi kör ezen köt be.
 - Tesztek: `tests/Feature/MediatarTest.php` (15 teszt: feltöltés-hely → gyűjtemény, áthelyezés, licenc két esete,
   jóváhagyás/visszaküldés, Programok-2026-őr, törlés-őr, arculat, jog, behozatal + sérült fájl).
+
+**Tartalom: hírek, menü, aloldalak — kész helyben (2026-10-28, PROMPT-08).** „Tartalom” menücsoport
+(`NavigationGroup::Tartalom`: Hírek · Menü · Aloldalak · Galériák · Támogatók; a Médiatár önálló menüpont).
+Jog: `UserRole::canManageContent` (szuperadmin, koordinátor) → `TartalomPolicy` (+ `PagePolicy`: rendszerlap nem törölhető).
+- **Modellek:** `NewsItem` (HU/RO, `cover_media_id`, `status` = `ContentStatus`, `published_on`), `Page` (+ `PageText`: a
+  sablon szerkeszthető kulcsai, nyelvenként vagy képpel; + `PageBlock`: richtext/image/cta/divider/videos, `show_hu/ro`),
+  `Menu` + `MenuItem` (fa: `parent_id`, `type` = `MenuItemType` page/link/group, `show_hu/ro`). Minden kép a médiatárra mutat,
+  restrict-tel; a `Media::usages()` mindet ismeri (használt kép nem törölhető). Rendszerlap (`is_system`): a slug fix, nem törölhető
+  (`Page::booted`). Saját tartalom = KÉZZEL fordított, sima `_hu/_ro` mezők (a fordítás-táblák csak a programé).
+- **A menüfa EGY író-útja: `App\Support\MenuTree`** (`save` a teljes fára, `move` a nyíl-gombokra; `MAX_DEPTH = 2`; hibás fát
+  nem ír ki félig). A szerkesztő `App\Filament\Pages\Menuk` + `resources/views/filament/pages/menuk*.blade.php` +
+  `public/css/menu-szerkeszto.css` — **fa-bővítmény NINCS** (szándékosan); a húzás a Filament beépített `x-sortable`
+  direktívája (közös `x-sortable-group` → szintek között is). A húzás után a böngésző a TELJES fát küldi (`mentFa`).
+- **TESZTADAT (tulajdonosi szabály): `is_test` hírnél és programnál → `App\Support\Tesztadat`** (counts/purge — ÚJ teszt-hordozó
+  gyűjtemény = új sor mindkettőben). Látszik: TESZT jelvény, nyitólapi figyelmeztetés (`App\Filament\Widgets\Figyelmeztetesek`);
+  törlés: Beállítások → Tesztadatok, vagy `forgatag:tesztadat-torles`. Teszt-programok törlése az adatbázis kaszkádjával (a napló
+  append-only modellje így nem akad el). **Ami tesztre jön be, MINDIG `is_test`-tel jöjjön.**
+- **A 2026-os tartalom:** `forgatag:tartalom-csomag` (FEJLESZTŐGÉPEN, a mentésből; a dump-olvasó közös: `App\Support\Mentes2026`)
+  → `database/import/tartalom-2026.json`; `forgatag:tartalom-import` (a TELEPÍTÉS része, a médiatár-behozatal után): lapok/menük
+  csak üres táblába, a teszthírek csak EGYSZER (jelölés: `storage/app/import-2026/tartalom.json` — fájlban, hogy az adatbázis-ürítés
+  után ne jöjjenek vissza); hiányzó képnél semmit nem ír, hibával áll meg.
+- **5. adósság őre:** `SubmissionForm::unknownSlugs()` → piros figyelmeztetés a nyitólapon; a seed-lista: 2026-os végleges 23.
+- Tesztek: `tests/Feature/TartalomTest.php` (10: slug-őr, menüfa + nyilak + mélység, nyelvenkénti rejtés, rendszerlap, tesztadat,
+  behozatal számra, kategóriagazda 403 közvetlen címmel).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 

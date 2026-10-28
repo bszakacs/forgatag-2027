@@ -6,6 +6,7 @@ use App\Enums\NotificationTopic;
 use App\Support\Festival;
 use App\Support\Settings;
 use App\Support\Submission;
+use App\Support\Tesztadat;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -69,6 +70,7 @@ class Beallitasok extends Page
                 $this->fesztivalBlokk(),
                 $this->bekuldesBlokk(),
                 $this->ertesitesBlokk(),
+                $this->tesztadatBlokk(),
             ]);
     }
 
@@ -174,6 +176,36 @@ class Beallitasok extends Page
             // levelezési beállítása (.env, SMTP) — azt itt nem kell, és nem is lehet megadni.
             ->description('Témánként azok a koordinátorok, akik értesítést kapnak. Egy témához több cím is megadható.')
             ->schema($temak);
+    }
+
+    /**
+     * Tesztadatok (App\Support\Tesztadat): a tesztelésre behozott hírek és programok egy lépésben törölhetők.
+     * Nem tárolt beállítás — nincs a BLOKKOK között, csak a számot és a törlés gombját mutatja.
+     */
+    private function tesztadatBlokk(): Section
+    {
+        return Section::make('Tesztadatok')
+            ->description('A 2026-ból tesztelésre behozott hírek és programok (az adminban TESZT jelvénnyel). Élesítés előtt egy lépésben törölhetők.')
+            ->schema([
+                Text::make(fn () => Tesztadat::total() > 0 ? 'Most bent: ' . Tesztadat::summary() . '.' : 'Nincs tesztadat az adatbázisban.')
+                    ->color(fn () => Tesztadat::total() > 0 ? 'danger' : null),
+                Actions::make([
+                    Action::make('tesztadatTorles')->label('Minden tesztadat törlése')->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Minden tesztadat törlése')
+                        ->modalDescription(fn () => 'Törlődik: ' . Tesztadat::summary() . '. A valódi (nem teszt) hírekhez és programokhoz nem nyúl. Nem vonható vissza.')
+                        ->modalSubmitActionLabel('Igen, törlöm')
+                        ->disabled(fn () => Tesztadat::total() === 0)
+                        ->action(function (): void {
+                            abort_unless(static::canAccess(), 403);
+                            $torolt = Tesztadat::purge();
+                            $maradt = Tesztadat::total();
+                            $n = Notification::make()->title('Törölve: ' . collect($torolt)->map(fn ($db, $mi) => "{$db} {$mi}")->implode(', '));
+                            // Néma hiba tilos: ha valami bent maradt, az látszódjon.
+                            $maradt === 0 ? $n->success()->send() : $n->danger()->body("Bent maradt {$maradt} tesztadat — szólj a fejlesztőnek.")->persistent()->send();
+                        }),
+                ]),
+            ]);
     }
 
     /** @return list<string> a címlista tömbből vagy szövegből (sor / vessző / pontosvessző) */

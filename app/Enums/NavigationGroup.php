@@ -15,17 +15,20 @@ use Illuminate\Contracts\Support\Htmlable;
  * (AdminPanelProvider::sidebarCollapsibleOnDesktop), és ikon nélkül becsukva a csoport felirata
  * eltűnne, az elemei pedig rendezetlenül szóródnának egymás alá. Ikonos csoport elemeinek NEM lehet
  * saját ikonja (Filament-szabály) — becsukva a csoport ikonja egy legördülőt nyit az elemekkel.
+ *
+ * A Médiatár 2026-10-28 óta önálló menüpont (a galériák és támogatók a „Tartalom” csoportba kerültek,
+ * PROMPT-08 — egyelemű csoport nem maradhatott).
  */
 enum NavigationGroup: string implements HasIcon, HasLabel
 {
     // A sorrend a menü sorrendje (a Filament a felsorolás sorrendjében rakja ki a csoportokat).
-    case Mediatar = 'mediatar';
+    case Tartalom = 'tartalom';
     case Felhasznalok = 'felhasznalok';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::Mediatar => 'Médiatár',
+            self::Tartalom => 'Tartalom',
             self::Felhasznalok => 'Felhasználók',
         };
     }
@@ -33,7 +36,7 @@ enum NavigationGroup: string implements HasIcon, HasLabel
     public function getIcon(): string|BackedEnum|Htmlable|null
     {
         return match ($this) {
-            self::Mediatar => Heroicon::OutlinedPhoto,
+            self::Tartalom => Heroicon::OutlinedNewspaper,
             self::Felhasznalok => Heroicon::OutlinedUsers,
         };
     }

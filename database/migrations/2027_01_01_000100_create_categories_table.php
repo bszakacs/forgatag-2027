@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Programkategóriák. Az induló készlet: seed/categories.csv (24 db).
+ * Programkategóriák. Az induló készlet: seed/categories.csv (23 db — a 2026-os végleges lista).
  * Védett kategória nincs (2026-os tulajdonosi döntés): szabadon szerkeszthető és törölhető.
  * A román név KÉZZEL fordított (a gépi fordítás csak a beküldött programokra fut).
  */

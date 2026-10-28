@@ -12,6 +12,11 @@ use App\Models\Category;
  * Ez a rendszer szerkezete, ezért él kódban (CLAUDE.md 2/b) — nem admin-felület.
  * Ismeretlen / új kategória → csak az alapmezők (szándékos, hibatűrő viselkedés).
  *
+ * ⚠ A kulcs a kategória SLUGJA. Ha a kategóriát törlik vagy átnevezik, a hozzá írt extra mezők némán
+ * elvesznének (5. adósság: így maradt hatástalan a 2026-ban megszűnt „kerekasztal-beszelgetesek”).
+ * Ezért self::unknownSlugs() felderíti, és a jelzés az admin nyitólapján pirosan látszik
+ * (App\Filament\Widgets\Figyelmeztetesek); a teszt a seed/categories.csv-vel is összeveti.
+ *
  * Extra mező alakja: { key, label, type, required, help?, requiredIf? }
  *   type: 'text' | 'longtext' | 'number' | 'url' | 'checkbox'
  */
@@ -55,7 +60,6 @@ class SubmissionForm
         return [
             'koncertforgatag' => [$performer],
             'duma-ter' => [$speakerBios],
-            'kerekasztal-beszelgetesek' => [$speakerBios],
             'kiallitasforgatag' => [
                 ['key' => 'exhibition_hours', 'label' => 'Nyitvatartás (több napon át)', 'type' => 'longtext', 'required' => true, 'help' => 'Napokra bontva, pl. „aug. 26–28.: 10–18".'],
                 ['key' => 'vernissage_at', 'label' => 'Kiállításmegnyitó időpontja', 'type' => 'text', 'required' => false, 'help' => 'Ha van megnyitó.'],
@@ -83,11 +87,24 @@ class SubmissionForm
                 ['key' => 'book_title', 'label' => 'Könyv címe', 'type' => 'text', 'required' => false, 'requiredIf' => 'is_book_launch'],
                 ['key' => 'book_publisher', 'label' => 'Kiadó', 'type' => 'text', 'required' => false, 'requiredIf' => 'is_book_launch'],
             ],
-            // Extra nélküli kategóriák (csak base mezők):
-            // bolyai-muhely, borkert, egeszsegforgatag, erdelyi-neptanc-antologia,
-            // filmforgatag, ifi-setany, kandake, szoforgatag, torteno-sator, veltol,
-            // verbunk, zsido-ormeny
+            // Extra nélküli kategóriák (csak base mezők) — a 2026-os végleges lista szerint:
+            // bolyai-muhely, borkert, egeszsegforgatag, filmforgatag, folk-forgo, kezmuves-vasar,
+            // pulzus-by-rmdsz-maros, szenior-sziget, szoforgatag, torteno-sator, veltol, zsido-ormeny.
+            // (A 2026-ban jött négy új kategóriának 2026-ban sem volt extra mezője — nem találunk ki újat.)
         ];
+    }
+
+    /**
+     * A konfigurációban szereplő, de az adatbázisban NEM létező kategória-slugok (törölt vagy átnevezett
+     * kategória). Üres lista = rendben. Néma hiba helyett: piros figyelmeztetés a nyitólapon.
+     *
+     * @return list<string>
+     */
+    public static function unknownSlugs(): array
+    {
+        $letezo = Category::query()->pluck('slug')->all();
+
+        return array_values(array_diff(array_keys(self::extraFieldsBySlug()), $letezo));
     }
 
     /** @return list<array<string, mixed>> */

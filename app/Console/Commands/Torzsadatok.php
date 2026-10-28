@@ -88,9 +88,9 @@ class Torzsadatok extends Command
 
     private function kategoriak(): int
     {
-        $sorok = $this->csv('categories.csv', ['slug', 'name_hu']);
+        $sorok = $this->csv('categories.csv', ['slug', 'name_hu', 'name_ro']);
         foreach ($sorok as $i => $sor) {
-            Category::create(['slug' => $sor['slug'], 'name_hu' => $sor['name_hu'], 'sort' => $i + 1]);
+            Category::create(['slug' => $sor['slug'], 'name_hu' => $sor['name_hu'], 'name_ro' => $sor['name_ro'] ?: null, 'sort' => $i + 1]);
         }
 
         return count($sorok);
