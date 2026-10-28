@@ -103,6 +103,13 @@ class MediatarImport
             return null;
         }
 
+        // A csomag (zip / kicsomagolt mappa) már nincs fent, de a képek bent vannak: a behozatal LEZÁRT. Innentől a
+        // 2026-os képek a médiatár rendes elemei — ha valamit szándékosan cserélsz vagy törölsz (pl. a túl nagy logót),
+        // az szerkesztés, NEM behozatali hiba (2026-10-28: egy kicserélt logó miatt bukott el a telepítés).
+        if (! $vanCsomag) {
+            return $this->lezart($naplo);
+        }
+
         $this->zipIndex();
         $szintek = $this->szintek($leiras['szintek']);
         $galeriak = $this->galeriak($leiras['galeriak']);
@@ -152,6 +159,46 @@ class MediatarImport
             $naplo('  HIBA: ' . $h);
         }
         foreach ($this->figyelmeztetesek as $h) {
+            $naplo('  TEENDŐ: ' . $h);
+        }
+
+        return $jelentes;
+    }
+
+    /** Lezárt behozatal: nem ellenőriz újra, csak a jelentést frissíti (a hibák helyett „lezárva”). */
+    private function lezart(callable $naplo): array
+    {
+        $ut = self::jelentesUt($this->dir);
+        $regi = is_file($ut) ? (json_decode((string) file_get_contents($ut), true) ?: []) : [];
+        $bent = Media::whereNotNull('legacy_id')->count();
+        // Ami a nyilvántartásban bent van, annak a FÁJLJA is legyen meg (a felületi törlés a sort is viszi, a csere a
+        // sort megtartja új fájllal) — ha egy fájl magától eltűnt a tárból, az valódi hiba, és látszódjon.
+        $hianyzo = Media::whereNotNull('legacy_id')->get()
+            ->reject(fn (Media $m) => Storage::disk($m->disk)->exists($m->path))
+            ->map(fn (Media $m) => "{$m->title} ({$m->legacy_id}): a nyilvántartásban bent van, de a fájlja hiányzik a tárból.")
+            ->values()->all();
+        // A túl nagy képekre vonatkozó tennivaló a MOSTANI állapotból (ha kicserélted, eltűnik).
+        $nagyok = Media::whereNotNull('width')->whereNotNull('height')
+            ->whereRaw('width * height > ?', [self::MAX_MEGAPIXEL * 1_000_000])->get()
+            ->map(fn (Media $m) => sprintf('%s (%d×%d, %.0f megapixel) — túl nagy, a bélyegképe nem készül el: cseréld kisebbre a kép „Csere” fülén.',
+                $m->title, $m->width, $m->height, $m->width * $m->height / 1e6))->all();
+        $jelentes = [
+            ...$regi,
+            'osszegzes' => $hianyzo === []
+                ? "lezárva — a médiatárban {$bent} 2026-os kép van, mind a fájljával. Ami azóta cserélődött vagy törlődött, az szerkesztés, nem hiba."
+                : count($hianyzo) . " fájl HIÁNYZIK a tárból (a nyilvántartásban bent van) — lásd lent.",
+            'hibak' => $hianyzo,
+            'figyelmeztetesek' => $nagyok,
+        ];
+        if (! is_dir($this->dir)) {
+            mkdir($this->dir, 0755, true);
+        }
+        file_put_contents(self::jelentesUt($this->dir), json_encode($jelentes, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $naplo('2026-os képanyag: ' . $jelentes['osszegzes']);
+        foreach ($hianyzo as $h) {
+            $naplo('  HIBA: ' . $h);
+        }
+        foreach ($nagyok as $h) {
             $naplo('  TEENDŐ: ' . $h);
         }
 

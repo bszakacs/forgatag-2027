@@ -321,6 +321,13 @@ class MediatarTest extends TestCase
         $j3 = (new MediatarImport($dir, "{$dir}/leiras.json"))->run(fn () => null);
         $this->assertStringContainsString('1 fájl HIÁNYZIK', $j3['osszegzes']);
         $this->assertCount(1, $j3['hibak']);
+
+        // A csomag már nincs fent (a zip törlődött) → a behozatal LEZÁRT: egy szándékosan törölt 2026-os kép nem hiba.
+        Storage::disk('mediatar')->put('g1.jpg', $tartalom['g1']);
+        Media::where('legacy_id', 'r1')->sole()->delete();
+        $j4 = (new MediatarImport($dir, "{$dir}/leiras.json"))->run(fn () => null);
+        $this->assertSame([], $j4['hibak'], 'a felhasználó által törölt kép nem behozatali hiba');
+        $this->assertStringContainsString('lezárva', $j4['osszegzes']);
     }
 
     public function test_kicsomagolt_mappabol_athelyezve_es_takaritva(): void
