@@ -7,6 +7,7 @@ use App\Enums\MediaOrigin;
 use App\Filament\Mediatar\Pages\ListMedia;
 use App\Models\Media;
 use App\Models\MediaCollection;
+use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Awcodes\Curator\Facades\Curator;
 use Awcodes\Curator\Resources\Media\Tables\MediaTable;
 use Filament\Actions\BulkAction;
@@ -16,6 +17,8 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -35,10 +38,12 @@ class MediatarTable extends MediaTable
             // A Filament a paraméter NEVÉBŐL adja az értéket: $query kell (más névvel üres Builder jönne).
             ->modifyQueryUsing(fn (Builder $query) => $livewire instanceof ListMedia ? $livewire->szukit($query->with('collections')) : $query)
             ->searchable(['title', 'caption', 'description', 'rights_holder', 'photographer_credit', 'legacy_note'])
+            // Listanézetben a műveletek a sor ELEJÉN (ne kelljen jobbra görgetni, és látszódjon, melyik sorhoz tartoznak).
+            // A használatban lévő kép Törlés gombja nem tűnik el: szürke, és a súgója mondja meg, miért (MediaPolicy).
             ->recordActions([
                 EditAction::make(),
-                Curator::configureDeleteAction(DeleteAction::make()),
-            ])
+                Curator::configureDeleteAction(DeleteAction::make())->authorizationTooltip(),
+            ], position: fn () => $livewire->layoutView === 'list' ? RecordActionsPosition::BeforeColumns : null)
             ->toolbarActions([
                 self::athelyez(),
                 self::hozzaad(),
@@ -49,6 +54,30 @@ class MediatarTable extends MediaTable
             ->contentGrid(fn () => $livewire->layoutView === 'grid' ? ['default' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, '2xl' => 6] : null)
             ->defaultPaginationPageOption(48)
             ->paginationPageOptions([24, 48, 96]);
+    }
+
+    /**
+     * A listanézet oszlopai. A Curatoréhoz képest: NINCS „Tár” és „Mappa” (nálunk a mappa nem rendezési elv —
+     * az arculati fájloknál a belső „fajlok” mappa látszott volna, mintha gyűjtemény lenne); helyette a gyűjtemények
+     * és hogy hol használjuk (ezért nem törölhető).
+     */
+    public static function getDefaultTableColumns(): array
+    {
+        return [
+            CuratorColumn::make('url')->label('')->imageSize(48),
+            TextColumn::make('title')->label('Cím')
+                ->state(fn (Media $record) => $record->pretty_name)
+                ->description(fn (Media $record) => $record->ext . ' · ' . Curator::sizeForHumans((int) $record->size)
+                    . ($record->width ? " · {$record->width}×{$record->height}" : ''))
+                ->searchable(['title', 'name'])->sortable()->wrap(),
+            TextColumn::make('collections.name')->label('Gyűjtemények')->badge()
+                ->placeholder('Rendezetlen'),
+            TextColumn::make('hasznalat')->label('Hol használjuk')
+                ->state(fn (Media $record) => ($h = $record->usages()) === [] ? null
+                    : $h[0] . (count($h) > 1 ? ' (+' . (count($h) - 1) . ')' : ''))
+                ->placeholder('—')->wrap(),
+            TextColumn::make('created_at')->label('Feltöltve')->date('Y. m. d.')->sortable(),
+        ];
     }
 
     private static function gyujtemenyMezo(): Select

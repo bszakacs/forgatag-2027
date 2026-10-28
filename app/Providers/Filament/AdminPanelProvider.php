@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProgramFotoController;
 use App\Enums\NavigationGroup;
 use App\Http\Controllers\Admin\TemaController;
 use App\Support\Theme;
+use App\Filament\Mediatar\Pages\ListMedia;
 use Awcodes\Curator\CuratorPlugin;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\HtmlString;
@@ -85,6 +86,8 @@ class AdminPanelProvider extends PanelProvider
                 '<style>.fi-sidebar-nav-groups{row-gap:calc(var(--spacing) * 1)}</style>'
             ))
             ->navigationGroups(NavigationGroup::class)
+            // Médiatár, listanézet: a sorra kattintás kijelöli a képet (csak ezen a lapon).
+            ->renderHook(PanelsRenderHook::BODY_END, fn () => view('mediatar.sor-kijeloles'), scopes: ListMedia::class)
             // A médiatár (CLAUDE.md 2/d) — a Curator. Az erőforrása (App\Filament\Mediatar) szándékosan a
             // felfedezett mappán KÍVÜL van: a bővítmény regisztrálja, különben kétszer kerülne a menübe.
             ->plugin(CuratorPlugin::make())

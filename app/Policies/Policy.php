@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -32,7 +33,8 @@ abstract class Policy
         return false;
     }
 
-    public function delete(User $user, Model $record): bool
+    /** Bool, vagy Response::deny(ok) — az okot a felület a szürke gomb súgójában mutatja (authorizationTooltip). */
+    public function delete(User $user, Model $record): bool|Response
     {
         return false;
     }

@@ -70,3 +70,27 @@
         }
     }
 }
+
+/* Médiatár, listanézet: a sor egérrel kiemelődik, és a sorra kattintás kijelöli (resources/views/mediatar/sor-kijeloles.blade.php). */
+.fi-resource-mediatar .fi-ta-table tbody tr.fi-ta-row {
+    cursor: pointer;
+
+    &:hover > td {
+        @apply bg-primary-50 dark:bg-white/5;
+    }
+
+    &.fi-selected > td {
+        @apply bg-primary-100 dark:bg-primary-500/15;
+    }
+}
+
+/* A nem engedélyezett művelet (pl. használatban lévő kép Törlése) LÁTSZÓDJON letiltottnak: szürke, áttetsző —
+   rámutatva a súgó mondja meg az okát (authorizationTooltip). */
+.fi-resource-mediatar .fi-ac-link-action.fi-disabled,
+.fi-resource-mediatar .fi-ac-icon-btn-action.fi-disabled {
+    @apply text-gray-400 dark:text-gray-500 opacity-60 cursor-not-allowed;
+
+    svg {
+        @apply text-gray-400 dark:text-gray-500;
+    }
+}

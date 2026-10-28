@@ -46,6 +46,35 @@ class ListMedia extends CuratorListMedia
         return 'Médiatár';
     }
 
+    /**
+     * Rács ⇄ lista. A Curator csak átírja a nézetet, de a táblázat (oszlopok) a kérés ELEJÉN már felépült a régi
+     * nézettel — így a váltás után rácskártyák maradtak listában. Itt újraépítjük, hogy ugyanabban a kérésben jó legyen.
+     */
+    public function changeLayoutView(): void
+    {
+        parent::changeLayoutView();
+        session(['mediatar.nezet' => $this->layoutView]); // újratöltés után is ez maradjon
+        $this->table = $this->table($this->makeTable());
+    }
+
+    public function mount(): void
+    {
+        parent::mount();
+        $this->layoutView = session('mediatar.nezet', $this->layoutView) === 'list' ? 'list' : 'grid';
+        $this->table = $this->table($this->makeTable());
+    }
+
+    /**
+     * A Filament a táblázatot a tulajdonságok betöltése ELŐTT építi fel (alapérték: rács). Ha a nézet lista,
+     * a betöltés után újra kell építeni — különben minden további kérés rácsot rajzolna listanézetben is.
+     */
+    public function hydrate(): void
+    {
+        if ($this->layoutView === 'list') {
+            $this->table = $this->table($this->makeTable());
+        }
+    }
+
     public function updatedGyujtemeny(): void
     {
         $this->resetPage();

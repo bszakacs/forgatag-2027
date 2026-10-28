@@ -121,6 +121,17 @@ class Media extends CuratorMedia
         if (! $this->exists) {
             return [];
         }
+
+        // Egy kérésen belül egyszer (a lista sorában a „Hol használjuk” oszlop ÉS a törlés-jog is kérdezi).
+        return $this->usagesCache ??= $this->collectUsages();
+    }
+
+    /** @var list<string>|null */
+    private ?array $usagesCache = null;
+
+    /** @return list<string> */
+    private function collectUsages(): array
+    {
         $hol = [];
         $galeriak = DB::table('gallery_media')->join('galleries', 'galleries.id', '=', 'gallery_media.gallery_id')
             ->where('media_id', $this->id)->pluck('galleries.title_hu');
