@@ -18,7 +18,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -38,12 +37,13 @@ class MediatarTable extends MediaTable
             // A Filament a paraméter NEVÉBŐL adja az értéket: $query kell (más névvel üres Builder jönne).
             ->modifyQueryUsing(fn (Builder $query) => $livewire instanceof ListMedia ? $livewire->szukit($query->with('collections')) : $query)
             ->searchable(['title', 'caption', 'description', 'rights_holder', 'photographer_credit', 'legacy_note'])
-            // Listanézetben a műveletek a sor ELEJÉN (ne kelljen jobbra görgetni, és látszódjon, melyik sorhoz tartoznak).
-            // A használatban lévő kép Törlés gombja nem tűnik el: szürke, és a súgója mondja meg, miért (MediaPolicy).
+            // A műveletek csak ikonok, az utolsó oszlopban (tulajdonosi kérés, 2026-10-28); a felirat a súgóban és a
+            // képernyőolvasónak (aria-label) megvan. A használatban lévő kép Törlés ikonja nem tűnik el: szürke, és a
+            // súgója mondja meg, miért (MediaPolicy).
             ->recordActions([
-                EditAction::make(),
-                Curator::configureDeleteAction(DeleteAction::make())->authorizationTooltip(),
-            ], position: fn () => $livewire->layoutView === 'list' ? RecordActionsPosition::BeforeColumns : null)
+                EditAction::make()->iconButton()->tooltip('Szerkesztés'),
+                Curator::configureDeleteAction(DeleteAction::make())->iconButton()->tooltip('Törlés')->authorizationTooltip(),
+            ])
             ->toolbarActions([
                 self::athelyez(),
                 self::hozzaad(),
