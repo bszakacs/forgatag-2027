@@ -23,7 +23,7 @@ use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -101,6 +101,17 @@ class ProgramItemResource extends Resource
                 ->orderByRaw('CASE status WHEN ? THEN 0 WHEN ? THEN 1 ELSE 2 END', ProgramStatus::queueValues())
                 ->orderBy('created_at'))
             ->columns([
+                // A program képe a neve előtt — ugyanaz a kinézet, mint a médiatár és a támogatók listájában: egyforma
+                // négyzetes doboz, best-fit (tulajdonosi kérés, 2026-10-28). Jóváhagyás után a médiatár-borító, előtte a
+                // zárt tárban lévő beküldött fotó kis előnézete (csak belépett adminnak). Fotó nélkül: üres, szürke doboz.
+                ImageColumn::make('kep')->label('')->imageWidth(48)->imageHeight(48)
+                    ->state(fn (ProgramItem $r) => self::thumbUrl($r))
+                    ->defaultImageUrl(self::NINCS_FOTO)
+                    ->extraImgAttributes(fn (ProgramItem $r) => [
+                        'style' => 'object-fit:contain;padding:3px;border-radius:.375rem;background:#fff;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .1)',
+                        'alt' => $r->hasPhotoFile() || $r->cover ? $r->title : 'Nincs fotó',
+                        'title' => $r->hasPhotoFile() || $r->cover ? null : 'Nincs fotó',
+                    ]),
                 TextColumn::make('title')->label('Program')->searchable(['title', 'organizer_names'])->sortable()
                     ->weight('medium')->wrap()
                     ->description(fn (ProgramItem $r) => collect([
@@ -118,9 +129,6 @@ class ProgramItemResource extends Resource
                     ->formatStateUsing(fn ($state) => $state ? Festival::dayLabel(CarbonImmutable::parse($state)) : '—')
                     ->visibleFrom('md'),
                 TextColumn::make('venue.name')->label('Helyszín')->wrap()->visibleFrom('lg'),
-                IconColumn::make('photo_path')->label('Fotó')->boolean()
-                    ->state(fn (ProgramItem $r) => filled($r->photo_path))
-                    ->visibleFrom('md'),
                 TextColumn::make('programManager.name')->label('Beküldő')->placeholder('belső')->visibleFrom('lg'),
                 TextColumn::make('created_at')->label('Beérkezett')->date('Y. m. d.')->sortable()->visibleFrom('lg'),
             ])
@@ -261,6 +269,19 @@ class ProgramItemResource extends Resource
     }
 
     /** A nem nyilvános fotó admin-útvonala (csak belépett adminnak szolgál ki). */
+    /** Üres, szürke doboz áthúzott képpel — ha nincs fotó (a lista ne „ugráljon”). */
+    public const NINCS_FOTO = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%239ca3af%22 stroke-width=%221.5%22%3E%3Crect x=%223%22 y=%225%22 width=%2218%22 height=%2214%22 rx=%222%22/%3E%3Cpath d=%22M3 19 21 5%22/%3E%3C/svg%3E';
+
+    /** A lista kis képe: közzétett borító (médiatár, Glide) vagy a beküldött fotó kis előnézete (zárt tár). */
+    public static function thumbUrl(ProgramItem $r): ?string
+    {
+        if ($r->cover) {
+            return url($r->cover->getGlideUrl(['w' => 96, 'h' => 96, 'fit' => 'contain', 'fm' => 'webp']));
+        }
+
+        return $r->hasPhotoFile() ? self::photoUrl($r) . '&kis=1' : null;
+    }
+
     public static function photoUrl(ProgramItem $r): string
     {
         // A ?v= a fájlnévből: ha a beküldő cseréli a fotót, a böngésző nem a régit mutatja.
