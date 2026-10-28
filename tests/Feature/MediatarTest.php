@@ -323,6 +323,25 @@ class MediatarTest extends TestCase
         $this->assertCount(1, $j3['hibak']);
     }
 
+    public function test_kicsomagolt_mappabol_athelyezve_es_takaritva(): void
+    {
+        // A tárhely telepítő-PHP-jában nincs zip-kezelő: a felhasználó a Fájlkezelőben csomagol ki (import-2026/fajlok/).
+        $dir = sys_get_temp_dir() . '/mt-' . uniqid();
+        mkdir("{$dir}/fajlok", 0777, true);
+        file_put_contents("{$dir}/fajlok/k.jpg", 'KICSOMAGOLT');
+        file_put_contents("{$dir}/leiras.json", json_encode(['fajlok_szama' => 1, 'sorsok' => [], 'szintek' => [], 'galeriak' => [], 'tamogatok' => [],
+            'fajlok' => [['id' => 'k', 'forras' => 'k.jpg', 'cel' => 'k.jpg', 'type' => 'image/jpeg', 'ext' => 'jpg', 'type_2026' => null,
+                'size' => 11, 'width' => null, 'height' => null, 'sha256' => hash('sha256', 'KICSOMAGOLT'), 'title' => 'k', 'eredeti_nev' => 'k.jpg',
+                'created' => '2026-07-01', 'sorsok' => null, 'sors' => 'rendezetlen', 'gyujtemeny' => [], 'note' => 'k']]]));
+
+        $j = (new MediatarImport($dir, "{$dir}/leiras.json"))->run(fn () => null);
+
+        $this->assertSame([], $j['hibak']);
+        $this->assertSame('KICSOMAGOLT', Storage::disk('mediatar')->get('k.jpg'));
+        $this->assertFileDoesNotExist("{$dir}/fajlok/k.jpg", 'áthelyezés, nem másolás (nem foglal kétszer helyet)');
+        $this->assertDirectoryDoesNotExist("{$dir}/fajlok", 'a kiürült mappa törlődik');
+    }
+
     public function test_serult_fajl_nem_kerul_be(): void
     {
         $dir = sys_get_temp_dir() . '/mt-' . uniqid();

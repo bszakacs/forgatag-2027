@@ -32,4 +32,8 @@ deployment:
     # A mediatar: az arculat fajljai az Arculat gyujtemenybe + a 2026-os kepanyag behozatala, HA a felhasznalo
     # feltoltotte a csomagot (storage/app/import-2026/*.zip). Csomag nelkul csak kihagy; mar bent levo kepnel csak
     # ellenoriz. SZANDEKOSAN az utolso lepes: ha hiany/hiba van, hibaval all meg (a jelentes a mediatar lapjan).
-    - $PHP artisan forgatag:mediatar-import
+    # Zip-kezelo kell hozza: az ea-php84-ben NINCS (merve 2026-10-28: zip=0), a CloudLinux alt-php84-ben (a web
+    # PHP-ja, Select PHP Version) VAN. Ha az alt-php84 tud zip-et, azzal fut; ha nem, az ea-php84-gyel (akkor a
+    # zip-eket a Fajlkezeloben kell kicsomagolni: storage/app/import-2026/fajlok/).
+    - export ALTPHP=/opt/alt/php84/usr/bin/php
+    - if [ -x "$ALTPHP" ] && "$ALTPHP" -r 'exit((int) ! class_exists("ZipArchive"));'; then echo "MEDIATAR - alt-php84, zip VAN"; "$ALTPHP" artisan forgatag:mediatar-import; else echo "MEDIATAR - ea-php84, zip NINCS"; $PHP artisan forgatag:mediatar-import; fi

@@ -128,6 +128,17 @@ class MediatarImport
         }
 
         $torolt = $this->zipTorles();
+        $mindBent = array_sum(array_column($this->szamok, 0)) === array_sum(array_column($this->szamok, 1)) && $this->hibak === [];
+        if ($mindBent) {
+            foreach (glob($this->dir . '/*.zip') ?: [] as $zip) {
+                if (@unlink($zip)) {
+                    $torolt[] = basename($zip);
+                }
+            }
+            if (is_dir($this->dir . '/fajlok') && (glob($this->dir . '/fajlok/*') ?: []) === []) {
+                @rmdir($this->dir . '/fajlok');
+            }
+        }
         $jelentes = $this->jelentes($leiras, $arculatUj, $torolt);
         if (! is_dir($this->dir)) {
             mkdir($this->dir, 0755, true);
@@ -267,8 +278,23 @@ class MediatarImport
     {
         $kibontott = $this->dir . '/fajlok/' . $f['forras'];
         if (is_file($kibontott)) {
-            $be = fopen($kibontott, 'rb');
-        } elseif ($zip = $this->zipIndex['fajlok/' . $f['forras']] ?? null) {
+            // Kicsomagolt fájl: ÁTHELYEZÉS (ugyanazon a lemezen azonnali, és nem foglal még egyszer helyet).
+            if (! is_dir(dirname($cel))) {
+                mkdir(dirname($cel), 0755, true);
+            }
+            if (! @rename($kibontott, $cel)) {
+                throw new RuntimeException('a kicsomagolt fájl nem helyezhető át ide: ' . $cel);
+            }
+            if (filesize($cel) !== $f['size'] || hash_file('sha256', $cel) !== $f['sha256']) {
+                @rename($cel, $kibontott); // a hibás fájl marad a csomagban, megnézhető
+
+                throw new RuntimeException('a kicsomagolt fájl ellenőrző összege nem egyezik a mentés leltárával (sérült feltöltés/kicsomagolás?)');
+            }
+            @chmod($cel, 0644);
+
+            return;
+        }
+        if ($zip = $this->zipIndex['fajlok/' . $f['forras']] ?? null) {
             $z = new ZipArchive();
             if ($z->open($zip) !== true) {
                 throw new RuntimeException('a zip nem nyitható meg: ' . basename($zip));
@@ -302,6 +328,11 @@ class MediatarImport
     {
         foreach (glob($this->dir . '/*.zip') ?: [] as $zip) {
             if (! class_exists(ZipArchive::class)) {
+                // A tárhely telepítő-PHP-jában (ea-php84) NINCS zip-kezelő (mérve 2026-10-28). Ilyenkor a felhasználó a
+                // Fájlkezelőben csomagolja ki (import-2026/fajlok/) — a zip-ek ekkor csak helyet foglalnak.
+                if (is_dir($this->dir . '/fajlok')) {
+                    return;
+                }
                 throw new RuntimeException('A PHP-ban nincs zip-kezelő: csomagold ki a zip-eket a Fájlkezelőben az import-2026 mappába (lesz benne egy „fajlok” mappa), és futtasd újra a telepítést.');
             }
             $z = new ZipArchive();
