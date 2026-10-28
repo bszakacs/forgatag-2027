@@ -58,8 +58,9 @@ class MediatarTable extends MediaTable
 
     /**
      * A listanézet oszlopai. A Curatoréhoz képest: NINCS „Tár” és „Mappa” (nálunk a mappa nem rendezési elv —
-     * az arculati fájloknál a belső „fajlok” mappa látszott volna, mintha gyűjtemény lenne); helyette a gyűjtemények
-     * és hogy hol használjuk (ezért nem törölhető).
+     * az arculati fájloknál a belső „fajlok” mappa látszott volna, mintha gyűjtemény lenne); helyette a gyűjtemények.
+     * Hogy hol használjuk, az NEM külön oszlop (tulajdonosi kérés, 2026-10-28): a szürke Törlés súgója és a
+     * kép szerkesztőlapja mondja meg.
      */
     public static function getDefaultTableColumns(): array
     {
@@ -72,10 +73,6 @@ class MediatarTable extends MediaTable
                 ->searchable(['title', 'name'])->sortable()->wrap(),
             TextColumn::make('collections.name')->label('Gyűjtemények')->badge()
                 ->placeholder('Rendezetlen'),
-            TextColumn::make('hasznalat')->label('Hol használjuk')
-                ->state(fn (Media $record) => ($h = $record->usages()) === [] ? null
-                    : $h[0] . (count($h) > 1 ? ' (+' . (count($h) - 1) . ')' : ''))
-                ->placeholder('—')->wrap(),
             TextColumn::make('created_at')->label('Feltöltve')->date('Y. m. d.')->sortable(),
         ];
     }
