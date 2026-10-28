@@ -17,6 +17,10 @@ deployment:
     # A beallitas-gyorsitotar torlese ELOSZOR — kulonben a forgatag:admin nem latna a .env-et.
     # (NEM optimize:clear: az az adatbazisbeli cache-tablat is uritene, ami ures adatbazisnal meg nem letezik.)
     - $PHP artisan config:clear
+    # A csomaglista (bootstrap/cache/packages.php) NINCS a taroloban: uj composer-csomag utan (pl. Curator) a
+    # szerveren a REGI lista maradna, es az uj csomag szolgaltatoja nem toltodne be (2026-10-28: "No hint path
+    # defined for [curator]" -> 500 a Mediatar lapjan). Ezert minden telepiteskor ujrairjuk.
+    - $PHP artisan package:discover
     - $PHP artisan migrate --force
     # Torzsadatok a seed/ mappabol — CSAK ures tablaba ir, a masodik futastol mar csak kihagy.
     - $PHP artisan forgatag:torzsadatok

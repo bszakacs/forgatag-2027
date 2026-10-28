@@ -2,7 +2,8 @@
      1091 fájlnál a „sikerült” önmagában semmit nem jelent. Hiánynál piros és nem csukható be. --}}
 @if ($jelentes)
     @php($hiba = $jelentes['hibak'] ?? [])
-    <details class="mt-jel {{ $hiba ? 'mt-jel--hiba' : '' }}" @if ($hiba) open @endif>
+    @php($teendo = $jelentes['figyelmeztetesek'] ?? [])
+    <details class="mt-jel {{ $hiba ? 'mt-jel--hiba' : '' }}" @if ($hiba || $teendo) open @endif>
         <style>
             .mt-jel{border:1px solid var(--gray-200);border-radius:.75rem;padding:.75rem 1rem;font-size:.875rem;background:var(--gray-50)}
             .dark .mt-jel{border-color:rgb(255 255 255 / .1);background:rgb(255 255 255 / .03)}
@@ -22,6 +23,10 @@
                 <tr><td>{{ $sor[0] }}</td><td class="sz">{{ $sor[1] }}</td></tr>
             @endforeach
         </table>
+        @if ($teendo)
+            <p style="margin-top:.75rem;font-weight:600">Tennivaló ({{ count($teendo) }}):</p>
+            <ul>@foreach ($teendo as $t)<li>{{ $t }}</li>@endforeach</ul>
+        @endif
         @if ($hiba)
             <ul>
                 @foreach (array_slice($hiba, 0, 30) as $h)<li>{{ $h }}</li>@endforeach

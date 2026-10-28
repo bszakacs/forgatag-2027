@@ -500,6 +500,11 @@ menüpont: „Arculat” — kivételes saját menüpont, PROMPT-06), 11 szekci�
   (`Require all denied`, kivéve `public/`) kötelező. Mérve: `.env`, `vendor/`, `.git` → 403.
 - A Deploy felülete „fut” állapotban ragadhat; a valóságot a `~/.cpanel/logs` napló mutatja.
 - A `vendor/` és a Filament public-assetjei a tárolóban vannak (a szerveren `composer` nem fut).
+- **Új composer-csomag után** a szerveren a régi csomaglista (`bootstrap/cache/packages.php`, nincs a tárolóban)
+  maradna → az új csomag nem töltődik be (2026-10-28: „No hint path defined for [curator]”, 500). Ezért a
+  `.cpanel.yml` minden telepítéskor `package:discover`-t futtat.
+- **Óriásképek:** a 40 MP fölötti kép bélyegképe nem készül el (memória); a behozatali jelentés „Tennivaló”-ként
+  név szerint kiírja (2026-os anyagban 1 db: 14765×7384-es logó). Az eredetit nem módosítjuk.
 
 ### Feljegyezve a későbbi fázisokra (tulajdonosi rögzítés, 2026-10-13)
 

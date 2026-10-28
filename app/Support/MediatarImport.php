@@ -69,6 +69,15 @@ class MediatarImport
     /** @var list<string> */
     private array $hibak = [];
 
+    /** @var list<string> nem hiba, de a felhasználónak tennivalója van (pl. túl nagy kép) */
+    private array $figyelmeztetesek = [];
+
+    /**
+     * E fölött a méretváltozat (bélyegkép) nem készül el a tárhely memóriájával (a Glide-útvonalon 512 MB,
+     * AppServiceProvider). Az eredetit NEM módosítjuk — a felhasználó cseréli kisebbre.
+     */
+    public const MAX_MEGAPIXEL = 40;
+
     /** @var array<string, array{0:int,1:int}> sors → [bent, várt] */
     private array $szamok = [];
 
@@ -130,6 +139,9 @@ class MediatarImport
         }
         foreach ($this->hibak as $h) {
             $naplo('  HIBA: ' . $h);
+        }
+        foreach ($this->figyelmeztetesek as $h) {
+            $naplo('  TEENDŐ: ' . $h);
         }
 
         return $jelentes;
@@ -205,6 +217,18 @@ class MediatarImport
             }
         } elseif (! $tar->exists($media->path) || $tar->size($media->path) !== $f['size']) {
             throw new RuntimeException('a nyilvántartásban bent van, de a fájl hiányzik vagy a mérete eltér a médiatárban');
+        }
+
+        // A 2026-os nyilvántartásban néhány képnek nincs mérete — a fájlból pótoljuk (a túlméret-őr ebből dolgozik).
+        if ($media->width === null && str_starts_with((string) $media->type, 'image/') && $media->ext !== 'svg') {
+            [$w, $h] = @getimagesize($tar->path($media->path)) ?: [null, null];
+            if ($w) {
+                $media->forceFill(['width' => $w, 'height' => $h])->saveQuietly();
+            }
+        }
+        if ($media->width && $media->height && $media->width * $media->height > self::MAX_MEGAPIXEL * 1_000_000) {
+            $this->figyelmeztetesek[] = sprintf('%s (%d×%d, %.0f megapixel) — túl nagy, a bélyegképe nem készül el: cseréld kisebbre (pl. 3000 px szélesre) a kép „Csere” fülén. %s',
+                $media->title, $media->width, $media->height, $media->width * $media->height / 1e6, $media->legacy_note);
         }
 
         if (isset($f['galeria'])) {
@@ -361,6 +385,7 @@ class MediatarImport
                 : "{$hianyzik} fájl HIÁNYZIK, {$kapcsHiany} kapcsolat hiányzik, " . count($this->hibak) . ' hibaüzenet — lásd lent.',
             'sorok' => $sorok,
             'hibak' => $this->hibak,
+            'figyelmeztetesek' => $this->figyelmeztetesek,
         ];
     }
 }
