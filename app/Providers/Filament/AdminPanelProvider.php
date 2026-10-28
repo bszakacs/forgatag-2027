@@ -86,6 +86,8 @@ class AdminPanelProvider extends PanelProvider
                 '<style>.fi-sidebar-nav-groups{row-gap:calc(var(--spacing) * 1)}</style>'
             ))
             ->navigationGroups(NavigationGroup::class)
+            // Képválasztó: fájl behúzása a TELJES panelre (bármelyik szerkesztőlapon nyílik — ezért nem szűkített).
+            ->renderHook(PanelsRenderHook::BODY_END, fn () => view('mediatar.panel-behuzas'))
             // Médiatár, listanézet: a sorra kattintás kijelöli a képet (csak ezen a lapon).
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('mediatar.sor-kijeloles'), scopes: ListMedia::class)
             // A médiatár (CLAUDE.md 2/d) — a Curator. Az erőforrása (App\Filament\Mediatar) szándékosan a

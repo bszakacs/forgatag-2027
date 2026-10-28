@@ -80,10 +80,11 @@ class SponsorResource extends Resource
         return $table
             ->defaultSort('name')
             ->columns([
-                // Logónál nincs négyzetes kivágás (levágná a feliratot): csak magasság, az arány marad.
-                ImageColumn::make('logo')->label('')->imageHeight(36)
-                    ->state(fn (Sponsor $r) => $r->logo ? url($r->logo->getGlideUrl(['h' => 72, 'fm' => 'webp'])) : null)
-                    ->extraImgAttributes(['style' => 'max-width:7rem;object-fit:contain']),
+                // Minden logó EGYFORMA négyzetes dobozban, best-fit (a teljes logó látszik, nincs kivágás) — mint a
+                // médiatár listanézete (tulajdonosi kérés, 2026-10-28).
+                ImageColumn::make('logo')->label('')->imageWidth(48)->imageHeight(48)
+                    ->state(fn (Sponsor $r) => $r->logo ? url($r->logo->getGlideUrl(['w' => 96, 'h' => 96, 'fit' => 'contain', 'fm' => 'webp'])) : null)
+                    ->extraImgAttributes(['style' => 'object-fit:contain;padding:3px;border-radius:.375rem;background:#fff;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .1)']),
                 TextColumn::make('name')->label('Név')->searchable()->sortable(),
                 TextColumn::make('tier.name')->label('Szint')->sortable(),
                 TextColumn::make('year')->label('Év')->sortable(),
