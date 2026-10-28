@@ -46,9 +46,9 @@ class MediatarTable extends MediaTable
                 Curator::configureDeleteAction(DeleteBulkAction::make()->authorizeIndividualRecords()),
             ])
             // Mobilon is két oszlop (egy oszlopban a Curator-kártya lapos csík lenne).
-            ->contentGrid(fn () => $livewire->layoutView === 'grid' ? ['default' => 2, 'md' => 3, 'xl' => 4] : null)
-            ->defaultPaginationPageOption(24)
-            ->paginationPageOptions([12, 24, 48, 96]);
+            ->contentGrid(fn () => $livewire->layoutView === 'grid' ? ['default' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, '2xl' => 6] : null)
+            ->defaultPaginationPageOption(48)
+            ->paginationPageOptions([24, 48, 96]);
     }
 
     private static function gyujtemenyMezo(): Select

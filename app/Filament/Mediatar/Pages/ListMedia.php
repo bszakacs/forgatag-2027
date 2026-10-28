@@ -19,6 +19,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 use RuntimeException;
@@ -36,6 +37,9 @@ class ListMedia extends CuratorListMedia
     public ?string $gyujtemeny = null;
 
     public const RENDEZETLEN = 'rendezetlen';
+
+    /** A médiatár a teljes szélességet használja (a Filament alapja ~1280 px — széles képernyőn üres sáv marad). */
+    protected Width|string|null $maxContentWidth = Width::Full;
 
     public function getTitle(): string
     {
@@ -87,9 +91,9 @@ class ListMedia extends CuratorListMedia
     {
         return $schema->components([
             View::make('mediatar.behozatal-jelentes')->viewData(['jelentes' => MediatarImport::utolsoJelentes()]),
-            Grid::make(['default' => 1, 'lg' => 4])->schema([
+            Grid::make(['default' => 1, 'lg' => 4, 'xl' => 5, '2xl' => 6])->schema([
                 View::make('mediatar.gyujtemenyek')->columnSpan(['default' => 1, 'lg' => 1]),
-                Group::make([EmbeddedTable::make()])->columnSpan(['default' => 1, 'lg' => 3]),
+                Group::make([EmbeddedTable::make()])->columnSpan(['default' => 1, 'lg' => 3, 'xl' => 4, '2xl' => 5]),
             ]),
         ]);
     }
