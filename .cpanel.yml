@@ -42,3 +42,6 @@ deployment:
     # jelolese fajlban van (storage/app/import-2026/tartalom.json), hogy az elesites elotti adatbazis-urites utan ne
     # jojjenek vissza. Hianyzo kepnel semmit nem ir, hibaval all meg.
     - $PHP artisan forgatag:tartalom-import
+    # A lapok szerkesztheto szovegei (App\Support\LapSablon): a sablon minden kulcsa az adatbazisba, az alapszoveggel
+    # (csak az uresbe ir; a sablonbol kikerult kulcs torlodik). A publikus lap hianyzo kulcsnal hibaval all meg.
+    - $PHP artisan forgatag:lap-szovegek

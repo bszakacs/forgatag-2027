@@ -42,6 +42,8 @@ class ProgramBekuldesTest extends TestCase
                 'day_cut_hour' => 3,
             ],
             'submission' => ['open' => true, 'closed_message' => 'A programbeküldés jelenleg zárva van.', 'deadline' => null],
+            // A Beállítások lap minden blokkja kell (a mentés a kötelező mezőit is ellenőrzi) — a kezdőértékek a seedből.
+            'public' => json_decode((string) file_get_contents(base_path('seed/settings.json')), true)['public'],
             'notifications' => [
                 'topics' => ['program_submission' => ['koordinator@forgatag.test']]],
         ]);

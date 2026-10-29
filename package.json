@@ -10,7 +10,9 @@
     "devDependencies": {
         "@tailwindcss/cli": "^4.3.3",
         "@tailwindcss/vite": "^4.0.0",
+        "alpinejs": "3.14.9",
         "concurrently": "^10.0.3",
+        "htmx.org": "2.0.4",
         "laravel-vite-plugin": "^3.1",
         "tailwindcss": "^4.3.3",
         "vite": "^8.0.0"

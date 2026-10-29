@@ -18,6 +18,16 @@
     "deadline": null
   },
 
+  "public": {
+    "coming_soon": false,
+    "coming_soon_title_hu": "Hamarosan",
+    "coming_soon_title_ro": "În curând",
+    "coming_soon_text_hu": "Készül az új honlapunk. Nézz vissza hamarosan!",
+    "coming_soon_text_ro": "Noul nostru site este în pregătire. Revino în curând!",
+    "footer_text_hu": "Öt nap, egy egész város — koncertek, színház, játék és közös asztalok.",
+    "footer_text_ro": "Cinci zile, un oraș întreg — concerte, teatru, joacă și mese comune."
+  },
+
   "notifications": {
     "topics": {
       "program_submission": []

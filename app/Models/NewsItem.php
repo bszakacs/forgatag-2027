@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ContentStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -46,5 +47,12 @@ class NewsItem extends Model
     public function cover(): BelongsTo
     {
         return $this->belongsTo(Media::class, 'cover_media_id');
+    }
+
+    /** A publikus oldalon látható hírek: közzétett, és a megjelenés napja már elérkezett (vagy nincs megadva). */
+    public function scopePublikus(Builder $q): Builder
+    {
+        return $q->where('status', ContentStatus::Published)
+            ->where(fn (Builder $w) => $w->whereNull('published_on')->orWhereDate('published_on', '<=', today()));
     }
 }

@@ -36,7 +36,7 @@ use Filament\Support\Icons\Heroicon;
 class Beallitasok extends Page
 {
     /** A lapon szerkesztett blokkok (a settings tábla sorai). */
-    private const BLOKKOK = ['festival', 'submission', 'notifications'];
+    private const BLOKKOK = ['festival', 'submission', 'public', 'notifications'];
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
@@ -69,6 +69,7 @@ class Beallitasok extends Page
             ->components([
                 $this->fesztivalBlokk(),
                 $this->bekuldesBlokk(),
+                $this->publikusBlokk(),
                 $this->ertesitesBlokk(),
                 $this->tesztadatBlokk(),
             ]);
@@ -142,6 +143,33 @@ class Beallitasok extends Page
                 Text::make('FIGYELEM: nincs koordinátori értesítési cím — senki nem kap levelet a beküldésekről és a fotóhibákról. Lent, az Értesítések blokkban a „Programbeküldés — új beküldött program” mezőbe írd be.')
                     ->color('danger')->columnSpanFull()
                     ->visible(fn (Get $get) => self::cimek($get('notifications.topics.' . NotificationTopic::ProgramSubmission->value)) === []),
+            ]);
+    }
+
+    /**
+     * A publikus oldal: a „Hamarosan” mód (korai élesítés) és a közös elemek szövegei. A Hamarosan mód CSAK a
+     * publikus lapokat takarja el (App\Http\Middleware\HamarosanMod) — az admin és a beküldő űrlap elérhető marad,
+     * a belépett admin pedig a valódi lapokat látja (egy sávval jelezve).
+     */
+    private function publikusBlokk(): Section
+    {
+        return Section::make('Publikus oldal')
+            ->columns(2)
+            ->schema([
+                Toggle::make('public.coming_soon')->label('„Hamarosan” mód')->columnSpanFull()
+                    ->helperText('Bekapcsolva a látogatók minden publikus címen a Hamarosan lapot látják. Az admin és a beküldő űrlap ettől függetlenül működik; belépett adminként a valódi lapok látszanak.'),
+                TextInput::make('public.coming_soon_title_hu')->label('Hamarosan lap — cím (magyar)')->required()->maxLength(120),
+                TextInput::make('public.coming_soon_title_ro')->label('Hamarosan lap — cím (román)')->maxLength(120),
+                Textarea::make('public.coming_soon_text_hu')->label('Hamarosan lap — szöveg (magyar)')->required()->rows(3)->maxLength(600),
+                Textarea::make('public.coming_soon_text_ro')->label('Hamarosan lap — szöveg (román)')->rows(3)->maxLength(600),
+                Text::make('A Hamarosan lapon a logó (Arculat), a fesztivál neve és dátuma (fent) magától jelenik meg. A román üres mező helyén a magyar szöveg látszik.')->columnSpanFull(),
+                Actions::make([
+                    Action::make('hamarosanElonezet')->label('A Hamarosan lap megnyitása')->color('gray')
+                        ->url('/hamarosan', shouldOpenInNewTab: true),
+                ])->columnSpanFull(),
+                Textarea::make('public.footer_text_hu')->label('Lábléc — rövid bemutatkozás (magyar)')->required()->rows(2)->maxLength(300)
+                    ->helperText('Elé magától kerül a fesztivál dátuma és a város.'),
+                Textarea::make('public.footer_text_ro')->label('Lábléc — rövid bemutatkozás (román)')->rows(2)->maxLength(300),
             ]);
     }
 

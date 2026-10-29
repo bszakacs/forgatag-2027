@@ -107,11 +107,17 @@ class Festival
             : $d->isoFormat('MMM') . ' ' . $d->day . '. (' . $rovid . ')';
     }
 
-    /** A fesztivál időtartama emberi formában, pl. „2027. augusztus 25–29.” (a 2026-os seed-felirat alakja). */
-    public static function spanLabel(): string
+    /** A fesztivál időtartama emberi formában: hu „2027. augusztus 25–29.” (a 2026-os seed-felirat alakja), ro „25–29 august 2027”. */
+    public static function spanLabel(string $locale = 'hu'): string
     {
-        $k = self::start()->locale('hu');
-        $z = self::end()->locale('hu');
+        $k = self::start()->locale($locale);
+        $z = self::end()->locale($locale);
+        if ($locale === 'ro') {
+            $eleje = $k->day . ($k->month !== $z->month || $k->year !== $z->year ? ' ' . $k->isoFormat('MMMM') : '')
+                . ($k->year !== $z->year ? ' ' . $k->year : '');
+
+            return ($k->isSameDay($z) ? '' : $eleje . '–') . $z->day . ' ' . $z->isoFormat('MMMM') . ' ' . $z->year;
+        }
         if ($k->year !== $z->year) {
             return $k->year . '. ' . $k->isoFormat('MMMM') . ' ' . $k->day . '. – ' . $z->year . '. ' . $z->isoFormat('MMMM') . ' ' . $z->day . '.';
         }

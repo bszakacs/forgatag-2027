@@ -13,6 +13,7 @@ use App\Filament\Resources\Aloldalak\Pages\ListPages;
 use App\Filament\Resources\Resource;
 use App\Models\Page;
 use App\Models\PageBlock;
+use App\Support\LapSablon;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -86,24 +87,31 @@ class PageResource extends Resource
                 Textarea::make('seo_description_ro')->label('Leírás a keresőknek')->rows(2)->maxLength(300),
             ]),
             Section::make('Szerkeszthető szövegek')->columnSpanFull()->collapsible()->collapsed()
-                ->description('A lap sablonjának átírható szövegei és képei. Üres mező = a sablon beépített szövege marad.')
+                ->description(fn (?Page $record) => $record !== null && LapSablon::van($record->slug)
+                    ? 'A lapon látható MINDEN szöveg és kép itt van, a lapon elfoglalt helyük sorrendjében. A román üres mező helyén a magyar szöveg látszik.'
+                    : 'A lap sablonjának átírható szövegei és képei (a 2026-os lapból). A lap publikus változata még nem készült el.')
                 ->visible(fn (?Page $record) => $record !== null && $record->texts()->exists())
                 ->schema([
+                    // A kulcsok, a feliratuk és a típusuk EGY helyen: App\Support\LapSablon (a publikus sablon csak onnan olvas).
                     Repeater::make('texts')->label('Szerkeszthető szövegek')->hiddenLabel()->relationship()->orderColumn('sort')
                         ->addable(false)->deletable(false)->reorderable(false)
-                        ->itemLabel(fn (array $state) => $state['key'] ?? null)
+                        ->itemLabel(fn (array $state) => LapSablon::mezo($state['key'] ?? null)['cimke'] ?? ($state['key'] ?? null))
                         ->collapsible()
                         ->schema([
-                            Grid::make(['default' => 1, 'md' => 2])->schema([
-                                Textarea::make('value_hu')->label('Magyar')->rows(2)
-                                    ->visible(fn (Get $get) => blank($get('media_id'))),
-                                Textarea::make('value_ro')->label('Román')->rows(2)
-                                    ->visible(fn (Get $get) => blank($get('media_id'))),
-                            ]),
+                            Grid::make(['default' => 1, 'md' => 2])
+                                ->visible(fn (Get $get) => self::szovegTipus($get) !== 'kep')
+                                ->schema([
+                                    Textarea::make('value_hu')->autosize()
+                                        ->label(fn (Get $get) => self::szovegTipus($get) === 'link' ? 'Cím (link, minden nyelven)' : 'Magyar')
+                                        ->rows(fn (Get $get) => self::szovegTipus($get) === 'szoveg' ? 4 : 1),
+                                    Textarea::make('value_ro')->label('Román')->autosize()
+                                        ->rows(fn (Get $get) => self::szovegTipus($get) === 'szoveg' ? 4 : 1)
+                                        ->visible(fn (Get $get) => self::szovegTipus($get) !== 'link'),
+                                ]),
                             MediaPicker::make('media_id')->label('Kép')
                                 ->relationship('media', 'id')
                                 ->gyujtemeny(Gyujtemeny::Lapok)
-                                ->visible(fn (Get $get) => filled($get('media_id'))),
+                                ->visible(fn (Get $get) => self::szovegTipus($get) === 'kep'),
                         ]),
                 ]),
             Section::make('Blokkok')->columnSpanFull()
@@ -161,6 +169,15 @@ class PageResource extends Resource
                         ]),
                 ]),
         ]);
+    }
+
+    /**
+     * Egy szerkeszthető szöveg típusa (sor / szoveg / kep / link) a sablon leírásából. Leírás nélküli (még meg nem
+     * épített) lapnál a régi szabály: amihez kép tartozik, az kép, a többi szöveg.
+     */
+    private static function szovegTipus(Get $get): string
+    {
+        return LapSablon::mezo($get('key'))['tipus'] ?? (filled($get('media_id')) ? 'kep' : 'szoveg');
     }
 
     /** A blokk címsora a becsukott listában: típus + cím (+ ha rejtett valamelyik nyelven). */

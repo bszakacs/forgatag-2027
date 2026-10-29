@@ -1,0 +1,88 @@
+/* ============================================================================
+   Rólunk — a 2026-os lap stílusa (forgatag-os/frontend/src/rolunk/style.css), a token-szabály szerint:
+   a 2026-ban itt még beégetett színek (#fff, #221c47, #DAD3F1 …) mind téma-tokenre cserélve
+   (a fehér sáv és az ablak a „nappali lap” --lap-* tokenjeit kapja). Minden szabály az .about-page alatt;
+   saját :root / palettafelülírás NINCS. A címbetű mellett a téma vastagsága (TemaTest).
+   ========================================================================== */
+
+main:has(.about-page){padding:0}
+.about-page .brush{line-height:.9}
+
+/* ---- szekció-alap ---- */
+.about-page section.blk{position:relative;padding:84px 0;overflow:hidden}
+.about-page .blk .sec-head h2{font-size:clamp(2.3rem,4.8vw,3.6rem)}
+.about-page .blk .sec-head h2 .brush{font-size:1.16em}
+.about-page .blk.white{background:var(--lap-bg);color:var(--lap-fg);border-top:var(--border-w) solid var(--lap-line);border-bottom:var(--border-w) solid var(--lap-line)}
+.about-page .blk.white .sec-head h2{color:var(--lap-fg)}
+
+/* ---- NYITÓCÍM ---- */
+.about-page .subhero{position:relative;padding:104px 0 34px;text-align:center}
+.about-page .subhero h1{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--fg);font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.08;margin:0 auto;letter-spacing:.005em}
+.about-page .subhero h1 .ln{display:block}
+.about-page .subhero h1 .c-y{color:var(--doodle-yellow)}
+
+/* ---- TÖRTÉNET ---- */
+.about-page .story{position:relative;padding:40px 0 96px}
+.about-page .srow{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,72px);align-items:center;margin:0 0 clamp(64px,10vw,132px)}
+.about-page .srow:last-child{margin-bottom:8px}
+.about-page .srow.rev .stxt{order:2}
+.about-page .srow.rev .sfig{order:1}
+.about-page .stxt p{color:color-mix(in srgb,var(--fg) 55%,var(--fg-muted));font-size:1.14rem;line-height:1.72;margin:0 0 1.2em}
+.about-page .stxt p:last-child{margin-bottom:0}
+.about-page .stxt p.intro{font-size:1.32rem;color:var(--fg);line-height:1.55}
+.about-page .sfig-img{position:relative;border-radius:var(--r-card);overflow:hidden;box-shadow:var(--shadow);background:var(--panel);aspect-ratio:4/3}
+.about-page .sfig-img img{width:100%;height:100%;object-fit:cover;display:block}
+.about-page .sfig-img.noimg{background:linear-gradient(140deg,var(--panel),var(--card-hover))}
+.about-page .sfig-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,color-mix(in srgb,var(--bg) 75%,transparent));pointer-events:none;z-index:1}
+.about-page .ycap{position:absolute;left:18px;bottom:14px;z-index:2;display:flex;align-items:baseline;gap:.55em}
+.about-page .ycap .yr{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--fg);font-size:clamp(2rem,4vw,2.9rem);line-height:.85}
+.about-page .ycap .lbl{font-weight:700;color:var(--accent-a);font-size:.9rem}
+
+/* ---- SZERVEZŐ EGYESÜLETEK ---- */
+.about-page .org-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center}
+.about-page .org{padding:6px 18px;display:flex;align-items:center;justify-content:center}
+.about-page .org img{max-height:104px;max-width:230px;width:auto;object-fit:contain}
+.about-page .org-nev{font-weight:700;color:var(--lap-fg);font-size:1.1rem}
+
+/* ---- KAPCSOLÓDÓK: Borkert (narancs kártya) + webshop-link ---- */
+.about-page .relrow{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;align-items:stretch}
+.about-page .relcard{border-radius:var(--r-card);padding:var(--sp-6);display:flex;align-items:center;justify-content:center;min-width:230px;
+  text-decoration:none;cursor:pointer;transition:transform var(--dur-1),box-shadow var(--dur-1),border-color var(--dur-1)}
+.about-page .relcard img{max-height:136px;max-width:210px;width:auto;object-fit:contain}
+.about-page .relnev{font-weight:800;font-size:1.3rem}
+.about-page .relcard.borkert{background:var(--accent-grad);color:var(--accent-contrast);box-shadow:0 16px 40px -20px color-mix(in srgb,var(--accent-b) 60%,transparent)}
+.about-page .relcard.borkert:hover{transform:translateY(-4px);box-shadow:0 22px 50px -18px color-mix(in srgb,var(--accent-b) 78%,transparent)}
+.about-page .relcard.borkert:focus-visible{outline:3px solid var(--fg);outline-offset:3px}
+.about-page .relcard.vasarhely{background:linear-gradient(160deg,var(--bg-raise) 0%,var(--panel) 100%);border:var(--border-w) solid var(--line-strong);color:var(--fg);
+  box-shadow:0 16px 40px -24px rgba(0,0,0,.65)}
+.about-page .relcard.vasarhely:hover{transform:translateY(-4px);border-color:var(--accent-a)}
+.about-page .relcard.vasarhely:focus-visible{outline:3px solid var(--accent-a);outline-offset:3px}
+
+/* ---- BORKERT-ABLAK — JS nélkül a :target, Alpine-nal a .nyitva nyitja ---- */
+.about-page .modal{display:none;position:fixed;inset:0;z-index:var(--z-modal);align-items:center;justify-content:center;padding:var(--gutter)}
+.about-page .modal:target,.about-page .modal.nyitva{display:flex}
+.about-page .modal-scrim{position:absolute;inset:0;background:color-mix(in srgb,var(--bg) 70%,#000 30%);opacity:.85;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.about-page .modal-card{position:relative;z-index:1;width:100%;max-width:640px;max-height:88vh;overflow:auto;background:var(--lap-card);color:var(--lap-fg);
+  border-radius:var(--r-lap);box-shadow:0 40px 100px -30px rgba(0,0,0,.7);animation:rolunk-ablak .28s ease}
+@keyframes rolunk-ablak{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.about-page .modal-img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.about-page .modal-x{position:absolute;top:14px;right:14px;z-index:3;width:44px;height:44px;border-radius:50%;text-decoration:none;
+  background:color-mix(in srgb,var(--bg) 60%,transparent);color:var(--fg);font-size:1.6rem;line-height:1;display:flex;align-items:center;justify-content:center;transition:background var(--dur-1)}
+.about-page .modal-x:hover{background:var(--accent-b);color:var(--accent-contrast)}
+.about-page .modal-body{padding:30px 34px 36px}
+.about-page .modal-body h2{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--lap-fg);font-size:clamp(1.8rem,4vw,2.4rem);margin:0 0 .5em;line-height:1.05}
+.about-page .modal-body p{color:var(--lap-muted);font-size:1.02rem;line-height:1.68;margin:0 0 1em}
+.about-page .modal-body p:last-child{margin-bottom:0}
+
+/* ---- reszponzív ---- */
+@media (max-width:780px){
+  .about-page .srow{grid-template-columns:1fr;gap:20px}
+  .about-page .srow .sfig,.about-page .srow.rev .sfig{order:1}
+  .about-page .srow .stxt,.about-page .srow.rev .stxt{order:2}
+}
+@media (max-width:640px){
+  .about-page .subhero{padding:56px 0 24px}
+  .about-page .story{padding:30px 0 64px}
+  .about-page .org img{max-height:80px}
+  .about-page .modal-body{padding:24px 22px 28px}
+}

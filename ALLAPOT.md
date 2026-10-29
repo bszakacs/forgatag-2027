@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-10-28 (PROMPT-08, tartalmi gyűjtemények)
+**Utolsó frissítés:** 2026-10-29 (PROMPT-09, publikus váz)
 
 ---
 
@@ -93,6 +93,27 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   - **5. adósság törlesztve** (lent). Kategóriagazda-fiókkal böngészőből végigpróbálva: az új lapok (közvetlen címmel is)
     403, a menüben nem látszanak. 375 px-en minden új lap használható. 122 teszt zöld.
 
+- **Publikus váz** (`PROMPT-09`, 2026-10-29) — **kész helyben, mérve; élesre feltolva, a telepítés a felhasználóra vár** (MOST folyik, 4.).
+  **A kérdésre a válasz: igen — a Blade + htmx + Alpine + az áthozott CSS együtt működik.** Részletek: `CLAUDE.md` 8. pont „Publikus váz”.
+  - **Keret külön fájlokban:** `layouts/app` · `partials/header` · `partials/nav` · `partials/footer`. A menü az adatbázisból, nyelvenként
+    rejtve (a „Hírek” pont románul rejtett — a román fejlécből valóban eltűnik). HU a gyökérben, RO a `/ro/` alatt; nyelvváltó a téma kapcsolójával.
+  - **Lapok:** Rólunk (`/rolunk`), hírlista (`/hirek`), hír (`/hirek/<slug>`), saját aloldal közös sablonnal, Hamarosan (`/hamarosan`, és a gyökér).
+  - **A négy külön ellenőrzés:** (1) **lapozás JS nélkül** rendes linkekkel, a lapszám a címsorban (`/hirek?oldal=2`), a lapcímben is
+    („Hírek – 2. oldal”); htmx-szel csak a lista cserélődik, a lap nem töltődik újra, a „vissza” gomb működik (böngészőben mérve, 18 hírrel).
+    (2) **Filament-CSS nincs a publikus lapon** — a forrásban ellenőrizve, és teszt nézi lapról lapra. (3) **Tingler 400 + `font-synthesis:none`**:
+    minden címbetűs szabály a téma vastagságát kapja (a TemaTest az új CSS-fájlokat is végignézi). (4) **A Rólunk MINDEN szövege
+    szerkeszthető**: 43 kulcs (12 új — köztük a 2026-ban beégetett logónevek és a webshop címe), a lap csak az adatbázisból olvas; teszt
+    cseréli ki az összes szöveget, és ellenőrzi, hogy beégetett szó nem maradt.
+  - **Az admin „Szerkeszthető szövegek” része emberi feliratot mutat** (pl. „Történet — 2. bekezdés”) a kulcsnév helyett, a lapon
+    elfoglalt sorrendben; kép-kulcsnál képválasztót, linknél egy mezőt.
+  - **Hamarosan mód:** Beállítások → új „Publikus oldal” blokk (kapcsoló + a lap címe/szövege HU/RO + a lábléc szövege). Bekapcsolva a
+    látogató minden publikus címen a Hamarosan lapot kapja; a `/bekuldes` és az `/admin` változatlan (mérve); belépett admin a valódi lapot
+    látja egy sárga sávval. **Alapból KI.**
+  - 375 px-en: Rólunk, Borkert-ablak, mobil menü, hírlista, hír, Hamarosan — vízszintes görgetés nincs. Közben javítva: a nyitott mobil
+    menü alatt eltűnt a fejléc (`overflow-x` csapda, `CLAUDE.md`). **137 teszt zöld.**
+  - Döntések (konzervatív): a publikus oldal **sötét-only** marad (mint 2026-ban); a **GTM még nincs** bekötve (a próbaoldal ne mérjen a
+    valódi fiókba); a Rólunk görgetésre rajzolódó „fonala” és a felúszás kimaradt (dekor — a kezdőlap körében jön).
+
 ## Ami MOST folyik
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
@@ -106,16 +127,21 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    (a megszűnt 5 mind törölhető volt, egyik sem maradt bent), 13 lap, 2 menü / 21 menüpont, 4 teszthír; a menük az
    adminban látszanak (a tulajdonos saját böngészőjéből). **Hátra van (a felhasználóval):** az Aloldalak lapon a Rólunk
    képei, a Hírek TESZT jelvénye, a nyitólap piros „Tesztadat” sávja, egy menüpont áthúzása, 375 px.
+4. **A publikus váz élő próbája** (PROMPT-09) — **telepítés: cPanel → Update from Remote → Deploy HEAD Commit.** A naplóban
+   két új sor: `LAPSZÖVEG: rolunk: … új kulcs …` és `LAPSZÖVEG: hirek: …`. Utána megnézni: `proba.forgatag.ro/rolunk`, `/ro/rolunk`,
+   `/hirek`, egy hír, `/hamarosan`, 375 px-en is; a Beállításokban a „Publikus oldal” blokk.
 
 ## Ami ezután jön, ebben a sorrendben
 
-1. **A publikus váz** — keretfájl, fejléc, lábléc, egy lap, a valódi token-forrásra kötve.
+1. ~~**A publikus váz**~~ — **kész (2026-10-29)**, lásd fent. Ami tőle örökölve a következő lapokra: a `LapSablon` (minden szöveg kulcs),
+   a `layouts/app` keret, a `publikus.css` közös része. ⚠ A menü ma olyan lapokra is visz, amelyek még nem épültek meg (404).
    ⚠ A hír- és blokkszöveg HTML: a publikus sablon **szűrve** (engedélyezett címkék listájával) jelenítse meg, ne nyersen.
    *Itt dől el, hogy a Blade + htmx + az áthozott CSS együtt működik-e. Ma bizonyítatlan.*
    **A tartalom már kész hozzá:** menü (`Menu`/`MenuItem::target()`, `show_hu`/`show_ro` szerint szűrve), lapok
    (`Page` + `PageText` kulcsok + `PageBlock`), hírek (`NewsItem`, csak `published`). ⚠ A publikus lapon a
    TESZT-hír is látszik (szándékosan, hogy tesztelni lehessen) — élesítés előtt a Tesztadatok törlése kötelező.
-2. **A beégetett szövegek pótlása a lapokon** (9. adósság) — a publikus sablonok megépítésével együtt.
+2. **A beégetett szövegek pótlása a lapokon** (9. adósság) — a publikus sablonok megépítésével együtt. **A Rólunk és a hírlista kész;**
+   a többi lap a saját sablonjával (minta: `LapSablon::SABLONOK`).
 3. **A programkereső** — a legnagyobb és legösszetettebb darab.
 4. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
 5. **A fordítási lánc.**
@@ -160,7 +186,7 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
 9. **A 2026-os aloldalak szövegének nagy része BEÉGETETT magyar** (tulajdonosi rögzítés, 2026-10-28 — MOST NEM javítjuk).
    A 2026-os Astro-sablonokban a szöveg zöme nem szerkeszthető kulcson volt; a fesztiválrend lapján például a szövegnek
    csak **18%-a** szerkeszthető. Átjött, ami szerkeszthető volt (85 kulcs, az aloldal lapján „Szerkeszthető szövegek”);
-   **a többi a publikus sablonok körében pótlandó** (forrás: `..\forgatag-os\frontend\src\rolunk\`, `fesztivalrend\`,
+   **a többi a publikus sablonok körében pótlandó** *(2026-10-29: a Rólunk és a hírlista TÖRLESZTVE — `App\Support\LapSablon`)* (forrás: `..\forgatag-os\frontend\src\rolunk\`, `fesztivalrend\`,
    `videoarchivum\`, `home-v7\` stb. — csak olvasásra), úgy, hogy minden szöveg kulcsra kerüljön, HU/RO.
 
 ## Amit a mentés leltára felszínre hozott
@@ -178,6 +204,13 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
 - **A menü két pontja („Programok”, „Médiatár”) 2026-ban cím nélküli „link” volt** — most „csak almenü-fejléc” típus.
 
 ## Nyitott kérdések — ne döntsd el magad
+
+- **ÚJ — a Rólunk román zárómondata hibás adat** (a 2026-os behozatalból): a „záró bekezdés” román szövege így végződik:
+  „…ne unește.**összeköt minket.**” — magyar szó maradt benne (a heurisztika: a román szövegben nincs ő/ű, de itt ö van). Javítani az
+  adminban kell (Aloldalak → Rólunk → Szerkeszthető szövegek → „Történet — záró bekezdés”). A külön „záró kiemelés” kulcs megszűnt:
+  2026-ban sem látszott (a bekezdés felülírta), és a román mezőjében az egész bekezdés állt.
+- **ÚJ — a logón még „13.” áll** (a 2026-os logó). A 2027-es logót az Arculatban kell feltölteni (logó + fejléc-logó).
+- **ÚJ — világos mód a publikus oldalon?** Most sötét-only (mint 2026-ban). Ha kell váltó, szólj.
 
 - A 2027-es fesztiválnapok pontos dátumai és az előkészítő napok száma.
 - A valódi kategóriagazdák és jóváhagyók személye.

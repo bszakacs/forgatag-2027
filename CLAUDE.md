@@ -505,6 +505,38 @@ Jog: `UserRole::canManageContent` (szuperadmin, koordinátor) → `TartalomPolic
 - Tesztek: `tests/Feature/TartalomTest.php` (10: slug-őr, menüfa + nyilak + mélység, nyelvenkénti rejtés, rendszerlap, tesztadat,
   behozatal számra, kategóriagazda 403 közvetlen címmel).
 
+**Publikus váz — kész helyben (2026-10-29, PROMPT-09).** A Blade + htmx + Alpine + áthozott CSS együtt működik (mérve).
+- **Szerkezet:** `layouts/app.blade.php` (a keret: head, meta, CSS, szkriptek) · `partials/header` · `partials/nav` (a menü két
+  rajzolata) · `partials/footer` · `partials/social` · `partials/blokkok` · `hirek/index|_kartya|show` · `oldal/show` (saját lap) ·
+  `oldal/<slug>` (rendszerlap saját sablonja; ma: `rolunk`) · `hamarosan`. Új lap a keretet `@extends('layouts.app')`-szel kapja.
+- **Útvonalak (`routes/web.php` vége):** magyar a gyökérben, román `/ro/` alatt, UGYANAZOK (nevek `hu.*`/`ro.*`); `{lap}` a slug
+  alapján (foglalt szavak kizárva). Rendszerlap saját sablon nélkül 404 (nem félkész lap). A gyökér a kezdőlapig a Hamarosan lap.
+- **Nyelv:** `App\Support\Nyelv` (`ut()` a /ro előtag, `valaszt()`/`valasztHtml()` = románul üres → magyar). Felületi feliratok
+  (gombok, lapozó): `lang/hu|ro/publikus.php` (kulcsaik egyeznek, teszt). TARTALOM nem kerülhet oda.
+- **Szerkeszthető szövegek (9. adósság, a megépült lapokon törlesztve): `App\Support\LapSablon`** — laponként a kulcsok,
+  emberi felirat, típus (sor/szoveg/kep/link), a 2026-os alapszöveg, cím-`csoport` (románul együtt esik vissza). A sablon CSAK
+  `App\Support\LapSzovegek`-en át olvas; ismeretlen/hiányzó kulcs → HIBA (nincs beépített tartalék). `forgatag:lap-szovegek`
+  (telepítés része): hiányzó kulcs létrehozása, üres mező kitöltése az alapszöveggel, kezdőkép (`seed/lapok/`) a médiatárba,
+  a leírásból kikerült kulcs törlése. Kitöltött értékhez nem nyúl. Az admin (Aloldalak) a feliratot mutatja, a típus szerinti mezőt.
+  **Új rendszerlap sablonja = új elem a `LapSablon::SABLONOK`-ban + `oldal/<slug>.blade.php`.**
+- **Menü:** `App\Support\PublikusMenu::fa('main'|'archive')` — nyelvenként rejtve, vázlat-lapra nem visz, belső cím /ro-t kap.
+- **HTML a szerkesztőből CSAK `App\Support\HtmlSzuro::tisztit`-on át** (engedélyezett címkék; Symfony HtmlSanitizer, a vendorban).
+- **htmx-lapozás (hírek):** `?oldal=N` a címsorban; a lapozó `hx-boost` + `hx-select="#hirlista"`; a szerver MINDIG a teljes lapot
+  adja (JS nélkül, a „vissza” gombnál is ugyanaz jön). `?oldal=1`/hibás → 301 a tiszta címre; túl nagy → 404.
+- **JS-fájlok:** `public/js/vendor/htmx-2.0.4.min.js`, `alpine-3.14.9.min.js` (a `node_modules`-ból másolva, a `package.json`
+  rögzített verzióival; a szerveren nincs Node). Az Alpine állapota (`menu`) a body-n. Menü és Borkert-ablak JS nélkül is nyílik (`:target`).
+- **CSS:** `public/css/publikus.css` (közös: alap, fejléc, menü, lábléc, cikk, hírkártya, lapozó, blokkok, Hamarosan; a nem-téma
+  tokenek és a rétegsorrend-skála `--z-*` itt, EGY helyen) + laponként saját fájl (`rolunk.css`, `@push('styles')`). A 2026-os
+  beégetett színek téma-tokenre cserélve (`--lap-*` a világos sávokra). ⚠ `body{overflow-x:clip}` — NE `hidden`: a nyitott menü
+  gyökér-zárolásakor a body görgető dobozzá válna, és a ragadós fejléc elszállna (mérve).
+- **Hamarosan mód:** Beállítások → „Publikus oldal” blokk (`public.*`: kapcsoló, cím/szöveg HU/RO, lábléc-szöveg HU/RO) →
+  `App\Http\Middleware\HamarosanMod` CSAK a publikus csoporton; belépett admin a valódi lapot látja, sárga sávval. `/hamarosan` mindig elérhető.
+- **Világos mód a publikus oldalon: NINCS** (a 2026-os sötét-only marad; a ◐ csak a beküldő űrlapon) — konzervatív döntés, a tulajdonos kérheti.
+- **Még nincs a publikus oldalon:** GTM (a téma `analytics.gtmId`-je — a próbaoldal ne mérjen a valódi fiókba; élesítéskor kell), a
+  fejléc keresője (`header.showSearch` — a programkeresővel jön), saját 404-lap.
+- Tesztek: `tests/Feature/PublikusVazTest.php` (14: kulcsok/beégetett szöveg, hiányzó kulcs = hiba, szinkron, admin-felirat, román
+  tartalék + cím-csoport, menü nyelvenként, lapozás JS nélkül + 301/404, közzétett hír, HTML-szűrés, nincs Filament-CSS, Hamarosan).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a

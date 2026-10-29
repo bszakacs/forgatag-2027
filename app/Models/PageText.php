@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Egy aloldal egy szerkeszthető szövege (vagy képe) a sablon kulcsán — a 2026-os `page.home_sections`
- * megfelelője. Üres nyelv = a sablon beépített szövege marad (a 2026-os működés).
+ * megfelelője. A megépült publikus sablonok kulcsait App\Support\LapSablon írja le: ott a sablon CSAK innen
+ * olvas (beépített szöveg nincs; románul az üres mező helyén a magyar látszik).
  */
 class PageText extends Model
 {
