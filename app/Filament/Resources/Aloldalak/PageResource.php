@@ -6,6 +6,7 @@ use App\Enums\ContentStatus;
 use App\Enums\Gyujtemeny;
 use App\Enums\NavigationGroup;
 use App\Filament\Forms\MediaPicker;
+use App\Filament\Forms\Szovegszerkeszto;
 use App\Filament\Resources\Aloldalak\Pages\CreatePage;
 use App\Filament\Resources\Aloldalak\Pages\EditPage;
 use App\Filament\Resources\Aloldalak\Pages\ListPages;
@@ -13,7 +14,6 @@ use App\Filament\Resources\Resource;
 use App\Models\Page;
 use App\Models\PageBlock;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -128,8 +128,8 @@ class PageResource extends Resource
                             Grid::make(['default' => 1, 'md' => 2])
                                 ->visible(fn (Get $get) => in_array($get('type'), ['richtext', 'cta'], true))
                                 ->schema([
-                                    MarkdownEditor::make('body_hu')->label('Szöveg (magyar)'),
-                                    MarkdownEditor::make('body_ro')->label('Szöveg (román)'),
+                                    Szovegszerkeszto::make('body_hu')->label('Szöveg (magyar)'),
+                                    Szovegszerkeszto::make('body_ro')->label('Szöveg (román)'),
                                 ]),
                             MediaPicker::make('media_id')->label('Kép')
                                 ->relationship('media', 'id')

@@ -251,6 +251,34 @@ class TartalomTest extends TestCase
         $this->assertSame(0, NewsItem::count());
     }
 
+    // ---- A szövegszerkesztő (WYSIWYG, HTML-ben tárol) ----
+
+    public function test_markdown_atalakitas_html_re_biztonsagosan_es_ismetelhetoen(): void
+    {
+        $html = \App\Support\TartalomHtml::markdownbol("Első **bekezdés**,\nfolytatás.\n\n- egy\n- kettő\n\n[rossz](javascript:alert(1)) <script>x()</script>");
+        $this->assertStringContainsString('<p>Első <strong>bekezdés</strong>,', $html);
+        $this->assertStringContainsString('<ul>', $html);
+        $this->assertStringNotContainsString('<script>', $html);
+        $this->assertStringNotContainsString('javascript:', $html);
+        // Ami már HTML, ahhoz nem nyúl (a migráció és a behozatal ismételhető).
+        $this->assertSame($html, \App\Support\TartalomHtml::markdownbol($html));
+        $this->assertNull(\App\Support\TartalomHtml::markdownbol('  '));
+    }
+
+    public function test_hir_szerkeszto_wysiwyg_html_gombbal(): void
+    {
+        $hir = NewsItem::create(['title_hu' => 'Hír', 'status' => 'draft', 'published_on' => '2027-01-10', 'body_hu' => '<p>Régi szöveg</p>']);
+        $this->actingAs($this->admin);
+
+        Livewire::test(\App\Filament\Resources\NewsItems\Pages\EditNewsItem::class, ['record' => $hir->getRouteKey()])
+            ->assertFormFieldExists('body_hu')
+            ->assertSeeHtml('rich-editor')
+            ->fillForm(['body_hu' => '<p>Új <strong>szöveg</strong></p>'])
+            ->call('save')
+            ->assertHasNoFormErrors();
+        $this->assertStringContainsString('<strong>szöveg</strong>', $hir->fresh()->body_hu);
+    }
+
     // ---- Jog: a kategóriagazda kívül marad (4. adósság: közvetlen címmel is) ----
 
     public function test_kategoriagazda_nem_fer_a_tartalomhoz_kozvetlen_cimmel_sem(): void

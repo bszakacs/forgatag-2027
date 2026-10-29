@@ -498,6 +498,10 @@ Jog: `UserRole::canManageContent` (szuperadmin, koordinátor) → `TartalomPolic
   csak üres táblába, a teszthírek csak EGYSZER (jelölés: `storage/app/import-2026/tartalom.json` — fájlban, hogy az adatbázis-ürítés
   után ne jöjjenek vissza); hiányzó képnél semmit nem ír, hibával áll meg.
 - **5. adósság őre:** `SubmissionForm::unknownSlugs()` → piros figyelmeztetés a nyitólapon; a seed-lista: 2026-os végleges 23.
+- **Szövegszerkesztő EGY helyen: `App\Filament\Forms\Szovegszerkeszto`** (2026-10-29) — Filament RichEditor (TipTap,
+  WYSIWYG), a tárolt érték HTML; saját „HTML” eszköz (`htmlForras`: ablak a forrással → `setContent` vissza a szerkesztőbe);
+  szövegbe ágyazott feltöltés KI (a kép a médiatárban él). Markdown → HTML: `App\Support\TartalomHtml` (a migráció és a
+  2026-os behozatal is ezt hívja; escape-el, ismételhető). ⚠ Publikus megjelenítéskor a HTML-t szűrni kell.
 - Tesztek: `tests/Feature/TartalomTest.php` (10: slug-őr, menüfa + nyilak + mélység, nyelvenkénti rejtés, rendszerlap, tesztadat,
   behozatal számra, kategóriagazda 403 közvetlen címmel).
 

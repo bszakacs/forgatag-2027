@@ -6,6 +6,7 @@ use App\Enums\ContentStatus;
 use App\Enums\Gyujtemeny;
 use App\Enums\NavigationGroup;
 use App\Filament\Forms\MediaPicker;
+use App\Filament\Forms\Szovegszerkeszto;
 use App\Filament\Resources\NewsItems\Pages\CreateNewsItem;
 use App\Filament\Resources\NewsItems\Pages\EditNewsItem;
 use App\Filament\Resources\NewsItems\Pages\ListNewsItems;
@@ -13,7 +14,6 @@ use App\Filament\Resources\Resource;
 use App\Models\NewsItem;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -69,12 +69,12 @@ class NewsItemResource extends Resource
             Section::make('Magyar')->columnSpanFull()->schema([
                 TextInput::make('title_hu')->label('Cím')->required()->maxLength(255),
                 Textarea::make('excerpt_hu')->label('Kivonat')->rows(3)->helperText('A listában és a megosztáskor látszik.'),
-                MarkdownEditor::make('body_hu')->label('Szöveg'),
+                Szovegszerkeszto::make('body_hu')->label('Szöveg'),
             ]),
             Section::make('Román')->columnSpanFull()->description('Kézzel fordítva. Ha üres, a román oldalon a magyar szöveg látszik.')->schema([
                 TextInput::make('title_ro')->label('Cím')->maxLength(255),
                 Textarea::make('excerpt_ro')->label('Kivonat')->rows(3),
-                MarkdownEditor::make('body_ro')->label('Szöveg'),
+                Szovegszerkeszto::make('body_ro')->label('Szöveg'),
             ]),
             Section::make()->columnSpanFull()->schema([
                 TextInput::make('slug')->label('Cím a linkben (slug)')->disabled()->dehydrated(false)

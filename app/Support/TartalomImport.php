@@ -175,7 +175,7 @@ class TartalomImport
             }
             $hir = new NewsItem([
                 'slug' => $h['slug'], 'title_hu' => $h['title_hu'], 'title_ro' => $h['title_ro'],
-                'excerpt_hu' => $h['excerpt_hu'], 'excerpt_ro' => $h['excerpt_ro'], 'body_hu' => $h['body_hu'], 'body_ro' => $h['body_ro'],
+                'excerpt_hu' => $h['excerpt_hu'], 'excerpt_ro' => $h['excerpt_ro'], 'body_hu' => TartalomHtml::markdownbol($h['body_hu']), 'body_ro' => TartalomHtml::markdownbol($h['body_ro']), // 2026: Markdown → HTML
                 'cover_media_id' => $this->kep($h['cover']), 'status' => $h['status'], 'published_on' => $h['date'],
             ]);
             $hir->is_test = true;
