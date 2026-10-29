@@ -93,7 +93,10 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   - **5. adósság törlesztve** (lent). Kategóriagazda-fiókkal böngészőből végigpróbálva: az új lapok (közvetlen címmel is)
     403, a menüben nem látszanak. 375 px-en minden új lap használható. 122 teszt zöld.
 
-- **Publikus váz** (`PROMPT-09`, 2026-10-29) — **kész helyben, mérve; élesre feltolva, a telepítés a felhasználóra vár** (MOST folyik, 4.).
+- **Publikus váz** (`PROMPT-09`, 2026-10-29) — **kész, élesben telepítve és megnézve (2026-10-29).**
+  **Élesben mérve (proba.forgatag.ro):** minden publikus cím 200, `?oldal=1` → 301, túl nagy lapszám és meg nem épült rendszerlap → 404;
+  `/admin/login` és `/bekuldes/belepes` 200; Filament-CSS a lapon 0; a téma-CSS, a htmx és az Alpine betölt, konzolhiba nincs;
+  a képek (Glide/webp) 200; a román fejlécből a „Hírek” eltűnik; 375 px-en Rólunk, mobil menü, román hírlista, Hamarosan rendben.
   **A kérdésre a válasz: igen — a Blade + htmx + Alpine + az áthozott CSS együtt működik.** Részletek: `CLAUDE.md` 8. pont „Publikus váz”.
   - **Keret külön fájlokban:** `layouts/app` · `partials/header` · `partials/nav` · `partials/footer`. A menü az adatbázisból, nyelvenként
     rejtve (a „Hírek” pont románul rejtett — a román fejlécből valóban eltűnik). HU a gyökérben, RO a `/ro/` alatt; nyelvváltó a téma kapcsolójával.
@@ -127,9 +130,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    (a megszűnt 5 mind törölhető volt, egyik sem maradt bent), 13 lap, 2 menü / 21 menüpont, 4 teszthír; a menük az
    adminban látszanak (a tulajdonos saját böngészőjéből). **Hátra van (a felhasználóval):** az Aloldalak lapon a Rólunk
    képei, a Hírek TESZT jelvénye, a nyitólap piros „Tesztadat” sávja, egy menüpont áthúzása, 375 px.
-4. **A publikus váz élő próbája** (PROMPT-09) — **telepítés: cPanel → Update from Remote → Deploy HEAD Commit.** A naplóban
-   két új sor: `LAPSZÖVEG: rolunk: … új kulcs …` és `LAPSZÖVEG: hirek: …`. Utána megnézni: `proba.forgatag.ro/rolunk`, `/ro/rolunk`,
-   `/hirek`, egy hír, `/hamarosan`, 375 px-en is; a Beállításokban a „Publikus oldal” blokk.
+4. **A publikus váz** — élesben kész (2026-10-29). Hátra (a felhasználóval): a Beállításokban a „Publikus oldal” blokk
+   megnézése belépve, és egyszer a Hamarosan kapcsoló ki-be próbája.
 
 ## Ami ezután jön, ebben a sorrendben
 
