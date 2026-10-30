@@ -67,8 +67,9 @@ class ProgramItem extends Model
 
         // A „Programok 2026” képei a tavalyi programra kapott joggal élnek — 2027-es programhoz NEM rendelhetők
         // (tulajdonosi döntés, 2026-10-22). Modell-szinten, hogy semmilyen felületről ne csússzon át.
+        // Kivétel a TESZT-program (is_test): az maga a tavalyi program, a próbaoldalra, élesítés előtt törlendő.
         static::saving(function (self $program): void {
-            if ($program->isDirty('cover_media_id') && $program->cover_media_id !== null
+            if ($program->isDirty('cover_media_id') && $program->cover_media_id !== null && ! $program->is_test
                 && Media::query()->whereKey($program->cover_media_id)->inCollection(Gyujtemeny::Programok2026)->exists()) {
                 throw new RuntimeException('Ez a kép a „Programok 2026” gyűjteményből való: a felhasználási jogot a tavalyi programra adták, 2027-es programhoz nem rendelhető.');
             }
@@ -177,6 +178,12 @@ class ProgramItem extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(ProgramItemTranslation::class);
+    }
+
+    /** Napi kiemelés a programkeresőben (a koordinátor naponként). */
+    public function highlights(): HasMany
+    {
+        return $this->hasMany(ProgramHighlight::class)->orderBy('date');
     }
 
     /** Jóváhagyási napló, időrendben (append-only). */

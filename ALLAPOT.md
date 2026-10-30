@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-10-29 (PROMPT-09, publikus váz)
+**Utolsó frissítés:** 2026-10-30 (PROMPT-11, programkereső — 1. rész; a 2. rész a térkép)
 
 ---
 
@@ -117,6 +117,52 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   - Döntések (konzervatív): a publikus oldal **sötét-only** marad (mint 2026-ban); a **GTM még nincs** bekötve (a próbaoldal ne mérjen a
     valódi fiókba); a Rólunk görgetésre rajzolódó „fonala” és a felúszás kimaradt (dekor — a kezdőlap körében jön).
 
+- **Programkereső — 1. rész** (`PROMPT-11`, 2026-10-30) — **kész HELYBEN, még NINCS élesben** (lásd „MOST folyik”). **A kör KÉT részre
+  vágva** (a felhasználó engedélyével: „inkább két kör, mint egy félkész”): ez a rész a kereső + napi nézet + program lapja; a **2. rész a
+  térkép, a helyszín- és a kategórialapok** (lent, „Ami ezután jön”).
+  - **`/programok`** — szűrés nap · „Most zajlik” · **napszak** · helyszín · kategória · szabadszavas keresés szerint, **valódi
+    adatbázis-lekérdezéssel**. **A szűrés a címsorban** (`/programok?nap=2027-08-27&napszak=este&kategoria=koncertforgatag&q=jazz`;
+    több érték = ismételt kulcs). Egy szűrésnek egy címe van: a JS nélküli űrlap üres mezői, az ismeretlen érték és a rossz nap a tiszta
+    címre ugrik (302). **htmx-szel csak a találati rész cserélődik**; a kattintás azonnal kér, a gomb kiemelése még a válasz előtt
+    történik; a kereső ~280 ms-ot vár. A „vissza” gomb a szűrt állapotot hozza vissza. **JavaScript nélkül is működik**.
+  - **A 2026-os viselkedés visszaállítva (CLAUDE.md 2/e, 2026-10-30 — a tulajdonos visszakérte):**
+    **felugró ablak** a listából (a címsorban `?program=<slug>`, megosztható; Esc/háttér/× bezárja, a „vissza” gomb is; a program
+    lapja megmaradt a keresőknek és JS nélkül) · **„Napszak” szűrő** (délelőtt/délután/este; az „egész nap nyitva” mindig átmegy; a
+    „Most zajlik”-kal kizárják egymást) · **napi kiemelt sáv** csúszkával (új adatmező: `program_highlights`; az admin program-lapján
+    **„Napi kiemelés”** gomb — napok + sorrend, csak jóváhagyó). Továbbá, amit közben a 2026-os kódból összevetve találtam:
+    **kezdőállapot** (fesztivál előtt a nyitónap, alatta „Most zajlik”, utána az utolsó nap) · a kiválasztott nap **újbóli megnyomása
+    kikapcsolja** (nincs „Minden nap” gomb) · a **keresés minden napra vált**, kiürítve vissza a kezdőnapra · **minden találat egy lapon**,
+    nap → napszak csoportokkal (2026-ban nem volt lapozás — a PROMPT-11 lapozását ezért kivettem) · az **aktív szűrők sávja üresen is ott
+    van** · **üres találatnál javaslat** („Ha elengeded a napszakot, 3 program marad…”) · **korhatár-jelzés** a sorban · a „Változott/
+    Elmarad” kék jelzés · **kép nélküli sorban nincs üres csempe** · a keresés a **címben, szervezőben, fellépőben, helyszín- és
+    kategórianévben** keres, a leírásban nem · a szűrőpanel 2026-ban szerkeszthető feliratai (Szűrés, Napszak, Helyszín, Kiemelt programok,
+    a felugró ablak feliratai…) **szerkeszthetők** (Aloldalak → Programkereső).
+  - **Még NINCS meg a 2026-os keresőből — mind egy KÉSŐBBI körben épül (2/e: nem maradhat el szó nélkül):**
+    · **térkép-kör (2. rész):** a térkép, a felugró ablak „Mutasd a térképen” gombja, a helyszínlista térképszámai, a mobil „Térkép” gomb;
+    · **kedvencek-kör:** a szív a sorokon/kártyákon és a felugró ablak „Mentés” gombja;
+    · **naptár-kör:** a felugró ablak „Naptárba” gombja;
+    · **mozgás-/dekor-kör:** a görgetéskor beúszó sáv (oldalnév + „Szűrés” + találatszám), a ragadó panelfej összehúzódása, a mobil
+      eszközsáv beúszása, a háttér-atmoszféra és a firkák, a kártyák felúszása;
+    · **ellenőrizendő a 2. részben:** a napi nézet (`/nap/…`) és a program lapja kinézete a 2026-os `DailyProgramView`/`ProgramDetailView`
+      mellé téve — ezeket ebben a körben nem vetettem össze sorról sorra.
+  - **Napi nézet** `/nap/<dátum>`, **„Mi van ma?”** `/ma` (ha ma nincs fesztivál: a **nyitónap**), **program lapja** `/program/<slug>`.
+  - **A fesztiválnap hajnali 3-ig tart** (a záró óra a Beállításokból): a 23:00–00:30 a kezdés napján, a nap végén; a 00:30-as kezdés
+    „(éjjel)” jelzéssel a nap végén. A „Most zajlik” is így számol (szombat 01:00 = még péntek).
+  - **A logó-csapda:** a találatszám sora a szűrők FÖLÖTT van — a logó erre a nem kattintható szövegre lóg; a ragadó szűrőpanel a belógás
+    alatt áll meg. Mobilon a szűrő alulról felcsúszó panel, alul a „Szűrés” gomb a szűrők számával.
+  - **A térkép helye előkészítve:** a csere célterülete (`#pk-talalatok`) és a „vissza” gomb újratöltése (`#pk-tartalom`) is a térkép
+    helyén KÍVÜL van — a térkép eseménykezelőit egyik sem bántja. (Kipróbálni a 2. részben lehet, amikor a térkép megvan.)
+  - **Románul** végigpróbálva: approved → reviewed → gépi fordítás; az elavult helyett és fordítás nélkül a magyar; a program lapján
+    apró jelzés, ha gépi fordítás látszik. A nyelvváltó megtartja a szűrést.
+  - **Tesztadat:** a 2026-os programok TESZTADATKÉNT (`is_test`, dátum +364 nap, hogy a hét napja egyezzen; személyes adat nélkül;
+    borító a „Programok 2026”-ból) — `forgatag:program-teszt-import`, a telepítés része, csak egyszer. Beállítások → Tesztadatok törli
+    (a megmaradt 2026-os képek a médiatárban maradnak). **A helyszín nélküli 61 program NEM jön, és a borítójuk a médiatárból is
+    törlődik** (tulajdonosi döntés, 2026-10-30, „a képeikkel együtt”) → **180 tesztprogram**. Helyben már törölve (61 program + 61 kép a
+    fájlokkal); a szerveren a behozatal maga hagyja ki őket és törli a képeiket (a médiatár-behozatal lezárt, ezért ez nem hiba).
+  - 375 px-en: kereső, felcsúszó panel, lista, felugró ablak, napi nézet, program lapja — vízszintes görgetés nincs. **156 teszt zöld**.
+  - Közben javítva: a lapok `@section('title', …)` értéke kétszer escape-elődött (egy „&” a címben `&amp;amp;` lett, a megosztási kép
+    címe eltört) — a keret most visszafejti.
+
 ## Ami MOST folyik
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
@@ -132,6 +178,11 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    képei, a Hírek TESZT jelvénye, a nyitólap piros „Tesztadat” sávja, egy menüpont áthúzása, 375 px.
 4. **A publikus váz** — élesben kész (2026-10-29). Hátra (a felhasználóval): a Beállításokban a „Publikus oldal” blokk
    megnézése belépve, és egyszer a Hamarosan kapcsoló ki-be próbája.
+5. **A programkereső (1. rész) élesítése** — helyben kész, **még nincs feltolva és telepítve.** Telepítés után a naplóban:
+   `LAPSZÖVEG: programok: a rendszerlap létrehozva` és `PROGRAM-TESZT: 180 program, … 61 kihagyva (helyszín nélkül), 61 törölt kép`, és egy új migráció (`program_highlights`).
+   A médiatár ezután 61 képpel kevesebbet mutat (970 a 1031-ből) — szándékos. Élesben megnézendő:
+   `/programok` szűrés kattintással és gépeléssel, egy szűrt cím új ablakban, `/nap/2027-08-27`, egy program lapja, románul, 375 px.
+   ⚠ **A válaszidőt élesben kell mérni:** helyben minden lap (a hírek is) ~6,5 mp — ez a Windows-os Docker mappamegosztása, nem a kód.
 
 ## Ami ezután jön, ebben a sorrendben
 
@@ -144,24 +195,46 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    TESZT-hír is látszik (szándékosan, hogy tesztelni lehessen) — élesítés előtt a Tesztadatok törlése kötelező.
 2. **A beégetett szövegek pótlása a lapokon** (9. adósság) — a publikus sablonok megépítésével együtt. **A Rólunk és a hírlista kész;**
    a többi lap a saját sablonjával (minta: `LapSablon::SABLONOK`).
-3. **A programkereső** — a legnagyobb és legösszetettebb darab.
-4. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
-5. **A fordítási lánc.**
-6. **A maradék publikus lapok.**
-7. **Átkapcsolás** — lásd lentebb.
+3. **A programkereső** — a legnagyobb és legösszetettebb darab. **1. rész kész (2026-10-30, fent).** **Hátra a 2. rész:**
+   **a térkép** (beágyazott SVG, kattintható helyszínek — a `#pk-tartalom`-on KÍVÜL, lásd `CLAUDE.md` „Programkereső”), **a helyszín- és a
+   kategórialapok** (ma a program lapja ezek helyett a szűrt keresőre visz: `/programok?helyszin=…`). Mit kell tudni hozzá:
+   - **A térkép-pozíció a 2027-es adatbázisban még NINCS** (a `venues` tábla `map_*` mezői mind üresek) — a 2026-os mentésből kell
+     áthozni (`venue.map_zone/map_x/map_y/map_no/map_edge/map_bearing`, 41 helyszínnél van). GPS egyiknél sincs (46/46).
+   - **Az 5 helyszín térkép-pozíció NÉLKÜL** (a 2026-os mentésben; zárójelben: a térkép szélén jelölve-e): **Vár, Várkert** (nem) ·
+     **Állatkert** (igen) · **Kultúrpalota, nagyterem** (nem) · **Marosvásárhelyi vikendtelep** (igen) · **Fociakadémia** (igen).
+   - **8 helyszín a 2026-os adatbázisban van, a 2027-es kezdőlistában NINCS** (a tesztprogramok közül emiatt 61 nem jött át — a 2026-ban is helyszín nélküliekkel együtt):
+     `var-csicsergo-1`, `var-csicsergo-2`, `bernady-haz`, `var-pulzus-by-rmdsz-maros`, `studium-hub-eloadoterem`, `fociakademia`,
+     `bolyai-szabadulo-szoba`, `uat-galeria`. Ha a tulajdonos igent mond (Nyitott kérdések), a 2. rész első lépése a pótlásuk.
+   - A fejléc keresője (téma: `header.showSearch`) még nincs bekötve — a 2. részben a `/programok?q=`-ra vihet.
+   - A térkép a szűrésre CÉLZOTT frissítéssel reagáljon (pl. a válaszban egy adat-elem, nem a térkép újrarajzolása); a „szűrj, aztán
+     kattints a térképre” próbát ott kell elvégezni.
+
+   ⚠️ **FONTOS: EGYETLEN TARTALMI LAP SEM VÉGLEGES KINÉZETŰ.** Ami eddig elkészült (Rólunk,
+   hírlista, hír), az **szerkezetileg kész, de dekor nélkül**. Hiányzik: a görgetésre kirajzolódó
+   „fonál" és a mentén szórt firkák, a szakaszok felúszása, a kártyák fényes kiemelése, és a
+   háttér egyik színfoltja. **Ez nem hiba, hanem szándékos halasztás** — lásd a 4. pontot.
+
+4. **A mozgás- és dekor-réteg** — ÖNÁLLÓ LÉPÉS, nem a kezdőlap része.
+   *Indok: ez nem laponkénti munka, hanem egy réteg, amit az Arculat „Mozgás" és „Firkák"
+   beállításai vezérelnek — ahogy 2026-ban is. Ha laponként készülne, elcsúsznának egymástól, és a
+   `/tema` kapcsolói nem hatnának rájuk egységesen.*
+   **Visszamenőleg hozzányúl minden addig elkészült laphoz** (Rólunk, hírlista, hír, programkereső),
+   ezért nem szabad a kezdőlap körébe ágyazni — ott váratlanul nagyra nőne és félkészen állna meg.
+
+5. **A kezdőlap** — a legösszetettebb lap; a dekor-rétegre épül.
+6. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
+7. **A fordítási lánc.**
+8. **A maradék publikus lapok** — fesztiválrend, galéria, videó-archívum, támogatók, kézművesek, csapat.
+9. **Élesbe tétel** — **a legutolsó lépés**, lásd lentebb. Addig nem téma.
 
 **A három hátralévő űrlap** (szabadulószoba `PROMPT-03`, olimpia, önkéntes) **levél a fán**: semmi
 nem épül rájuk, bárhova beilleszthetők — például egy nagyobb darab után rövidebb körként.
 
-## Az átkapcsolás — megváltozott!
+## Az élesbe tétel
 
-**Korán kapcsolunk át, „coming soon" oldallal** (tulajdonosi döntés, 2026-10-21). Az oldal már akkor
-a valódi címén él, amikor még alig van rajta valami, és a lapok egyenként jelennek meg rajta.
-
-⚠️ **Ebből következik, hogy a 2026-os archiválás is korán jön**, nem a legvégén, ahogy eredetileg
-terveztük. Az archívum a `forgatag.ro/forgatag2026` mappába kerül; ehhez egy újraépítés kell
-`/forgatag2026` alapúttal (a belső hivatkozások ma gyökérből indulnak), plusz egy kereső-cserés kör
-a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
+⛔ **A LEGUTOLSÓ LÉPÉS. Addig nem foglalkozunk vele, és nem is hozzuk szóba.**
+A `forgatag.ro` és a 2026-os oldal változatlanul él tovább; **a fejlesztés alatt a 2026-os oldalhoz
+nem nyúlunk.**
 
 ## Adósságok
 
@@ -206,6 +279,10 @@ a kézzel beírt abszolút útvonalakra. ~Fél nap, egyszer.
 - **A menü két pontja („Programok”, „Médiatár”) 2026-ban cím nélküli „link” volt** — most „csak almenü-fejléc” típus.
 
 ## Nyitott kérdések — ne döntsd el magad
+
+- ~~Felugró ablak vagy program-lap?~~ — **eldöntve (2026-10-30): a listából a felugró ablak nyílik**, a program lapja megmarad (SEO).
+- **ÚJ (PROMPT-11) — a 8 hiányzó helyszín** (lásd „Ami ezután jön”, 3. pont): felvegyük-e őket a 2027-es helyszínlistába?
+- ~~A tesztadat törlése~~ — **eldöntve (2026-10-30): a 61 helyszín nélküli tesztprogram a képeivel együtt törölve** (lásd fent, Tesztadat).
 
 - **ÚJ — a Rólunk román zárómondata hibás adat** (a 2026-os behozatalból): a „záró bekezdés” román szövege így végződik:
   „…ne unește.**összeköt minket.**” — magyar szó maradt benne (a heurisztika: a román szövegben nincs ő/ű, de itt ö van). Javítani az

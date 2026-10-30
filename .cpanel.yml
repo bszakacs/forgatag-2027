@@ -45,3 +45,7 @@ deployment:
     # A lapok szerkesztheto szovegei (App\Support\LapSablon): a sablon minden kulcsa az adatbazisba, az alapszoveggel
     # (csak az uresbe ir; a sablonbol kikerult kulcs torlodik). A publikus lap hianyzo kulcsnal hibaval all meg.
     - $PHP artisan forgatag:lap-szovegek
+    # A 2026-os programok TESZTADATKENT (is_test, ProgramTesztImport): a programkereso valos mennyisegen
+    # probalhato. Csak egyszer (jeloles: storage/app/import-2026/programok-teszt.json) — a Tesztadatok torlese utan
+    # nem jon vissza. A borito a mediatar "Programok 2026" kepe (a mediatar-behozatal UTAN).
+    - $PHP artisan forgatag:program-teszt-import

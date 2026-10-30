@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Enums\ContentStatus;
 use App\Enums\Gyujtemeny;
 use App\Enums\MediaLicense;
 use App\Enums\MediaOrigin;
@@ -92,6 +93,53 @@ class LapSablon
             ['news_title_accent', 'Lista — cím kiemelt része', 'sor', ['hu' => 'történik', 'ro' => 'festivalului'], 'csoport' => 'cim'],
             ['news_empty', 'Lista — szöveg, ha még nincs hír', 'szoveg', ['hu' => 'Egyelőre nincs közzétett hír. Nézz vissza hamarosan!', 'ro' => 'Deocamdată nu există știri publicate. Revino în curând!']],
         ],
+        // A programkereső (/programok), a napi nézet (/nap/<dátum>) és a felugró ablak szövegei. Ami 2026-ban
+        // szerkeszthető volt (`data-hs="programs_*"`), az itt is az, ugyanazzal a kulccsal és alapszöveggel; a többi felületi
+        // felirat (csoportcímek, jelzések) a lang/*/publikus.php-ben, mint 2026-ban az i18n-ben.
+        'programok' => [
+            ['programs_title_a', 'Főcím (képernyőolvasónak) — 1. rész', 'sor', ['hu' => 'A fesztivál ', 'ro' => 'Programul '], 'csoport' => 'cim'],
+            ['programs_title_b', 'Főcím (képernyőolvasónak) — 2. rész', 'sor', ['hu' => 'programja', 'ro' => 'festivalului'], 'csoport' => 'cim'],
+            ['programs_filter_title', 'Szűrő — „Szűrés” felirat', 'sor', ['hu' => 'Szűrés', 'ro' => 'Filtrare']],
+            ['programs_apply', 'Szűrő — „Alkalmaz” gomb (mobil)', 'sor', ['hu' => 'Alkalmaz', 'ro' => 'Aplică']],
+            ['programs_word', 'Szűrő — „program” szó a gombon', 'sor', ['hu' => 'program', 'ro' => 'programe']],
+            ['programs_now_1', '„Most zajlik” gomb — 1. szó', 'sor', ['hu' => 'Most', 'ro' => 'Acum'], 'csoport' => 'most'],
+            ['programs_now_2', '„Most zajlik” gomb — 2. szó', 'sor', ['hu' => 'zajlik', 'ro' => 'are loc'], 'csoport' => 'most'],
+            ['programs_filter_search_ph', 'Kereső — helyőrző szöveg', 'sor', ['hu' => 'Fellépő, program, kulcsszó…', 'ro' => 'Artist, program, cuvânt-cheie…']],
+            ['programs_filter_daypart', 'Szűrő — „Napszak” csoport', 'sor', ['hu' => 'Napszak', 'ro' => 'Perioada zilei']],
+            ['programs_daypart_morning', 'Napszak — délelőtt', 'sor', ['hu' => 'Délelőtt', 'ro' => 'Dimineață']],
+            ['programs_daypart_afternoon', 'Napszak — délután', 'sor', ['hu' => 'Délután', 'ro' => 'După-amiază']],
+            ['programs_daypart_evening', 'Napszak — este', 'sor', ['hu' => 'Este', 'ro' => 'Seara']],
+            ['programs_filter_venue', 'Szűrő — „Helyszín” csoport', 'sor', ['hu' => 'Helyszín', 'ro' => 'Locație']],
+            ['programs_filter_venue_ph', 'Szűrő — helyszín keresése (helyőrző)', 'sor', ['hu' => 'Helyszín keresése…', 'ro' => 'Caută locație…']],
+            ['programs_filter_category', 'Szűrő — „Kategória” csoport', 'sor', ['hu' => 'Kategória', 'ro' => 'Categorie']],
+            ['programs_filter_category_ph', 'Szűrő — kategória keresése (helyőrző)', 'sor', ['hu' => 'Kategória keresése…', 'ro' => 'Caută categorie…']],
+            ['programs_highlight_title_a', 'Kiemelt sáv — cím', 'sor', ['hu' => 'Kiemelt ', 'ro' => 'Programe '], 'csoport' => 'kiemelt'],
+            ['programs_highlight_title_b', 'Kiemelt sáv — cím kiemelt része', 'sor', ['hu' => 'programok', 'ro' => 'recomandate'], 'csoport' => 'kiemelt'],
+            ['programs_modal_organizer', 'Felugró ablak — „Szervező”', 'sor', ['hu' => 'Szervező', 'ro' => 'Organizator']],
+            ['programs_modal_guests', 'Felugró ablak — „Közreműködők”', 'sor', ['hu' => 'Közreműködők', 'ro' => 'Colaboratori']],
+            ['programs_modal_mt', 'Felugró ablak — gépi fordítás jelzése (csak románul látszik)', 'sor', ['hu' => '🌐 Automatikus fordítás – emberi átnézés folyamatban.', 'ro' => '🌐 Traducere automată – în curs de verificare umană.']],
+            ['programs_modal_share', 'Felugró ablak — „Megosztás” gomb', 'sor', ['hu' => 'Megosztás', 'ro' => 'Distribuie']],
+            ['programs_empty_title', 'Nincs találat — cím', 'sor', ['hu' => 'Erre a kombinációra nincs program', 'ro' => 'Nu există program pentru această combinație']],
+            ['programs_empty_hint', 'Nincs találat — tanács', 'szoveg', ['hu' => 'Próbálj másik napot, vagy törölj néhány szűrőt.', 'ro' => 'Încearcă altă zi sau șterge câteva filtre.']],
+            ['programs_noprog_title', 'Még nincs közzétett program — cím', 'sor', ['hu' => 'A program készül', 'ro' => 'Programul se pregătește']],
+            ['programs_noprog_text', 'Még nincs közzétett program — szöveg', 'szoveg', ['hu' => 'A beküldött programok még jóváhagyás alatt vannak. Nézz vissza hamarosan — itt lesz a program, szűrhető formában.', 'ro' => 'Programele sunt încă în curs de aprobare. Reveniți în curând — aici va apărea programul, cu filtrare.']],
+            ['programs_now_empty_title', '„Most zajlik”, de nincs program — cím', 'sor', ['hu' => 'Most nem zajlik program', 'ro' => 'Acum nu se desfășoară niciun program']],
+            ['programs_now_before', '„Most zajlik” a fesztivál ELŐTT — szöveg (a dátumot a rendszer írja elé)', 'szoveg', ['hu' => 'Válassz napot a fenti sávból, és tervezz előre!', 'ro' => 'Alege o zi din bara de sus și plănuiește din timp!']],
+            ['programs_now_after', '„Most zajlik” a fesztivál UTÁN — szöveg', 'szoveg', ['hu' => 'A fesztivál véget ért, ezért most nem zajlik program. A napokra kattintva a program továbbra is megnézhető.', 'ro' => 'Festivalul s-a încheiat, așa că acum nu se desfășoară niciun program. Programul rămâne disponibil pe zile.']],
+            ['programs_day_title', 'Napi nézet — cím (utána a nap neve)', 'sor', ['hu' => 'A nap programja', 'ro' => 'Programul zilei']],
+        ],
+    ];
+
+    /**
+     * Rendszerlapok, amelyeket NEM a 2026-os behozatal hoz létre (2026-ban nem volt lap-rekordjuk), hanem a szinkron
+     * — a behozatal után fut, ezért a behozatal „csak üres táblába” szabályát nem zavarja. Kitöltött lapot nem módosít.
+     */
+    private const UJ_RENDSZERLAPOK = [
+        'programok' => [
+            'title_hu' => 'Programkereső', 'title_ro' => 'Căutare în program',
+            'seo_description_hu' => 'A Vásárhelyi Forgatag programja: szűrés nap, helyszín és kategória szerint, kereséssel.',
+            'seo_description_ro' => 'Programul Festivalului Vâltoarea Mureșeană: filtrare după zi, locație și categorie, cu căutare.',
+        ],
     ];
 
     public static function van(string $slug): bool
@@ -155,6 +203,12 @@ class LapSablon
         $naplo = [];
         foreach (array_keys(self::SABLONOK) as $slug) {
             $lap = Page::query()->where('slug', $slug)->first();
+            if ($lap === null && isset(self::UJ_RENDSZERLAPOK[$slug])) {
+                $lap = new Page(self::UJ_RENDSZERLAPOK[$slug] + ['slug' => $slug, 'status' => ContentStatus::Published]);
+                $lap->is_system = true;
+                $lap->save();
+                $naplo[] = "{$slug}: a rendszerlap létrehozva.";
+            }
             if ($lap === null) {
                 $naplo[] = "{$slug}: a lap nincs az adatbázisban — kihagyva (a 2026-os tartalom behozatala hozza létre).";
 

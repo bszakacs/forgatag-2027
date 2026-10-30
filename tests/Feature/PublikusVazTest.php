@@ -223,7 +223,9 @@ class PublikusVazTest extends TestCase
 
         // A belépett admin a valódi lapot látja, figyelmeztető sávval.
         $admin = User::create(['name' => 'Admin', 'email' => 'admin@forgatag.test', 'password' => 'hosszu-jelszo-12', 'role' => UserRole::SuperAdmin]);
-        $this->actingAs($admin)->get('/rolunk')->assertOk()->assertSee('Vannak hagyományok')->assertSee('class="admin-sav"', false);
+        // ('web' kifejezetten: a publikus lapok a 'bekuldo' őrre állnak át — PublikusOr —, és egy teszten belül ez a
+        // következő kérésre is átragadna; élesben minden kérés tiszta lappal indul.)
+        $this->actingAs($admin, 'web')->get('/rolunk')->assertOk()->assertSee('Vannak hagyományok')->assertSee('class="admin-sav"', false);
     }
 
     public function test_kikapcsolt_modban_csak_a_gyoker_hamarosan_amig_nincs_kezdolap(): void

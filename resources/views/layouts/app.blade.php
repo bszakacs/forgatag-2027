@@ -13,13 +13,18 @@
     $ny = Nyelv::aktualis();
     $ut = '/' . ltrim(request()->path(), '/');
     $huUt = $ny === 'ro' ? (preg_replace('#^/ro(?=/|$)#', '', $ut) ?: '/') : $ut;
-    // A lapozó paramétere a címhez tartozik (megosztható, nyelvváltáskor is megmarad); más paraméter nem.
-    $lapozo = request()->filled('oldal') ? '?oldal=' . (int) request()->query('oldal') : '';
+    // A lapozó paramétere a címhez tartozik (megosztható, nyelvváltáskor is megmarad); más paraméter nem —
+    // kivéve, ha a lap maga adja meg a címsorát (a programkereső szűrése: @section('nyelv_query')).
+    // A `@section('x', $ertek)` alak ESCAPE-elve tárol, a lap pedig itt újra escape-el — ezért a szakaszokat
+    // visszafejtjük (különben a „&” &amp;amp;-ként, a kép-cím paraméterei törve jelennének meg).
+    $szakasz = fn (string $n) => html_entity_decode(trim($__env->yieldContent($n)), ENT_QUOTES | ENT_HTML5);
+    $lapozo = $__env->hasSection('nyelv_query') ? $szakasz('nyelv_query')
+        : (request()->filled('oldal') ? '?oldal=' . (int) request()->query('oldal') : '');
     $cimek = ['hu' => url($huUt) . $lapozo, 'ro' => url(Nyelv::ut($huUt, 'ro')) . $lapozo];
     $fesztNev = Festival::name($ny);
-    $lapCim = trim($__env->yieldContent('title'));
+    $lapCim = $szakasz('title');
     $teljesCim = $lapCim !== '' ? "{$lapCim} – {$fesztNev}" : $fesztNev . ' ' . Festival::year();
-    $leiras = trim($__env->yieldContent('leiras'));
+    $leiras = $szakasz('leiras');
     $keret = trim($__env->yieldContent('keret')) !== 'nelkul';
 @endphp
 <!doctype html>
@@ -31,7 +36,7 @@
 @if ($leiras !== '')
 <meta name="description" content="{{ $leiras }}">
 @endif
-<link rel="canonical" href="{{ trim($__env->yieldContent('canonical')) ?: $cimek[$ny] }}">
+<link rel="canonical" href="{{ $szakasz('canonical') ?: $cimek[$ny] }}">
 <link rel="alternate" hreflang="hu" href="{{ $cimek['hu'] }}">
 <link rel="alternate" hreflang="ro" href="{{ $cimek['ro'] }}">
 <link rel="alternate" hreflang="x-default" href="{{ $cimek['hu'] }}">
@@ -40,7 +45,7 @@
 @if ($leiras !== '')
 <meta property="og:description" content="{{ $leiras }}">
 @endif
-<meta property="og:image" content="{{ trim($__env->yieldContent('og_kep')) ?: Theme::assetUrl('logo') }}">
+<meta property="og:image" content="{{ $szakasz('og_kep') ?: Theme::assetUrl('logo') }}">
 <meta property="og:locale" content="{{ $ny === 'ro' ? 'ro_RO' : 'hu_HU' }}">
 <meta name="theme-color" content="{{ Theme::get('colors.bg.dark') }}">
 <link rel="icon" type="image/png" href="{{ Theme::assetUrl('favicon') }}">
@@ -52,7 +57,10 @@
 <link rel="stylesheet" href="{{ Theme::cssUrl() }}">
 <link rel="stylesheet" href="{{ asset('css/publikus.css') }}?v={{ filemtime(public_path('css/publikus.css')) }}">
 @stack('styles')
-{{-- htmx (lapozás, szűrés) és Alpine (menü, ablak) — helyi, rögzített verziójú fájlok (package.json), CDN nélkül. --}}
+{{-- htmx (lapozás, szűrés) és Alpine (menü, ablak) — helyi, rögzített verziójú fájlok (package.json), CDN nélkül.
+     historyCacheSize 0: a „vissza” gomb a szervertől kéri újra a lapot (nem egy régi DOM-másolatot tölt vissza,
+     amelyben a JS-állapot már nem igaz). --}}
+<meta name="htmx-config" content='{"historyCacheSize":0}'>
 <script src="{{ asset('js/vendor/htmx-2.0.4.min.js') }}" defer></script>
 <script src="{{ asset('js/vendor/alpine-3.14.9.min.js') }}" defer></script>
 </head>

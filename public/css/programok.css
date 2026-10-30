@@ -1,0 +1,398 @@
+/* ===========================================================================
+   PROGRAMKERESŐ, NAPI NÉZET, PROGRAM LAPJA — a 2026-os programkereső kinézete (frontend/src/programkereso/style.css),
+   a szerveroldali szerkezethez igazítva. Előtag: .pk-* (kereső), .pd-* (program lapja).
+   TOKEN-SZABÁLY: téma-tokent itt NEM írunk felül (2026-ban a panel a --panel/--fg-muted nevet definiálta újra —
+   az ma tilos). A saját nevek (--pk-*) a témára kötött keverékek; a rétegsorrend a publikus.css --z-* skálája.
+   ======================================================================== */
+.pk{
+  --pk-lila:color-mix(in srgb,var(--lap-muted) 72%,var(--doodle-purple));
+  --pk-halk:color-mix(in srgb,var(--fg) 92%,var(--doodle-purple));
+  --pk-vonal:color-mix(in srgb,var(--fg) 20%,transparent);
+  --pk-vonal-eros:color-mix(in srgb,var(--fg) 36%,transparent);
+  --pk-mezo:color-mix(in srgb,var(--pk-lila) 82%,var(--bg));
+  --pk-mezo-2:color-mix(in srgb,var(--pk-lila) 66%,var(--bg));
+  --pk-panel-w:340px;
+  /* A ragadó panel ennyivel a fejléc alatt áll: a fejléc alá belógó logó (a sáv alatti része) ne takarjon gombot. */
+  --pk-logo-lelog:max(0px,calc(var(--logo-header) - 64px));
+  padding-bottom:var(--sp-8)}
+.pk-srtitle{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* ---------- 1. TALÁLATSZÁM-SOR — a szűrők FÖLÖTT ----------
+   A logó a fejléc alá lóg; ami közvetlenül alatta van, arra rálóg. Ezért itt NEM kattintható szöveg áll (a
+   találatszám), és a sor legalább akkora, mint a belógás — így a szűrősáv gombjai sosem kerülnek a logó alá.
+   (2026-ban a sáv beljebb tolása volt az első próbálkozás — csúnya lett.) */
+.pk-fej{display:flex;align-items:flex-end;justify-content:flex-end;gap:var(--sp-4);
+  min-height:calc(var(--pk-logo-lelog) + var(--sp-5));padding-top:var(--sp-4);padding-bottom:var(--sp-4)}
+.pk-count{margin:0;font-size:var(--text-small);color:var(--fg-muted);text-align:right;line-height:1.2}
+.pk-count b{font-family:var(--font-head);font-weight:var(--head-wght);font-size:2rem;color:var(--fg);margin-right:.12em;
+  font-variant-numeric:tabular-nums}
+.pk-countday{color:var(--fg)}
+
+/* ---------- 2. RÁCS: balra a szűrőpanel, jobbra a találatok ---------- */
+.pk-racs{display:grid;grid-template-columns:var(--pk-panel-w) minmax(0,1fr);gap:var(--sp-6);align-items:start}
+
+/* --- a szűrőpanel (a 2026-os lila kártya) --- */
+.pk-explore{position:sticky;top:calc(var(--hd-h) + var(--pk-logo-lelog) + var(--sp-3));z-index:var(--z-content);
+  max-height:calc(100vh - var(--hd-h) - var(--pk-logo-lelog) - var(--sp-5));overflow-y:auto;overscroll-behavior:contain;
+  background:var(--pk-lila);color:var(--fg);border:1px solid color-mix(in srgb,var(--fg) 16%,transparent);
+  border-radius:var(--r-card);box-shadow:0 26px 64px -36px rgba(0,0,0,.6);
+  scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--doodle-purple) 55%,var(--bg)) transparent}
+.pk-panel{padding:var(--sp-5)}
+.pk-sheethead,.pk-sheetfoot,.pk-mobar,.pk-sheetscrim{display:none}
+
+.pk-search{display:flex;align-items:center;gap:.6em;background:var(--pk-mezo);
+  border:1px solid var(--pk-vonal-eros);border-radius:var(--r-pill);padding:.65em .95em;margin-bottom:var(--sp-2)}
+.pk-search svg{width:16px;height:16px;color:var(--pk-halk);flex:0 0 auto}
+.pk-search input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--fg);
+  font:inherit;font-size:var(--text-small)}
+.pk-search input::placeholder{color:var(--pk-halk)}
+.pk-search:focus-within{border-color:var(--accent-c)}
+
+/* --- napsáv (2026): a „Most zajlik” + MIND a programnapok EGY sorban, egyenlő hasábokkal (minmax(0,1fr): keskeny
+       nézetben sem tolja ki a lapot) --- */
+.pk-dayblock{border:0;margin:0;padding:0 0 var(--sp-4);min-width:0}
+.pk-days{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px}
+.pk-day,.pk-now{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  padding:.5em .1em;cursor:pointer;text-align:center;text-decoration:none;
+  background:var(--pk-mezo);border:1px solid var(--pk-vonal);border-radius:var(--r-field);color:var(--fg);
+  transition:var(--dur-1) var(--ease)}
+.pk-day input,.pk-now input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.pk-day .pk-dow{font-size:10px;letter-spacing:.02em;text-transform:uppercase;font-weight:700;color:var(--pk-halk)}
+.pk-day .pk-num{font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.25rem;line-height:1}
+.pk-day:hover{background:var(--pk-mezo-2);border-color:var(--pk-vonal-eros)}
+/* az előkészítő nap halkabb — méret és háttér, nem áttetszőség (az a kontrasztot vitte le) */
+.pk-day.is-soft{background:color-mix(in srgb,var(--pk-lila) 92%,var(--bg));border-color:color-mix(in srgb,var(--fg) 14%,transparent)}
+.pk-day.is-soft .pk-num{font-size:1.05rem;color:var(--pk-halk)}
+/* A KIVÁLASZTOTT gomb kiemelése AZONNAL, a böngészőben (:has) — a lista egy körfordulóval később jön. */
+.pk-day:has(input:checked),.pk-day.is-on{color:var(--accent-contrast);border-color:transparent;
+  background:var(--accent-grad);box-shadow:0 8px 22px -12px var(--accent-c)}
+.pk-day:has(input:checked) .pk-dow,.pk-day:has(input:checked) .pk-num,.pk-day.is-on .pk-dow,.pk-day.is-on .pk-num{color:var(--accent-contrast)}
+.pk-day:has(input:focus-visible),.pk-now:has(input:focus-visible),.pk-chip:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+/* a „Most zajlik”: ugyanolyan hasáb, mint a napok; a felirat két sorban */
+.pk-now{gap:2px;padding:.4em .1em;font-weight:700;font-size:.56rem;line-height:1.1;letter-spacing:.01em;border-color:var(--pk-vonal-eros)}
+.pk-nowlab{display:flex;flex-direction:column;align-items:center}
+.pk-now:hover{border-color:var(--doodle-red)}
+.pk-now:has(input:checked){background:color-mix(in srgb,var(--doodle-red) 88%,var(--bg));border-color:var(--doodle-red);color:#fff}
+.pk-pulse{width:6px;height:6px;border-radius:50%;background:var(--doodle-red);flex:0 0 auto;animation:pkPulse var(--pulse-dur) var(--ease) infinite}
+.pk-now:has(input:checked) .pk-pulse{background:#fff}
+@keyframes pkPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.72)}}
+
+/* --- napszak-chipek (2026) --- */
+.pk-chips{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.pk-chip{position:relative;padding:.5em .85em;cursor:pointer;font-size:var(--text-small);font-weight:600;color:var(--pk-halk);
+  background:var(--pk-mezo);border:1px solid var(--pk-vonal);border-radius:var(--r-pill);transition:var(--dur-1) var(--ease)}
+.pk-chip input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.pk-chip:hover{color:var(--fg);border-color:var(--pk-vonal-eros)}
+.pk-chip:has(input:checked){background:var(--fg);color:var(--pk-lila);border-color:var(--fg)}
+
+/* --- lenyíló csoportok (helyszín, kategória) --- */
+.pk-group{border-top:1px solid var(--pk-vonal)}
+.pk-group summary{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-3) 0;cursor:pointer;list-style:none;
+  font-weight:700;color:var(--fg)}
+.pk-group summary::-webkit-details-marker{display:none}
+.pk-group summary:hover{color:var(--accent-a)}
+.pk-group summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
+.pk-gcount,.pk-badge-n{min-width:20px;height:20px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--r-pill);background:var(--accent-b);color:var(--accent-contrast);font-size:.72rem;line-height:1;font-weight:700}
+.pk-gcount[hidden],.pk-badge-n[hidden]{display:none}
+.pk-caret{width:.55em;height:.55em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:rotate(45deg);margin:0 .1em .2em auto;opacity:.55;transition:transform var(--dur-1) var(--ease)}
+.pk-group[open] .pk-caret{transform:rotate(-135deg);margin-bottom:-.1em}
+.pk-groupbody{padding-bottom:var(--sp-4)}
+.pk-venuesearch input{width:100%;background:var(--pk-mezo);border:1px solid var(--pk-vonal);border-radius:var(--r-field);
+  padding:.5em .7em;color:var(--fg);font:inherit;font-size:var(--text-small);outline:none;margin-bottom:var(--sp-2)}
+.pk-venuesearch input:focus{border-color:var(--accent-c)}
+.pk-opts{display:flex;flex-direction:column;gap:1px}
+.pk-venuelist{max-height:260px;overflow-y:auto;padding-right:4px;scrollbar-width:thin;
+  scrollbar-color:color-mix(in srgb,var(--doodle-purple) 55%,var(--bg)) transparent}
+.pk-opt{display:flex;align-items:center;gap:.6em;padding:.38em .5em;border-radius:var(--r-field);cursor:pointer;
+  font-size:.94rem;color:var(--pk-halk)}
+.pk-opt.is-child{padding-left:1.6em}
+.pk-opt:hover{background:var(--pk-mezo);color:var(--fg)}
+.pk-opt input{appearance:none;width:17px;height:17px;flex:0 0 auto;margin:0;cursor:pointer;border:1.5px solid var(--pk-vonal-eros);
+  border-radius:5px;background:transparent;display:grid;place-content:center}
+.pk-opt input::after{content:"";width:9px;height:5px;border-left:2px solid var(--accent-contrast);border-bottom:2px solid var(--accent-contrast);
+  transform:rotate(-45deg) scale(0);margin-top:-2px}
+.pk-opt input:checked{background:var(--accent-b);border-color:var(--accent-b)}
+.pk-opt input:checked::after{transform:rotate(-45deg) scale(1)}
+.pk-opt input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-opt:has(input:checked){color:var(--fg);font-weight:600}
+.pk-opt .pk-lab{flex:1;min-width:0}
+.pk-opt .pk-n{font-size:var(--text-micro);color:var(--pk-halk);font-variant-numeric:tabular-nums}
+/* a 0 találatos tétel VÁLASZTHATÓ, csak halványabb (2026: a tiltás elsőre hibának látszott) */
+.pk-opt.is-off .pk-lab{opacity:.72}
+.pk-nojs{margin-top:var(--sp-4);width:100%;justify-content:center}
+
+/* ---------- 3. TALÁLATOK ---------- */
+.pk-talalatok{min-width:0;transition:opacity var(--dur-1) var(--ease)}
+.pk-talalatok.htmx-request{opacity:.55}
+/* aktív szűrők — üresen is ott van (szaggatott kerettel), a magassága üresen és telen azonos (2026) */
+.pk-activebar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-5);min-height:59px;box-sizing:border-box;
+  padding:var(--sp-3) var(--sp-4);border-radius:var(--r-card);background:var(--pk-lila);color:var(--fg);
+  border:1px solid color-mix(in srgb,var(--fg) 16%,transparent)}
+.pk-activebar.is-empty{background:none;border:1px dashed color-mix(in srgb,var(--fg) 26%,transparent);color:var(--fg-muted);justify-content:center}
+.pk-ahint{font-size:var(--text-small);color:var(--fg-muted)}
+.pk-alabel{font-size:var(--text-micro);letter-spacing:.14em;text-transform:uppercase;color:var(--pk-halk);font-weight:700;margin-right:var(--sp-1)}
+.pk-achip{display:inline-flex;align-items:center;gap:.45em;padding:.42em .55em .42em .85em;font-size:var(--text-small);font-weight:700;
+  color:var(--accent-contrast);background:var(--accent-b);border:1px solid color-mix(in srgb,var(--accent-c) 50%,transparent);
+  border-radius:var(--r-pill);text-decoration:none;transition:var(--dur-1) var(--ease)}
+.pk-achip:hover{background:var(--accent-a)}
+.pk-achip:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-achip svg{width:12px;height:12px;opacity:.75}
+.pk-aclear{margin-left:auto;color:#fff;background:color-mix(in srgb,var(--doodle-red) 88%,black);border-color:color-mix(in srgb,var(--doodle-red) 70%,black)}
+.pk-aclear:hover{background:color-mix(in srgb,var(--doodle-red) 78%,black)}
+
+.pk-daytitle{display:flex;align-items:baseline;gap:var(--sp-3);margin:var(--sp-7) 0 var(--sp-2)}
+.pk-daytitle:first-child,.pk-activebar+.pk-daytitle{margin-top:0}
+.pk-daytitle h2{font-family:var(--font-head);font-weight:var(--head-wght);font-size:clamp(1.9rem,3.4vw,2.6rem);line-height:1.1;margin:0;color:var(--fg)}
+.pk-daytitle .pk-gn,.pk-gtitle .pk-gn{font-size:var(--text-small);color:var(--fg-muted);white-space:nowrap}
+.pk-gtitle{display:flex;align-items:baseline;gap:var(--sp-3);margin:var(--sp-6) 0 var(--sp-4);padding-bottom:var(--sp-2);border-bottom:1px solid var(--line)}
+.pk-gtitle:first-child,.pk-activebar+.pk-gtitle{margin-top:0}
+.pk-gtitle h2,.pk-gtitle h3{font-family:var(--font-head);font-weight:var(--head-wght);font-size:clamp(1.7rem,3vw,2.3rem);margin:0;color:var(--fg)}
+.pk-gtitle.is-live h2{color:var(--doodle-red)}
+.pk-rows{display:block;padding:var(--sp-2) 2px var(--sp-5)}
+.pk-rows>.pk-card+.pk-card{margin-top:var(--sp-2)}
+
+/* --- programkártya: közös alap (kártya és sor) --- */
+.pk-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);
+  transition:var(--dur-1) var(--ease)}
+/* hover-glow: a KATEGÓRIA színe (nem véletlen) — így nem cáfolja a kategóriát (2026) */
+.pk-card:hover,.pk-card:focus-within{border-color:var(--pk-glow);
+  box-shadow:var(--shadow),0 0 0 1px var(--pk-glow),0 8px 26px -8px color-mix(in srgb,var(--pk-glow) 78%,transparent),
+    0 0 40px -14px color-mix(in srgb,var(--pk-glow) 60%,transparent)}
+.pk-card h3{font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.34rem;line-height:1.22;letter-spacing:-.01em;margin:0;padding-bottom:.06em}
+.pk-cardlink{color:var(--fg);text-decoration:none}
+/* az egész kártya kattintható: a cím linkjének átlapolója kitölti */
+.pk-cardlink::after{content:"";position:absolute;inset:0;z-index:1;border-radius:var(--r-card)}
+.pk-cardlink:focus-visible{outline:none}
+.pk-card:focus-within{border-color:var(--focus)}
+.pk-time{font-size:var(--text-small);font-weight:700;letter-spacing:.04em;color:var(--accent-a);font-variant-numeric:tabular-nums}
+.pk-time.is-allday{color:var(--doodle-lime)}
+.pk-venue{display:flex;align-items:center;gap:.42em;font-size:var(--text-small);color:var(--fg-muted)}
+.pk-venue svg{width:13px;height:13px;flex:0 0 auto;opacity:.75}
+.pk-cmeta{display:flex;flex-wrap:wrap;align-items:center;gap:.4em}
+.pk-cmeta:empty{display:none}
+.pk-flag{font-size:var(--text-micro);color:var(--fg-muted);padding:.3em .55em;border:1px solid var(--line);border-radius:var(--r-pill)}
+.pk-flag.is-price{color:var(--accent-a);border-color:color-mix(in srgb,var(--accent-b) 45%,transparent);
+  background:color-mix(in srgb,var(--accent-b) 12%,transparent);font-weight:700}
+.pk-flag.is-lang{color:var(--doodle-blue);border-color:color-mix(in srgb,var(--doodle-blue) 45%,transparent);
+  background:color-mix(in srgb,var(--doodle-blue) 12%,transparent);font-weight:700}
+.pk-flag a{color:inherit;text-decoration:underline;text-underline-offset:2px;position:relative;z-index:2}
+.pk-card.is-cancelled h3{text-decoration:line-through;text-decoration-thickness:1px}
+
+/* --- SOR (2026: „pk-row”): idő · négyzetes kép · cím+meta · nyíl --- */
+.pk-card.pk-row{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;
+  gap:0 var(--sp-4);padding:var(--sp-3) var(--sp-4);overflow:hidden}
+.pk-row .pk-time{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  min-width:4.6em;color:var(--accent-c)}
+.pk-row .pk-t1{font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.32rem;line-height:1.05;color:var(--accent-c)}
+.pk-row .pk-t2{font-size:var(--text-micro);color:var(--fg-muted);font-weight:400}
+.pk-row .pk-time.is-allday .pk-t1{font-size:.92rem;line-height:1.15}
+/* a kép a megjelenés arányán (1:1) KÉSZÜL — a CSS nem vág másodszor; kép nélkül nincs csempe */
+.pk-row .thumb{grid-column:2;grid-row:1 / span 2;width:64px;height:64px;border-radius:var(--r-field);display:block;background:var(--bg-raise)}
+.pk-row h3{grid-column:3;grid-row:1;align-self:end;font-size:1.06rem;line-height:1.25}
+.pk-row .pk-rowmeta{grid-column:3;grid-row:2;align-self:start;display:flex;flex-wrap:wrap;align-items:center;gap:.25em .7em;min-width:0;
+  font-size:var(--text-small);color:var(--fg-muted)}
+.pk-row .pk-venue{margin:0;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.pk-row .pk-venue svg{display:inline-block;vertical-align:-1px;margin-right:.42em}
+.pk-row .pk-cmeta{gap:.35em}
+.pk-row .pk-note{grid-column:3 / -1;grid-row:3;align-self:start;margin:2px 0 0;font-size:.78rem;line-height:1.3;color:var(--fg-faint);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pk-row .pk-go{grid-column:4;grid-row:1 / span 2;align-self:center;color:var(--fg-muted);font-size:1.15rem;line-height:1;transition:var(--dur-1) var(--ease)}
+.pk-row:hover .pk-go{color:var(--accent-b);transform:translateX(3px)}
+
+/* --- NAPI KIEMELT SÁV (2026): kártyák a közös csúszkán (public/css/rail.css) --- */
+.pk-highlight{margin-bottom:var(--sp-6)}
+.pk-hirail{grid-auto-columns:minmax(238px,1fr);gap:var(--sp-4);padding:var(--sp-2) 2px var(--sp-4)}
+.pk-hirail .pcard{display:flex;flex-direction:column;overflow:visible}
+.pk-hirail .pcard:hover{transform:translateY(-4px)}
+.pk-hirail .thumb{aspect-ratio:4/3;overflow:hidden;border-radius:calc(var(--r-card) - 1px) calc(var(--r-card) - 1px) 0 0;position:relative}
+.pk-hirail .thumb img{display:block;width:100%;height:100%}
+.pk-hirail .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,color-mix(in srgb,var(--panel) 90%,transparent))}
+.pk-hirail .body{padding:var(--sp-4) var(--sp-4) var(--sp-5);display:flex;flex-direction:column;gap:.42em}
+.pk-hirail .pk-t2{color:var(--fg-muted);font-weight:400}
+
+.pk-empty{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-6) var(--sp-5);text-align:center}
+.pk-empty h2{font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.7rem;margin:0 0 var(--sp-2)}
+.pk-empty p{color:var(--fg-muted);max-width:44ch;margin:0 auto var(--sp-4)}
+.pk-mghost{display:inline-flex;align-items:center;gap:.5em;padding:.7em 1.1em;cursor:pointer;font:inherit;font-weight:700;font-size:var(--text-small);
+  color:var(--fg);background:color-mix(in srgb,var(--fg) 6%,transparent);border:1px solid var(--line-strong);border-radius:var(--r-pill);text-decoration:none}
+.pk-mghost:hover{border-color:var(--accent-b);color:var(--accent-a)}
+.pk-mghost:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-mghost svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+
+/* ---------- 3/b. FELUGRÓ ABLAK (2026: programkereso/modal.html) ---------- */
+.pk-modal{position:fixed;inset:0;z-index:var(--z-modal);display:flex;align-items:center;justify-content:center;padding:var(--sp-5)}
+.pk-modal[hidden]{display:none}
+html.pk-modal-nyitva{overflow:hidden}
+.pk-scrim{position:absolute;inset:0;background:rgba(12,8,30,.82);animation:pkFade var(--dur-1) var(--ease) both}
+@keyframes pkFade{from{opacity:0}to{opacity:1}}
+.pk-dialog{position:relative;z-index:1;width:min(660px,100%);max-height:88vh;display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--r-lap);box-shadow:0 40px 90px -40px rgba(0,0,0,.9);
+  overflow:hidden;animation:pkRise var(--dur-2) var(--ease) both;line-height:1.6}
+@keyframes pkRise{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:none}}
+.pk-close{position:absolute;top:var(--sp-4);right:var(--sp-4);z-index:3;width:40px;height:40px;display:grid;place-content:center;cursor:pointer;
+  border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.3);background:rgba(20,14,44,.72);color:#fff}
+.pk-close svg{width:15px;height:15px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.pk-close:hover{background:var(--doodle-pink);border-color:var(--doodle-pink)}
+.pk-close:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-dialog-scroll{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
+  scrollbar-color:color-mix(in srgb,var(--doodle-purple) 55%,var(--bg)) transparent}
+/* a borító 4:3 — ugyanaz az arány, amin a fájl készül */
+.pk-mimg{aspect-ratio:4/3;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end}
+.pk-mimg::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 62%,var(--panel))}
+.pk-mover{position:relative;z-index:1;width:100%;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:.3em 1.1em;
+  padding:var(--sp-6) var(--sp-6) var(--sp-4);font-size:var(--text-small);font-weight:700;color:#fff;
+  background:linear-gradient(180deg,rgba(20,14,44,0) 0%,rgba(20,14,44,.55) 42%,rgba(20,14,44,.88) 100%);text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.pk-mvenue{font-weight:500;color:rgba(255,255,255,.9);display:flex;align-items:flex-start;gap:.4em;min-width:0;max-width:100%}
+.pk-mover svg{width:13px;height:13px;flex:0 0 auto;margin-top:.18em}
+.pk-mvnev{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-width:0}
+/* kép nélkül: nincs üres keret — ugyanez az elem normál szövegsorként */
+.pk-mimg.pk-noimg{aspect-ratio:auto;display:block;background:none}
+.pk-mimg.pk-noimg::after{display:none}
+.pk-mimg.pk-noimg .pk-mover{position:static;background:none;text-shadow:none;color:var(--accent-a);padding:var(--sp-5) var(--sp-6) 0}
+.pk-mimg.pk-noimg .pk-mvenue{color:var(--fg-muted)}
+.pk-mbody{padding:var(--sp-4) var(--sp-6) var(--sp-6);position:relative}
+.pk-dialog h2{font-family:var(--font-head);font-weight:var(--head-wght);font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.14;margin:0 0 var(--sp-2);color:var(--fg)}
+.pk-mseries{font-size:var(--text-small);color:var(--fg-muted);margin:0 0 var(--sp-4)}
+.pk-mdesc{color:var(--fg-muted);margin-bottom:var(--sp-5)}
+.pk-mdesc p{margin:0}
+.pk-mdesc p+p{margin-top:.7em}
+.pk-mdesc a{color:var(--accent-a);overflow-wrap:anywhere}
+.pk-mnote{font-size:.85rem;line-height:1.45;color:var(--fg-muted);margin:0 0 var(--sp-3)}
+.pk-mmt{display:block;font-size:.8rem;line-height:1.4;color:var(--fg-faint);margin:calc(-1 * var(--sp-3)) 0 var(--sp-5)}
+.pk-mmeta{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-2) var(--sp-4);font-size:var(--text-small);padding-top:var(--sp-4);
+  border-top:1px solid var(--line);margin:0}
+.pk-mmeta dt{color:var(--fg-muted)}
+.pk-mmeta dd{color:var(--fg);margin:0}
+.pk-mflags{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-4)}
+.pk-mflags:empty{display:none}
+/* a gombsáv MINDIG látható: a popup aljához ragad, a hosszú leírás befut alá */
+.pk-mactions{display:flex;flex-wrap:wrap;gap:var(--sp-3);position:sticky;bottom:0;z-index:2;
+  margin:var(--sp-5) calc(var(--sp-6) * -1) calc(var(--sp-6) * -1);padding:var(--sp-4) var(--sp-6);
+  padding-bottom:max(var(--sp-4),env(safe-area-inset-bottom,0px));background:var(--panel);border-top:1px solid var(--line)}
+.pk-mactions::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:var(--sp-5);pointer-events:none;
+  background:linear-gradient(to top,var(--panel),color-mix(in srgb,var(--panel) 0%,transparent))}
+
+/* ---------- 4. NAPI NÉZET ---------- */
+.pk-naphead{padding-top:calc(var(--pk-logo-lelog) + var(--sp-4));margin-bottom:var(--sp-5);text-align:center}
+.pk-naphead h1{font-family:var(--font-head);font-weight:var(--head-wght);letter-spacing:var(--head-track);
+  font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.1;margin:0}
+.pk-naphead .brush{display:block;font-size:.8em}
+.pk-daytabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;max-width:640px;margin:0 auto var(--sp-5);
+  --pk-mezo:var(--panel);--pk-mezo-2:var(--bg-raise);--pk-vonal:var(--line);--pk-vonal-eros:var(--line-strong)}
+.pk-napi-eszkoz{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin:0 0 var(--sp-5)}
+.pk-napi-eszkoz .pk-count{text-align:left}
+.pk-sheetbtn{display:inline-flex;align-items:center;gap:.5em;padding:.6em 1em;font-weight:700;font-size:var(--text-small);
+  color:var(--fg);background:color-mix(in srgb,var(--fg) 7%,transparent);border:1px solid var(--line-strong);border-radius:var(--r-pill);
+  text-decoration:none;white-space:nowrap}
+.pk-sheetbtn svg{width:16px;height:16px}
+.pk-sheetbtn:hover{border-color:var(--accent-b);color:var(--accent-a)}
+
+/* ---------- 5. A PROGRAM LAPJA ---------- */
+.pd{padding-top:calc(var(--pk-logo-lelog,0px) + var(--sp-5));padding-bottom:var(--sp-8);
+  --pk-logo-lelog:max(0px,calc(var(--logo-header) - 64px))}
+.pd-pills{display:flex;flex-wrap:wrap;gap:8px}
+.pd-pill{display:inline-block;padding:.32em .8em;border-radius:var(--r-pill);background:var(--accent-b);color:var(--accent-contrast);
+  font-weight:700;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;text-decoration:none}
+.pd-pill-extra{background:color-mix(in srgb,var(--fg) 12%,transparent);color:var(--fg-muted)}
+.pd-mt{font-size:.8rem;line-height:1.4;color:var(--fg-faint);margin:-.4em 0 1.2em}
+.pd-status{display:inline-block;padding:.35em .9em;border-radius:var(--r-pill);font-weight:800;background:var(--warn);color:var(--accent-contrast)}
+.pd-status.is-cancelled{background:color-mix(in srgb,var(--doodle-red) 88%,black);color:#fff}
+.pd-hero{display:block;width:100%;height:auto;aspect-ratio:4/3;border-radius:var(--r-card);background:var(--bg-raise);
+  box-shadow:var(--shadow);margin:0 0 var(--sp-2)}
+.pd-credit{color:var(--fg-faint);font-size:.82rem;margin:0 0 var(--sp-5)}
+.pd-facts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:var(--sp-5) 0 var(--sp-6)}
+.pd-fact{background:color-mix(in srgb,var(--fg) 4%,transparent);border:1px solid var(--line);border-radius:var(--r-card);padding:16px 18px}
+.pd-fact h2{font-family:var(--font-body);font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-faint);margin:0 0 8px}
+.pd-fact ul{margin:0;padding-left:1.1em}
+.pd-fact li{color:var(--fg);line-height:1.55}
+.pd-fact li strong{color:var(--accent-a)}
+.pd-fact p{margin:0 0 4px;color:var(--fg-muted)}
+.pd-fact a{color:var(--fg)}
+.pd-venue{color:var(--fg)!important;font-weight:600}
+.pd-note{display:block;font-size:.88rem;color:var(--fg-muted)}
+.pd-entry{margin-top:10px!important}
+.pd-label{color:var(--fg-faint);font-weight:600}
+.pd-ticket{margin-top:6px;font-size:.92rem;color:var(--fg-muted)}
+.pd-ticket p{margin:0 0 .4em}
+.pd-ticket a,.pd-desc a{color:var(--accent-a);overflow-wrap:anywhere}
+.pd-org{margin-top:var(--sp-5);color:var(--fg-muted)}
+.pd-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:var(--sp-6)}
+.pd-ghost{display:inline-flex;align-items:center;gap:.5em;font-weight:700;font-size:.92rem;color:var(--fg);
+  background:color-mix(in srgb,var(--fg) 6%,transparent);border:1px solid var(--line-strong);border-radius:var(--r-pill);
+  padding:9px 16px;text-decoration:none}
+.pd-ghost:hover{border-color:var(--accent-b);color:var(--accent-a)}
+
+/* ---------- 6. KESKENYEBB ---------- */
+@media (max-width:1040px){
+  .pk{--pk-panel-w:300px}
+  .pk-racs{gap:var(--sp-5)}
+}
+
+/* ---------- 7. MOBIL (a fő nézet): lista elöl, a szűrő alulról felcsúszó panel ---------- */
+@media (max-width:860px){
+  /* a logó balra, ~30 px-t lóg be: a sor (a nem kattintható szám) jobbra áll, és legalább a belógásnyi magas */
+  .pk,.pd{--pk-logo-lelog:max(0px,calc(var(--logo-header-mobile) - 56px))}
+  .pk-fej{min-height:calc(var(--pk-logo-lelog) + var(--sp-4));padding-top:var(--sp-2);padding-bottom:var(--sp-3)}
+  .pk-count b{font-size:1.6rem}
+  .pk-racs{display:block}
+  /* A FELCSÚSZÓ PANEL. JS nélkül a link a #pk-urlap-ra ugrik, és a :target nyitja. */
+  .pk-explore{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:var(--z-modal);
+    max-height:calc(100dvh - var(--hd-h) - var(--sp-3));display:flex;flex-direction:column;overflow:hidden;
+    border-radius:var(--r-lap) var(--r-lap) 0 0;border-width:1px 0 0;box-shadow:0 -20px 60px -30px rgba(0,0,0,.9);
+    transform:translateY(101%);visibility:hidden;transition:transform var(--dur-2) var(--ease),visibility var(--dur-2)}
+  .pk-explore.is-open,.pk-explore:target{transform:none;visibility:visible}
+  .pk-sheethead{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex:0 0 auto;
+    padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--pk-vonal)}
+  .pk-sheettitle{font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.3rem}
+  .pk-sheetclose{width:38px;height:38px;display:grid;place-content:center;border-radius:var(--r-pill);
+    border:1px solid var(--pk-vonal-eros);background:color-mix(in srgb,var(--fg) 7%,transparent);color:var(--fg)}
+  .pk-sheetclose svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+  /* csak a fej alatti rész görög; a hosszú listák a SAJÁT csoportjukban görögnek */
+  .pk-panel{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:var(--sp-3) var(--sp-4) var(--sp-4)}
+  .pk-venuelist{max-height:42dvh}
+  .pk-sheetfoot{display:block;flex:0 0 auto;padding:var(--sp-3) var(--sp-4) max(var(--sp-3),env(safe-area-inset-bottom,0px));
+    border-top:1px solid var(--pk-vonal)}
+  .pk-apply{width:100%;justify-content:center}
+  .pk-sheetscrim{display:block;position:fixed;inset:0;z-index:calc(var(--z-modal) - 1);background:rgba(12,8,30,.62);
+    opacity:0;pointer-events:none;transition:opacity var(--dur-1) var(--ease)}
+  html.pk-lock .pk-sheetscrim{opacity:1;pointer-events:auto}
+  html.pk-lock{overflow:hidden}
+  /* a hüvelykujjnyi „Szűrés” gomb alul */
+  .pk-mobar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:var(--z-stickybar);justify-content:center;
+    padding:var(--sp-3) var(--gutter) max(var(--sp-3),env(safe-area-inset-bottom,0px));
+    background:linear-gradient(to top,var(--bg) 55%,transparent);pointer-events:none}
+  .pk-mobar .art-btn{pointer-events:auto;box-shadow:0 10px 30px -10px rgba(0,0,0,.7)}
+  .pk-mobar svg{width:16px;height:16px}
+  .pk-mobar .pk-badge-n{background:var(--accent-contrast);color:var(--accent-a)}
+  html.mnav-lock .pk-mobar{display:none}
+  .pk{padding-bottom:calc(var(--sp-8) + 40px)}
+}
+@media (max-width:720px){
+  .pk-card.pk-row{gap:0 var(--sp-3);padding:var(--sp-2) var(--sp-3);grid-template-columns:auto auto minmax(0,1fr)}
+  .pk-row .thumb{width:54px;height:54px}
+  .pk-row .pk-time{min-width:3.9em}
+  .pk-row .pk-t1{font-size:1.06rem}
+  .pk-row h3{font-size:.98rem;line-height:1.2}
+  .pk-card h3 a{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pk-row .pk-go{display:none}
+  .pk-time,.pk-rowmeta,.pk-venue{font-size:var(--text-micro)}
+  .pk-flag{font-size:.62rem;padding:.26em .45em}
+  .pk-hirail{grid-auto-columns:minmax(200px,1fr);gap:var(--sp-3)}
+  .pd-facts{grid-template-columns:1fr}
+  .pk-napi-eszkoz{flex-wrap:wrap}
+  /* a felugró ablak mobilon is KÁRTYA, alulról (2026) */
+  .pk-modal{padding:var(--sp-4);align-items:flex-end}
+  .pk-dialog{max-height:84vh}
+  .pk-mbody{padding:var(--sp-2) var(--sp-4) var(--sp-5)}
+  .pk-mover{padding:var(--sp-5) var(--sp-4) var(--sp-3)}
+  .pk-mimg.pk-noimg .pk-mover{padding:var(--sp-4) var(--sp-4) 0}
+  .pk-mmeta{grid-template-columns:1fr;gap:var(--sp-1)}
+  .pk-mmeta dt{margin-top:var(--sp-2)}
+  .pk-mghost{flex:1 1 0;min-width:0;justify-content:center;padding:.62em .5em;gap:.35em}
+  .pk-mactions{gap:var(--sp-2);flex-wrap:nowrap;margin:var(--sp-4) calc(var(--sp-4) * -1) calc(var(--sp-5) * -1);
+    padding:var(--sp-3) var(--sp-4);padding-bottom:max(var(--sp-3),env(safe-area-inset-bottom,0px))}
+}
+@media (prefers-reduced-motion:reduce){.pk-pulse,.pk-scrim,.pk-dialog{animation:none}}

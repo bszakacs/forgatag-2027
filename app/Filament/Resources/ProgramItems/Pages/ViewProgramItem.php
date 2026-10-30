@@ -3,12 +3,17 @@
 namespace App\Filament\Resources\ProgramItems\Pages;
 
 use App\Filament\Resources\ProgramItems\ProgramItemResource;
+use App\Models\ProgramHighlight;
 use App\Models\ProgramItem;
 use App\Services\ProgramReview;
 use App\Services\ReviewStepRefused;
+use App\Support\Festival;
 use App\Support\Submission;
+use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Auth;
@@ -90,6 +95,38 @@ class ViewProgramItem extends ViewRecord
                         : Notification::make()->danger()->persistent()->title('Visszaküldve, DE A LEVÉL NEM MENT KI.')
                             ->body("A beküldő ({$cim}) nem kapott értesítést. Írj neki kézzel; a hiba oka a naplóban (storage/logs).")->send();
                 })),
+
+            // NAPI KIEMELÉS (2026: program_highlight gyűjtemény): a programkereső a kiválasztott nap kiemeltjeit a találatok
+            // fölötti sávban mutatja, a sorrend szerint. Csak a program saját napjai választhatók (más napon nem jelenne meg).
+            Action::make('kiemeles')
+                ->label(fn () => 'Napi kiemelés' . (($n = $this->program()->highlights()->count()) ? " ({$n} nap)" : ''))
+                ->color('gray')->icon('heroicon-o-star')
+                ->visible(fn () => (bool) Auth::user()?->role?->canApprovePrograms())
+                ->modalHeading('Napi kiemelés a programkeresőben')
+                ->modalDescription('A kiválasztott napokon a program a programkereső „Kiemelt programok” sávjában is megjelenik (csak közzétett programnál látszik).')
+                ->fillForm(fn () => [
+                    'napok' => $this->program()->highlights->map(fn ($h) => $h->date->format('Y-m-d'))->all(),
+                    'sorrend' => (int) ($this->program()->highlights->min('sort') ?? 0),
+                ])
+                ->schema([
+                    CheckboxList::make('napok')->label('Melyik napokon?')
+                        ->options(fn () => $this->program()->occurrences
+                            ->map(fn ($o) => $o->date->format('Y-m-d'))->unique()->filter(fn ($d) => Festival::isProgramDay($d))
+                            ->mapWithKeys(fn ($d) => [$d => Festival::fullDayLabel(CarbonImmutable::parse($d))])->all())
+                        ->helperText('Csak azok a napok, amelyeken a programnak időpontja van.'),
+                    TextInput::make('sorrend')->label('Sorrend a sávban')->numeric()->minValue(0)->maxValue(999)->default(0)
+                        ->helperText('Kisebb szám = előrébb. Azonos számnál a kiemelés sorrendje dönt.'),
+                ])
+                ->modalSubmitActionLabel('Mentés')
+                ->action(function (array $data) {
+                    $napok = array_values($data['napok'] ?? []);
+                    ProgramHighlight::query()->where('program_item_id', $this->program()->id)->whereNotIn('date', $napok)->delete();
+                    foreach ($napok as $nap) {
+                        $this->program()->highlights()->updateOrCreate(['date' => $nap], ['sort' => (int) ($data['sorrend'] ?? 0)]);
+                    }
+                    Notification::make()->success()->title($napok ? 'Kiemelve: ' . count($napok) . ' napon.' : 'A kiemelés törölve.')->send();
+                    $this->record = ProgramItemResource::getEloquentQuery()->findOrFail($this->program()->getKey());
+                }),
 
             Action::make('foto')->label('Fotó teljes méretben')->color('gray')->icon('heroicon-o-photo')
                 ->visible(fn () => $this->program()->hasPhotoFile())

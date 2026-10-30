@@ -5,9 +5,11 @@ use App\Http\Controllers\Bekuldes\JelszoController;
 use App\Http\Controllers\Bekuldes\UrlapController;
 use App\Http\Controllers\Publikus\HirekController;
 use App\Http\Controllers\Publikus\OldalController;
+use App\Http\Controllers\Publikus\ProgramokController;
 use App\Http\Middleware\BekuldoBelepve;
 use App\Http\Middleware\HamarosanMod;
 use App\Http\Middleware\PublikusNyelv;
+use App\Http\Middleware\PublikusOr;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,15 +47,20 @@ Route::prefix('bekuldes')->name('bekuldes.')->group(function () {
  */
 foreach (['hu' => '', 'ro' => 'ro'] as $nyelv => $elotag) {
     Route::prefix($elotag)->name("{$nyelv}.")
-        ->middleware([PublikusNyelv::class . ":{$nyelv}", HamarosanMod::class])
+        ->middleware([PublikusNyelv::class . ":{$nyelv}", PublikusOr::class, HamarosanMod::class])
         ->group(function () {
             Route::view('/', 'hamarosan')->name('kezdo');
             Route::view('hamarosan', 'hamarosan')->name('hamarosan');
             Route::get('hirek', [HirekController::class, 'index'])->name('hirek');
             Route::get('hirek/{slug}', [HirekController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('hir');
+            // Programkereső (a szűrés a címsorban), napi nézet, „Mi van ma?”, a program lapja.
+            Route::get('programok', [ProgramokController::class, 'index'])->name('programok');
+            Route::get('nap/{datum}', [ProgramokController::class, 'nap'])->where('datum', '\d{4}-\d{2}-\d{2}')->name('nap');
+            Route::get('ma', [ProgramokController::class, 'ma'])->name('ma');
+            Route::get('program/{slug}', [ProgramokController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('program');
             // Aloldal a slugja alapján — a foglalt első szavak (admin, beküldés, rendszer-útvonalak) kizárva.
             Route::get('{lap}', [OldalController::class, 'show'])
-                ->where('lap', '(?!(?:admin|bekuldes|curator|livewire|filament|storage|up|ro|hamarosan|hirek)$)[a-z0-9]+(?:-[a-z0-9]+)*')
+                ->where('lap', '(?!(?:admin|bekuldes|curator|livewire|filament|storage|up|ro|hamarosan|hirek|programok|nap|ma|program)$)[a-z0-9]+(?:-[a-z0-9]+)*')
                 ->name('oldal');
         });
 }

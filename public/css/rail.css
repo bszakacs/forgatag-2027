@@ -1,0 +1,28 @@
+/* KÖZÖS vízszintes csúszka — a 2026-os lib/rail RAIL_CSS-e (a színek a téma firka- és kiemelő tokenjei). A rács
+   oszlopméretét (hány kártya fér ki) a HASZNÁLÓ adja a saját osztályában (pl. .pk-hirail). */
+.crail{display:grid;grid-auto-flow:column;overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;scroll-behavior:auto;
+  scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch}
+.crail::-webkit-scrollbar{display:none;height:0}
+.crail > *{scroll-snap-align:start}
+.crail:focus-visible{outline:2px solid var(--accent-a);outline-offset:6px;border-radius:var(--r-field)}
+.railnav{display:flex;align-items:center;gap:16px;margin-top:16px;padding:0 2px}
+.railnav[hidden]{display:none}
+.railarrow{flex:none;width:46px;height:34px;background:none;border:0;padding:0;cursor:pointer;color:var(--doodle-lime);transition:transform .15s,color .15s}
+.railarrow:hover{transform:translateY(-1px);color:var(--accent-a)}
+.railarrow:disabled{opacity:.3;cursor:default;transform:none}
+.railarrow svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 6px var(--doodle-lime)) drop-shadow(0 0 14px var(--doodle-green))}
+.railarrow:hover svg{filter:drop-shadow(0 0 8px var(--accent-a)) drop-shadow(0 0 18px var(--accent-b))}
+.railarrow:disabled svg{filter:none}
+.railarrow .mk-dot{fill:var(--accent-a)}
+.railline{position:relative;flex:1;height:34px}
+.railline::before,.railline::after{content:"";position:absolute;left:2px;right:2px;top:50%;height:4px;transform:translateY(-50%);border-radius:999px;
+  background:linear-gradient(90deg,var(--doodle-pink) 0%,var(--doodle-orange) 20%,var(--doodle-yellow) 38%,var(--doodle-lime) 56%,var(--doodle-blue) 76%,var(--doodle-purple) 100%)}
+.railline::after{filter:blur(9px);opacity:.9;z-index:0}
+.railline::before{z-index:1}
+.railknob{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);width:34px;height:34px;cursor:grab;touch-action:none;z-index:2}
+.railknob:active{cursor:grabbing}
+.railknob svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 7px var(--doodle-lime)) drop-shadow(0 0 16px var(--doodle-yellow)) drop-shadow(0 2px 5px rgba(20,15,45,.5))}
+.railknob .mk-lime{stroke:var(--doodle-lime)}
+.railknob .mk-yellow{fill:var(--doodle-yellow)}
+@media (max-width:640px){.railarrow{display:none}}
