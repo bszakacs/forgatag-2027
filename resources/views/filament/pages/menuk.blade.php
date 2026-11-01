@@ -3,7 +3,7 @@
          Sortable-direktívája (x-sortable, közös csoport → szintek között is húzható); a húzás végén a böngésző
          a TELJES fát küldi (mentFa). Mobilon / billentyűzettel a nyíl-gombok ugyanazt érik el.
          A stílus saját osztályokkal (fgm-), hogy ne kelljen hozzá az admin-téma újrafordítása. --}}
-    <link rel="stylesheet" href="{{ asset('css/menu-szerkeszto.css') }}?v={{ filemtime(public_path('css/menu-szerkeszto.css')) }}">
+    <link rel="stylesheet" href="@eszkoz('css/menu-szerkeszto.css')">
 
     @php($menu = $this->menu())
     @php($menuk = $this->menus())

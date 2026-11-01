@@ -8,10 +8,10 @@
 {{-- Az Arculat-szerkesztő előnézete (iframe). A publikus lapok VALÓDI stílusaival (betűk, beküldő űrlap)
      — a Filament CSS-e ide nem jön. A téma-CSS-t a szerkesztő írja a #tema-vazlat elembe, élőben;
      kint lévő téma-link itt szándékosan NINCS (különben a régi szabályai a vázlat mellett is hatnának). --}}
-<link rel="stylesheet" href="{{ asset('fonts/fonts.css') }}?v={{ filemtime(public_path('fonts/fonts.css')) }}">
+<link rel="stylesheet" href="@eszkoz('fonts/fonts.css')">
 <style id="tema-vazlat"></style>
-<link rel="stylesheet" href="{{ asset('css/bekuldes.css') }}?v={{ filemtime(public_path('css/bekuldes.css')) }}">
-<link rel="stylesheet" href="{{ asset('css/tema-elonezet.css') }}?v={{ filemtime(public_path('css/tema-elonezet.css')) }}">
+<link rel="stylesheet" href="@eszkoz('css/bekuldes.css')">
+<link rel="stylesheet" href="@eszkoz('css/tema-elonezet.css')">
 </head>
 <body>
 <header class="pv-head">

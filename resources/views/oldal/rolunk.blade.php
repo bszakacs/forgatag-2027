@@ -9,7 +9,7 @@
 @section('title', Nyelv::valaszt($lap->title_hu, $lap->title_ro))
 @section('leiras', Nyelv::valaszt($lap->seo_description_hu, $lap->seo_description_ro))
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/rolunk.css') }}?v={{ filemtime(public_path('css/rolunk.css')) }}">
+<link rel="stylesheet" href="@eszkoz('css/rolunk.css')">
 @endpush
 @php
     $kep = fn (string $kulcs, array $p) => ($m = $sz->kep($kulcs)) ? url($m->getGlideUrl($p + ['fm' => 'webp', 'q' => 78])) : null;

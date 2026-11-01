@@ -161,6 +161,14 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
       kártyánként és szűrő-soronként külön beillesztett sablon (73 kártya ~420 ms). Most egy-egy sablon rajzolja az egész listát,
       a jelzéseket PHP írja: **a meleg kérés 763 → 169 ms** (minden nap: 348 ms). A tömörítés élesben megy (brotli: 502 → 83 kB).
       ⚠ Élesben újramérendő a telepítés után.
+  - **Javítások a tulajdonos ötödik visszajelzése után (2026-11-01):**
+    · **Gyorsítótár-törés minden saját CSS/JS-re, EGY helyen:** a szerver a statikus fájlokat 7 napig gyorsítótárazza; eddig a
+      lapok fájlonként, a módosítás IDEJÉBŐL kaptak `?v=`-t (a két vendor-szkript semmit). Most mindegyik a `@eszkoz(...)`
+      direktívával, a fájl TARTALMÁNAK lenyomatával (`App\Support\Eszkoz`; az admin témája is). Teszt őrzi, hogy sablonban ne
+      maradjon más hivatkozás.
+    · **A lábléc eltűnt a programkeresőn:** nem a magasság nyelte el — a lábléc ott volt a lap alján, de a 2026-os rögzített
+      háttérréteg (`.fgl-atmo`) fölé rajzolódott, mert a 2027-es lábléc nem kapott saját réteget (2026-ban `z-index:5`-tel
+      kapott). Most kap (a közös rétegskálából). Asztalon és 375 px-en a lista aljára görgetve ellenőrizve.
   - **A gombok helye megvan, a működésük a saját körükben kapcsol be (addig tiltva, halványan):**
     · **térkép-kör (2. rész):** a térkép maga, a felugró ablak „Mutasd a térképen” gombja, a mobil „Térkép” gomb, a helyszínlista
       térképszámai;

@@ -197,5 +197,5 @@
 @endsection
 
 @push('scripts')
-  <script src="{{ asset('js/bekuldes.js') }}?v={{ filemtime(public_path('js/bekuldes.js')) }}"></script>
+  <script src="@eszkoz('js/bekuldes.js')"></script>
 @endpush

@@ -580,6 +580,12 @@ Jog: `UserRole::canManageContent` (szuperadmin, koordinátor) → `TartalomPolic
   tokenek és a rétegsorrend-skála `--z-*` itt, EGY helyen) + laponként saját fájl (`rolunk.css`, `@push('styles')`). A 2026-os
   beégetett színek téma-tokenre cserélve (`--lap-*` a világos sávokra). ⚠ `body{overflow-x:clip}` — NE `hidden`: a nyitott menü
   gyökér-zárolásakor a body görgető dobozzá válna, és a ragadós fejléc elszállna (mérve).
+- 🔴 **GYORSÍTÓTÁR-TÖRŐ CÍM — EGY HELYEN (2026-11-01):** a szerver a statikus fájlokat 7 napig gyorsítótárazza (élesben mérve),
+  ezért MINDEN saját CSS/JS a `@eszkoz('css/x.css')` Blade-direktívával kap címet (`App\Support\Eszkoz`: `?v=<a TARTALOM
+  md5-lenyomata>`, hiányzó fájl → hiba; PHP-ban `Eszkoz::url()`, pl. az admin témája). A téma-CSS a fájlnevében kapja ugyanezt.
+  Közvetlen `asset('….css|.js')` vagy `filemtime` sablonban TILOS — a `tests/Feature/EszkozTest.php` elbukik rajta.
+- **A lábléc saját réteget kap** (`position:relative; z-index:var(--z-content)`): a design-lapok rögzített háttérrétege
+  (`.fgl-atmo`, `z-index:0`) különben fölé rajzolódik, és a lábléc eltűnik (a programkeresőn így volt, 2026-11-01).
 - **Hamarosan mód:** Beállítások → „Publikus oldal” blokk (`public.*`: kapcsoló, cím/szöveg HU/RO, lábléc-szöveg HU/RO) →
   `App\Http\Middleware\HamarosanMod` CSAK a publikus csoporton; belépett admin a valódi lapot látja, sárga sávval. `/hamarosan` mindig elérhető.
 - **Világos mód a publikus oldalon: NINCS** (a 2026-os sötét-only marad; a ◐ csak a beküldő űrlapon) — konzervatív döntés, a tulajdonos kérheti.

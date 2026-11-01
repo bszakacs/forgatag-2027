@@ -12,9 +12,9 @@
 @section('title', $sz->szoveg('programs_day_title') . ' — ' . $napNev)
 @section('leiras', Nyelv::valaszt($lap->seo_description_hu, $lap->seo_description_ro))
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/programkereso.css') }}?v={{ filemtime(public_path('css/programkereso.css')) }}">
-<link rel="stylesheet" href="{{ asset('css/programkereso-szerver.css') }}?v={{ filemtime(public_path('css/programkereso-szerver.css')) }}">
-<link rel="stylesheet" href="{{ asset('css/programok.css') }}?v={{ filemtime(public_path('css/programok.css')) }}">
+<link rel="stylesheet" href="@eszkoz('css/programkereso.css')">
+<link rel="stylesheet" href="@eszkoz('css/programkereso-szerver.css')">
+<link rel="stylesheet" href="@eszkoz('css/programok.css')">
 @endpush
 
 @section('content')

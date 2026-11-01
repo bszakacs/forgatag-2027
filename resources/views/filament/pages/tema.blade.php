@@ -2,7 +2,7 @@
     {{-- Az Arculat-szerkesztő. A felületet a böngésző építi (public/js/tema-szerkeszto.js) a lent
          beágyazott induló állapotból; a Livewire nem rajzolja újra (wire:ignore) — különben egy
          Livewire-frissítés felülírná az élő előnézetet és a mentetlen módosításokat. --}}
-    <link rel="stylesheet" href="{{ asset('css/tema-szerkeszto.css') }}?v={{ filemtime(public_path('css/tema-szerkeszto.css')) }}">
+    <link rel="stylesheet" href="@eszkoz('css/tema-szerkeszto.css')">
 
     <div id="te-app" class="te-app" wire:ignore>
         <div class="te-bar">
@@ -51,6 +51,6 @@
     </div>
 
     <script type="application/json" id="te-config">@json($this->config(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG)</script>
-    <script src="{{ asset('js/tema-css.js') }}?v={{ filemtime(public_path('js/tema-css.js')) }}"></script>
-    <script src="{{ asset('js/tema-szerkeszto.js') }}?v={{ filemtime(public_path('js/tema-szerkeszto.js')) }}"></script>
+    <script src="@eszkoz('js/tema-css.js')"></script>
+    <script src="@eszkoz('js/tema-szerkeszto.js')"></script>
 </x-filament-panels::page>

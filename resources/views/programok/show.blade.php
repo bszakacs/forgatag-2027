@@ -25,7 +25,7 @@
   @section('og_kep', url($program->cover->getGlideUrl(['w' => 1200, 'h' => 630, 'fit' => 'crop', 'fm' => 'jpg', 'q' => 78])))
 @endif
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/programok.css') }}?v={{ filemtime(public_path('css/programok.css')) }}">
+<link rel="stylesheet" href="@eszkoz('css/programok.css')">
 @endpush
 
 @section('content')

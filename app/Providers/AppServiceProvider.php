@@ -8,6 +8,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -28,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // @eszkoz('css/x.css') — egy publikus CSS/JS-fájl címe a TARTALMA lenyomatával (gyorsítótár-törő, App\Support\Eszkoz).
+        // MINDEN saját CSS/JS-hivatkozás ezen át megy (egy hely); a téma-CSS a fájlnevében kapja ugyanezt (Theme::cssUrl).
+        Blade::directive('eszkoz', fn (string $ut) => "<?php echo e(\\App\\Support\\Eszkoz::url({$ut})); ?>");
+
         // A médiatár méretváltozatai (Glide, /curator/...): a 2026-os anyagban 17 kép 16 megapixel fölötti
         // (pl. 9030×2942-es logó) — a képkezelő ezeket a 128 MB-os alap memóriakerettel nem bírja (500-as hiba).
         // Csak ezen az útvonalon emeljük; a változat egyszer készül el, utána a gyorsítótárból jön.

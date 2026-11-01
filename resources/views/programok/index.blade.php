@@ -29,13 +29,13 @@
 @section('nyelv_query', $szures->querySzoveg())
 @section('ter', 'sajat')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/rail.css') }}?v={{ filemtime(public_path('css/rail.css')) }}">
-<link rel="stylesheet" href="{{ asset('css/programkereso.css') }}?v={{ filemtime(public_path('css/programkereso.css')) }}">
-<link rel="stylesheet" href="{{ asset('css/programkereso-szerver.css') }}?v={{ filemtime(public_path('css/programkereso-szerver.css')) }}">
+<link rel="stylesheet" href="@eszkoz('css/rail.css')">
+<link rel="stylesheet" href="@eszkoz('css/programkereso.css')">
+<link rel="stylesheet" href="@eszkoz('css/programkereso-szerver.css')">
 @endpush
 @push('scripts')
-<script src="{{ asset('js/rail.js') }}?v={{ filemtime(public_path('js/rail.js')) }}"></script>
-<script src="{{ asset('js/programkereso.js') }}?v={{ filemtime(public_path('js/programkereso.js')) }}"></script>
+<script src="@eszkoz('js/rail.js')"></script>
+<script src="@eszkoz('js/programkereso.js')"></script>
 @endpush
 
 @section('content')

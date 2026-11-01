@@ -120,7 +120,9 @@ html.mnav-lock{overflow:hidden}
 html.mnav-lock header.site-hd{position:fixed;left:0;right:0}
 
 /* ---------- LÁBLÉC ---------- */
-footer.site-ft{border-top:var(--border-w) solid var(--line);background:var(--footer-bg);padding:56px 0 32px;color:var(--fg-muted)}
+/* A lábléc SAJÁT réteget kap (2026: chrome.css position:relative;z-index:5): a design-lapok rögzített háttérrétege
+   (.fgl-atmo, z-index 0) különben FÖLÉ rajzolódik, és a lábléc eltűnik (a programkeresőn így volt, 2026-11-01). */
+footer.site-ft{position:relative;z-index:var(--z-content);border-top:var(--border-w) solid var(--line);background:var(--footer-bg);padding:56px 0 32px;color:var(--fg-muted)}
 footer.site-ft a{color:var(--fg-muted);text-decoration:none}
 footer.site-ft .foot-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:start}
 footer.site-ft .ft-h{font-family:var(--font-body);font-weight:700;font-size:.98rem;margin:0 0 14px;color:var(--fg)}

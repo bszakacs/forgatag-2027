@@ -56,16 +56,16 @@
 @foreach (Theme::fontPreloads() as $betu)
 <link rel="preload" href="{{ $betu }}" as="font" type="font/woff2" crossorigin>
 @endforeach
-<link rel="stylesheet" href="{{ asset('fonts/fonts.css') }}?v={{ filemtime(public_path('fonts/fonts.css')) }}">
+<link rel="stylesheet" href="@eszkoz('fonts/fonts.css')">
 <link rel="stylesheet" href="{{ Theme::cssUrl() }}">
-<link rel="stylesheet" href="{{ asset('css/publikus.css') }}?v={{ filemtime(public_path('css/publikus.css')) }}">
+<link rel="stylesheet" href="@eszkoz('css/publikus.css')">
 @stack('styles')
 {{-- htmx (lapozás, szűrés) és Alpine (menü, ablak) — helyi, rögzített verziójú fájlok (package.json), CDN nélkül.
      historyCacheSize 0 + refreshOnHistoryMiss: a „vissza” gomb a TELJES lapot tölti újra a szerverről (nem egy régi
      DOM-másolatot, és nem csak egy részt — így a térkép és minden más a címsor állapotából épül újra). --}}
 <meta name="htmx-config" content='{"historyCacheSize":0,"refreshOnHistoryMiss":true}'>
-<script src="{{ asset('js/vendor/htmx-2.0.4.min.js') }}" defer></script>
-<script src="{{ asset('js/vendor/alpine-3.14.9.min.js') }}" defer></script>
+<script src="@eszkoz('js/vendor/htmx-2.0.4.min.js')" defer></script>
+<script src="@eszkoz('js/vendor/alpine-3.14.9.min.js')" defer></script>
 </head>
 {{-- x-data a body-n: a fejléc burgerje és a mobil menü ugyanazt az állapotot látja (a fejléc nem kerülhet
      burkoló elembe, mert a ragadós pozíció akkor a burkolóhoz tapadna). --}}

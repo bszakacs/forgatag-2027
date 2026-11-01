@@ -25,9 +25,9 @@
 @foreach (Theme::fontPreloads() as $betu)
 <link rel="preload" href="{{ $betu }}" as="font" type="font/woff2" crossorigin>
 @endforeach
-<link rel="stylesheet" href="{{ asset('fonts/fonts.css') }}?v={{ filemtime(public_path('fonts/fonts.css')) }}">
+<link rel="stylesheet" href="@eszkoz('fonts/fonts.css')">
 <link rel="stylesheet" href="{{ Theme::cssUrl() }}">
-<link rel="stylesheet" href="{{ asset('css/bekuldes.css') }}?v={{ filemtime(public_path('css/bekuldes.css')) }}">
+<link rel="stylesheet" href="@eszkoz('css/bekuldes.css')">
 </head>
 <body>
 <div class="wrap @yield('wrapClass')">
