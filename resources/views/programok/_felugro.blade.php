@@ -10,8 +10,8 @@
      * szerver végzi. A listából EZ nyílik; a címsorban `?program=<slug>` (megosztható). A kártya htmx-szel CSAK ezt az
      * elemet kéri le (#pkModal), a bezárás ugyanígy. Egyetlen jelölési eltérés: a leírás tárolója `div` (2026: `p`,
      * amibe a JS tett `p`-ket — szerveroldali HTML-ben `p` nem lehet `p`-ben).
-     * A négy gomb a 2026-os helyén van; a „Mutasd a térképen” a térkép-, a „Naptárba” a naptár-, a „Mentés” a kedvencek-
-     * körben kapcsol be (addig tiltva — ALLAPOT.md). A „Megosztás” működik.
+     * A négy gomb a 2026-os helyén van; a „Mutasd a térképen” és a „Megosztás” működik, a „Naptárba” a naptár-, a
+     * „Mentés” a kedvencek-körben kapcsol be (addig tiltva — ALLAPOT.md).
      */
     $p = $felugro['program'] ?? null;
     $zarUrl = $szures->mas([])->url();
@@ -59,7 +59,8 @@
         </dl>
         <div class="pk-mflags" id="pkMFlags">{{ ProgramJelzesek::html($p, true) }}</div>
         <div class="pk-mactions">
-          <button class="pk-mghost" type="button" id="pkMMap" disabled>
+          {{-- 2026: csak ha a helyszín SZEREPEL a térképen — a térkép JS-e dönt (public/js/terkep.js), addig rejtett. --}}
+          <button class="pk-mghost" type="button" id="pkMMap" data-venue="{{ $v?->slug }}" hidden disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3 3 5.5v15L9 18l6 3 6-2.5v-15L15 6 9 3v15"/></svg>
             <span class="pk-only-wide">{{ $sz->szoveg('programs_modal_map_cta') }}</span>
             <span class="pk-only-narrow">{{ $sz->szoveg('programs_modal_map_cta_short') }}</span>

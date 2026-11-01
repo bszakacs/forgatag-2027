@@ -12,6 +12,7 @@ use App\Support\Nyelv;
 use App\Support\ProgramKereso;
 use App\Support\ProgramSor;
 use App\Support\ProgramSzures;
+use App\Support\Terkep;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -49,13 +50,18 @@ class ProgramokController extends Controller
 
         $kereso = new ProgramKereso($sz);
         $t = $kereso->talalatok();
+        $darabok = $kereso->darabok();
 
         $valasz = response()->view('programok.index', [
             'lap' => $lap,
             'sz' => $szovegek,
             'szures' => $sz,
             't' => $t,
-            'darabok' => $kereso->darabok(),
+            'darabok' => $darabok,
+            // A térkép EGYSZER rajzolódik (a htmx-válaszból nem cserélődik, ott el sem készül); a szűrésre a
+            // #pkTerkepAdat adat-elemből frissül.
+            'terkep' => $htmx ? null : Terkep::adat(Nyelv::aktualis()),
+            'terkepAllapot' => Terkep::allapot($darabok['helyszin'], $sz->helyszinek),
             'kiemelt' => $kereso->kiemeltek(),
             'lazitas' => $t['osszes'] === 0 && ! $t['most'] ? $kereso->lazitas() : null,
             'felugro' => $felugro,

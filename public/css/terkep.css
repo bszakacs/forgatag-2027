@@ -1,0 +1,164 @@
+/* A PROGRAMKERESŐ TÉRKÉPE — a 2026-os lib/offmap.ts OFFMAP_CSS + lib/finder-map.ts FINDER_MAP_CSS BETŰRE (CLAUDE.md 2/e).
+   Egyetlen eltérés: a címbetűs szabályok font-weight:var(--head-wght)-et kapnak (TemaTest — a téma súlya). */
+
+.pk-offwrap{position:absolute;inset:0;z-index:4;pointer-events:none}
+.pk-offwrap .pk-offmap{pointer-events:auto}
+.pk-offmap{position:absolute;z-index:4;
+  display:flex;align-items:center;gap:.55em;cursor:pointer;font-family:inherit;text-align:left;
+  padding:.42em .6em;border-radius:var(--r-pill);white-space:nowrap;
+  background:color-mix(in srgb, var(--bg) 88%, var(--panel));
+  border:1px solid var(--line-strong);border-right:none;
+  color:var(--fg);transition:var(--dur-1) var(--ease)}
+.pk-offmap:hover{background:color-mix(in srgb, var(--bg) 78%, var(--accent-b));
+  border-color:var(--accent-b);
+  box-shadow:0 0 0 1px var(--accent-b), 0 0 18px -4px var(--accent-b)}
+.pk-offmap:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-offmap[aria-pressed="true"]{background:color-mix(in srgb, var(--doodle-pink) 75%, var(--bg));
+  border-color:#fff}
+.pk-offnum{width:26px;height:26px;flex:0 0 auto;display:grid;place-content:center;border-radius:50%;
+  font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;font-size:.9rem;line-height:1;
+  background:var(--accent-b);color:var(--accent-contrast);border:1.5px solid var(--accent-a)}
+.pk-offmap[aria-pressed="true"] .pk-offnum{background:#fff;color:var(--doodle-pink);border-color:#fff}
+.pk-offtxt{display:flex;flex-direction:column;line-height:1.15}
+.pk-offtxt b{font-size:var(--text-small)}
+.pk-offtxt span{font-size:var(--text-micro);color:var(--fg-muted)}
+.pk-offmap svg{width:15px;height:15px;flex:0 0 auto;opacity:.85;
+  transform:rotate(calc(var(--pk-rot, 90deg) - 90deg))}
+.pk-offmap.is-off{opacity:.45;pointer-events:none}
+.pk-offmap.is-flash{border-color:#fff;
+  box-shadow:0 0 0 2px var(--accent-b), 0 0 18px -4px var(--accent-b)}
+@media(max-width:720px){
+  .pk-offmap{padding:.28em .45em;gap:.4em}
+  .pk-offnum{width:15px;height:15px;font-size:.56rem;border-width:1px}
+  .pk-offtxt b{font-size:.62rem}
+  .pk-offmap svg{width:11px;height:11px}
+}
+
+.pk-map{margin:var(--sp-5) 0 0}
+/* A FÜLEK a TELJES SOR szélességét kitöltik (két egyenlő gomb) — a makett gomb-
+   rendszerének .btn-fill lime/pink kitöltésével; az inaktív fül halvány. */
+.pk-maptabs{display:flex;gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.pk-maptab{flex:1 1 0;justify-content:center;font-size:1.06rem;padding:.85em 1.5em;
+  letter-spacing:.01em}
+.pk-maptab .pk-tabn{display:inline-flex;align-items:center;justify-content:center;
+  min-width:1.7em;padding:.12em .5em;margin-left:.2em;border-radius:var(--r-pill);
+  background:color-mix(in srgb, var(--accent-contrast) 18%, transparent);
+  font-size:.84em;font-variant-numeric:tabular-nums}
+.pk-maptab[aria-selected="false"]{opacity:.42;box-shadow:none;filter:saturate(.7)}
+.pk-maptab[aria-selected="false"]:hover{opacity:.72;transform:none}
+.pk-maptab[aria-selected="true"]{transform:translateY(-1px)}
+.pk-mapstage{position:relative}
+.pk-mapview{position:relative}
+.pk-mapview[hidden]{display:none}
+/* A makettben a térkép SZABADON áll (nincs kártya-keret körülötte), és HÚZÁSSAL
+   pásztázható a saját keretén belül: overflow:hidden + touch-action:none, tehát
+   NINCS görgetősáv, és mobilon sem verekszik a lap görgetésével. A méretét az
+   oldalarány adja (--pk-ar), a réteget a JS transzformálja. 2026-08-23. */
+.pk-canvas{position:relative;overflow:hidden;width:100%;aspect-ratio:var(--pk-ar,16/9);
+  touch-action:none;cursor:grab;border-radius:var(--r-card)}
+.pk-canvas:active{cursor:grabbing}
+.pk-layer{position:absolute;left:0;top:0;transform-origin:0 0}
+.pk-mapimg{position:absolute;inset:0;width:100%;height:100%;display:block;
+  user-select:none;-webkit-user-drag:none}
+.pk-marks{position:absolute;inset:0}
+/* JELÖLŐ — a makett köre: sorszám, akcent-szín, fehér perem.
+   ÁLLANDÓ KÉPERNYŐ-MÉRET (2026-08-21): a jelölő a NAGYÍTOTT rétegben áll, ezért a
+   réteg scale-jét ellen-skálázzuk (1/--pk-z) — így csak a POZÍCIÓ skálázódik, a kör,
+   a sorszám, a koppintható felület és a pakli-hátlapok eltolása képernyő-pixelben
+   marad. Ez a nagyítás értelme: az átlapoló jelölők SZÉTVÁLNAK, és külön
+   kattinthatóvá lesznek. A --pk-z-t a réteg transzformálásakor írjuk (fgMakeMap).
+   (A vector-effect="non-scaling-stroke" csak a vonalvastagságot tartaná — a méretet nem.) */
+.pk-marker{position:absolute;transform:translate(-50%,-50%) scale(calc(1 / var(--pk-z,1)));width:30px;height:30px;
+  display:grid;place-content:center;border-radius:50%;cursor:pointer;font:inherit;
+  font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;font-size:.86rem;line-height:1;
+  background:var(--accent-b);color:var(--accent-contrast);border:2px solid #fff;
+  box-shadow:0 3px 10px rgba(0,0,0,.45);z-index:3;
+  transition:transform var(--dur-1) var(--ease),box-shadow var(--dur-1) var(--ease)}
+.pk-marker:hover{transform:translate(-50%,-50%) scale(calc(1.12 / var(--pk-z,1)))}
+.pk-marker:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-marker[aria-pressed="true"]{background:var(--doodle-pink);color:#fff;border-color:#fff;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--doodle-pink) 45%, transparent),0 3px 10px rgba(0,0,0,.45)}
+.pk-marker.is-off{opacity:.4}
+/* KOPPINTHATÓ FELÜLET — csak ÉRINTŐS eszközön (ott szól a 44 px-es minimum).
+   A látható kör mobilon 24 px, a találati felület 44 px: átlátszó, a jelölőn BELÜL,
+   tehát a koppintás ugyanide szól, és a jelölő ellen-skálázása miatt nagyítva is
+   44 px marad. EGÉRREL NEM nagyítjuk a találatot: a szomszédos jelölő 44 px-es
+   köre elvinné a kattintást a LÁTHATÓ kör elől — egérrel a 30 px-es kör pontos. */
+.pk-mk-hit{display:none}
+@media(hover:none){
+  .pk-mk-hit{display:block;position:absolute;left:50%;top:50%;width:44px;height:44px;
+    transform:translate(-50%,-50%);border-radius:50%}
+}
+/* ---- „MUTASD A TÉRKÉPEN" KIEMELÉS: vízgyűrű + kiemelt jelölő ----------------
+   A gyűrű SAJÁT elem (.pk-ping), nem box-shadow és nem a jelölő pszeudo-eleme:
+   a paklis jelölő mindkét pszeudóját használja, és így akkor is működik, ha a
+   jelölő egyszer SVG lesz (SVG-n a box-shadow nem érvényes). A gyűrű nem fogad
+   kattintást, tehát a jelölő továbbra is kattintható marad. */
+.pk-marker.is-ping,.pk-offmap.is-ping{background:var(--doodle-pink);color:#fff;border-color:#fff;
+  z-index:6}
+.pk-marker.is-ping{box-shadow:0 0 0 3px color-mix(in srgb, var(--doodle-pink) 55%, transparent),0 3px 10px rgba(0,0,0,.45)}
+.pk-ping{position:absolute;left:0;top:0;
+  width:calc(22px / var(--pk-z,1));height:calc(22px / var(--pk-z,1));
+  margin:calc(-11px / var(--pk-z,1)) 0 0 calc(-11px / var(--pk-z,1));
+  border-radius:50%;pointer-events:none;z-index:5;
+  border:calc(2px / var(--pk-z,1)) solid var(--doodle-pink);opacity:0;
+  animation:pkPing 1.45s var(--ease) infinite}
+.pk-ping::after,.pk-ping::before{content:"";position:absolute;
+  inset:calc(-2px / var(--pk-z,1));border-radius:50%;
+  border:calc(2px / var(--pk-z,1)) solid var(--doodle-pink);opacity:0;
+  animation:pkPing 1.45s var(--ease) infinite}
+.pk-ping::before{animation-delay:.28s}
+.pk-ping::after{animation-delay:.56s}
+@keyframes pkPing{
+  0%{transform:scale(.6);opacity:.85}
+  70%{opacity:.18}
+  100%{transform:scale(3.6);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .pk-ping{display:none}
+}
+/* PAKLI: több terem egy helyszínen — a makett „lapok egymáson" jelölése */
+.pk-marker.pk-stack::before,.pk-marker.pk-stack::after{content:"";position:absolute;inset:0;
+  border-radius:50%;border:2px solid #fff;background:var(--accent-b);z-index:-1}
+.pk-marker.pk-stack::before{transform:translate(3px,-3px);opacity:.85}
+.pk-marker.pk-stack::after{transform:translate(6px,-6px);opacity:.6}
+.pk-marker.pk-stack[aria-pressed="true"]::before,.pk-marker.pk-stack[aria-pressed="true"]::after{background:var(--doodle-pink)}
+/* PAKLI-BUBORÉK: a termek választója */
+/* HELYSZÍN-BUBORÉK (a makett .pk-tip-je): a jelölő FÖLÉ nyílik, nem fogad kattintást,
+   és a vászon keretén belül marad (a JS igazítja, ha a szélen kicsúszna). */
+.pk-tip{position:absolute;z-index:8;pointer-events:none;opacity:0;
+  transform:translate(-50%,-118%);
+  background:var(--panel);color:var(--fg);border:1px solid var(--line-strong);
+  border-radius:var(--r-field);padding:.45em .7em;font-size:var(--text-micro);white-space:nowrap;
+  max-width:calc(100% - 12px);overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 12px 28px -16px rgba(0,0,0,.8);transition:opacity var(--dur-1) var(--ease)}
+.pk-tip.is-on{opacity:1}
+.pk-tip.is-below{transform:translate(-50%,18%)}
+.pk-tip b{font-weight:700}
+@media(prefers-reduced-motion:reduce){ .pk-tip{transition:none} }
+.pk-deck{position:absolute;z-index:9;min-width:180px;max-width:min(280px,80vw);
+  background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--r-card);
+  padding:var(--sp-3);box-shadow:0 18px 44px -18px rgba(0,0,0,.7)}
+.pk-deck[hidden]{display:none}
+.pk-deck b{display:block;font-size:var(--text-small);margin-bottom:var(--sp-2)}
+.pk-deck button{display:flex;width:100%;align-items:center;gap:.5em;cursor:pointer;font:inherit;
+  font-size:var(--text-small);text-align:left;padding:.35em .5em;margin:2px 0;border-radius:var(--r-field);
+  border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.pk-deck button[aria-pressed="true"]{border-color:var(--doodle-pink);
+  background:color-mix(in srgb, var(--doodle-pink) 22%, var(--card))}
+/* kezelőgombok: a makett narancssárga gombjai, a térkép jobb felső sarkában */
+.pk-zoom{position:absolute;top:0;right:0;z-index:5;display:flex;flex-direction:row;gap:6px}
+.pk-zoom button{width:36px;height:36px;display:grid;place-content:center;cursor:pointer;
+  font-family:inherit;font-size:1.15rem;font-weight:700;line-height:1;
+  color:var(--accent-contrast);background:var(--accent-b);
+  border:1px solid color-mix(in srgb, var(--accent-c) 60%, transparent);border-radius:10px;
+  box-shadow:0 6px 18px -10px color-mix(in srgb, var(--accent-b) 80%, transparent);
+  transition:var(--dur-1) var(--ease)}
+.pk-zoom button:hover{background:var(--accent-a);transform:translateY(-1px)}
+.pk-zoom button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-zoom button:disabled{opacity:.42;cursor:default;transform:none}
+@media(max-width:720px){
+  .pk-marker{width:24px;height:24px;font-size:.72rem;border-width:1.5px}
+  /* mobilon a makett arányát vesszük: a TELJES térkép látszik a keretben */
+  .pk-canvas{aspect-ratio:1500/1080}
+}

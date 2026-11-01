@@ -363,12 +363,63 @@ class ProgramkeresoTest extends TestCase
         $this->assertStringContainsString('A program készül', $this->talalatok('/programok'));
 
         // A lap szövegei kulcsok: a sablon minden kérése le van írva a LapSablon-ban.
-        foreach (['index', '_talalatok', 'nap'] as $f) {
-            preg_match_all('/\$sz->szoveg\(\'([a-z0-9_]+)\'\)/', (string) file_get_contents(resource_path("views/programok/{$f}.blade.php")), $m);
+        foreach (glob(resource_path('views/programok/*.blade.php')) as $f) {
+            preg_match_all('/\$sz->szoveg\(\'([a-z0-9_]+)\'\)/', (string) file_get_contents($f), $m);
             foreach ($m[1] as $kulcs) {
-                $this->assertArrayHasKey($kulcs, LapSablon::mezok('programok'), "{$f}: {$kulcs}");
+                $this->assertArrayHasKey($kulcs, LapSablon::mezok('programok'), basename($f) . ": {$kulcs}");
             }
         }
         $this->assertTrue(Page::query()->where('slug', 'programok')->value('is_system'));
+    }
+
+    public function test_a_terkep_egyszer_rajzolodik_es_a_szuresre_az_adat_elembol_frissul(): void
+    {
+        $this->var->forceFill(['map_zone' => 'castle', 'map_x' => 40.5, 'map_y' => 30, 'map_no' => 7])->save();
+        $kint = Venue::create(['slug' => 'allatkert', 'name' => 'Állatkert', 'short_name' => 'Állatkert',
+            'map_zone' => 'city', 'map_edge' => true, 'map_bearing' => 90, 'map_no' => 40]);
+        $p = $this->program('Borkerti est', [['2027-08-27', '20:00']], ['venue_id' => $this->borkert->id]);
+        $this->program('Állatkerti séta', [['2027-08-27', '10:00']], ['venue_id' => $kint->id]);
+
+        $html = $this->get('/programok?nap=mind')->assertOk()->getContent();
+        // a jelölő a vár-térképen, a termeivel (pakli); a szélső jelvény a város-térkép szélén, irány szerint
+        $this->assertMatchesRegularExpression('~<button type="button" class="pk-marker pk-stack" data-venue="var" data-kids="var-borkert"[^>]*style="left:40.5%;top:30%"~', $html);
+        $this->assertMatchesRegularExpression('~class="pk-offmap" data-venue="allatkert"[^>]*--pk-rot:90deg~', $html);
+        // a térkép a jobb hasábban, nem csere-célpont; az adat: helyszín → programszám (a szülő a termeivel együtt)
+        $this->assertMatchesRegularExpression('~id="pkMapCol"[^>]*>\s*<div class="pk-map"~', $html);
+        preg_match('~<script type="application/json" id="pkTerkepAdat" hx-swap-oob="true">(.*?)</script>~s', $html, $m);
+        $adat = json_decode($m[1], true);
+        $this->assertSame(1, $adat['db']['var']);
+        $this->assertSame(1, $adat['db']['allatkert']);
+        $this->assertStringNotContainsString('data-pk-sheet="map" disabled', $html);
+
+        // htmx-szűrés: a térkép NEM jön újra (nem cserélődik), csak az adat-elem — a kiválasztott helyszínnel
+        $h = $this->withHeaders(['HX-Request' => 'true'])->get('/programok?nap=mind&helyszin=var')->assertOk()->getContent();
+        $this->flushHeaders();
+        $this->assertStringNotContainsString('class="pk-map"', $h);
+        preg_match('~id="pkTerkepAdat" hx-swap-oob="true">(.*?)</script>~s', $h, $m);
+        $this->assertSame(['var'], json_decode($m[1], true)['sel']);
+
+        // a popup „Mutasd a térképen” gombja a program helyszínét kapja (a terem a szülő jelölőjén keresztül)
+        $f = $this->get('/programok?nap=mind&program=' . $p->slug)->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('~id="pkMMap" data-venue="var-borkert"~', $f);
+    }
+
+    public function test_a_2026_os_terkep_pozicio_csak_az_erintetlen_helyszint_tolti_ki(): void
+    {
+        $this->borkert->forceFill(['map_zone' => 'castle', 'map_x' => 1, 'map_y' => 2, 'map_no' => 99])->save();
+        $csomag = json_decode((string) file_get_contents(base_path(\App\Support\HelyszinTerkepImport::CSOMAG)), true);
+        $this->assertNotEmpty($csomag['helyszinek']);
+        $sor = collect($csomag['helyszinek'])->firstWhere('map_x', '!=', null);
+        $v = Venue::create(['slug' => $sor['slug'], 'name' => 'Próba']);
+
+        $naplo = [];
+        (new \App\Support\HelyszinTerkepImport)->run(function (string $s) use (&$naplo) { $naplo[] = $s; });
+
+        $v->refresh();
+        $this->assertEqualsWithDelta($sor['map_x'], (float) $v->map_x, 0.001);
+        $this->assertSame($sor['map_zone'], $v->map_zone->value);
+        // a már beállított (térkép-szerkesztőben) érintetlen marad
+        $this->assertSame(99, (int) $this->borkert->fresh()->map_no);
+        $this->assertStringContainsString('NINCS a 2027-es listában', implode("\n", $naplo));
     }
 }

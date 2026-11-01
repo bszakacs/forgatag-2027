@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-10-30 (PROMPT-11, programkereső — 1. rész; a 2. rész a térkép)
+**Utolsó frissítés:** 2026-11-01 (PROMPT-12/a, programkereső — a térkép; hátra a 12/b: helyszín- és kategórialapok, összevetés)
 
 ---
 
@@ -170,8 +170,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
       háttérréteg (`.fgl-atmo`) fölé rajzolódott, mert a 2027-es lábléc nem kapott saját réteget (2026-ban `z-index:5`-tel
       kapott). Most kap (a közös rétegskálából). Asztalon és 375 px-en a lista aljára görgetve ellenőrizve.
   - **A gombok helye megvan, a működésük a saját körükben kapcsol be (addig tiltva, halványan):**
-    · **térkép-kör (2. rész):** a térkép maga, a felugró ablak „Mutasd a térképen” gombja, a mobil „Térkép” gomb, a helyszínlista
-      térképszámai;
+    · ~~**térkép-kör (2. rész):** a térkép maga, a felugró ablak „Mutasd a térképen” gombja, a mobil „Térkép” gomb, a helyszínlista
+      térképszámai~~ — **kész (PROMPT-12, 2/a rész)**;
     · **kedvencek-kör:** a szív a sorokon/kártyákon és a felugró ablak „Mentés” gombja;
     · **naptár-kör:** a felugró ablak „Naptárba” gombja;
     · **mozgás-/dekor-kör:** a lapon szórt firkák (`#pageDecor` üres) és a kártyák felúszása;
@@ -193,6 +193,29 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   - Közben javítva: a lapok `@section('title', …)` értéke kétszer escape-elődött (egy „&” a címben `&amp;amp;` lett, a megosztási kép
     címe eltört) — a keret most visszafejti.
 
+- **Programkereső — 2/a rész: a TÉRKÉP** (`PROMPT-12`, 2026-11-01) — **kész HELYBEN, még NINCS élesben.** A PROMPT-12 két
+  körre vágva: **12/a** = térkép-adat + térkép + térkép-gombok + „szűrj, aztán kattints” próba + élő sebesség; **12/b** = helyszín- és
+  kategórialapok + a napi nézet és a program lapja összevetése a 2026-os kóddal (lent, „Ami ezután jön”).
+  - **Térkép-pozíció a 2026-os mentésből** (`forgatag:helyszin-terkep-import`, a telepítés része, ismételhető): csomag
+    `database/import/helyszin-terkep-2026.json` (46 helyszín, 41 pozícióval, 3 a térkép szélén). CSAK az érintetlen helyszínt tölti
+    (amit a térkép-szerkesztőben később beállítanak, ahhoz nem nyúl). Helyben 36 helyszín töltődött. **Nem találtam ki pozíciót:**
+    · 2026-ban sem volt pozíciója, és **terem** → a szülő jelölője képviseli (mint 2026-ban): **Vár, Várkert** · **Kultúrpalota, nagyterem**;
+    · 2026-ban a **térkép szélén, irányjelvénnyel** volt → ugyanúgy: **Állatkert** · **Marosvásárhelyi vikendtelep**;
+    · **Fociakadémia** — 2026-ban szélső jelvény volt, de a 2027-es listában nincs (a 8 hiányzó egyike, Nyitott kérdések).
+  - **A térkép BETŰRE a 2026-osból** (`lib/finder-map.ts`, `lib/offmap.ts`, `programkereso/script.js` térkép-részei):
+    `programok/_terkep.blade.php` (jelölés), `public/css/terkep.css` (a 2026-os CSS, csak a címbetű súlya a témából),
+    `public/js/terkep.js`. Vár/Város fül, pásztázás-nagyítás (húzás, csippentés, görgő, +/−/⤢), számozott jelölők, **pakli** a
+    többtermes helyszínen („Az egész helyszín” + termek), szélső irányjelvények, buborék (név + programszám), **jelmagyarázat**
+    sorszámmal és programszámmal (kattintva szűr), „Közérdekű” sáv. Asztalon a lista mellett jobbra, mobilon a „Térkép” gomb lapján.
+  - **A térkép EGYSZER rajzolódik, a htmx nem cseréli:** a jelölő az űrlap helyszín-pipáját állítja (ugyanaz a halmaz, mint a
+    szűrőlistában), a válaszban egy kis adat-elem (`#pkTerkepAdat`: helyszín → programszám, kiválasztottak) jön, abból frissül.
+    A szűrő-válasz a térképet el sem készíti. **Próba („szűrj, aztán kattints”):** kategória-szűrés → valódi egérkattintás a jelölőre →
+    a lista szűkült (7 → 4), a cím `…&helyszin=…`; újabb kattintás két csere után is működik; pakli, jelmagyarázat, fülváltás jó.
+  - **Bekapcsolt gombok:** a mobil „Térkép” (mindkettő), a felugró ablak **„Mutasd a térképen”** (bezárja az ablakot, a jó fülre vált,
+    odagörget / mobilon a térképlapot nyitja, vízgyűrűvel kiemel; csak ha a helyszín a térképen van — mint 2026-ban).
+  - Románul (Cetate/Oraș, feliratok) és 375 px-en ellenőrizve: vízszintes görgetés nincs, a lábléc látszik. **161 teszt zöld.**
+  - **Sebesség (helyben):** a térkép adata ~30 ms, csak a teljes lapbetöltéskor; a szűrő-válasz nem nőtt. ⚠ Élesben mérendő.
+
 ## Ami MOST folyik
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
@@ -212,6 +235,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    `LAPSZÖVEG: programok: a rendszerlap létrehozva` és `PROGRAM-TESZT: 180 program, … 61 kihagyva (helyszín nélkül), 61 törölt kép`, és egy új migráció (`program_highlights`).
    A médiatár ezután 61 képpel kevesebbet mutat (970 a 1031-ből) — szándékos. Élesben megnézendő:
    `/programok` szűrés kattintással és gépeléssel, egy szűrt cím új ablakban, `/nap/2027-08-27`, egy program lapja, románul, 375 px.
+   **+ a térkép (PROMPT-12, 2/a):** a naplóban `… helyszín térkép-adata kitöltve a 2026-os mentésből`; élesben megnézendő a térkép
+   (szűrés, aztán kattintás a jelölőre), a „Mutasd a térképen”, a mobil „Térkép” gomb, és **a válaszidő mérése** (lista, szűrés).
    ⚠ **A válaszidőt élesben kell mérni:** helyben minden lap (a hírek is) ~6,5 mp — ez a Windows-os Docker mappamegosztása, nem a kód.
 
 ## Ami ezután jön, ebben a sorrendben
@@ -225,9 +250,11 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    TESZT-hír is látszik (szándékosan, hogy tesztelni lehessen) — élesítés előtt a Tesztadatok törlése kötelező.
 2. **A beégetett szövegek pótlása a lapokon** (9. adósság) — a publikus sablonok megépítésével együtt. **A Rólunk és a hírlista kész;**
    a többi lap a saját sablonjával (minta: `LapSablon::SABLONOK`).
-3. **A programkereső** — a legnagyobb és legösszetettebb darab. **1. rész kész (2026-10-30, fent).** **Hátra a 2. rész:**
-   **a térkép** (beágyazott SVG, kattintható helyszínek — a `#pk-tartalom`-on KÍVÜL, lásd `CLAUDE.md` „Programkereső”), **a helyszín- és a
-   kategórialapok** (ma a program lapja ezek helyett a szűrt keresőre visz: `/programok?helyszin=…`). Mit kell tudni hozzá:
+3. **A programkereső** — a legnagyobb és legösszetettebb darab. **1. rész kész (2026-10-30), a térkép (2/a) kész (2026-11-01), fent.**
+   **Hátra a 12/b kör:** **a helyszín- és a kategórialapok** a 2026-os `VenueDetailView`/`TaxonDetailView`/`TaxonListView` (+ a
+   `/terkep` lap, `MapView`) szerint, működő térképszámokkal (ma a program lapja ezek helyett a szűrt keresőre visz:
+   `/programok?helyszin=…`); és **a napi nézet + a program lapja sorról sorra összevetve** a 2026-os `DailyProgramView`/
+   `ProgramDetailView`-val. Az alábbi jegyzetek a térkép-adatról már teljesültek (2/a), a 8 hiányzó helyszín kérdése nyitott:
    - **A térkép-pozíció a 2027-es adatbázisban még NINCS** (a `venues` tábla `map_*` mezői mind üresek) — a 2026-os mentésből kell
      áthozni (`venue.map_zone/map_x/map_y/map_no/map_edge/map_bearing`, 41 helyszínnél van). GPS egyiknél sincs (46/46).
    - **Az 5 helyszín térkép-pozíció NÉLKÜL** (a 2026-os mentésben; zárójelben: a térkép szélén jelölve-e): **Vár, Várkert** (nem) ·

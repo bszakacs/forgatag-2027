@@ -32,10 +32,12 @@
 <link rel="stylesheet" href="@eszkoz('css/rail.css')">
 <link rel="stylesheet" href="@eszkoz('css/programkereso.css')">
 <link rel="stylesheet" href="@eszkoz('css/programkereso-szerver.css')">
+<link rel="stylesheet" href="@eszkoz('css/terkep.css')">
 @endpush
 @push('scripts')
 <script src="@eszkoz('js/rail.js')"></script>
 <script src="@eszkoz('js/programkereso.js')"></script>
+<script src="@eszkoz('js/terkep.js')"></script>
 @endpush
 
 @section('content')
@@ -59,7 +61,7 @@
         {!! $szuroIkon !!}<span>{{ $sz->szoveg('programs_filter_title') }}</span><span class="pk-badge-n">{{ $n }}</span>
       </button>
       {{-- TÉRKÉP: a térkép-kör kapcsolja be (2. rész) — a gomb helye a 2026-os. --}}
-      <button class="btn btn-fill lime" type="button" data-pk-sheet="map" disabled>{!! $terkepIkon !!}<span>{{ $sz->szoveg('programs_map_btn') }}</span></button>
+      <button class="btn btn-fill lime" type="button" data-pk-sheet="map">{!! $terkepIkon !!}<span>{{ $sz->szoveg('programs_map_btn') }}</span></button>
     </div>
   </div>
 </section>
@@ -177,7 +179,7 @@
   </div>
 </form>
 
-{{-- TÉRKÉPLAP (csak mobilon, 2026) — a térkép a 2. részben ide és a jobb hasábba (#pkMapCol) kerül. --}}
+{{-- TÉRKÉPLAP (csak mobilon, 2026) — keskeny nézetben a térképet a JS ide költözteti a jobb hasábból (#pkMapCol). --}}
 <section class="pk-mapsheet" id="pkMapSheet" data-section="programs-map" aria-hidden="true">
   <div class="pk-sheethead">
     <span class="pk-sheettitle">{{ $sz->szoveg('programs_map_btn') }}</span>
@@ -196,9 +198,10 @@
     <div id="pkUtilSentinel" aria-hidden="true"></div>
     @include('programok._kiemelt')
     @include('programok._eredmeny')
-    {{-- TÉRKÉP-HASÁB asztalon (2026, 3/4. lépés): a lista MELLETT, jobbra; alatta a jelmagyarázat. A helye most
-         megvan (440 px), a tartalma a térkép-körben (2. rész) jön. Nem csere-célpont. --}}
-    <div class="pk-mapcol" id="pkMapCol" aria-hidden="false"></div>
+    {{-- TÉRKÉP-HASÁB asztalon (2026, 3/4. lépés): a lista MELLETT, jobbra; alatta a jelmagyarázat. NEM csere-célpont:
+         a térkép egyszer rajzolódik (keskeny nézetben a JS a térképlapra költözteti), a szűrésre az adat-elemből frissül. --}}
+    <div class="pk-mapcol" id="pkMapCol" aria-hidden="false">@if ($terkep) @include('programok._terkep') @endif</div>
+    <script type="application/json" id="pkTerkepAdat" hx-swap-oob="true">{!! json_encode($terkepAllapot, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
   </div>
 </section>
 
@@ -206,7 +209,7 @@
   <button @class(['btn', 'btn-fill', 'orange', 'has-n' => $n > 0]) type="button" data-pk-sheet="filter" id="pkMobarSzures2" hx-swap-oob="true">
     {!! $szuroIkon !!}<span>{{ $sz->szoveg('programs_filter_title') }}</span><span class="pk-badge-n">{{ $n }}</span>
   </button>
-  <button class="btn btn-fill lime" type="button" data-pk-sheet="map" disabled>{!! $terkepIkon !!}<span>{{ $sz->szoveg('programs_map_btn') }}</span></button>
+  <button class="btn btn-fill lime" type="button" data-pk-sheet="map">{!! $terkepIkon !!}<span>{{ $sz->szoveg('programs_map_btn') }}</span></button>
 </div>
 
 @include('programok._felugro')
