@@ -49,6 +49,8 @@ class ThemeCss
         '--accent-contrast' => 'colors.accentContrast',
         '--focus' => 'colors.focus', '--ok' => 'colors.ok', '--warn' => 'colors.warn', '--danger' => 'colors.danger',
         '--badge-ma-bg' => 'colors.badgeMaBg', '--badge-ma-fg' => 'colors.badgeMaFg',
+        // A fejléc és a lábléc saját háttere (2026: chrome.css-be égetett rgba — most a témából, 2026-10-30).
+        '--header-bg' => 'colors.headerBg', '--footer-bg' => 'colors.footerBg',
     ];
 
     /** Azok a színtokenek, amelyeknek világos módban saját értékük van (`.light` — kötelező). */

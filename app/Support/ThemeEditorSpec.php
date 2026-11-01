@@ -86,6 +86,8 @@ class ThemeEditorSpec
                     $c('colors.fg', 'Szöveg (--fg)', ['contrast' => [$ct('colors.bg', 4.5, 'fg ↔ bg')]]),
                     $c('colors.fgMuted', 'Halvány szöveg (--fg-muted)', ['contrast' => [$ct('colors.panel', 4.5, 'fg-muted ↔ panel'), $ct('colors.bg', 4.5, 'fg-muted ↔ bg')]]),
                     $c('colors.fgFaint', 'Leghalványabb (--fg-faint)', ['hint' => 'csak ≥14px félkövér', 'contrast' => [$ct('colors.bg', 3, 'fg-faint ↔ bg (≥3:1)')]]),
+                    $c('colors.headerBg', 'Fejléc háttere (--header-bg)', ['hint' => 'áttetsző rgba() — a mögötte lévő tartalom elmosva látszik (üveghatás)']),
+                    $c('colors.footerBg', 'Lábléc háttere (--footer-bg)', ['hint' => 'rgba() is lehet']),
                     $c('colors.lapBg', 'Nappali lap (--lap-bg)'),
                     $c('colors.lapCard', 'Nappali kártya (--lap-card)'),
                     $c('colors.lapFg', 'Nappali szöveg (--lap-fg)', ['contrast' => [$ct('colors.lapBg', 4.5, 'lap-fg ↔ lap-bg')]]),

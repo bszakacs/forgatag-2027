@@ -92,12 +92,13 @@
 
   document.addEventListener('input', function (e) {
     if (e.target.id === 'pkQ') {
-      /* 2026: a keresés FELÜLÍRJA a napsávot („minden nap”); a kiürítés vissza a kezdőnapra */
+      /* 2026 (programkereso/script.js 690–692. sor): a keresés FELÜLÍRJA a napsávot („minden nap”, a „Most” is ki);
+         a kiürítés — ha közben nem a „Most” van bekapcsolva — vissza a kezdőnapra (startDayIdx: egy NAP, nem a „Most”). */
       if (e.target.value.trim() !== '') {
         napRadio('mind').checked = true;
-      } else {
-        var alap = napRadio(urlap().dataset.alapnap);
-        if (alap) alap.checked = true;
+      } else if (!napRadio('most').checked) {
+        var kezdo = napRadio(urlap().dataset.kezdonap);
+        if (kezdo) kezdo.checked = true;
       }
       jelolesek();
     }

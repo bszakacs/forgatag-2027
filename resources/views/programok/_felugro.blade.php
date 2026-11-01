@@ -1,5 +1,6 @@
 @use('App\Support\Festival')
 @use('App\Support\Nyelv')
+@use('App\Support\ProgramJelzesek')
 @use('App\Support\ProgramSzoveg')
 @use('App\Enums\ProgramStatus')
 @use('App\Enums\TranslatableField')
@@ -56,7 +57,7 @@
           <dt>{{ $sz->szoveg('programs_modal_organizer') }}</dt><dd id="pkMOrg">{{ filled($p->organizer_names) ? $p->organizer_names : '—' }}</dd>
           <dt id="pkMGuestsDt" @if ($fellepo === '') hidden @endif>{{ $sz->szoveg('programs_modal_guests') }}</dt><dd id="pkMGuests" @if ($fellepo === '') hidden @endif>{{ $fellepo }}</dd>
         </dl>
-        <div class="pk-mflags" id="pkMFlags">@include('programok._jelzesek', ['p' => $p, 'teljes' => true])</div>
+        <div class="pk-mflags" id="pkMFlags">{{ ProgramJelzesek::html($p, true) }}</div>
         <div class="pk-mactions">
           <button class="pk-mghost" type="button" id="pkMMap" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3 3 5.5v15L9 18l6 3 6-2.5v-15L15 6 9 3v15"/></svg>

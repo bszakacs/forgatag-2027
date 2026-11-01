@@ -601,9 +601,14 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
   `#pkUtil`, `#pkSheetScrim`, a szűrő-szekció — itt `<form class="pk-explore" data-section="programs-explore" id="pkUrlap">` —,
   mobil térképlap `#pkMapSheet`, találatok `[data-section="programs-results"] > .wrap` = `#pkActive` · `#pkUtilSentinel` ·
   `#pkHighlight` · `#pkResults` · `#pkMapCol`, fix mobil sáv `#pkMobar`, felugró `#pkModal`). A JS által épített 2026-os részeket
-  a szerver rajzolja, ugyanazzal a jelöléssel: `_kartya` (= `card()`), `_csoportok` (= `dayparts/groupBlock`), `_aktiv`
-  (= `renderActive`), `_kiemelt`, `_eredmeny` (= `renderResults`), `_opcio` (= `optRow`), `_jelzesek` (= `flagsOf`), `_felugro`
-  (= `modal.html` + `program-modal.js`). Egyetlen jelölési eltérés: a leírás tárolója `div` (2026: `p`).
+  a szerver rajzolja, ugyanazzal a jelöléssel: `_kartyak` (= `card()`), `_csoportok` (= `dayparts/groupBlock`), `_aktiv`
+  (= `renderActive`), `_kiemelt`, `_eredmeny` (= `renderResults`), `_opciok` (= `optRow`), `App\Support\ProgramJelzesek`
+  (= `flagsOf`), `_felugro` (= `modal.html` + `program-modal.js`). Egyetlen jelölési eltérés: a leírás tárolója `div` (2026: `p`).
+  ⚠ **SEBESSÉG:** soronként ismétlődő elemet (kártya, szűrő-sor, jelzés) NE külön beillesztett sablonként rajzolj — egy sablon
+  a teljes listára (`@foreach` benne), a soronkénti apróság PHP-ban. Mérve 2026-11-01: a soronkénti `@include` a kérés
+  idejének ~80%-a volt (763 → 169 ms), az adatbázis ~16 ms (indexelés nem kellett).
+- **A keret térköze:** a lap a `@section('ter', 'sajat')`-tal a `<main>` cikk-térköze nélkül fut (a 2026-os design-lapok saját
+  szekciókkal adták a térközt); a fejléc/lábléc háttere a téma `--header-bg` / `--footer-bg` tokenje (2026: beégetett rgba).
 - **Asztalon (≥1041 px) a szűrők VÍZSZINTES sávban a lap tetején** (a 2026-os CSS `display:contents`-szel teszi sávvá a panelt),
   **a térkép a lista MELLETT jobbra** (`#pkMapCol`, 440 px — a helye üresen fenntartva a 2. részig), mobilon felcsúszó szűrő- és
   térképlap. **A logó-csapda (2026):** a sáv legfelső sora a találatszám (`#pkCount`, nem kattintható); a JS a logó MÉRT

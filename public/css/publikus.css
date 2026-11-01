@@ -37,6 +37,8 @@ body{margin:0;min-height:100vh;display:flex;flex-direction:column;
   background-attachment:fixed;color:var(--fg);font-family:var(--font-body);
   font-size:calc(1rem * var(--type-scale));line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
 main{flex:1 0 auto;padding:clamp(40px,7vw,84px) 0 clamp(56px,8vw,96px)}
+/* a 2026-os design-lapok (programkereső) a saját szekcióikkal adják a térközt — @section('ter', 'sajat') */
+main.is-sajat-ter{padding:0}
 img{max-width:100%;height:auto}
 a{color:var(--link,var(--accent-a))}
 h1,h2,h3,h4,p,figure,blockquote{margin:0}
@@ -58,7 +60,7 @@ h1,h2,h3,h4,p,figure,blockquote{margin:0}
 .lap-hero{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r-card);margin:0 0 var(--sp-7);box-shadow:var(--shadow)}
 
 /* ---------- FEJLÉC ---------- */
-header.site-hd{position:sticky;top:0;z-index:var(--z-header);background:color-mix(in srgb,var(--bg) 82%,transparent);
+header.site-hd{position:sticky;top:0;z-index:var(--z-header);background:var(--header-bg);
   -webkit-backdrop-filter:blur(var(--navbar-blur));backdrop-filter:blur(var(--navbar-blur));
   border-bottom:var(--border-w) solid var(--line);color:var(--fg)}
 header.site-hd a{text-decoration:none}
@@ -118,7 +120,7 @@ html.mnav-lock{overflow:hidden}
 html.mnav-lock header.site-hd{position:fixed;left:0;right:0}
 
 /* ---------- LÁBLÉC ---------- */
-footer.site-ft{border-top:var(--border-w) solid var(--line);background:color-mix(in srgb,var(--bg) 70%,#000 30%);padding:56px 0 32px;color:var(--fg-muted)}
+footer.site-ft{border-top:var(--border-w) solid var(--line);background:var(--footer-bg);padding:56px 0 32px;color:var(--fg-muted)}
 footer.site-ft a{color:var(--fg-muted);text-decoration:none}
 footer.site-ft .foot-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:start}
 footer.site-ft .ft-h{font-family:var(--font-body);font-weight:700;font-size:.98rem;margin:0 0 14px;color:var(--fg)}

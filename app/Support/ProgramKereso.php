@@ -81,14 +81,14 @@ final class ProgramKereso
 
     /**
      * A NAPI KIEMELT SÁV: a koordinátor sorrendjében. A nap a kiválasztott nap; nap nélkül (keresés, „Most zajlik”,
-     * minden nap) a 2026-os kezdőnap — fesztivál alatt a mai, előtte a nyitónap, utána az utolsó nap. Csak a ma is
+     * minden nap) a kezdőnap (2026: script.js `renderHighlights` — `S.day !== null ? S.day : startDayIdx()`). Csak a
      * közzétett és AZON A NAPON időponttal bíró program jelenik meg (a kártyán a nap első időpontja).
      *
      * @return array{nap: string, sorok: Collection<int, ProgramSor>}
      */
     public function kiemeltek(): array
     {
-        $nap = $this->sz->datum() ?? self::kezdoDatum();
+        $nap = $this->sz->datum() ?? ProgramSzures::kezdoNap();
         $idopontok = ProgramOccurrence::query()
             ->join('program_items as p', 'p.id', '=', 'program_occurrences.program_item_id')
             ->join('program_highlights as h', function ($j) {
@@ -101,14 +101,6 @@ final class ProgramKereso
             ->unique('program_item_id')->values();
 
         return ['nap' => $nap, 'sorok' => $this->sorok($idopontok)];
-    }
-
-    /** A 2026-os kezdőnap DÁTUMA (a „Most” helyett a mai nap). */
-    public static function kezdoDatum(): string
-    {
-        $alap = ProgramSzures::alapNap();
-
-        return $alap === ProgramSzures::MOST ? Festival::festivalMoment()['nap'] : $alap;
     }
 
     /**

@@ -9,9 +9,7 @@
   @if ($csoport->isNotEmpty())
     <div class="pk-gtitle" data-pk-group="{{ $elotag . $kod }}"><h2>{{ __('publikus.' . $felirat) }}</h2><span class="pk-gn">{{ $csoport->count() }} {{ __('publikus.pk_program_szo') }}</span></div>
     <div class="pk-grid pk-rows">
-      @foreach ($csoport as $sor)
-        @include('programok._kartya', ['sor' => $sor, 'listaSor' => true])
-      @endforeach
+      @include('programok._kartyak', ['sorok' => $csoport, 'listaSor' => true])
     </div>
   @endif
 @endforeach

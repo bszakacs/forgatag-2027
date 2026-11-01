@@ -28,9 +28,7 @@
       @if ($m[$kulcs]->isNotEmpty())
         <div @class(['pk-gtitle', 'is-live' => $kulcs === 'zajlik']) data-pk-group="{{ $kod }}"><h2>{{ __('publikus.' . $felirat) }}</h2><span class="pk-gn">{{ $m[$kulcs]->count() }} {{ __('publikus.pk_program_szo') }}</span></div>
         <div class="pk-grid pk-rows">
-          @foreach ($m[$kulcs]->sortBy(fn ($s) => $s->kezd) as $sor)
-            @include('programok._kartya', ['sor' => $sor, 'listaSor' => true])
-          @endforeach
+          @include('programok._kartyak', ['sorok' => $m[$kulcs]->sortBy(fn ($s) => $s->kezd), 'listaSor' => true])
         </div>
       @endif
     @endforeach

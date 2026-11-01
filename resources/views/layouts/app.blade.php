@@ -8,7 +8,9 @@
      * jön (Theme::cssUrl); a Filament CSS-e (Tailwind preflight) IDE SOHA nem kerül.
      *
      * A lapok ezeket adhatják át: @section('title'), @section('leiras'), @section('canonical'), @section('og_kep'),
-     * @section('keret', 'nelkul') — fejléc/lábléc nélküli lap (Hamarosan), @push('styles') — a lap saját CSS-e.
+     * @section('keret', 'nelkul') — fejléc/lábléc nélküli lap (Hamarosan), @push('styles') — a lap saját CSS-e,
+     * @section('ter', 'sajat') — a lap a SAJÁT szekcióival adja a térközt (a <main> felső/alsó térköze nélkül; a 2026-os
+     *   design-lapok, pl. a programkereső, nem a cikk-keretben futottak).
      */
     $ny = Nyelv::aktualis();
     $ut = '/' . ltrim(request()->path(), '/');
@@ -26,6 +28,7 @@
     $teljesCim = $lapCim !== '' ? "{$lapCim} – {$fesztNev}" : $fesztNev . ' ' . Festival::year();
     $leiras = $szakasz('leiras');
     $keret = trim($__env->yieldContent('keret')) !== 'nelkul';
+    $sajatTer = trim($__env->yieldContent('ter')) === 'sajat';
 @endphp
 <!doctype html>
 <html lang="{{ $ny }}" @if (Theme::get('motion.level') === 'minimal') data-motion="minimal" @endif>
@@ -74,7 +77,7 @@
 @if ($keret)
 @include('partials.header', ['cimek' => $cimek, 'fesztNev' => $fesztNev])
 @endif
-<main id="main">
+<main id="main"@if ($sajatTer) class="is-sajat-ter"@endif>
 @yield('content')
 </main>
 @if ($keret)

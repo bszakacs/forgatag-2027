@@ -65,6 +65,12 @@
       "dark": "#FFB84D",
       "light": "#B4530F"
     },
+    "headerBg": {
+      "dark": "rgba(24,19,52,.78)"
+    },
+    "footerBg": {
+      "dark": "rgba(16,12,36,.7)"
+    },
     "lapBg": {
       "dark": "#FFFFFF"
     },

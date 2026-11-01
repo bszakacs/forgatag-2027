@@ -100,22 +100,40 @@ final class ProgramSzures
     }
 
     /**
-     * A kezdőállapot napja keresőszó nélkül (2026: startDayIdx a napsáv napjai között — azok a napok, amelyekre VAN
-     * program): ha ma ilyen nap, „most”; ha a fesztivál véget ért, az utolsó ilyen nap; különben a nyitónap (vagy az
-     * első utána következő programos nap — nem a lista első, előkészítő napja).
+     * A kezdőállapot (2026: programkereso/script.js 622. és 630. sor): „Most zajlik”, ha ma a fesztivál ideje alatt
+     * (nyitónap … záró nap — az előkészítő nap NEM) programos nap van; különben a kezdőnap (kezdoNap).
      */
     public static function alapNap(): string
     {
         $ma = Festival::festivalMoment()['nap'];
-        $napok = ProgramKereso::programosNapok() ?: Festival::dayIds();
+        $fesztivalAlatt = $ma >= Festival::openingDay() && $ma <= Festival::end()->format('Y-m-d');
+
+        return $fesztivalAlatt && in_array($ma, self::napsav(), true) ? self::MOST : self::kezdoNap();
+    }
+
+    /**
+     * A KEZDŐNAP — a 2026-os `startDayIdx()` betűre (programkereso/script.js 94–99. sor), a napsáv napjai (amelyekre VAN
+     * program) között: ha ma ilyen nap, a mai; ha a fesztivál (a záró nap) elmúlt, az utolsó; különben az első, amelyik
+     * nem korábbi a nyitónapnál; végső esetben az első. Ugyanez vezérli a napi kiemelést és a kereső kiürítését (2026).
+     */
+    public static function kezdoNap(): string
+    {
+        $ma = Festival::festivalMoment()['nap'];
+        $napok = self::napsav();
         if (in_array($ma, $napok, true)) {
-            return self::MOST;
+            return $ma;
         }
-        if ($ma > end($napok)) {
+        if ($ma > Festival::end()->format('Y-m-d')) {
             return (string) end($napok);
         }
 
         return collect($napok)->first(fn ($n) => $n >= Festival::openingDay()) ?? ($napok[0] ?? Festival::openingDay());
+    }
+
+    /** @return list<string> a napsáv napjai (2026: DAYS — a fesztiválnapok, amelyekre van program) */
+    private static function napsav(): array
+    {
+        return ProgramKereso::programosNapok() ?: Festival::dayIds();
     }
 
     public function most(): bool

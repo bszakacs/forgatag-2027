@@ -27,6 +27,7 @@
 @section('leiras', Nyelv::valaszt($lap->seo_description_hu, $lap->seo_description_ro))
 @section('canonical', url($szures->mas([])->url()))
 @section('nyelv_query', $szures->querySzoveg())
+@section('ter', 'sajat')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/rail.css') }}?v={{ filemtime(public_path('css/rail.css')) }}">
 <link rel="stylesheet" href="{{ asset('css/programkereso.css') }}?v={{ filemtime(public_path('css/programkereso.css')) }}">
@@ -80,7 +81,7 @@
 
 {{-- A SZŰRŐ-SZEKCIÓ = a GET-űrlap. Asztalon (1041 px fölött) VÍZSZINTES sáv a lap tetején, mobilon felcsúszó panel. --}}
 <form class="pk-explore" data-section="programs-explore" id="pkUrlap" method="get" action="{{ $alapUrl }}" role="search"
-      data-alapnap="{{ ProgramSzures::alapNap() }}"
+      data-kezdonap="{{ ProgramSzures::kezdoNap() }}"
       hx-get="{{ $alapUrl }}" hx-trigger="change[target.matches('[data-pk-szuro]')], submit"
       hx-target="#pkResults" hx-select="#pkResults" hx-swap="outerHTML" hx-push-url="true" hx-sync="this:replace">
   <div class="pk-sheethead">
@@ -147,10 +148,7 @@
               <input type="search" id="pkVenueQ" placeholder="{{ $sz->szoveg('programs_filter_venue_ph') }}" aria-label="{{ $sz->szoveg('programs_filter_venue_ph') }}" autocomplete="off">
             </div>
             <div class="pk-venuelist" id="pkVenues"><div class="pk-opts">
-              @foreach ($helyszinek as $h)
-                @include('programok._opcio', ['csoport' => 'venue', 'nev' => 'helyszin', 'slug' => $h->slug, 'felirat' => $helyNev[$h->slug],
-                    'db' => $darabok['helyszin'][$h->slug] ?? 0, 'be' => in_array($h->slug, $szures->helyszinek, true)])
-              @endforeach
+              @include('programok._opciok', ['csoport' => 'venue', 'nev' => 'helyszin', 'nevek' => $helyNev, 'db' => $darabok['helyszin'], 'kivalasztva' => $szures->helyszinek])
             </div></div>
           </div>
         </details>
@@ -162,10 +160,7 @@
               <input type="search" id="pkCatQ" placeholder="{{ $sz->szoveg('programs_filter_category_ph') }}" aria-label="{{ $sz->szoveg('programs_filter_category_ph') }}" autocomplete="off">
             </div>
             <div class="pk-catlist" id="pkCats"><div class="pk-opts">
-              @foreach ($kategoriak as $k)
-                @include('programok._opcio', ['csoport' => 'cat', 'nev' => 'kategoria', 'slug' => $k->slug, 'felirat' => $katNev[$k->slug],
-                    'db' => $darabok['kategoria'][$k->slug] ?? 0, 'be' => in_array($k->slug, $szures->kategoriak, true)])
-              @endforeach
+              @include('programok._opciok', ['csoport' => 'cat', 'nev' => 'kategoria', 'nevek' => $katNev, 'db' => $darabok['kategoria'], 'kivalasztva' => $szures->kategoriak])
             </div></div>
           </div>
         </details>

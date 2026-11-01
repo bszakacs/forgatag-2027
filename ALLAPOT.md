@@ -145,6 +145,22 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     helye is megvan) · **a 2026-os tömör sorok** · **a felugró ablak mind a négy gombja** · a görgetéskor beúszó sáv, a ragadó
     panelfej, a mobil eszközsávok (inline + alul beúszó) · a 2026-os linkfelirat-szabály (domain vagy „Jegyvásárlás”).
     A korábbi, értelmezésből épült saját elrendezés (bal oldali szűrőoszlop, a „találatszám-sor a szűrők fölött”) megszűnt.
+  - **Javítások a tulajdonos negyedik visszajelzése után (2026-11-01):**
+    · **Bizonyítva, hogy a 2026-os kódból jön** (`../forgatag-os/frontend/src/programkereso/script.js`): a kezdőállapot a 86–99.,
+      622. és 630. sor (`isFestival`, `startDayIdx`, `S.now = true`, `S.day = startDayIdx()`), a keresés minden napra váltása a
+      690–692. sor. Az összevetéskor két apró eltérést javítottam az átiratban: a „Most zajlik” csak a fesztivál ideje alatt
+      (nyitónap–záró nap) kezdőállapot, az előkészítő napon nem; a kereső kiürítése a kezdő NAPRA áll vissza (nem a „Most”-ra).
+    · **A fejléc (és a lábléc) színe:** 2026-ban a `chrome.css`-be égetett rgba volt (fejléc `rgba(24,19,52,.78)`, lábléc
+      `rgba(16,12,36,.7)`), a 2027-es keret a `--bg`-ből kevert. Most **két téma-token**: `colors.headerBg` / `colors.footerBg`
+      (`--header-bg`, `--footer-bg`) a 2026-os értékkel — az Arculat „Színek — Alapok” részében állítható; a kint lévő témát egy
+      migráció igazítja (új verzió).
+    · **A rés a fejléc és a szűrősáv között:** a 2027-es keret `<main>`-je minden lapon 40–84 px felső térközt ad (a cikk-
+      lapokhoz); a programkereső most a saját szekcióival adja a térközt (`@section('ter', 'sajat')`), mint 2026-ban.
+    · **Sebesség — mérve:** élesben (proba) egy nap 0,48–0,66 s, minden nap 0,68 s volt az első bájtig (a /hirek 0,31 s); helyben
+      a meleg kérés 763 ms, ebből az adatbázis **csak ~16 ms** (29 lekérdezés) — **indexelés nem kell**. Az időt a kirajzolás vitte:
+      kártyánként és szűrő-soronként külön beillesztett sablon (73 kártya ~420 ms). Most egy-egy sablon rajzolja az egész listát,
+      a jelzéseket PHP írja: **a meleg kérés 763 → 169 ms** (minden nap: 348 ms). A tömörítés élesben megy (brotli: 502 → 83 kB).
+      ⚠ Élesben újramérendő a telepítés után.
   - **A gombok helye megvan, a működésük a saját körükben kapcsol be (addig tiltva, halványan):**
     · **térkép-kör (2. rész):** a térkép maga, a felugró ablak „Mutasd a térképen” gombja, a mobil „Térkép” gomb, a helyszínlista
       térképszámai;

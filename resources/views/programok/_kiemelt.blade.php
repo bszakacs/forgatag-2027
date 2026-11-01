@@ -10,5 +10,5 @@
     <span class="pk-gn" id="pkHighDay">{{ $kiemelt['sorok']->isEmpty() ? '' : Festival::fullDayLabel(\Carbon\CarbonImmutable::parse($kiemelt['nap']), $ny) }}</span>
   </div>
   @include('partials.rail', ['id' => 'prog-highlight', 'osztaly' => 'pk-hirail', 'cimke' => $ny === 'ro' ? 'Programe recomandate' : 'Kiemelt programok',
-      'tartalom' => $kiemelt['sorok']->map(fn ($s) => view('programok._kartya', ['sor' => $s, 'listaSor' => false, 'szures' => $szures])->render())->implode('')])
+      'tartalom' => view('programok._kartyak', ['sorok' => $kiemelt['sorok'], 'listaSor' => false, 'szures' => $szures])->render()])
 </div>
