@@ -12,4 +12,8 @@
 .pk-opt[hidden]{display:none}
 .pk-mghost:disabled,.pk-save:disabled,[data-section] .btn:disabled{opacity:.45;cursor:default;transform:none}
 .pk-nojs{margin-top:var(--sp-4)}
+/* TULAJDONOSI DÖNTÉS (2026-11-01) — eltérés a 2026-ostól: a jobb oldali térkép-sáv (asztalon) görgethető marad, de a
+   natív görgetősávja nem látszik (2026-ban rávitelkor megjelent). */
+.pk-mapcol{scrollbar-width:none}
+.pk-mapcol::-webkit-scrollbar{display:none}
 #pkResults.htmx-request{opacity:.55;transition:opacity var(--dur-1) var(--ease)}

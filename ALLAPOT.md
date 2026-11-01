@@ -214,6 +214,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   - **Bekapcsolt gombok:** a mobil „Térkép” (mindkettő), a felugró ablak **„Mutasd a térképen”** (bezárja az ablakot, a jó fülre vált,
     odagörget / mobilon a térképlapot nyitja, vízgyűrűvel kiemel; csak ha a helyszín a térképen van — mint 2026-ban).
   - Románul (Cetate/Oraș, feliratok) és 375 px-en ellenőrizve: vízszintes görgetés nincs, a lábléc látszik. **161 teszt zöld.**
+  - **Tulajdonosi döntés (2026-11-01), eltérés a 2026-ostól:** a jobb oldali térkép-sáv görgetősávja nem látszik (rávitelkor sem);
+    a sáv görgethető marad (`programkereso-szerver.css`). A helyszínlista saját belső sávja marad.
   - **Sebesség (helyben):** a térkép adata ~30 ms, csak a teljes lapbetöltéskor; a szűrő-válasz nem nőtt. ⚠ Élesben mérendő.
 
 ## Ami MOST folyik
