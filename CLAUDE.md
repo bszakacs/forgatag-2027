@@ -220,6 +220,11 @@ valódi adatbázis-lekérdezés), de a **látható viselkedésre és a kinézetr
   munkamód erre NEM vonatkozik: a 2026-os viselkedéstől eltérni nem részletkérdés.)
 - A 2026-os viselkedés forrása a befagyasztott kód (`../forgatag-os/frontend/src/`, csak olvasásra) — építés előtt ott kell
   megnézni, mit csinált pontosan (a kezdőállapotot, a gombok kapcsolását, az üres állapotok szövegét is).
+- 🔴 **NE ÉRTELMEZD — EMELD ÁT** (tulajdonosi szabály, 2026-10-30): a lap **jelölését és CSS-ét a 2026-os forrásból kell
+  átvenni** (a stíluslapot fájlként, változatlanul; a jelölést ugyanazokkal az osztályokkal, ugyanabban a sorrendben), és CSAK a
+  kiszolgálást kell szerveroldalira írni. Ami a szerveroldal miatt mégis kell, az KÜLÖN fájlba kerül, megindokolva. Ez a
+  különbség a „hasonló” és az „ugyanaz” között. (A programkereső első változata értelmezésből épült — a szűrők oldalra kerültek,
+  a térkép helye elveszett, a sorok lazábbak lettek; vissza kellett csinálni.)
 - Ami egy KÉSŐBBI körhöz tartozik (pl. kedvencek, naptár, térkép, mozgás-/dekor-réteg), az nem maradhat el szó nélkül:
   az `ALLAPOT.md`-be kerül, melyik körben épül meg.
 - *Előzmény:* a PROMPT-11 első részében három helyen tértünk el (a felugró ablak helyett a program lapja, a „Napszak”
@@ -586,49 +591,59 @@ Jog: `UserRole::canManageContent` (szuperadmin, koordinátor) → `TartalomPolic
   escape-elné — enélkül egy „&” a címben `&amp;amp;` lesz, a megosztási kép címe eltörik (javítva 2026-10-30).
 
 **Programkereső — 1. rész kész helyben (2026-10-30, PROMPT-11).** A 2. rész (térkép, helyszín- és kategórialap): `ALLAPOT.md`.
-- **Egy forrás:** a lekérdezés `App\Support\ProgramKereso` (kereső, napi nézet, „Most zajlik”, darabszámok — mind ezt hívja); a szűrés
-  címsora `App\Support\ProgramSzures` (olvasás a NYERS címsorból, mert a többes érték ismételt kulcs: `kategoria=a&kategoria=b`; és a
-  kanonikus cím — a vezérlő erre irányít, a htmx-nek `HX-Push-Url`-ben adja). Egy találati sor: `App\Support\ProgramSor`. A program
-  szövege nyelv szerint (approved → reviewed → gépi; outdated kimarad): `App\Support\ProgramSzoveg`. Vezérlő: `Publikus\ProgramokController`.
+🔴 **A KINÉZET ÉS A JELÖLÉS A 2026-OS, BETŰRE (2/e) — nem értelmezve újraépítve.** Ez a második nekifutás: az első saját
+elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos visszakérte a 2026-osat.
+- **CSS:** `public/css/programkereso.css` = a 2026-os `programkereso/style.css` **változatlan másolata**; egyetlen gépies eltérés:
+  a cím-/hangsúlybetűs szabályokban `font-weight:400` → `var(--head-wght)`/`var(--accent-wght)` (a TemaTest szabálya, értéke 400).
+  **Ne szerkeszd értelmezve.** A szerveroldali kiszolgálás miatti kevés kiegészítés KÜLÖN: `programkereso-szerver.css` (a gombokban
+  ülő rejtett rádió/jelölőnégyzet, a lista-kereső `hidden`-je, a még tiltott gombok halványítása). Mellette a közös `rail.css`.
+- **Jelölés:** `programok/index.blade.php` = a 2026-os `body.html` sorrendje és osztályai (intro + mobil eszközsáv, beúszó sáv
+  `#pkUtil`, `#pkSheetScrim`, a szűrő-szekció — itt `<form class="pk-explore" data-section="programs-explore" id="pkUrlap">` —,
+  mobil térképlap `#pkMapSheet`, találatok `[data-section="programs-results"] > .wrap` = `#pkActive` · `#pkUtilSentinel` ·
+  `#pkHighlight` · `#pkResults` · `#pkMapCol`, fix mobil sáv `#pkMobar`, felugró `#pkModal`). A JS által épített 2026-os részeket
+  a szerver rajzolja, ugyanazzal a jelöléssel: `_kartya` (= `card()`), `_csoportok` (= `dayparts/groupBlock`), `_aktiv`
+  (= `renderActive`), `_kiemelt`, `_eredmeny` (= `renderResults`), `_opcio` (= `optRow`), `_jelzesek` (= `flagsOf`), `_felugro`
+  (= `modal.html` + `program-modal.js`). Egyetlen jelölési eltérés: a leírás tárolója `div` (2026: `p`).
+- **Asztalon (≥1041 px) a szűrők VÍZSZINTES sávban a lap tetején** (a 2026-os CSS `display:contents`-szel teszi sávvá a panelt),
+  **a térkép a lista MELLETT jobbra** (`#pkMapCol`, 440 px — a helye üresen fenntartva a 2. részig), mobilon felcsúszó szűrő- és
+  térképlap. **A logó-csapda (2026):** a sáv legfelső sora a találatszám (`#pkCount`, nem kattintható); a JS a logó MÉRT
+  méretéből adja a behúzását és magasságát, így a gombok a logó alatt kezdődnek.
+- **Egy forrás:** a lekérdezés `App\Support\ProgramKereso` (kereső, napi nézet, „Most zajlik”, darabszámok, kiemeltek, lazítás);
+  a szűrés címsora `App\Support\ProgramSzures` (a NYERS címsorból, mert a többes érték ismételt kulcs; kanonikus cím — a vezérlő
+  erre irányít, a htmx-nek `HX-Push-Url`-ben adja). Egy találati sor: `ProgramSor`; a szöveg nyelv szerint és a 2026-os
+  szövegszabályok (fullText, teaser, linkify: felirat = címke vagy domain): `ProgramSzoveg`. Vezérlő: `Publikus\ProgramokController`.
 - **A fesztiválnap skálája EGY helyen: `Festival::scaledMinutes/scaledEnd/festivalMoment`** (a záró óra: Beállítások `day_cut_hour`).
-  A tárolt dátum a beküldött nap; a vágás előtti idő a nap VÉGÉRE kerül (02:00 → 26:00). SQL-ben a rendezés ugyanezt teszi.
-- **A htmx szerkezete (ezt ne bontsd meg):** `#pk-tartalom` (`hx-history-elt` — a „vissza” gomb csak ezt tölti újra) ⊃ találatszám-sor,
-  `#pk-urlap` (az űrlap SZŰRÉSKOR NEM cserélődik: a gépelés, a nyitott lenyíló, a lista görgetése megmarad), `#pk-talalatok` (a csere
-  célja, `hx-select`). A változó darabszámok (opciók, jelvények, „Alkalmaz · N”) **id-vel + `hx-swap-oob`-bal** frissülnek. A szerver
-  mindig a TELJES lapot adja. `htmx.config.historyCacheSize = 0` (a keret `<meta name="htmx-config">`-ja). **A térkép a `#pk-tartalom`-on
-  KÍVÜL kerüljön** — különben a csere/„vissza” megsemmisíti az eseménykezelőit.
-- **A szűrő-címke törlése** (`public/js/programkereso.js`, Alpine `pkKereso`): az ŰRLAPOT állítja és onnan indul a kérés (JS nélkül link).
-  Ugyanitt a 2026-os KEZELÉS: a kiválasztott nap újbóli megnyomása → `nap=mind`; „Most” ⇄ napszak kizárja egymást; gépelés → `mind`,
-  kiürítés → a kezdőnap (`data-alapnap`). ⚠ A nap-gomb kattintás-kezelője a rádió saját (böngésző által küldött) kattintását NE
-  kezelje — az már bejelölt állapotban fut fel, és a friss kijelölést visszavonná (`e.target.tagName === 'INPUT'` → kihagy).
-- **A nap a címsorban** (`ProgramSzures::tenylegesNap`): nincs megadva → 2026-os kezdőállapot (`alapNap`: fesztivál alatt `most`, előtte a
-  nyitónap, utána az utolsó programos nap; keresőszóval `mind`); `most` · `mind` · dátum. Lapozás NINCS (2026-ban sem volt).
-- **Felugró ablak** (`programok/_felugro.blade.php`, `#pk-modal`, a `#pk-tartalom`-on belül, hogy a „vissza” kövesse): `?program=<slug>`
-  (+ az átmeneti `idopont`, a címbe nem kerül). A kártya `href`-je a program LAPJA; htmx-szel `HX-Target: pk-modal` → a vezérlő CSAK az
-  ablakot rajzolja. A kártya címe: `programok/_link`; a jelzések (sor, kártya, ablak): `programok/_jelzesek`.
-- **Napi kiemelés:** `program_highlights` (`ProgramHighlight`, `RowRestrictedChild`; policy: minden tiltva, a kezelése az admin program-
-  lapjának „Napi kiemelés” gombja, `canApprovePrograms`). A sáv: `ProgramKereso::kiemeltek` + a közös csúszka
-  (`partials/rail` + `public/js/rail.js` + `public/css/rail.css` — a 2026-os lib/rail, htmx-csere után újraindul).
-- **Napszak SQL-ben** (`ProgramKereso::napszakSzures`): kezdés szerint 12:00/18:00, a vágás előtti este; az „egész nap nyitva” mindig
-  átmegy (a +5 óra a meghajtó szerint: MySQL `ADDTIME`, SQLite `time()`).
-- **A publikus lapok a `bekuldo` őrre állnak át** (`App\Http\Middleware\PublikusOr`, a publikus csoporton): különben egy belépett
-  kategóriagazda a nyilvános keresőben is csak a saját kategóriáit látná (4. pont). A Hamarosan mód a `web` őrt név szerint kérdezi.
-  ⚠ Tesztben a belépést `actingAs($u, 'web')`-bel add meg (egy teszten belül az őr-váltás a következő kérésre átragad).
-- **Logó-csapda:** a találatszám sora a szűrők fölött; a ragadó panel `top`-ja a belógással (`--pk-logo-lelog`) lejjebb áll.
-- **CSS:** `public/css/programok.css` (kereső + napi + program lapja; saját nevek `--pk-*`, téma-tokent NEM ír felül). `--text-micro` a
-  `publikus.css`-ben. A kártya képe 1:1, a program lapjáé 4:3 — mindkettő a megjelenés arányán készül (Glide `fit=crop`).
+- **A nap a címsorban** (`ProgramSzures::tenylegesNap`): nincs megadva → 2026-os kezdőállapot (`alapNap`: fesztivál alatt `most`,
+  előtte a nyitónap, utána az utolsó programos nap; keresőszóval `mind`); `most` · `mind` · dátum. Lapozás NINCS (2026-ban sem).
+- **htmx (ezt ne bontsd meg):** az űrlap NEM cserélődik (gépelés, nyitott legördülő, görgetés megmarad). A fő csere `#pkResults`
+  (`hx-select`); minden más változó rész id szerint, `hx-swap-oob`-bal (`#pkActive`, `#pkHighlight`, `#pkCount`, `#pkUtilTotal`,
+  `#pkSheetN`, `#pkApplyN`, a jelvényes gombok, a csoport-számlálók, a lista sorai `pk-o-<venue|cat>-<slug>`). **A térkép helyei
+  (`#pkMapCol`, `#pkMapSheetIn`) egyik csere célpontjai sem.** A „vissza” gomb TELJES újratöltés (`historyCacheSize:0` +
+  `refreshOnHistoryMiss`, a keret `<meta name="htmx-config">`-ja) — nincs `hx-history-elt`.
+- **Kliens:** `public/js/programkereso.js` (Alpine nélkül): az űrlap-állapot kezelése (nap újbóli megnyomása → `mind`; „Most” ⇄
+  napszak; gépelés → `mind`, kiürítés → `data-alapnap`; a szűrő-címke az ŰRLAPOT állítja), a gombok azonnali kijelölése, és a
+  2026-os `script.js` elrendezési blokkjai betűre (felcsúszó lapok, legördülők bezárása, `--pk-vv`, mobil eszközsávok, ragadó
+  panelfej, beúszó sáv, `syncStickyTop` a logó mérésével). ⚠ A nap-gomb kattintás-kezelője a rádió saját kattintását NE kezelje.
+- **Felugró ablak:** `?program=<slug>` (+ az átmeneti `idopont`). A kártya `href`-je a program LAPJA; htmx-szel `HX-Target: pkModal`
+  → a vezérlő CSAK az ablakot rajzolja. A négy gomb a 2026-os helyén: „Mutasd a térképen” (térkép-kör), „Naptárba” (naptár-kör),
+  „Mentés” (kedvencek-kör) addig `disabled`; a „Megosztás” működik. A sorok szíve (`pk-save`) is `disabled` a kedvencek-körig.
+- **Napi kiemelés:** `program_highlights` (`ProgramHighlight`, `RowRestrictedChild`; policy: minden tiltva, a kezelése az admin
+  program-lapjának „Napi kiemelés” gombja, `canApprovePrograms`). A sáv a közös csúszkán (`partials/rail` + `rail.js` + `rail.css`).
+- **Napszak SQL-ben** (`ProgramKereso::napszakSzures`): kezdés szerint 12:00/18:00, a vágás előtti este; az „egész nap nyitva”
+  mindig átmegy (a +5 óra a meghajtó szerint: MySQL `ADDTIME`, SQLite `time()`).
+- **A publikus lapok a `bekuldo` őrre állnak át** (`App\Http\Middleware\PublikusOr`): különben egy belépett kategóriagazda a
+  nyilvános keresőben is csak a saját kategóriáit látná (4. pont). ⚠ Tesztben a belépést `actingAs($u, 'web')`-bel add meg.
 - **Szövegek:** `LapSablon::SABLONOK['programok']` (a „programok” rendszerlapot a `forgatag:lap-szovegek` hozza létre:
-  `LapSablon::UJ_RENDSZERLAPOK`). Ami 2026-ban szerkeszthető volt (`data-hs="programs_*"`: a szűrőpanel feliratai, a napszakok, a
-  „Kiemelt programok”, a felugró ablak feliratai), az ugyanazzal a kulccsal a LapSablon-ban; a többi (csoportcímek, jelzések) `lang/*/publikus.php` `pk_*`.
+  `LapSablon::UJ_RENDSZERLAPOK`). Ami 2026-ban szerkeszthető volt (`data-hs="programs_*"`), az ugyanazzal a kulccsal itt; a többi
+  (a 2026-os `T` szövegek: csoportcímek, jelzések, „találat”, „program felel meg”) `lang/*/publikus.php` `pk_*`.
+- **A napi nézet és a program lapja** (`programok.css` + a 2026-os stíluslap a kártyákhoz): ⚠ a 2026-os `DailyProgramView` /
+  `ProgramDetailView` mellé téve még NINCS összevetve (2. rész).
 - **Tesztadat:** `forgatag:program-teszt-csomag` (FEJLESZTŐGÉPEN, a mentésből → `database/import/programok-2026-teszt.json`) és
-  `forgatag:program-teszt-import` (telepítés, egyszer; jelölés: `storage/app/import-2026/programok-teszt.json`). `App\Support\ProgramTesztImport`.
+  `forgatag:program-teszt-import` (telepítés, egyszer; jelölés: `storage/app/import-2026/programok-teszt.json`). `ProgramTesztImport`.
   A `ProgramItem` „Programok 2026”-őre a TESZT-programot (`is_test`) átengedi. A helyszín nélküli (a 2027-es listában nem szereplő
   helyszínű) program NEM jön, és a borítója törlődik (`ProgramTesztImport::boritokTorlese`, tulajdonosi döntés 2026-10-30).
-- Tesztek: `tests/Feature/ProgramkeresoTest.php` (18: hajnali vágás + Beállításból, címsor-szűrés + ismételt kulcs + ugyanaz a cím ugyanazt
-  adja, JS nélküli átirányítás + HX-Push-Url, kezdőállapot + minden nap egy lapon, napszak, kiemelt sáv, felugró ablak, lazítási javaslat,
-  a kiemelés admin-gombja, helyszín-hierarchia + darabszám, Most zajlik + Mi van ma, keresés + román, fordítás-sorrend, program lapja,
-  kategóriagazda a publikus lapon, beégetett szöveg). ⚠ Tesztben a `withHeaders` a következő kérésre is megmarad (`flushHeaders()`). ⚠ A tesztek SQLite-on futnak: az ékezet-független keresést
-  (MySQL `utf8mb4_unicode_ci`) csak böngészőben lehet mérni.
+- Tesztek: `tests/Feature/ProgramkeresoTest.php` (19). ⚠ SQLite-on futnak: az ékezet-független keresést (MySQL
+  `utf8mb4_unicode_ci`) csak böngészőben lehet mérni. ⚠ A `withHeaders` a következő kérésre is megmarad (`flushHeaders()`).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 

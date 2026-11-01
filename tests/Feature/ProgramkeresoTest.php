@@ -69,9 +69,10 @@ class ProgramkeresoTest extends TestCase
     private function talalatok(string $url): string
     {
         $html = $this->get($url)->assertOk()->getContent();
-        preg_match('~<section id="pk-talalatok".*?</section>~s', $html, $m);
+        // A 2026-os jelölés: a találati szekció (aktív szűrők + kiemelt sáv + lista); program nélkül a „készül” közlés.
+        preg_match('~<section class="blk" data-section="programs-results".*?</section>|<div class="pk-noprog">.*?</div>~s', $html, $m);
 
-        return $m[0] ?? $this->fail('nincs #pk-talalatok a lapon');
+        return $m[0] ?? $this->fail('nincs találati szekció a lapon');
     }
 
     public function test_az_ejfelen_atnyulo_program_a_kezdes_napjahoz_tartozik_es_a_nap_vegere_kerul(): void
@@ -146,9 +147,9 @@ class ProgramkeresoTest extends TestCase
         $this->assertStringNotContainsString('Másnapi reggel', $t);
         // A fesztivál ALATT: „Most zajlik”; UTÁNA: az utolsó nap.
         CarbonImmutable::setTestNow(CarbonImmutable::parse('2027-08-26 10:00', 'Europe/Bucharest'));
-        $this->assertMatchesRegularExpression('~id="pk-nap-most"[^>]*\schecked~', $this->get('/programok')->getContent());
+        $this->assertStringContainsString('class="pk-now is-on"', $this->get('/programok')->getContent());
         CarbonImmutable::setTestNow(CarbonImmutable::parse('2027-09-10 10:00', 'Europe/Bucharest'));
-        $this->assertMatchesRegularExpression('~id="pk-nap-2027-08-26"[^>]*\schecked~', $this->get('/programok')->getContent());
+        $this->assertMatchesRegularExpression('~class="pk-day is-on">\s*<input type="radio" name="nap" value="2027-08-26"~', $this->get('/programok')->getContent());
 
         // Minden nap: egy lapon (lapozás nincs, mint 2026-ban), nap → napszak csoportokkal.
         for ($i = 0; $i < 65; $i++) {
@@ -188,9 +189,10 @@ class ProgramkeresoTest extends TestCase
         $mas->highlights()->create(['date' => '2027-08-26', 'sort' => 2]); // azon a napon nincs időpontja → nem jelenik meg
 
         $t = $this->talalatok('/programok?nap=2027-08-26');
-        $this->assertMatchesRegularExpression('~Kiemelt <span class="brush">programok</span>.*data-rail="pk-kiemelt".*Első kiemelt.*Második kiemelt~s', $t);
-        $this->assertDoesNotMatchRegularExpression('~data-rail="pk-kiemelt".*Másik napi~s', $t);
-        $this->assertStringNotContainsString('data-rail="pk-kiemelt"', $this->talalatok('/programok?nap=2027-08-27'));
+        $this->assertMatchesRegularExpression('~<span>Kiemelt </span><span class="brush">programok</span>.*data-rail="prog-highlight".*Első kiemelt.*Második kiemelt~s', $t);
+        $this->assertDoesNotMatchRegularExpression('~data-rail="prog-highlight".*Másik napi~s', $t);
+        // Arra a napra nincs kiemelés: a sáv REJTETT (2026: #pkHighlight hidden).
+        $this->assertMatchesRegularExpression('~id="pkHighlight"[^>]*hidden~', $this->talalatok('/programok?nap=2027-08-27'));
     }
 
     public function test_a_listabol_felugro_ablak_nyilik_megoszthato_cimmel(): void
@@ -206,14 +208,14 @@ class ProgramkeresoTest extends TestCase
 
         // A megosztott cím a keresőt nyitja, rajta az ablakkal.
         $this->get('/programok?nap=2027-08-26&program=' . $p->slug)->assertOk()
-            ->assertSee('id="pk-mcim"', false)->assertSee('Augusztus 26., csütörtök · 18.00–19.30')
+            ->assertSee('id="pkMTitle"', false)->assertSee('Augusztus 26., csütörtök · 18.00–19.30')
             ->assertSee('Kaláka')->assertSee('Teleki Téka')->assertSee('6+');
 
         // htmx: csak az ablak jön vissza, a címsorba a tiszta cím (az időpont nélkül).
-        $this->withHeaders(['HX-Request' => 'true', 'HX-Target' => 'pk-modal'])
+        $this->withHeaders(['HX-Request' => 'true', 'HX-Target' => 'pkModal'])
             ->get('/programok?nap=2027-08-26&program=' . $p->slug . '&idopont=' . $idopont)
             ->assertOk()->assertHeader('HX-Push-Url', '/programok?nap=2027-08-26&program=' . $p->slug)
-            ->assertSee('id="pk-modal"', false)->assertDontSee('id="pk-urlap"', false);
+            ->assertSee('id="pkModal"', false)->assertDontSee('id="pkUrlap"', false);
         // Ismeretlen program: az ablak paramétere kiesik (JS nélküli kérés — a htmx-fejléceket eldobjuk).
         $this->flushHeaders()->get('/programok?program=nincs-ilyen')->assertRedirect('/programok');
     }
@@ -279,8 +281,8 @@ class ProgramkeresoTest extends TestCase
 
         // A kategória-lista darabszáma a helyszín-szűrő mellett, a SAJÁT dimenzióját kihagyva.
         $html = $this->get('/programok?nap=mind&kategoria=szinhaz&helyszin=var-borkert')->getContent();
-        $this->assertMatchesRegularExpression('~id="pk-o-kat-koncert".*?<span class="pk-n">1</span>~s', $html);
-        $this->assertMatchesRegularExpression('~id="pk-o-kat-szinhaz".*?<span class="pk-n">0</span>~s', $html);
+        $this->assertMatchesRegularExpression('~id="pk-o-cat-koncert".*?<span class="pk-n">1</span>~s', $html);
+        $this->assertMatchesRegularExpression('~id="pk-o-cat-szinhaz".*?<span class="pk-n">0</span>~s', $html);
     }
 
     public function test_most_zajlik_es_mi_van_ma_a_hajnali_vagassal(): void
@@ -337,7 +339,7 @@ class ProgramkeresoTest extends TestCase
         $p = $this->program('Vásári komédia', [['2027-08-26', '18:00', '19:30'], ['2027-08-27', '18:00', '19:30']],
             ['description' => "Első bekezdés.\n\nJegyek: https://jegy.example/forgatag"]);
         $this->get('/program/' . $p->slug)->assertOk()->assertSee('Vásári komédia')->assertSee('18.00–19.30')
-            ->assertSee('<a href="https://jegy.example/forgatag"', false)
+            ->assertSee('class="fg-link" href="https://jegy.example/forgatag"', false)
             ->assertSee('/programok?helyszin=var', false);
 
         $vazlat = $this->program('Még nincs kint', [['2027-08-26', '18:00']], ['status' => 'draft']);

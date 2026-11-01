@@ -63,4 +63,10 @@ return [
     'pk_folyamatosan' => 'continuu',
     'pk_jegyvasarlas' => 'Bilete',
     'pk_masolva' => 'Link copiat',
+    'pk_talalat' => 'rezultate',
+    'pk_felel_meg' => 'programe potrivite',
+    'pk_osszes_torles_rovid' => 'Șterge tot',
+    'pk_mentes' => 'Salvează la favorite',
+    'pk_panel_bezaras' => 'Închide panoul',
+    'pk_panel_bezaras_talalatok' => 'Închide panoul și vezi rezultatele',
 ];

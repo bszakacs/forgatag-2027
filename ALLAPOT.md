@@ -137,21 +137,27 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     Elmarad” kék jelzés · **kép nélküli sorban nincs üres csempe** · a keresés a **címben, szervezőben, fellépőben, helyszín- és
     kategórianévben** keres, a leírásban nem · a szűrőpanel 2026-ban szerkeszthető feliratai (Szűrés, Napszak, Helyszín, Kiemelt programok,
     a felugró ablak feliratai…) **szerkeszthetők** (Aloldalak → Programkereső).
-  - **Még NINCS meg a 2026-os keresőből — mind egy KÉSŐBBI körben épül (2/e: nem maradhat el szó nélkül):**
-    · **térkép-kör (2. rész):** a térkép, a felugró ablak „Mutasd a térképen” gombja, a helyszínlista térképszámai, a mobil „Térkép” gomb;
+  - **A 2026-os JELÖLÉS ÉS CSS BETŰRE ÁTVÉVE (2026-10-30, a tulajdonos második visszajelzése: „ne értelmezd — emeld át”):**
+    a stíluslap a 2026-os `style.css` változatlan másolata (`public/css/programkereso.css`), a jelölés a 2026-os `body.html` +
+    a JS-ben épített részek (kártya, csoportok, aktív szűrők, felugró ablak) ugyanazokkal az osztályokkal. Ezzel visszajött:
+    **a szűrők VÍZSZINTES sávban a lap tetején** (asztalon, ≥1041 px; a találatszám a sáv első sora, a logó-behúzás mérve, mint
+    2026-ban) · **a térkép HELYE a lista mellett jobbra** (440 px-es hasáb, most üres — a 2. rész tölti meg; mobilon a térképlap
+    helye is megvan) · **a 2026-os tömör sorok** · **a felugró ablak mind a négy gombja** · a görgetéskor beúszó sáv, a ragadó
+    panelfej, a mobil eszközsávok (inline + alul beúszó) · a 2026-os linkfelirat-szabály (domain vagy „Jegyvásárlás”).
+    A korábbi, értelmezésből épült saját elrendezés (bal oldali szűrőoszlop, a „találatszám-sor a szűrők fölött”) megszűnt.
+  - **A gombok helye megvan, a működésük a saját körükben kapcsol be (addig tiltva, halványan):**
+    · **térkép-kör (2. rész):** a térkép maga, a felugró ablak „Mutasd a térképen” gombja, a mobil „Térkép” gomb, a helyszínlista
+      térképszámai;
     · **kedvencek-kör:** a szív a sorokon/kártyákon és a felugró ablak „Mentés” gombja;
     · **naptár-kör:** a felugró ablak „Naptárba” gombja;
-    · **mozgás-/dekor-kör:** a görgetéskor beúszó sáv (oldalnév + „Szűrés” + találatszám), a ragadó panelfej összehúzódása, a mobil
-      eszközsáv beúszása, a háttér-atmoszféra és a firkák, a kártyák felúszása;
+    · **mozgás-/dekor-kör:** a lapon szórt firkák (`#pageDecor` üres) és a kártyák felúszása;
     · **ellenőrizendő a 2. részben:** a napi nézet (`/nap/…`) és a program lapja kinézete a 2026-os `DailyProgramView`/`ProgramDetailView`
       mellé téve — ezeket ebben a körben nem vetettem össze sorról sorra.
   - **Napi nézet** `/nap/<dátum>`, **„Mi van ma?”** `/ma` (ha ma nincs fesztivál: a **nyitónap**), **program lapja** `/program/<slug>`.
   - **A fesztiválnap hajnali 3-ig tart** (a záró óra a Beállításokból): a 23:00–00:30 a kezdés napján, a nap végén; a 00:30-as kezdés
     „(éjjel)” jelzéssel a nap végén. A „Most zajlik” is így számol (szombat 01:00 = még péntek).
-  - **A logó-csapda:** a találatszám sora a szűrők FÖLÖTT van — a logó erre a nem kattintható szövegre lóg; a ragadó szűrőpanel a belógás
-    alatt áll meg. Mobilon a szűrő alulról felcsúszó panel, alul a „Szűrés” gomb a szűrők számával.
-  - **A térkép helye előkészítve:** a csere célterülete (`#pk-talalatok`) és a „vissza” gomb újratöltése (`#pk-tartalom`) is a térkép
-    helyén KÍVÜL van — a térkép eseménykezelőit egyik sem bántja. (Kipróbálni a 2. részben lehet, amikor a térkép megvan.)
+  - **A térkép eseménykezelői biztonságban:** a htmx csak a listát (`#pkResults`) és id szerint néhány számlálót/sávot cserél; a
+    térkép két helye (`#pkMapCol`, `#pkMapSheetIn`) egyik csere célpontja sem. (Kipróbálni a 2. részben lehet, amikor a térkép megvan.)
   - **Románul** végigpróbálva: approved → reviewed → gépi fordítás; az elavult helyett és fordítás nélkül a magyar; a program lapján
     apró jelzés, ha gépi fordítás látszik. A nyelvváltó megtartja a szűrést.
   - **Tesztadat:** a 2026-os programok TESZTADATKÉNT (`is_test`, dátum +364 nap, hogy a hét napja egyezzen; személyes adat nélkül;

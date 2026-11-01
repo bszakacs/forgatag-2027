@@ -67,4 +67,10 @@ return [
     'pk_folyamatosan' => 'folyamatosan',
     'pk_jegyvasarlas' => 'Jegyvásárlás',
     'pk_masolva' => 'Link másolva',
+    'pk_talalat' => 'találat',
+    'pk_felel_meg' => 'program felel meg',
+    'pk_osszes_torles_rovid' => 'Összes törlése',
+    'pk_mentes' => 'Mentés a kedvencekhez',
+    'pk_panel_bezaras' => 'Panel bezárása',
+    'pk_panel_bezaras_talalatok' => 'Panel bezárása, találatok megnézése',
 ];

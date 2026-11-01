@@ -58,9 +58,9 @@
 <link rel="stylesheet" href="{{ asset('css/publikus.css') }}?v={{ filemtime(public_path('css/publikus.css')) }}">
 @stack('styles')
 {{-- htmx (lapozás, szűrés) és Alpine (menü, ablak) — helyi, rögzített verziójú fájlok (package.json), CDN nélkül.
-     historyCacheSize 0: a „vissza” gomb a szervertől kéri újra a lapot (nem egy régi DOM-másolatot tölt vissza,
-     amelyben a JS-állapot már nem igaz). --}}
-<meta name="htmx-config" content='{"historyCacheSize":0}'>
+     historyCacheSize 0 + refreshOnHistoryMiss: a „vissza” gomb a TELJES lapot tölti újra a szerverről (nem egy régi
+     DOM-másolatot, és nem csak egy részt — így a térkép és minden más a címsor állapotából épül újra). --}}
+<meta name="htmx-config" content='{"historyCacheSize":0,"refreshOnHistoryMiss":true}'>
 <script src="{{ asset('js/vendor/htmx-2.0.4.min.js') }}" defer></script>
 <script src="{{ asset('js/vendor/alpine-3.14.9.min.js') }}" defer></script>
 </head>

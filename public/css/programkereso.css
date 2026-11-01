@@ -1,0 +1,1342 @@
+/* ============================================================================
+ *  A 2026-os PROGRAMKERESŐ STÍLUSLAPJA — BETŰRE átvéve (CLAUDE.md 2/e).
+ *  Forrás: ../forgatag-os/frontend/src/programkereso/style.css (2026-10-12-i befagyasztott állapot).
+ *  NE SZERKESZD ÉRTELMEZVE: ami itt változik, az a 2026-os lap kinézetétől tér el.
+ *  A szerveroldali kiszolgálás miatti kevés kiegészítés KÜLÖN fájlban van: programkereso-szerver.css.
+ *  EGYETLEN gépies eltérés: a cím- és hangsúlybetűs szabályokban a `font-weight:400` helyett a téma vastagsága
+ *  (`var(--head-wght)` / `var(--accent-wght)` — értéke ugyanúgy 400; CLAUDE.md 6. és a TemaTest szabálya).
+ * ========================================================================== */
+/* ALAP-RESET — a programkereső NEM a Base layouton fut (mint a kezdőlap), ezért a
+   böngésző alap 8px-es body-margóját itt kell nullázni: enélkül az EGÉSZ lap (a közös
+   fejléccel együtt) 8px-kel beljebb kezdődött, a makettben pedig a lap széléig fut.
+   A kezdőlap ugyanezt a két sort tartalmazza (home-v7/style.css). 2026-08-22. */
+html,body{margin:0;padding:0}
+/* Vízszintes görgetés nincs: a lebegő firka-dekor kompozitált rétegei a lap
+   koordinátáiban túllógtak, és mobilon vízszintes görgetősáv keletkezett (a
+   túllógó sávban SEMMI nem látszik — üres). A `clip` csak vág: `hidden`-nel a
+   ragadó fejléc elvesztette volna a viselkedését. 2026-08-23. */
+html{overflow-x:clip}
+/* A LAP-SZINTŰ ALAP — a makett `body{}` szabálya, TÉMA-tokenekkel (ugyanaz a recept,
+   mint a videóarchívum/fesztiválrend/rólunk lapokon, amelyek szintén nem töltenek
+   global.css-t). Enélkül:
+     · a háttér a böngésző fehérje volt (a sötétet a .fgl-atmo réteg adja),
+     · minden `font-family:inherit` elem (chipek, napok, keresőmező, aktív szűrők)
+       Times New Roman-t kapott, a szöveg pedig feketét,
+     · a firka-dekor vízszintes GÖRGETŐSÁVOT csinált mobilon.
+   A közös fejléc/lábléc a saját (chrome.css) betűjét és színeit használja. 2026-08-23. */
+/* A `position:relative` NEM dísz: nélküle az absztolút pozicionált firka-dekor a
+   lap (ICB) koordinátáiban él, tehát a body `overflow-x:hidden` NEM vágja le, és
+   mobilon vízszintes görgetősáv keletkezett. A makett body-ja is relative. */
+body{color:var(--fg);font-family:var(--font-body);position:relative;
+  overflow-x:clip;-webkit-font-smoothing:antialiased}
+/* `overflow-x:clip` és NEM `hidden`: a `hidden` görgethető tárolót csinál, amitől a
+   ragadó fejléc (position:sticky) elveszti a viselkedését; a `clip` csak vág. Ez
+   szünteti meg a mobilon megjelenő vízszintes görgetősávot (a lebegő firka-dekor és
+   a kompozitált rétegek görgetési területét). */
+/* A SORMAGASSÁG szándékosan NEM a body-n és NEM a puszta [data-section]-ön van: azt a
+   közös lábléc is örökölné (a SiteFooter maga is data-section), és akkor a keret nem
+   lenne betűről betűre azonos a kezdőlapéval (ott `normal`). Csak a lap saját
+   szekciói és a két szekción kívüli lap-eleme kapja meg. */
+[data-section^="programs-"],.pk-utilbar,.pk-modal{line-height:var(--leading-body)}
+[data-section],[data-section] *,[data-section] *::before,[data-section] *::after{box-sizing:border-box}
+
+/* ===========================================================================
+   A LAP SZERKEZETI TOKENJEI — szándékosan itt, nem a témában.
+   Ez a lap nem tölti be a global.css-t (mint a többi design-alapú aloldal sem),
+   ezért a NEM téma-tulajdonú tokeneket itt kell megadni. A token-szabály
+   pontosan ezeket engedi a lapnál: --sp-*, --text-*, --r-pill, --ease, --maxw.
+   AMIT A TÉMA AD KI, AZ ITT NEM SZEREPEL (--content-max, --r-card, --r-field,
+   --space-mul, --doodle-float-dur, minden szín és betű) — különben a /tema
+   némán hatástalan lenne ezen a lapon.
+   ======================================================================== */
+:root{
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px;
+  --sp-6:32px; --sp-7:44px; --sp-8:64px;
+  --text-small:14.5px; --text-micro:12.5px;
+  --leading-body:1.55;
+  --r-pill:999px;
+  --ease:cubic-bezier(.16, 1, .3, 1);
+  /* a szekció-térköz a TÉMA sűrűség-szorzójára van kötve (--space-mul) */
+  --section-pad-y:calc(clamp(40px, 6vw, 72px) * var(--space-mul, 1));
+}
+
+/* ==== a főoldalról átvett MEGOSZTOTT alap (váz, gombok, pcard/rail, csúszka,
+   firka-dekor, beúszás) — változtatás nélkül, hogy egy nyelvet beszéljünk ==== */
+/* ===========================================================================
+   1. ALAP / MEGOSZTOTT — mindent a [data-section] alá szűkítek, hogy a rendszer
+      fejlécére/láblécére semmi ne szivárogjon át.
+   ======================================================================== */
+/* A szövegszín és a betű a fenti body-szabályból ÖRÖKLŐDIK (egy forrás) — itt csak
+   a szekció-szintű segédváltozók vannak. */
+/* MINDEN lap-szekció SAJÁT rétegkörnyezetet nyit (position:relative + z-index).
+   Ezért a szűrő-szekcióban nyíló lenyíló SEMMILYEN z-indexszel nem tudott a
+   KÉSŐBBI szekciók (aktív szűrők, programsorok, térkép) fölé kerülni — ez volt a
+   desktop kép hibája, nem a lenyíló z-indexe. Két út volt: a szekciók
+   rétegkörnyezetét megszüntetni (kockázatos: a dekor és a kártya-glow erre épül),
+   vagy a SZEKCIÓKAT rangsorolni a közös skálából. A másodikat választottam: nem
+   kell hozzá JS-portál, nem kell a lenyílót görgetéskor újrapozicionálni, és a
+   sorrend egy helyen olvasható. (2026-08-23) */
+[data-section]{position:relative;z-index:var(--z-content,1);
+  /* nincs Amphora árnyék-token — lokális, hogy egy helyen legyen.
+     Kiterjedése szándékosan ≤32px lefelé, hogy a görgethető sávban ne vágódjon. */
+  --fgl-shadow:0 16px 40px -24px rgba(0,0,0,.65);
+  /* hely a hover-glow-nak a görgethető sávokon belül (fel / le).
+     A glow max. kiterjedése 26px fel / 32px le -> ez mindkét irányban tartalék. */
+  --fgl-glow-top:calc(var(--sp-6) + var(--sp-2));
+  --fgl-glow-bottom:var(--sp-7)}
+[data-section],[data-section] *,[data-section] *::before,[data-section] *::after{box-sizing:border-box}
+[data-section] h1,[data-section] h2,[data-section] h3,[data-section] p{margin:0}
+[data-section] a{color:inherit;text-decoration:none}
+[data-section] h1,[data-section] h2,[data-section] h3{
+  font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  line-height:1.03;letter-spacing:-.015em}
+[data-section] .brush{font-family:var(--font-accent);font-weight:var(--accent-wght);font-synthesis:none;
+  color:var(--accent-b);letter-spacing:0;line-height:.9}
+
+.wrap{max-width:var(--content-max);margin:0 auto;padding:0 var(--sp-5)}
+
+/* háttér-atmoszféra (a régi body-gradiens) — fix réteg, a szekciók alatt */
+.fgl-atmo{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(900px 480px at 88% -6%, color-mix(in srgb, var(--accent-b) 12%, transparent), transparent 60%),
+    radial-gradient(760px 460px at 2% 4%,  color-mix(in srgb, var(--doodle-pink) 10%, transparent), transparent 58%),
+    radial-gradient(900px 700px at 50% 120%, color-mix(in srgb, var(--doodle-blue) 10%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-raise) 48%, var(--bg-raise) 100%);
+}
+
+/* szekció-váz */
+/* A szekció-doboz vízszintesen VÁG (a firka-dekor ne toljon ki), de FÜGGŐLEGESEN
+   nem: az overflow:hidden GÖRGETŐ-KONTÉNERT csinál, amihez a benne lévő sticky
+   elem (a jobb oldali térkép-sáv) ragadna — ezért nem maradt a képernyőn.
+   A clip nem hoz létre görgető-konténert, a dekor viszont ugyanúgy nem lóg ki. */
+.blk{position:relative;padding:var(--section-pad-y) 0;overflow-x:clip;overflow-y:visible}
+.blk > .wrap{position:relative;z-index:2}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-5);
+  margin-bottom:calc(var(--sp-6) + var(--sp-1));flex-wrap:wrap;position:relative;z-index:2}
+.sec-head h2{font-size:clamp(2.3rem,4.8vw,3.6rem)}
+.sec-head h2 .brush{font-size:1.16em;margin-left:.12em;
+  /* narancs glow a kiemelt szavakon (ugyanaz a recept, mint az aloldali .glow) */
+  filter:drop-shadow(0 0 12px var(--accent-b)) drop-shadow(0 0 38px var(--accent-c))}
+/* világos háttéren tompítva, hogy ne mosódjon szét */
+.blk.light .sec-head h2 .brush,.blk.white .sec-head h2 .brush{
+  filter:drop-shadow(0 0 9px color-mix(in srgb, var(--accent-b) 55%, transparent))
+         drop-shadow(0 0 24px color-mix(in srgb, var(--accent-c) 40%, transparent))}
+.sec-head.center{justify-content:center;text-align:center}
+
+.rail-head{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:clamp(1.9rem,3.4vw,2.7rem);color:var(--fg);line-height:1;
+  margin:var(--sp-5) 0 var(--sp-4);letter-spacing:.005em}
+.rail-head.spaced{margin-top:calc(var(--sp-6) - var(--sp-1))}
+
+.sec-cta{display:flex;justify-content:flex-end;margin-top:var(--sp-5)}
+.center-cta{display:flex;justify-content:center;margin-top:var(--sp-5)}
+.media-cta{display:flex;flex-wrap:wrap;gap:var(--sp-3);justify-content:center;
+  margin-top:calc(var(--sp-6) - var(--sp-1))}
+
+/* ===========================================================================
+   2. GOMBOK
+   ======================================================================== */
+[data-section] .btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--font-body);
+  font-weight:700;font-size:.98rem;border-radius:var(--r-pill);padding:.75em 1.35em;cursor:pointer;
+  border:1px solid transparent;transition:var(--dur-1) var(--ease)}
+[data-section] .btn:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+[data-section] .btn-primary{background:var(--accent-grad);color:var(--accent-contrast);
+  box-shadow:0 8px 22px -10px color-mix(in srgb, var(--accent-b) 70%, transparent)}
+[data-section] .btn-primary:hover{transform:translateY(-2px);
+  box-shadow:0 14px 30px -10px color-mix(in srgb, var(--accent-b) 80%, transparent)}
+[data-section] .btn-ghost{border-color:var(--line-strong);color:var(--fg);
+  background:color-mix(in srgb, var(--fg) 3%, transparent)}
+[data-section] .btn-ghost:hover{background:color-mix(in srgb, var(--fg) 8%, transparent);
+  border-color:var(--fg-muted)}
+
+/* Firka-palettás gombok (médiatár alja) — a --accent-grad receptje a saját színükből
+   képezve (világosabb -> alapszín -> sötétebb), sötét felirattal, mint a .btn-primary. */
+[data-section] .btn-fill{
+  --fgl-btn:var(--doodle-pink);
+  background:linear-gradient(135deg,
+    color-mix(in srgb, var(--fgl-btn) 70%, white) 0%,
+    var(--fgl-btn) 55%,
+    color-mix(in srgb, var(--fgl-btn) 86%, black) 100%);
+  color:var(--accent-contrast);border-color:transparent;
+  box-shadow:0 8px 22px -10px color-mix(in srgb, var(--fgl-btn) 70%, transparent)}
+[data-section] .btn-fill.pink{--fgl-btn:var(--doodle-pink)}
+[data-section] .btn-fill.orange{--fgl-btn:var(--doodle-orange)}
+[data-section] .btn-fill.lime{--fgl-btn:var(--doodle-lime)}
+[data-section] .btn-fill:hover{transform:translateY(-2px);
+  box-shadow:0 14px 30px -10px color-mix(in srgb, var(--fgl-btn) 85%, transparent),
+             0 0 40px -16px color-mix(in srgb, var(--fgl-btn) 70%, transparent)}
+
+.pcard{background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r-card);display:flex;flex-direction:column;transition:var(--dur-1) var(--ease)}
+.pcard:hover{transform:translateY(-4px);border-color:var(--line-strong);box-shadow:var(--fgl-shadow)}
+.pcard .thumb{height:154px;background-size:cover;background-position:center;position:relative;
+  overflow:hidden;border-radius:calc(var(--r-card) - 1px) calc(var(--r-card) - 1px) 0 0}
+.pcard .thumb::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%, color-mix(in srgb, var(--panel) 90%, transparent))}
+.pcard .body{padding:var(--sp-3) var(--sp-4) var(--sp-4)}
+.pcard h3{font-family:var(--font-body);font-weight:700;font-size:1.08rem;color:var(--fg);line-height:1.32}
+/* Safari-fix: a kártyáról levesszük a levágást, hogy a címek leszálló szárait
+   (g, y, ó) semmi ne vághassa scroll/hover újrarajzoláskor */
+.pk-hirail .pcard{position:relative;overflow:visible}
+.pk-hirail .pcard .body{position:relative;z-index:1;padding:var(--sp-4) var(--sp-4) var(--sp-5)}
+.pk-hirail .pcard h3{margin:0;line-height:1.3;padding-bottom:.08em}
+
+/* ===========================================================================
+   8b. CSÚSZKA — ugyanaz, mint a videóarchívum aloldalon (.railnav/.railline/.railknob)
+       A natív scrollbar mindenhol el van rejtve, a görgetést a csúszka vezérli.
+   ======================================================================== */
+/* ===========================================================================
+   9. FIRKA-DEKOR (assets.pdf motívumok) — csak --doodle-* tokenszínekkel
+   ======================================================================== */
+.fgl-decor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+/* szekción belüli háttér-dekor (ott, ahol a szekció háttere átlátszatlan):
+   a szekció háttere fölött, de a tartalom (.wrap) ALATT */
+.sec-decor{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.hero .decor-layer{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.decor{position:absolute;pointer-events:none;will-change:transform;
+  animation:fglFloatDown var(--doodle-float-dur, 9s) var(--ease) infinite alternate}
+.decor svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 10px rgba(20,10,45,.18))}
+@keyframes fglFloatDown{
+  from{transform:translate(0,0) rotate(var(--fgl-r0,0deg))}
+  to{transform:translate(var(--fgl-dx,0px),var(--fgl-dy,60px)) rotate(var(--fgl-r1,0deg))}
+}
+.reveal{opacity:0;transform:translateY(var(--sp-5));
+  transition:opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease)}
+.reveal.in{opacity:1;transform:none}
+/* ===========================================================================
+   12. CSÖKKENTETT MOZGÁS
+   ======================================================================== */
+@media(prefers-reduced-motion:reduce){
+  [data-section] *{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+  .decor{animation:none}
+}
+
+/* ===========================================================================
+   PROGRAMKERESŐ — saját osztályok. Prefix: .pk-*  (ProgramKereső)
+   Lokális segédváltozók: --pk-*  — SOHA nem a :root-on, csak a szekciókon.
+   ======================================================================== */
+[data-section^="programs-"], .pk-mobar, .pk-utilbar{
+  --pk-panel-w:352px;
+  --pk-sticky-top:80px;            /* a rendszer-fejléc magassága */
+  --pk-grass:color-mix(in srgb, var(--doodle-lime) 16%, var(--panel));
+  --pk-wall:color-mix(in srgb, var(--doodle-purple,#6B4FBB) 52%, var(--bg));
+  --pk-stone:color-mix(in srgb, var(--fg) 16%, var(--panel));
+}
+
+/* ---------- 1. OLDALCÍM — SZEMMEL NEM LÁTSZIK (2026-08-23) ----------
+   A H1 megmarad a képernyőolvasóknak (a lapnak legyen főcíme), de a lapon nem
+   foglal helyet: se a cím, se a hozzá tartozó térköz. Asztalin a szekcióból így
+   NEM MARAD SEMMI (a mobil eszközsáv csak telefonon látszik), ezért ott a
+   belső margó is nulla — a szűrősáv feljebb kerül. */
+[data-section="programs-intro"]{padding:0;overflow:visible}
+.pk-intro{text-align:center;padding-bottom:0}
+/* csak képernyőolvasónak: kiveszünk minden helyet, de a fókusz és a felolvasás megmarad */
+.pk-srtitle{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* ---------- 2. GÖRGETÉSKOR BEÚSZÓ SÁV ----------
+   Nem a folyamban van (fixed), ezért a lap tetején nem foglal helyet.
+   Csak akkor jelenik meg, amikor a szűrőblokk kigörgött. */
+/* FIGYELEM: a `top` a --pk-sticky-top tokenből jön, ezért ez az elem is szerepel
+   a fenti változó-scope-ban. Ha kimarad, a var() érvénytelen, a `top` eldobódik,
+   és a sáv a folyamban marad — ez a hiba egyszer már megtörtént. */
+.pk-utilbar{position:fixed;left:0;right:0;top:var(--pk-sticky-top);z-index:var(--z-stickybar,20);
+  /* ugyanaz a token-leképezés, mint a panelen: a lilán a tompított szöveg
+     világos, a kapcsolható felület pedig mélyebb — különben 2,7:1 lenne */
+  --panel:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+  --fg-muted:color-mix(in srgb, var(--fg) 92%, var(--doodle-purple,#6B4FBB));
+  --line-strong:color-mix(in srgb, var(--fg) 36%, transparent);
+  --pk-fill:color-mix(in srgb, var(--panel) 82%, var(--bg));
+  background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+  border-bottom:1px solid color-mix(in srgb, var(--fg) 18%, transparent);
+  box-shadow:0 14px 34px -26px rgba(0,0,0,.8);
+  transform:translateY(-102%);visibility:hidden;
+  transition:transform var(--dur-2) var(--ease),visibility var(--dur-2) var(--ease)}
+.pk-utilbar.is-on{transform:none;visibility:visible}
+.pk-utilbar-in{display:flex;align-items:center;justify-content:center;
+  gap:var(--sp-5);min-height:70px}
+.pk-pagename{font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.4rem;color:var(--fg);white-space:nowrap}
+.pk-total{font-size:var(--text-small);color:var(--fg-muted);white-space:nowrap}
+.pk-total b{color:var(--fg);font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.5rem;font-synthesis:none;
+  margin-right:.15em}
+.pk-utilbar .pk-sheetbtn{font-size:.95rem;padding:.62em 1.05em}
+.pk-utilbar .pk-sheetbtn svg{width:17px;height:17px}
+
+.pk-sheetbtn{display:inline-flex;align-items:center;gap:.5em;padding:.55em .9em;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:var(--text-small);
+  color:var(--fg);background:var(--pk-fill, color-mix(in srgb, var(--fg) 7%, transparent));
+  border:1px solid var(--line-strong);border-radius:var(--r-pill);white-space:nowrap}
+.pk-sheetbtn svg{width:16px;height:16px}
+.pk-sheetbtn:hover{border-color:var(--accent-b);color:var(--accent-a)}
+.pk-sheetbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-badge-n{display:none;min-width:20px;height:20px;padding:0 5px;
+  align-items:center;justify-content:center;border-radius:var(--r-pill);
+  background:var(--accent-b);color:var(--accent-contrast);font-size:.72rem;line-height:1;font-weight:700}
+.has-n .pk-badge-n{display:inline-flex}
+
+/* ---------- 3. SZŰRŐ + TÉRKÉP ---------- */
+/* A SZŰRŐ-szekció a PANEL szintjén áll: a benne nyíló lenyílók így a lapon lévő
+   minden tartalom (aktív szűrők sávja, programsorok, térkép-fülek) fölé kerülnek. */
+[data-section="programs-explore"]{z-index:var(--z-panel,60)}
+.pk-explore{position:relative;padding:var(--sp-3) 0 var(--sp-2)}
+/* A makett kétkolonnás elrendezése: BAL a szűrőpanel, JOBB a térkép.
+   (Amíg nem volt térkép, display:block volt — a térkép bekötésével
+   visszakerül a makett rácsa, 2026-08-21.) */
+.pk-explore-in{display:grid;grid-template-columns:var(--pk-panel-w) 1fr;gap:var(--sp-6);
+  align-items:start}
+
+/* --- szűrőpanel: VILÁGOS kártya ---
+   A szekció-szintű világos tokeneket (--lap-*) képezzük le a megszokott
+   szemantikus nevekre, CSAK ezen a panelen. Így minden gyerek-szabály
+   változtatás nélkül működik, és nem keletkezik új token. Ezért nincs a
+   panelen belül egyetlen rgba(255,255,255,…) sem: minden áttetsző kitöltés
+   a --fg-ből képződik, tehát világos és sötét háttéren is helyes. */
+.pk-panel{
+  /* A kért lila (#705b9f) meglévő tokenek keverékéből, hogy ne legyen hardcode-olt
+     hex, és témaváltásnál is kövesse a rendszert. A háttér közepesen sötét, ezért
+     a szövegek VILÁGOSAK: a hierarchiát méret és súly adja, nem a világosság —
+     ezen a tónuson a „tompított" szöveg alig fér bele a 4,5:1 küszöbbe. */
+  --panel:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+  --fg-muted:color-mix(in srgb, var(--fg) 92%, var(--doodle-purple,#6B4FBB));
+  --fg-faint:color-mix(in srgb, var(--fg) 88%, var(--doodle-purple,#6B4FBB));
+  --line:color-mix(in srgb, var(--fg) 20%, transparent);
+  --line-strong:color-mix(in srgb, var(--fg) 36%, transparent);
+  /* A beviteli/kapcsolható felületek a panelnél MÉLYEBBEK, nem világosabbak:
+     világosítva a tompított szöveg 4,5:1 alá esett ezen a tónuson. */
+  --pk-fill:color-mix(in srgb, var(--panel) 82%, var(--bg));
+  --pk-fill-2:color-mix(in srgb, var(--panel) 66%, var(--bg));
+  background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+  color:var(--fg);
+  border:1px solid color-mix(in srgb, var(--fg) 16%, transparent);border-radius:var(--r-card);
+  padding:var(--sp-5) var(--sp-5) var(--sp-6);
+  box-shadow:0 26px 64px -36px rgba(0,0,0,.6)}
+
+/* RAGADÓ fejléc: mind a négy csoport nyitva a panel ~1300 px, ilyenkor a
+   fejléc kigörögne, és épp akkor nem látszana a találatszám, amikor a
+   felhasználó szűr. Ragasztva a cím összehúzódik, hogy ne vegyen el helyet. */
+.pk-panel-head{position:sticky;top:calc(var(--pk-sticky-top) + var(--sp-2));z-index:5;
+  display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);
+  margin:calc(var(--sp-5) * -1) calc(var(--sp-5) * -1) var(--sp-4);
+  padding:var(--sp-5) var(--sp-5) var(--sp-3);
+  background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+  border-radius:var(--r-card) var(--r-card) 0 0;
+  transition:padding var(--dur-1) var(--ease)}
+.pk-panel-head h2{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:clamp(2rem,2.7vw,2.5rem);line-height:1.05;color:var(--fg);
+  transition:font-size var(--dur-1) var(--ease)}
+.pk-panel-head.is-stuck{padding-top:var(--sp-3);
+  box-shadow:0 10px 20px -18px rgba(0,0,0,.9)}
+.pk-panel-head.is-stuck h2{font-size:1.5rem}
+/* élő találatszám a fejlécben */
+.pk-count{text-align:right;font-size:var(--text-small);color:var(--fg-muted);
+  line-height:1.25;max-width:9.5em}
+.pk-count[hidden]{display:none}
+.pk-count b{display:block;color:var(--fg);font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:1.75rem;line-height:1}
+/* Az „Összes törlése” a panelből átkerült az aktív szűrők sávjába (.pk-aclear):
+   ott van, amit töröl. Mobilon a felcsúszó lap fejében van rá gomb, mert ott
+   a panel fejléce rejtve van, az aktív sáv pedig a lap alatt. */
+
+.pk-search{display:flex;align-items:center;gap:.6em;
+  background:var(--pk-fill);
+  border:1px solid var(--line-strong);border-radius:var(--r-pill);
+  padding:.65em .95em;margin-bottom:var(--sp-2)}
+.pk-search svg{width:16px;height:16px;color:var(--fg-faint);flex:0 0 auto}
+.pk-search input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--fg);
+  font-family:inherit;font-size:var(--text-small)}
+.pk-search input::placeholder{color:var(--fg-faint)}
+.pk-search:focus-within{border-color:var(--accent-c)}
+.pk-searchnote{font-size:var(--text-micro);color:var(--fg-muted);margin:0 0 var(--sp-4);
+  padding:0 .95em}
+
+/* --- napválasztó a panelen, a keresőmező alatt --- */
+.pk-dayblock{display:flex;flex-direction:column;gap:var(--sp-2);
+  padding-bottom:var(--sp-4)}
+/* EGY SOR: a „Most zajlik" + MIND a hét programnap. A makettben öt nap volt (hat
+   hasáb), nálunk hét + a „most" = nyolc — ezért nem fix hasábszám, hanem egyetlen
+   sor egyenlő hasábokkal (grid-auto-flow:column). A hasáb így ~34 px, ezért a
+   feliratok is kisebbek — de mind kiférnek, tördelés nélkül. 2026-08-23. */
+/* minmax(0,1fr) — a puszta 1fr minimuma a tartalom (min-content), amitől a nyolc
+   hasáb NEM tud összehúzódni, és keskeny nézetben kitolta a lapot (vízszintes
+   görgetősáv). A 0-s minimummal a sáv mindig belül marad. */
+.pk-days{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px}
+.pk-day{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;padding:.5em .1em;cursor:pointer;
+  background:var(--pk-fill);
+  border:1px solid var(--line);border-radius:var(--r-field);
+  color:var(--fg);font-family:inherit;transition:var(--dur-1) var(--ease)}
+.pk-day .pk-dow{font-size:10px;letter-spacing:.02em;text-transform:uppercase;
+  font-weight:700;color:var(--fg-muted)}
+.pk-day .pk-num{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;font-size:1.25rem;line-height:1}
+.pk-day:hover{color:var(--fg);background:var(--pk-fill-2);
+  border-color:var(--line-strong)}
+.pk-day:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* halkabb nap (szerda) — felirat NÉLKÜL. Nem áttetszőséggel halkítunk:
+   az opacity 2,3:1-re vitte le a szám kontrasztját. Méret + háttér helyette. */
+.pk-day.is-soft{background:color-mix(in srgb, var(--panel) 92%, var(--bg));
+  border-color:color-mix(in srgb, var(--fg) 14%, transparent)}
+.pk-day.is-soft .pk-num{font-size:1.05rem;color:var(--fg-muted)}
+.pk-day.is-on{color:var(--accent-contrast);border-color:transparent;
+  background:var(--accent-grad);box-shadow:0 8px 22px -12px var(--accent-c)}
+.pk-day.is-on .pk-dow{color:color-mix(in srgb, var(--accent-contrast) 78%, transparent)}
+
+/* ugyanolyan méretű hasáb, mint a napok; a felirat két sorban.
+   MINDIG kint van — a fesztivál előtt is kipróbálható (csak nem alapállapot).
+   Korábban `display:none` volt `is-live` nélkül, ezért a sávból teljesen kimaradt. */
+.pk-now{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:.4em .1em;cursor:pointer;font-family:inherit;font-weight:700;
+  font-size:.56rem;line-height:1.1;letter-spacing:.01em;
+  color:var(--fg);background:var(--pk-fill);
+  border:1px solid var(--line-strong);border-radius:var(--r-field);
+  transition:var(--dur-1) var(--ease)}
+.pk-nowlab{display:flex;flex-direction:column;align-items:center}
+.pk-now:hover{border-color:var(--doodle-red)}
+.pk-now:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-now.is-on{background:color-mix(in srgb, var(--doodle-red) 88%, var(--bg));
+  border-color:var(--doodle-red);color:#fff}
+.pk-pulse{width:6px;height:6px;border-radius:50%;background:var(--doodle-red);flex:0 0 auto;
+  animation:pkPulse var(--pulse-dur) var(--ease) infinite}
+.pk-now.is-on .pk-pulse{background:#fff}
+@keyframes pkPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.72)}}
+
+/* --- csoportok: alapból MINDEGYIK zárva --- */
+.pk-group{border-top:1px solid var(--line)}
+.pk-group summary{display:flex;align-items:center;gap:var(--sp-2);
+  padding:var(--sp-3) 0;cursor:pointer;list-style:none;
+  font-weight:700;font-size:1rem;color:var(--fg)}
+.pk-group summary::-webkit-details-marker{display:none}
+.pk-group summary:hover{color:var(--accent-c)}
+.pk-group summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
+/* aktív szűrők száma a zárt csoporton — így a beállítás nem tud „elrejtőzni” */
+.pk-gcount{min-width:20px;height:20px;padding:0 6px;display:inline-flex;align-items:center;
+  justify-content:center;border-radius:var(--r-pill);background:var(--accent-b);
+  color:var(--accent-contrast);font-size:.72rem;line-height:1}
+.pk-gcount[hidden]{display:none}
+.pk-caret{width:.55em;height:.55em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:rotate(45deg);margin:0 .1em .2em auto;opacity:.55;
+  transition:transform var(--dur-1) var(--ease);flex:0 0 auto}
+.pk-group[open] .pk-caret{transform:rotate(-135deg);margin-bottom:-.1em}
+.pk-groupbody{padding-bottom:var(--sp-4)}
+
+/* napszak-chipek */
+.pk-chips{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.pk-chip{padding:.5em .85em;cursor:pointer;font-family:inherit;font-size:var(--text-small);
+  font-weight:600;color:var(--fg-muted);background:var(--pk-fill);
+  border:1px solid var(--line);border-radius:var(--r-pill);transition:var(--dur-1) var(--ease)}
+.pk-chip:hover{color:var(--fg);border-color:var(--line-strong)}
+.pk-chip:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-chip[aria-pressed="true"]{background:var(--fg);color:var(--panel);border-color:var(--fg)}
+
+/* opciólisták */
+.pk-opts{display:flex;flex-direction:column;gap:1px}
+.pk-opt{display:flex;align-items:center;gap:.6em;padding:.34em .5em;border-radius:var(--r-field);
+  cursor:pointer;font-size:.94rem;color:var(--fg-muted);transition:var(--dur-1) var(--ease)}
+.pk-opt:hover{background:var(--pk-fill);color:var(--fg)}
+.pk-opt input{appearance:none;width:17px;height:17px;flex:0 0 auto;margin:0;cursor:pointer;
+  border:1.5px solid var(--line-strong);border-radius:5px;background:transparent;
+  display:grid;place-content:center;transition:var(--dur-1) var(--ease)}
+.pk-opt input::after{content:"";width:9px;height:5px;border-left:2px solid var(--accent-contrast);
+  border-bottom:2px solid var(--accent-contrast);transform:rotate(-45deg) scale(0);
+  transition:transform var(--dur-1) var(--ease);margin-top:-2px}
+.pk-opt input:checked{background:var(--accent-b);border-color:var(--accent-b)}
+.pk-opt input:checked::after{transform:rotate(-45deg) scale(1)}
+.pk-opt input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-opt.is-on{color:var(--fg);font-weight:600}
+.pk-opt .pk-lab{flex:1;min-width:0}
+.pk-opt .pk-n{font-size:var(--text-micro);color:var(--fg-muted);font-variant-numeric:tabular-nums}
+/* Letiltott (0 találat) — NEM tűnik el, hogy ne ugráljon a lista, és NEM
+   áttetsző: az opacity a helyszín számát 2,3:1-re vitte le. A tompítás explicit
+   színekkel történik, ugyanúgy, mint a térkép „nincs találat" jelölőjénél. */
+/* A 0 TALÁLATOS tétel VÁLASZTHATÓ, csak halványabb (2026-08-23). A tiltás (tiltó
+   kurzor + kattinthatatlan jelölő) elsőre hibának látszott. */
+.pk-opt.is-off{color:var(--fg-muted)}
+.pk-opt.is-off input{border-color:color-mix(in srgb, var(--fg) 22%, transparent)}
+.pk-opt.is-off .pk-lab{opacity:.72}
+
+/* helyszínlista */
+.pk-venuesearch{margin-bottom:var(--sp-2)}
+.pk-venuesearch input{width:100%;background:var(--pk-fill);
+  border:1px solid var(--line);border-radius:var(--r-field);padding:.5em .7em;color:var(--fg);
+  font-family:inherit;font-size:var(--text-small);outline:none}
+.pk-venuesearch input::placeholder{color:var(--fg-faint)}
+.pk-venuesearch input:focus{border-color:var(--accent-c)}
+.pk-venuelist{max-height:214px;overflow-y:auto;padding-right:4px}
+/* a helyszín száma a név ELŐTT, a térképi jelölővel egyező körben.
+   Az állapota is követi a jelölőt: van találat = narancs, nincs = tompított. */
+.pk-vnum{width:22px;height:22px;flex:0 0 auto;display:grid;place-content:center;
+  border-radius:50%;font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:.78rem;line-height:1;
+  background:var(--accent-b);color:var(--accent-contrast);
+  border:1.5px solid var(--accent-a)}
+.pk-opt.is-off .pk-vnum{background:color-mix(in srgb, var(--panel) 62%, var(--bg));
+  color:var(--fg-muted);border-color:color-mix(in srgb, var(--fg) 22%, transparent)}
+.pk-venuegroup{font-size:var(--text-micro);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg-muted);font-weight:700;margin:var(--sp-3) 0 var(--sp-1)}
+.pk-venuegroup:first-child{margin-top:0}
+
+/* egyedi scrollbar — tompított lila, glow nélkül */
+.pk-venuelist::-webkit-scrollbar,.pk-dialog-scroll::-webkit-scrollbar{width:8px}
+.pk-venuelist::-webkit-scrollbar-track,.pk-dialog-scroll::-webkit-scrollbar-track{background:transparent}
+.pk-venuelist::-webkit-scrollbar-thumb,.pk-dialog-scroll::-webkit-scrollbar-thumb{
+  background:color-mix(in srgb, var(--doodle-purple,#6B4FBB) 55%, var(--bg));border-radius:var(--r-pill)}
+.pk-venuelist,.pk-dialog-scroll{scrollbar-width:thin;
+  scrollbar-color:color-mix(in srgb, var(--doodle-purple,#6B4FBB) 55%, var(--bg)) transparent}
+
+/* ---------- 4. TALÁLATOK ---------- */
+[data-section="programs-results"]{padding:var(--sp-5) 0 var(--sp-8)}
+
+.pk-activebar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);
+  margin-bottom:var(--sp-5);padding:var(--sp-3) var(--sp-4);border-radius:var(--r-card);
+  /* a magasság üres és teli állapotban azonos: így a chipek megjelenése
+     nem tolja el a kártyákat */
+  min-height:59px;box-sizing:border-box;
+  /* ugyanaz a lila, mint a szűrőpanelen — a kettő összetartozik */
+  --fg-muted:color-mix(in srgb, var(--fg) 92%, var(--doodle-purple,#6B4FBB));
+  --line-strong:color-mix(in srgb, var(--fg) 36%, transparent);
+  background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+  color:var(--fg);border:1px solid color-mix(in srgb, var(--fg) 16%, transparent)}
+/* Üresen is ott van: így a felhasználó előre látja, hova kerülnek a szűrők,
+   és az első chip megjelenése nem tolja le 83 px-rel a kártyákat.
+   Üres állapotban halkabb: szaggatott keret, kitöltés nélkül. */
+.pk-activebar.is-empty{background:none;border:1px dashed color-mix(in srgb, var(--fg) 26%, transparent);
+  color:var(--fg-muted);justify-content:center}
+.pk-activebar.is-empty .pk-ahint{font-size:var(--text-small);color:var(--fg-muted)}
+.pk-alabel{font-size:var(--text-micro);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg-muted);font-weight:700;margin-right:var(--sp-1)}
+.pk-achip{display:inline-flex;align-items:center;gap:.45em;padding:.42em .55em .42em .85em;
+  cursor:pointer;font-family:inherit;font-size:var(--text-small);font-weight:700;
+  color:var(--accent-contrast);background:var(--accent-b);
+  border:1px solid color-mix(in srgb, var(--accent-c) 50%, transparent);
+  border-radius:var(--r-pill);transition:var(--dur-1) var(--ease)}
+.pk-achip:hover{background:var(--accent-a)}
+.pk-achip:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-achip svg{width:12px;height:12px;opacity:.75}
+/* összes törlése: piros */
+.pk-aclear{margin-left:auto;color:#fff;
+  background:color-mix(in srgb, var(--doodle-red) 88%, black);
+  border-color:color-mix(in srgb, var(--doodle-red) 70%, black)}
+.pk-aclear:hover{background:color-mix(in srgb, var(--doodle-red) 78%, black)}
+
+.pk-gtitle{display:flex;align-items:baseline;gap:var(--sp-3);
+  margin:var(--sp-6) 0 var(--sp-4);padding-bottom:var(--sp-2);border-bottom:1px solid var(--line)}
+.pk-gtitle:first-child{margin-top:0}
+.pk-gtitle h2{font-size:clamp(1.7rem,3vw,2.3rem)}
+.pk-gtitle .pk-gn{font-size:var(--text-small);color:var(--fg-muted);white-space:nowrap}
+.pk-gtitle.is-live h2{color:var(--doodle-red)}
+
+.pk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-4);
+  padding:var(--sp-2) 2px var(--sp-5)}
+
+/* --- programkártya (a .pcard-ra épül) --- */
+.pk-card{position:relative;overflow:visible;--pk-glow:var(--grp-kozelet)}
+/* A KÉP KERETE 4:3 — ugyanaz az arány, amin a fájl KÉSZÜL (ProgramFinderView:
+   ratioCover(url,4,3,720)), tehát nincs második vágás. Fix magasság helyett arány:
+   a 250×154-es keret 1,62:1 volt, abba a 3:2-es fájl belevágott még egyszer. */
+.pk-card .thumb{aspect-ratio:4/3;height:auto;background-image:var(--pk-th)}
+/* A törzs NEM lehet position:relative — különben a link ::after átlapolója
+   hozzá igazodik, és csak a szöveget takarja, a képet nem: a kártya képére
+   koppintva nem nyílt meg a program.
+   A [data-section] előtag azért kell, mert a rendszer `.pk-hirail .pcard .body`
+   szabálya (0,3,0) erősebb a puszta `.pk-card .body`-nál (0,2,0). */
+[data-section] .pk-card .body{position:static;z-index:auto;
+  padding:var(--sp-4) var(--sp-4) var(--sp-5);
+  display:flex;flex-direction:column;gap:.42em}
+.pk-card h3{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:1.34rem;line-height:1.22;letter-spacing:-.01em;padding-bottom:.06em}
+.pk-cardlink{color:inherit}
+.pk-cardlink::after{content:"";position:absolute;inset:0;z-index:1;border-radius:var(--r-card)}
+.pk-cardlink:focus-visible{outline:none}
+.pk-card:focus-within{border-color:var(--focus)}
+.pk-time{font-size:var(--text-small);font-weight:700;letter-spacing:.04em;color:var(--accent-a);
+  font-variant-numeric:tabular-nums}
+.pk-time.is-allday{color:var(--doodle-lime)}
+.pk-venue{display:flex;align-items:center;gap:.42em;font-size:var(--text-small);color:var(--fg-muted)}
+.pk-venue svg{width:13px;height:13px;flex:0 0 auto;opacity:.75}
+.pk-cmeta{display:flex;flex-wrap:wrap;align-items:center;gap:.4em;margin-top:.2em}
+.pk-flag{font-size:var(--text-micro);color:var(--fg-muted);padding:.3em .55em;
+  border:1px solid var(--line);border-radius:var(--r-pill)}
+.pk-flag.is-price{color:var(--accent-a);border-color:color-mix(in srgb, var(--accent-b) 45%, transparent);
+  background:color-mix(in srgb, var(--accent-b) 12%, transparent);font-weight:700}
+.pk-flag.is-lang{color:var(--doodle-blue);
+  border-color:color-mix(in srgb, var(--doodle-blue) 45%, transparent);
+  background:color-mix(in srgb, var(--doodle-blue) 12%, transparent);font-weight:700}
+
+/* mentés — a képen, a link FÖLÖTT (nem beágyazott interaktív elem) */
+.pk-save{position:absolute;top:var(--sp-3);right:var(--sp-3);z-index:3;
+  width:36px;height:36px;display:grid;place-content:center;cursor:pointer;
+  border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.28);
+  background:rgba(20,14,44,.72);color:#fff;transition:var(--dur-1) var(--ease)}
+.pk-save svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
+.pk-save:hover{background:rgba(20,14,44,.88);transform:scale(1.08)}
+.pk-save:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-save[aria-pressed="true"]{color:var(--doodle-pink);border-color:var(--doodle-pink)}
+.pk-save[aria-pressed="true"] svg{fill:var(--doodle-pink)}
+
+/* hover-glow: a KATEGÓRIA színe (nem véletlen) — így nem cáfolja a chipet */
+.pk-card:hover,.pk-card:focus-within{border-color:var(--pk-glow);
+  box-shadow:
+    var(--fgl-shadow),
+    0 0 0 1px var(--pk-glow),
+    0 8px 26px -8px color-mix(in srgb, var(--pk-glow) 78%, transparent),
+    0 0 40px -14px color-mix(in srgb, var(--pk-glow) 60%, transparent)}
+.pk-card:hover{transform:translateY(-4px)}
+
+/* üres állapot — javaslat, nem üres felület */
+.pk-empty{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);
+  padding:var(--sp-6) var(--sp-5);text-align:center}
+.pk-empty h3{font-family:var(--font-head);font-weight:var(--head-wght);font-size:1.7rem;margin-bottom:var(--sp-2)}
+.pk-empty p{color:var(--fg-muted);max-width:44ch;margin:0 auto var(--sp-4)}
+
+/* ---------- 5. MODAL ---------- */
+/* A BÁZIS-STÍLUSOK ITT EXPLICITEK (fixed / rejtett / scrim / keyframe):
+   a fragment-kontextusban NEM feltételezhető, hogy készen vannak. */
+.pk-modal{position:fixed;inset:0;z-index:var(--z-modal,300);display:flex;align-items:center;justify-content:center;
+  padding:var(--sp-5)}
+.pk-modal[hidden]{display:none}
+.pk-scrim{position:absolute;inset:0;background:rgba(12,8,30,.82);
+  animation:pkFade var(--dur-1) var(--ease) both}
+@keyframes pkFade{from{opacity:0}to{opacity:1}}
+.pk-dialog{position:relative;z-index:1;width:min(660px,100%);max-height:88vh;
+  display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--r-lap);
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.9);overflow:hidden;
+  animation:pkRise var(--dur-2) var(--ease) both}
+@keyframes pkRise{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:none}}
+.pk-close{position:absolute;top:var(--sp-4);right:var(--sp-4);z-index:3;
+  width:40px;height:40px;display:grid;place-content:center;cursor:pointer;
+  border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.3);
+  background:rgba(20,14,44,.72);color:#fff}
+.pk-close svg{width:15px;height:15px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.pk-close:hover{background:var(--doodle-pink);border-color:var(--doodle-pink)}
+.pk-close:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-dialog-scroll{overflow-y:auto;overscroll-behavior:contain}
+/* A BORÍTÓ 4:3 — ugyanaz az arány, amin a fájl készül (ratioCover(url,4,3,720)),
+   tehát a felugró ablakban sem vág másodszor a CSS. */
+.pk-mimg{aspect-ratio:4/3;background-size:cover;background-position:center;position:relative;
+  display:flex;align-items:flex-end}
+/* a kép alja a lapba fut — a sáv alatt így nincs éles vágás */
+.pk-mimg::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 62%,var(--panel))}
+/* ADATSÁV A KÉP ALJÁN: dátum + időpont, majd a helyszín. A háttér SAJÁT, alulról
+   felfelé halványuló sötét réteg (fix rgba, mint a kártya mentés-gombjánál): a
+   szövegnek VILÁGOS fotón is olvashatónak kell lennie, nem építünk arra, hogy a
+   kép sötét. A szövegárnyék a szélső pixelekre ad még egy kis biztonságot. */
+.pk-mover{position:relative;z-index:1;width:100%;min-width:0;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:.3em 1.1em;
+  padding:var(--sp-6) var(--sp-6) var(--sp-4);
+  font-size:var(--text-small);font-weight:700;color:#fff;
+  background:linear-gradient(180deg,
+    rgba(20,14,44,0) 0%, rgba(20,14,44,.55) 42%, rgba(20,14,44,.88) 100%);
+  text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.pk-mover .pk-mvenue{font-weight:500;color:rgba(255,255,255,.9);
+  display:flex;align-items:flex-start;gap:.4em;min-width:0;max-width:100%}
+.pk-mover svg{width:13px;height:13px;flex:0 0 auto;margin-top:.18em}
+/* HOSSZÚ HELYSZÍNNÉV: legfeljebb két sor, utána „…" — a sáv nem eshet szét. */
+.pk-mover #pkMVenue{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;min-width:0}
+/* KÉP NÉLKÜL: nincs üres keret — ugyanez az elem normál szövegsorként jelenik meg. */
+.pk-mimg.pk-noimg{aspect-ratio:auto;display:block;background:none}
+.pk-mimg.pk-noimg::after{display:none}
+.pk-mimg.pk-noimg .pk-mover{position:static;background:none;text-shadow:none;
+  color:var(--accent-a);padding:var(--sp-5) var(--sp-6) 0}
+.pk-mimg.pk-noimg .pk-mvenue{color:var(--fg-muted)}
+.pk-mbody{padding:var(--sp-4) var(--sp-6) var(--sp-6);position:relative}
+.pk-dialog h2{font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.14;margin-bottom:var(--sp-2)}
+.pk-mseries{font-size:var(--text-small);color:var(--fg-muted);margin-bottom:var(--sp-4)}
+.pk-mseries a{color:var(--accent-a);text-decoration:underline;text-underline-offset:3px}
+/* A popup a TELJES leírást mutatja (2026-08-24), ezért bekezdésekre van bontva. */
+.pk-mdesc{color:var(--fg-muted);line-height:var(--leading-body);margin-bottom:var(--sp-5)}
+.pk-mdesc p+p{margin-top:.7em}
+/* IDŐPONT-MEGJEGYZÉS (ebédszünet, szünet, korlátozás).
+   A SORBAN: az idő alatt, apró és halvány, EGY sorban — hosszú szövegnél a JS már
+   rövidített, itt az ellipszis a végső háló, hogy mobilon se törje szét a sort.
+   A POPUPBAN: teljes szöveg, tördelhető. */
+.pk-note{display:block;font-size:.78rem;line-height:1.3;color:var(--fg-faint);
+  margin-top:2px;max-width:100%;overflow-wrap:anywhere}
+.pk-mnote{font-size:.85rem;line-height:1.45;color:var(--fg-muted);margin:0 0 var(--sp-3)}
+.pk-mnote[hidden]{display:none}
+/* GÉPI FORDÍTÁS jelzése a popupban: apró és halvány — tájékoztat, nem riaszt.
+   A kártyákon és a lista-sorokon szándékosan NINCS ilyen jelzés. */
+.pk-mmt{display:block;font-size:.8rem;line-height:1.4;color:var(--fg-faint);margin:calc(-1 * var(--sp-3)) 0 var(--sp-5)}
+.pk-mmt[hidden]{display:none}
+.pk-mmeta{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-2) var(--sp-4);
+  font-size:var(--text-small);padding-top:var(--sp-4);border-top:1px solid var(--line)}
+.pk-mmeta dt{color:var(--fg-muted)}
+.pk-mmeta dd{color:var(--fg)}
+.pk-mflags{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-4)}
+/* A gombfelirat MOBILON rövid, asztalin hosszú (nincs hozzá JS). */
+.pk-only-narrow{display:none}
+@media(max-width:720px){
+  .pk-only-wide{display:none}
+  .pk-only-narrow{display:inline}
+}
+/* A HÁROM GOMB SÁVJA MINDIG LÁTHATÓ (2026-08-25): a popup aljához ragad, és a hosszú
+   leírás befut alá. A `sticky` a görgető tárolóhoz (.pk-dialog-scroll) képest tapad,
+   ezért a sáv a törzs negatív margóival fut ki a popup széléig. A háttér TÖMÖR
+   (a panel színe), hogy a szöveg ne látszódjon át; fölötte halványulás + hajszálvonal
+   jelzi, hogy van még tartalom lejjebb. Mobilon a képernyő alsó biztonságos zónája
+   (env(safe-area-inset-bottom)) is beszámít. */
+.pk-mactions{display:flex;flex-wrap:wrap;gap:var(--sp-3);
+  position:sticky;bottom:0;z-index:2;
+  margin:var(--sp-5) calc(var(--sp-6) * -1) calc(var(--sp-6) * -1);
+  padding:var(--sp-4) var(--sp-6);
+  padding-bottom:max(var(--sp-4), env(safe-area-inset-bottom, 0px));
+  background:var(--panel);border-top:1px solid var(--line)}
+.pk-mactions::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:var(--sp-5);
+  pointer-events:none;
+  background:linear-gradient(to top, var(--panel), color-mix(in srgb, var(--panel) 0%, transparent))}
+.pk-mghost{display:inline-flex;align-items:center;gap:.5em;padding:.7em 1.1em;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:var(--text-small);color:var(--fg);
+  background:color-mix(in srgb, var(--fg) 6%, transparent);
+  border:1px solid var(--line-strong);border-radius:var(--r-pill)}
+.pk-mghost:hover{border-color:var(--accent-b);color:var(--accent-a)}
+.pk-mghost:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-mghost svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+/* A [hidden] gomb TŰNJÖN EL: a fenti display:inline-flex erősebb a böngésző
+   [hidden]{display:none} szabályánál, ezért a JS-ből elrejtett gombok (térkép,
+   naptár, mentés) továbbra is látszottak volna (2026-08-22). */
+.pk-mghost[hidden]{display:none}
+
+/* A MOBIL MENÜ nyitva: a ragadó sávok félreállnak — a menü a fejléc alatt az egész
+   lapot elfoglalja, a „13 találat" sáv nem takarhatja. */
+body.mnav-lock .pk-utilbar,body.mnav-lock .pk-mobar-fixed{display:none}
+
+/* ---------- 6. MOBIL: lista-first + felcsúszó panel ---------- */
+.pk-sheetscrim{position:fixed;inset:0;z-index:calc(var(--z-panel,60) - 1);background:rgba(12,8,30,.62);
+  opacity:0;pointer-events:none;transition:opacity var(--dur-1) var(--ease)}
+body.pk-sheet-open .pk-sheetscrim{opacity:1;pointer-events:auto}
+.pk-sheethead{display:none}
+.pk-mobar{display:none}
+.pk-mobar-inline{margin-top:var(--sp-5);justify-content:center}
+
+@media(max-width:1040px){
+  [data-section^="programs-"]{--pk-panel-w:312px}
+  .pk-explore-in{gap:var(--sp-5)}
+  .pk-grid{grid-template-columns:repeat(2,1fr)}
+}
+/* 901px fölött a térkép a 2. hasábban áll (a makett szabályai) */
+@media(min-width:901px){
+  .pk-explore-in{grid-template-rows:auto 1fr}
+  .pk-map{display:contents}
+  .pk-maptabs{grid-column:2;grid-row:1;margin-bottom:var(--sp-4)}
+  .pk-mapstage{grid-column:2;grid-row:2}
+  .pk-panel{grid-column:1;grid-row:2;align-self:stretch;padding-bottom:var(--sp-4)}
+  .pk-zoom{z-index:5}
+}
+@media(max-width:900px){
+  .pk-explore-in{grid-template-columns:1fr}
+  .pk-map{margin-top:var(--sp-4)}
+  .pk-venuelist{max-height:none}
+}
+
+@media(max-width:720px){
+  /* nincs cím fölötte, ezért a sáv a lap tetejéhez közelebb kezd */
+  [data-section="programs-intro"]{padding:var(--sp-4) 0 var(--sp-2)}
+  /* MOBILON LISTA, NEM RÁCS (tulajdonosi döntés, 2026-08-25): egy program = egy sor,
+     balra NÉGYZETES kép, jobbra a szöveg. A kép a build-időben egyszer vágott 1:1
+     változat (--pk-ths), tehát a CSS nem vág másodszor. A teljes sor koppintható:
+     a cím linkjének `::after` átlapolója a kártya egészét kitölti. */
+  .pk-grid{grid-template-columns:1fr;gap:var(--sp-2);padding:var(--sp-2) 2px var(--sp-4)}
+  /* A BELSŐ TÉRKÖZ A TELJES KÁRTYÁN van (nem az info-részen), így a kép és a szöveg
+     körül egyenletes a margó, és a kettő nem tud „elcsúszni" egymáshoz képest. */
+  .pk-card{flex-direction:row;align-items:flex-start;overflow:hidden;
+    padding:var(--sp-3);gap:var(--sp-3)}
+  /* A KÉP PONTOSAN NÉGYZETES: fix 80×80. A `stretch` a sor magasságára nyújtotta volna,
+     és a `cover` akkor MÁSODSZOR is vágott volna — épp ezt kerüljük. MIND A NÉGY sarok
+     lekerekített: ha az info-rész magasabb a képnél, így sem látszik elcsúszás. */
+  .pk-card .thumb{flex:0 0 auto;width:80px;height:80px;aspect-ratio:1/1;
+    background-image:var(--pk-ths, var(--pk-th));
+    border-radius:var(--r-field)}
+  /* a fekvő képen lévő alsó elhalványítás egy négyzetes bélyegképen csak zavar */
+  .pk-card .thumb::after{display:none}
+  /* a térköz a kártyán van, ezért innen LE kell venni — különben duplázódna.
+     A `[data-section]` előtag KELL: a rendszer `[data-section] .pk-card .body` szabálya
+     (0,3,1) erősebb a puszta `.pk-card .body`-nál (0,2,0), és visszahozná a paddinget. */
+  [data-section] .pk-card .body{flex:1 1 auto;min-width:0;justify-content:center;
+    padding:0;gap:.28em}
+  .pk-card h3{font-size:1.02rem;line-height:1.2;padding-right:0}
+  /* hosszú címnél is olvasható sor: legfeljebb három sor, utána „…" */
+  .pk-card h3 a{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden}
+  .pk-card .pk-venue{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pk-time{font-size:var(--text-micro)}
+  .pk-venue{font-size:var(--text-micro)}
+  .pk-venue svg{width:11px;height:11px}
+  .pk-flag{font-size:.62rem;padding:.26em .45em}
+  /* a 80×80-as bélyegképen a 30px-es szív túl sokat takart — kisebb és a sarokba simul */
+  .pk-save{width:26px;height:26px;top:var(--sp-1);right:var(--sp-1)}
+  .pk-save svg{width:13px;height:13px}
+  /* a ragadó lila sáv mobilon is kell: görgetés közben ez mutatja, hány
+     program van a szűrés szerint. A „Szűrés" gomb itt nem kell — az az alsó
+     eszközsávban van —, ezért csak a lap neve és a szám marad. */
+  .pk-utilbar-in{gap:var(--sp-3);min-height:52px}
+  .pk-utilbar .pk-sheetbtn{display:none}
+  /* egy sorban olvasható: „Programkereső · 12 találat" */
+  .pk-utilbar-in{justify-content:flex-start;gap:.5em}
+  .pk-pagename{font-size:1rem}
+  .pk-utilbar .pk-pagename::after{content:" ·";opacity:.55;margin-left:.15em}
+  .pk-total{font-size:var(--text-micro)}
+  .pk-total b{font-size:1.15rem}
+  /* Annyi térköz, amennyi a fix eszközsáv MÉRT magassága (--pk-mobar-h, a JS
+     állítja be) — nem beégetett px. A sáv a láblécnél amúgy félreáll, tehát nem
+     kell dupla ráhagyás. */
+  [data-section="programs-results"]{padding-bottom:calc(var(--pk-mobar-h, 76px) + var(--sp-2))}
+
+  /* --- eszközsáv: narancs Szűrés + zöld Térkép ---
+     Alapállapotban a CÍM ALATT áll (inline). Amikor a felhasználó a
+     programkártyák közé görget, a lap alján lévő FIX változat úszik be. */
+  .pk-mobar{display:flex;gap:var(--sp-3)}
+  /* a cím megszűnt: a sáv fölött nem kell a címhez tartozó térköz */
+  .pk-mobar-inline{padding:0 var(--sp-4);margin-top:0}
+  [data-section="programs-intro"]{padding-bottom:var(--sp-4)}
+  .pk-mobar-fixed{position:fixed;left:0;right:0;bottom:0;z-index:var(--z-mobar,30);
+    padding:var(--sp-3) var(--sp-4)
+      calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+    background:color-mix(in srgb, var(--bg) 96%, var(--panel));
+    border-top:1px solid var(--line-strong);
+    box-shadow:0 -12px 30px -22px rgba(0,0,0,.9);
+    transform:translateY(112%);transition:transform var(--dur-2) var(--ease)}
+  .pk-mobar-fixed.is-on{transform:none}
+  .pk-mobar-fixed.is-away{transform:translateY(112%)}
+  .pk-mobar .btn{flex:1 1 0;min-width:0;justify-content:center;padding:.8em .6em;
+    font-size:.95rem}
+  .pk-mobar .btn svg{width:16px;height:16px;flex:0 0 auto}
+  .pk-mobar .btn span[data-hs]{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* a szűrő és a térkép alulról felcsúszó panelbe kerül */
+  /* A MAGASSÁG A LÁTHATÓ KÉPERNYŐHÖZ van kötve (2026-08-23). iOS Safariban a `vh`
+     a böngésző sávjait is beszámítja, ezért a lap aljához rögzített panel MAGASABB
+     lett a látható területnél, és a saját fejléce kicsúszott felfelé (designs/
+     problema-iphone.jpeg). Sorrend: a JS-ből jövő valódi látható magasság
+     (--pk-vv), tartalékként a dinamikus dvh, legvégül a régi vh. */
+  .pk-explore{position:fixed;left:0;right:0;bottom:0;z-index:var(--z-panel,60);
+    max-height:92vh;
+    /* a lap teteje NE csússzon a rendszer-fejléc alá: a mért fejlécmagasságot
+       (--hd-h) is levonjuk — különben a saját fejléce a logó mögé kerül */
+    max-height:calc(var(--pk-vv, 100dvh) - var(--hd-h, 66px) - var(--sp-3));
+    display:flex;flex-direction:column;padding:0;
+    background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));border-top:1px solid color-mix(in srgb, var(--fg) 22%, transparent);
+    border-radius:var(--r-lap) var(--r-lap) 0 0;
+    box-shadow:0 -20px 60px -30px rgba(0,0,0,.9);
+    transform:translateY(101%);transition:transform var(--dur-2) var(--ease)}
+  body.pk-sheet-open .pk-explore{transform:none}
+  /* A .wrap `margin:0 auto`-ja egy column-flex konténerben zsugorítja az elemet
+     (fit-content), ezért ment össze a panel telefonon. Itt kifeszítjük. */
+  /* CSAK A FEJLÉC ALATTI TERÜLET GÖRÖG. A `min-height:0` nélkül a flex-elem nem
+     tud a tartalmánál kisebbre zsugorodni, ezért a lap a fejlécével együtt nőtt
+     túl a képernyőn — ez volt az iPhone-os hiba másik fele. */
+  .pk-explore-in{display:block;flex:1 1 auto;min-height:0;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    padding:0 var(--sp-4) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+    max-width:none;width:100%;margin:0;align-self:stretch;
+    /* a vízszintes gesztus a lapozásé, a böngésző csak a függőlegest kapja */
+    touch-action:pan-y}
+  /* A HOSSZÚ LISTÁK (helyszín, kategória) a SAJÁT csoportjukon belül görögnek,
+     nem nyomják meg az egész panelt: a napsáv és a többi csoport elérhető marad. */
+  .pk-explore .pk-groupbody{max-height:calc(var(--pk-vv, 100dvh) * .42);
+    overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  /* A FEJLÉC FIX: a találatszám és a záró/kereső gomb végig látszik (nem görög el).
+     A `sticky` csak öv a nadrágtartó mellé — a flex-sorrend már a helyén tartja. */
+  .pk-sheethead{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+    padding:calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) var(--sp-3);
+    border-bottom:1px solid var(--line);flex:0 0 auto;
+    position:sticky;top:0;z-index:2;
+    background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+    border-radius:var(--r-lap) var(--r-lap) 0 0}
+  .pk-sheethead .pk-sheetn{font-size:var(--text-small);color:var(--accent-a);font-weight:700}
+  .pk-sheetclose{width:38px;height:38px;display:grid;place-content:center;cursor:pointer;
+    border-radius:var(--r-pill);border:1px solid var(--line-strong);
+    background:color-mix(in srgb, var(--fg) 7%, transparent);color:var(--fg)}
+  .pk-sheetclose svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+  /* egy DOM, két nézet: a felcsúszó panel vagy a szűrőt, vagy a térképet mutatja */
+  
+  /* a panel a felcsúszó lapon nem külön kártya: a lap háttere már ugyanaz a lila */
+  .pk-panel{border:none;box-shadow:none;border-radius:0;background:none;
+    padding:var(--sp-2) 0 var(--sp-4)}
+  .pk-panel-head{display:none}
+
+  /* a térkép kifut a panel margóiig — szinte a kijelző széléig.
+     Térkép módban az alsó belső margó is elmarad, különben a vászon alatt egy
+     24 px-es sáv marad a panel hátteréből, ami ránagyítva zavaró. */
+  /* A vászon SZÁNDÉKOSAN magasabb a térkép oldalarányánál (1,675 helyett 1,39):
+     alaphelyzetben marad egy keskeny sáv a térkép fölött-alatt, viszont
+     NAGYÍTÁSKOR jóval nagyobb terület látszik — ez volt a cél. 390 px-es
+     kijelzőn 281 px magas vászon, amiben a térkép 233 px-t foglal. */
+  /* Az irányjelző MÉRETE a térképi jelölőkhöz igazodik: mobilon a jelölő
+     ~14 px átmérőjű (a CONTAIN illeszkedés miatt), ezért a szám köre is annyi. */
+
+  /* modal mobilon is KÁRTYA, nem teljes képernyő */
+  .pk-modal{padding:var(--sp-4);align-items:flex-end}
+  .pk-dialog{max-height:84vh;border-radius:var(--r-lap)}
+  .pk-mbody{padding:var(--sp-2) var(--sp-4) var(--sp-5)}
+  /* a három gomb EGY sorba: kisebb belső margó és rés (a rövid „Térkép" felirattal együtt) */
+  /* HÁROM EGYENLŐ gomb egy sorban: így bármilyen keskeny képernyőn is egy sor marad
+     (a rövid „Térkép" felirattal együtt), és mindhárom kényelmesen koppintható. */
+  .pk-mghost{flex:1 1 0;min-width:0;justify-content:center;padding:.62em .5em;gap:.35em}
+  .pk-mactions{gap:var(--sp-2);flex-wrap:nowrap}
+  /* a ragadó gombsáv margói a MOBIL törzs-paddinghez igazodnak */
+  .pk-mactions{margin:var(--sp-4) calc(var(--sp-4) * -1) calc(var(--sp-5) * -1);
+    padding:var(--sp-3) var(--sp-4);
+    padding-bottom:max(var(--sp-3), env(safe-area-inset-bottom, 0px))}
+  /* a kép mobilon is 4:3; a sáv margói a mobil törzs-paddinghez igazodnak */
+  .pk-mover{padding:var(--sp-5) var(--sp-4) var(--sp-3)}
+  .pk-mimg.pk-noimg .pk-mover{padding:var(--sp-4) var(--sp-4) 0}
+  .pk-mmeta{grid-template-columns:1fr;gap:var(--sp-1)}
+  .pk-mmeta dt{margin-top:var(--sp-2)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .pk-explore,.pk-utilbar,.pk-mobar{transition:none}
+  .pk-pulse{animation:none}
+  .pk-scrim,.pk-dialog{animation:none}
+}
+
+/* ===========================================================================
+   F1 — TÉRKÉP NÉLKÜLI ELRENDEZÉS
+   A makett desktopon két hasábot tett egymás mellé: balra a szűrőpanel,
+   jobbra a térkép. Térkép nélkül a panel a teljes szélességet megkapja, és a
+   BENNE lévő csoportok kerülnek hasábokba — így nem marad üres féloldal, és a
+   találati blokk ugyanoda kerül, ahová a makett tette. Amikor a térkép
+   megjön (F3), ez a blokk kikerül, és visszatér a kéthasábos rács.
+   ======================================================================== */
+.pk-panel-top{display:flex;flex-direction:column;gap:0}
+.pk-panel-groups{display:grid;gap:0 var(--sp-6)}
+
+/* A napsáv EGY SORBAN áll (lásd a .pk-days szabályt fentebb): a tördelő rács
+   (repeat(auto-fit,minmax(58px,1fr))) 2026-08-23-án KIKERÜLT — a makett szerint a
+   napok egy sorban vannak, és a „Most zajlik" az első hasáb. */
+
+/* a kategórialista is kereshető és görgethető (24 tétel) */
+.pk-catlist{max-height:214px;overflow-y:auto;padding-right:4px}
+.pk-catlist::-webkit-scrollbar{width:8px}
+.pk-catlist::-webkit-scrollbar-track{background:transparent}
+.pk-catlist::-webkit-scrollbar-thumb{
+  background:color-mix(in srgb, var(--doodle-purple,#6B4FBB) 55%, var(--bg));border-radius:var(--r-pill)}
+.pk-catlist{scrollbar-width:thin;
+  scrollbar-color:color-mix(in srgb, var(--doodle-purple,#6B4FBB) 55%, var(--bg)) transparent}
+
+/* a felcsúszó panel feje: egy nézet van, ezért CÍM áll a szegmentált váltó helyén */
+.pk-sheettitle{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;font-size:1.15rem;
+  display:flex;align-items:center;gap:.5em}
+
+@media(min-width:901px){
+  /* A panel MOSTANTÓL a makett keskeny (352px) hasábja, mellette a térkép — ezért a
+     kereső NEM kerül egy sorba a napsávval, és a csoportok sem 3 hasábba (azok a
+     szabályok a térkép nélküli, teljes szélességű panelhez szóltak, 2026-08-21). */
+  .pk-venuelist,.pk-catlist{max-height:280px}
+}
+
+/* üres adathalmaz (még nincs közzétett program): egyetlen közlés, nem üres váz */
+.pk-noprog{margin:var(--sp-6) 0 var(--sp-8);padding:var(--sp-6);text-align:center;
+  border:1px dashed color-mix(in srgb, var(--fg) 26%, transparent);border-radius:var(--r-card)}
+.pk-noprog h2{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:var(--sp-3)}
+.pk-noprog p{color:var(--fg-muted);max-width:46ch;margin:0 auto}
+
+/* kép nélküli program: helyőrző csempe (a makett futásidejű img-fallbackje
+   helyett — a build tudja, van-e kép, tehát nem kell megpróbálni betölteni) */
+.pk-card .thumb.pk-noimg{
+  background-image:linear-gradient(140deg, var(--panel), var(--doodle-purple,#6B4FBB))}
+
+/* ===========================================================================
+   F2 — NAPI KIEMELT SÁV
+   A csúszka MECHANIKÁJA és alap-CSS-e a közös `lib/rail`-ból jön (egy forrás,
+   `.crail` + `.railnav`); itt CSAK a hasábméret és a sáv fejléce van.
+   ======================================================================== */
+#pkHighlight{margin-bottom:var(--sp-6)}
+#pkHighlight[hidden]{display:none}
+.pk-hirail{grid-auto-columns:minmax(238px,1fr);gap:var(--sp-4);
+  padding:var(--fgl-glow-top) 2px var(--fgl-glow-bottom)}
+/* a kiemelt kártya címének leszálló szárait (g, y, ó) semmi ne vágja el */
+.pk-hirail .pcard{position:relative;overflow:visible}
+.pk-hirail .pcard .body{position:relative;z-index:1;padding:var(--sp-4) var(--sp-4) var(--sp-5)}
+.pk-hirail .pcard h3{margin:0;line-height:1.3;padding-bottom:.08em}
+@media(max-width:720px){
+  .pk-hirail{grid-auto-columns:minmax(200px,1fr);gap:var(--sp-3)}
+}
+
+/* ===========================================================================
+   SZŰRŐSÁV (1/4. LÉPÉS, 2026-08-23) — a szűrők egy VÍZSZINTES sávban, a lap
+   tetején: „Most zajlik" · napgombok · Napszak · Helyszín · Kategória · kereső.
+
+   POZÍCIÓ-VÁLTÁS, NEM működés-változás: a markup és a szűrő-logika ugyanaz, itt
+   CSAK az elrendezés más. Ezért `display:contents` a régi csoportokon — a
+   panel gyerekei így lesznek a sáv elemei, a mobil felcsúszó panel pedig
+   érintetlen marad (ez a blokk csak 1041 px fölött él).
+
+   A három legördülő úgy viselkedik, mint egy select: a tartalom ABSZOLÚT
+   pozícióban nyílik rá a lapra, tehát nem tolja szét a sávot és nem ugráltatja
+   a találati listát.
+   ======================================================================== */
+@media(min-width:1041px){
+  /* egy hasáb: fent a sáv, alatta (egyelőre) a térkép — a térkép a 3. lépésben költözik */
+  .pk-explore-in{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:var(--sp-4)}
+  .pk-panel{grid-column:1;grid-row:1;align-self:auto;
+    display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2) var(--sp-4);
+    padding:var(--sp-3) var(--sp-4)}
+  /* a régi függőleges tagolás feloldva: a gyerekek maguk lesznek a sáv elemei */
+  .pk-panel-head,.pk-panel-top,.pk-panel-groups{display:contents}
+  .pk-panel-head h2{display:none}          /* a „Szűrés" cím a sávban felesleges */
+
+  .pk-dayblock{order:1;padding-bottom:0;flex:0 0 auto}
+  .pk-days{grid-auto-columns:minmax(0,46px);gap:5px}
+  .pk-now{font-size:.52rem}
+
+  /* NAPSZAK / HELYSZÍN / KATEGÓRIA — legördülő gombok */
+  .pk-group{order:2;position:relative;border-top:0;flex:0 0 auto}
+  .pk-group summary{padding:.62em 1em;border:1px solid var(--line-strong);
+    border-radius:var(--r-pill);background:var(--pk-fill);font-size:var(--text-small)}
+  .pk-group[open] summary{border-color:var(--accent-b)}
+  .pk-groupbody{position:absolute;top:calc(100% + 6px);left:0;z-index:var(--z-drop,10);
+    min-width:290px;max-width:min(420px,80vw);max-height:min(50vh,420px);overflow:auto;
+    padding:var(--sp-3);background:var(--panel);
+    border:1px solid var(--line-strong);border-radius:var(--r-card);
+    box-shadow:0 26px 60px -28px rgba(0,0,0,.8)}
+  /* a helyszín-lista saját görgetése a legördülőn belül marad */
+  .pk-venuelist,.pk-catlist{max-height:min(38vh,320px)}
+
+  /* A kereso a panel FUGGOLEGES elrendezesehez kapott egy also margot
+     (margin-bottom:var(--sp-2)). A savban ez a margo a kozepre igazitasnal
+     4 px-el FELJEBB tolta a mezot a legordulo gomboknal — ezert itt nullazzuk. */
+  .pk-search{order:3;flex:1 1 260px;min-width:220px;margin:0 0 0 auto}
+
+  /* TALÁLATSZÁM a sáv alján: „5 program · aug. 27., csütörtök" */
+  /* a panel-fejlecben ez keskeny, ket soros blokk volt (max-width:9.5em) — a savban EGY sor */
+  /* A TALÁLATSZÁM a sáv LEGFELSŐ sora (2026-08-26): a fejléc logója ide lóg be,
+     és ez csak információ — nem kattintható, tehát az átlapolás itt nem zavaró.
+     A gombok így a logó alá kerülnek. A sor bal behúzását és minimális magasságát
+     a JS állítja, a logó mért méretéből. */
+  .pk-count{order:0;flex:1 1 100%;max-width:none;text-align:left;margin:0 0 var(--sp-1);
+    display:flex;align-items:center;gap:.3em;   /* flexben elveszne a szavak közti szóköz */
+    font-size:var(--text-small);font-weight:700;color:var(--accent-c);white-space:nowrap}
+  .pk-count b{display:inline;font-size:1rem;color:var(--accent-c)}
+  .pk-countlab{font-weight:400;color:var(--fg-muted)}
+  .pk-countday{color:var(--accent-c)}
+
+  /* a térkép egyelőre a sáv alatt, jobbra igazítva (a 3. lépés viszi a helyére) */
+  /* IDEIGLENES hely: a térkép a sáv alatt, jobbra igazítva és kisebben — a
+     3. lépés viszi a találati lista mellé. */
+  .pk-maptabs{grid-column:1;grid-row:2;width:100%;max-width:420px;margin:0 0 0 auto}
+  .pk-mapstage{grid-column:1;grid-row:3;width:100%;max-width:420px;margin-left:auto}
+}
+
+/* ===========================================================================
+   TALÁLATOK: SOROK (2/4. LÉPÉS, 2026-08-23)
+   Egy sor = egy program: időpont · négyzetes kép · cím + „📍 helyszín · ár · extra"
+   · szív · nyíl. CSAK megjelenítés — a szűrés, a popup és a mentés ugyanaz.
+
+   Asztalin ÉS mobilon is ez az elrendezés. A `[data-section]` előtag azért kell,
+   mert a régi mobil lista-szabályok (`[data-section] .pk-card .body`) erősebbek
+   lennének — azokat a Kedvenceim lap még használja, ezért nem töröltük.
+   ======================================================================== */
+.pk-grid.pk-rows{display:block;padding:var(--sp-2) 2px var(--sp-5)}
+.pk-grid.pk-rows > .pk-card + .pk-card{margin-top:var(--sp-2)}
+
+[data-section] .pk-card.pk-row{
+  display:grid;grid-template-columns:auto auto minmax(0,1fr) auto auto;
+  grid-template-rows:auto auto;align-items:center;
+  gap:0 var(--sp-4);padding:var(--sp-3) var(--sp-4);overflow:hidden}
+[data-section] .pk-card.pk-row:hover{transform:none;border-color:var(--pk-glow)}
+/* a törzs csak csoportosít: a gyerekei a sor rácsába kerülnek */
+[data-section] .pk-card.pk-row .body{display:contents}
+
+/* IDŐPONT: a kezdés nagyban, alatta a vég */
+[data-section] .pk-card.pk-row .pk-time{grid-column:1;grid-row:1 / span 2;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  min-width:4.6em;margin:0;color:var(--accent-c);font-weight:700}
+[data-section] .pk-card.pk-row .pk-t1{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:1.32rem;line-height:1.05;color:var(--accent-c)}
+[data-section] .pk-card.pk-row .pk-t2{font-size:var(--text-micro);color:var(--fg-muted);font-weight:400}
+[data-section] .pk-card.pk-row .pk-time.is-allday .pk-t1{font-size:.92rem;line-height:1.15}
+
+/* NÉGYZETES kép, KEREKÍTETT sarokkal (a formasugár tokenből). A fájl a build-időben
+   egyszer vágott 1:1 változat (--pk-ths), tehát a CSS nem vág másodszor. */
+[data-section] .pk-card.pk-row .thumb{grid-column:2;grid-row:1 / span 2;
+  width:64px;height:64px;aspect-ratio:1/1;flex:0 0 auto;
+  background-image:var(--pk-ths, var(--pk-th));background-size:cover;background-position:center;
+  border-radius:var(--r-field);overflow:hidden}
+[data-section] .pk-card.pk-row .thumb::after{display:none}
+
+/* CÍM + META */
+[data-section] .pk-card.pk-row h3{grid-column:3;grid-row:1;align-self:end;
+  margin:0;padding:0;font-size:1.06rem;line-height:1.25}
+[data-section] .pk-card.pk-row .pk-rowmeta{grid-column:3;grid-row:2;align-self:start;
+  display:flex;flex-wrap:wrap;align-items:center;gap:.25em .7em;
+  font-size:var(--text-small);color:var(--fg-muted);min-width:0}
+/* a hosszu helyszinnev EGY sorban, kipontozva (a nowrap nelkul a szoveg csak
+   levagodott volna, harom pont nelkul) */
+[data-section] .pk-card.pk-row .pk-venue{margin:0;min-width:0;max-width:100%;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[data-section] .pk-card.pk-row .pk-cmeta{display:flex;flex-wrap:wrap;gap:.35em;margin:0}
+
+/* IDŐPONT-MEGJEGYZÉS (ebédszünet): a HELYSZÍN-SOR ALATT, ÚJ sorban, a tartalmi rész
+   TELJES szélességében (3. oszloptól a sor végéig) — NEM az időpont-oszlopban, mert ott
+   megnyújtaná azt és széttolná az elrendezést (2026-08-25, tulajdonosi hibajelzés).
+   Az időpont/kép/szív/nyíl az 1–2. sorra van rögzítve, ezért ez a harmadik sor csak
+   AKKOR jön létre, ha van megjegyzés — üres sor és plusz térköz nem marad.
+   Hosszú szövegnél TÖRDEL (legfeljebb két sor), nem csordul ki. */
+[data-section] .pk-card.pk-row .pk-note{grid-column:3 / -1;grid-row:3;align-self:start;
+  margin:2px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden}
+
+/* SZÍV + NYÍL a sor jobb szélén */
+[data-section] .pk-card.pk-row .pk-save{position:static;grid-column:4;grid-row:1 / span 2;
+  align-self:center;width:38px;height:38px}
+[data-section] .pk-card.pk-row .pk-go{grid-column:5;grid-row:1 / span 2;align-self:center;
+  color:var(--fg-muted);font-size:1.15rem;line-height:1;transition:var(--dur-1) var(--ease)}
+[data-section] .pk-card.pk-row:hover .pk-go{color:var(--accent-b);transform:translateX(3px)}
+/* a nyíl CSAK a soros nézetben látszik (a kiemelt sáv kártyáin nem) */
+.pk-card .pk-go{display:none}
+[data-section] .pk-card.pk-row .pk-go{display:block}
+/* kártya-nézetben a meta-burok nem szerkezet, csak csoportosítás */
+.pk-card .pk-rowmeta{display:contents}
+
+@media(max-width:720px){
+  [data-section] .pk-card.pk-row{gap:0 var(--sp-3);padding:var(--sp-2) var(--sp-3)}
+  [data-section] .pk-card.pk-row .thumb{width:54px;height:54px}
+  [data-section] .pk-card.pk-row .pk-time{min-width:3.9em}
+  [data-section] .pk-card.pk-row .pk-t1{font-size:1.06rem}
+  [data-section] .pk-card.pk-row h3{font-size:.98rem;line-height:1.2}
+  [data-section] .pk-card.pk-row .pk-save{width:32px;height:32px}
+  [data-section] .pk-card.pk-row .pk-go{display:none}   /* keskenyen a nyíl elfér nélkül is */
+}
+
+/* ===========================================================================
+   3/4. LÉPÉS (2026-08-23): a TÉRKÉP asztalin a találati lista MELLETT, jobb
+   oldali sávban. A szűrő/térkép váltó ezzel megszűnik — mindkettő látszik.
+   A sáv tartalma fentről: fülek · térkép a nagyítókkal · helyszín-jelmagyarázat ·
+   „Közérdekű". MOBILON semmi nem változik (ez a blokk 1041 px fölött él).
+   ======================================================================== */
+@media(min-width:1041px){
+  [data-section^="programs-"]{--pk-mapcol-w:440px}   /* kicsit szélesebb, mint a makett */
+
+  /* a találatok szekciója kéthasábos: balra a lista, jobbra a térkép-sáv */
+  [data-section="programs-results"] > .wrap{
+    display:grid;grid-template-columns:minmax(0,1fr) var(--pk-mapcol-w);
+    gap:0 var(--sp-6);align-items:start}
+  #pkActive{grid-column:1 / -1}
+  #pkHighlight,#pkResults{grid-column:1;min-width:0}
+  /* A SÁV GÖRGETÉSSEL KÖVET (sticky), de SOHA nem lóg ki a képernyőből: saját
+     maximális magassága van, és ha a tartalom hosszabb, a sávon BELÜL görgethető.
+     A fejléc alá nem csúszhat (a top a fejléc magasságától indul), a lap alján
+     pedig magától elenged: a rács `align-items:start`-ja miatt a tartó
+     doboz ott véget ér, ahol a bal oldali lista. */
+  .pk-mapcol{grid-column:2;grid-row:2 / span 2;position:sticky;
+    top:calc(var(--pk-sticky-top) + var(--sp-3));
+    max-height:calc(100vh - var(--pk-sticky-top) - var(--sp-6));
+    overflow-y:auto;overscroll-behavior:contain;
+    scrollbar-width:thin;padding-right:2px}
+  /* a helyszínlista a sávon belül is görgethető marad, de ne vigye el az egészet */
+  .pk-legend-list{max-height:min(320px,34vh)}
+
+  /* a szűrő-szekcióban már nincs térkép-hasáb: a sáv teljes szélességű */
+  .pk-explore-in{grid-template-columns:1fr;grid-template-rows:auto}
+  .pk-map{display:block;margin:0}
+  .pk-maptabs{margin-bottom:var(--sp-3)}
+  /* a fülek „pöttyök”: kisebb, halkabb gombok — a programszám marad */
+  .pk-maptab{font-size:.92rem;padding:.42em .9em;line-height:1.2}
+  .pk-mapstage{width:100%;max-width:none;margin:0}
+
+  /* HELYSZÍN-JELMAGYARÁZAT (nem szűrő) */
+  .pk-legend{margin-top:var(--sp-4);background:var(--card);
+    border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3) var(--sp-3) var(--sp-2)}
+  .pk-legend-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2);
+    margin-bottom:var(--sp-2)}
+  .pk-legend-head h3{font-size:.98rem;margin:0}
+  .pk-legend-head span{font-size:var(--text-micro);color:var(--fg-faint)}
+  .pk-legend-list{max-height:280px;overflow:auto;overscroll-behavior:contain;
+    scrollbar-width:thin;padding-right:2px}
+  .pk-leggroup + .pk-leggroup{margin-top:2px;padding-top:2px;border-top:1px solid var(--line)}
+  .pk-legrow{display:flex;align-items:center;gap:.6em;width:100%;text-align:left;
+    padding:.34em .4em;border:0;border-radius:var(--r-field);background:transparent;
+    color:var(--fg);font:inherit;font-size:var(--text-small);cursor:pointer}
+  .pk-legrow.is-kid{padding-left:1.5em}
+  .pk-legrow:hover,.pk-legrow:focus-visible{background:color-mix(in srgb, var(--fg) 8%, transparent);
+    color:var(--accent-a);outline:none}
+  .pk-legrow:focus-visible{box-shadow:inset 0 0 0 2px var(--focus)}
+  .pk-legno{flex:0 0 auto;min-width:22px;height:22px;display:inline-grid;place-content:center;
+    border-radius:50%;background:var(--accent-b);color:var(--accent-contrast);
+    font-size:.72rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .pk-legname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* ami nincs a térképen: halvány, nem kattintható — de OTT VAN a listában */
+  .pk-legrow.is-off{cursor:default;color:var(--fg-faint)}
+  .pk-legrow.is-off .pk-legno{background:transparent;
+    box-shadow:inset 0 0 0 1px var(--line-strong)}
+
+  /* KÖZÉRDEKŰ: a rajzon lévő jelek megfejtése */
+  .pk-mapinfo{margin-top:var(--sp-3);background:var(--card);
+    border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3)}
+  .pk-mapinfo h3{font-size:.98rem;margin:0 0 var(--sp-2)}
+  .pk-mapinfo p{margin:0 0 .35em;font-size:var(--text-small);color:var(--fg-muted);line-height:1.45}
+  .pk-ii{margin-right:.15em}
+
+  /* a mobil eszközsáv (Szűrés / Térkép gombok) asztalin eddig sem látszott */
+  .pk-mobar{display:none}
+}
+/* keskeny nézetben a jelmagyarázat és a Közérdekű a felcsúszó panelben van —
+   ott most nem mutatjuk (a mobil elrendezés a 4. lépés). */
+@media(max-width:1040px){
+  .pk-legend,.pk-mapinfo{display:none}
+}
+
+/* ===========================================================================
+   4/4. LÉPÉS (2026-08-23) — MOBIL: külön felület a szűrőnek és a térképnek.
+   A szűrőlap változatlan; a „Térkép" gomb SAJÁT lapot nyit, amin csak a térkép
+   és a helyszín-jelmagyarázat van. Mindkét lap tetején/alján NAGYÍTÓ: bezár, és
+   ezzel megmutatja a találatokat (nem „Alkalmaz" — a szűrés úgyis azonnali).
+   ======================================================================== */
+.pk-mapsheet{display:none}
+.pk-find{display:none}
+
+@media(max-width:1040px){
+  /* a jelmagyarázat és a Közérdekű a TÉRKÉPLAPON látszik (a szűrőlapon nincs) */
+  .pk-mapsheet .pk-legend,.pk-mapsheet .pk-mapinfo{display:block}
+  .pk-mapsheet .pk-legend{margin-top:var(--sp-4);background:var(--card);
+    border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3)}
+  .pk-mapsheet .pk-legend-head{display:flex;align-items:baseline;justify-content:space-between;
+    gap:var(--sp-2);margin-bottom:var(--sp-2)}
+  .pk-mapsheet .pk-legend-head h3{font-size:1rem;margin:0}
+  .pk-mapsheet .pk-legend-head span{font-size:var(--text-micro);color:var(--fg-faint)}
+  .pk-mapsheet .pk-legend-list{max-height:38vh;
+    max-height:calc(var(--pk-vv, 100dvh) * .34);
+    overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .pk-mapsheet .pk-leggroup + .pk-leggroup{margin-top:2px;padding-top:2px;border-top:1px solid var(--line)}
+  .pk-mapsheet .pk-legrow{display:flex;align-items:center;gap:.6em;width:100%;text-align:left;
+    padding:.5em .4em;border:0;border-radius:var(--r-field);background:transparent;
+    color:var(--fg);font:inherit;font-size:var(--text-small);cursor:pointer}
+  .pk-mapsheet .pk-legrow.is-kid{padding-left:1.5em}
+  .pk-mapsheet .pk-legrow.is-off{cursor:default;color:var(--fg-faint)}
+  .pk-mapsheet .pk-legno{flex:0 0 auto;min-width:24px;height:24px;display:inline-grid;place-content:center;
+    border-radius:50%;background:var(--accent-b);color:var(--accent-contrast);
+    font-size:.74rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .pk-mapsheet .pk-legrow.is-off .pk-legno{background:transparent;box-shadow:inset 0 0 0 1px var(--line-strong)}
+  .pk-mapsheet .pk-legname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pk-mapsheet .pk-mapinfo{margin-top:var(--sp-3);background:var(--card);
+    border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3)}
+  .pk-mapsheet .pk-mapinfo h3{font-size:1rem;margin:0 0 var(--sp-2)}
+  .pk-mapsheet .pk-mapinfo p{margin:0 0 .35em;font-size:var(--text-small);color:var(--fg-muted)}
+}
+
+@media(max-width:720px){
+  /* ---- TÉRKÉPLAP: ugyanaz a felcsúszó forma, mint a szűrőlapé ---- */
+  /* A TÉRKÉPLAP ugyanazt a magasság-szabályt kapja, mint a szűrőlap. */
+  .pk-mapsheet{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:var(--z-panel,60);
+    max-height:92vh;
+    /* a lap teteje NE csússzon a rendszer-fejléc alá: a mért fejlécmagasságot
+       (--hd-h) is levonjuk — különben a saját fejléce a logó mögé kerül */
+    max-height:calc(var(--pk-vv, 100dvh) - var(--hd-h, 66px) - var(--sp-3));
+    flex-direction:column;padding:0;
+    background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+    border-top:1px solid color-mix(in srgb, var(--fg) 22%, transparent);
+    border-radius:var(--r-lap) var(--r-lap) 0 0;
+    box-shadow:0 -20px 60px -30px rgba(0,0,0,.9);
+    transform:translateY(101%);transition:transform var(--dur-2) var(--ease)}
+  body.pk-sheet-map .pk-mapsheet{transform:none}
+  /* a két lap KÜLÖN nyílik: amelyik nem aktív, az lent marad */
+  body.pk-sheet-map .pk-explore{transform:translateY(101%)}
+  .pk-mapsheet .pk-sheettitle{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;font-size:1.25rem}
+  .pk-mapsheet-in{flex:1 1 auto;min-height:0;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    padding:0 var(--sp-4) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+    touch-action:pan-y}
+  .pk-mapsheet .pk-map{margin-top:var(--sp-4)}
+
+  /* ---- NAGYÍTÓ: a szűrőlapon a sáv végén, a térképlapon a fejlécben ---- */
+  .pk-find{display:grid;place-content:center;order:9;flex:0 0 auto;
+    width:44px;height:44px;margin-left:auto;cursor:pointer;
+    border-radius:var(--r-pill);border:1px solid transparent;
+    background:var(--accent-grad);color:var(--accent-contrast);
+    box-shadow:0 10px 24px -14px var(--accent-c)}
+  .pk-find svg{width:19px;height:19px}
+  .pk-sheetfind{width:38px;height:38px;display:grid;place-content:center;cursor:pointer;
+    border-radius:var(--r-pill);border:1px solid transparent;
+    background:var(--accent-grad);color:var(--accent-contrast)}
+  .pk-sheetfind svg{width:17px;height:17px}
+  .pk-find:focus-visible,.pk-sheetfind:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+}
+
+
+/* ===========================================================================
+   TÉRKÉPLAP: X ↔ KERESÉS IKON (2026-08-23)
+   Csak a térképlapon: ott nincs alsó „Alkalmaz" sáv (a helyszínlista elvinné a
+   helyet), ezért a fejléc sarokgombja veszi át a szerepét.
+   ======================================================================== */
+.pk-mapsheet .pk-sheetclose .pk-ic-find{display:none}
+body.pk-map-changed .pk-mapsheet .pk-sheetclose .pk-ic-x{display:none}
+body.pk-map-changed .pk-mapsheet .pk-sheetclose .pk-ic-find{display:block}
+/* a keresés-alak hangsúlyos: ez a „mutasd a találatokat" mozdulat */
+body.pk-map-changed .pk-mapsheet .pk-sheetclose{background:var(--accent-grad);
+  color:var(--accent-contrast);border-color:transparent}
+
+/* ===========================================================================
+   MOBIL: a ragadó sáv javítása
+   (Az „X → kereső ikon" váltó megszűnt: a megerősítő mozdulat a panel alján
+   lévő „Alkalmaz" gombé — két ilyen gomb egy panelen zavaró volt. 2026-08-23)
+   ======================================================================== */
+.pk-sheetclose svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;fill:none}
+
+@media(max-width:720px){
+  /* A RAGADÓ „Szűrés / Térkép" SÁV eltűnt, ha a szűrés után rövid lett a lista:
+     a lábléc a képbe ért, és az is-away allapot elrejtette. A sáv fontosabb, mint a
+     lábléc utolsó sora — ezért csak a lábléc kap alul helyet, a sáv marad. */
+  .pk-mobar-fixed.is-away{transform:none}
+  footer.site-ft{padding-bottom:calc(var(--sp-8, 64px) + var(--pk-mobar-h, 56px))}
+}
+
+/* NAP-FEJLÉC a „nincs nap kiválasztva" állapotban: a napok fölé nagyobb cím kerül,
+   alatta a megszokott napszak-fejlécek (2026-08-23). */
+.pk-daytitle{display:flex;align-items:baseline;gap:var(--sp-3);flex-wrap:wrap;
+  margin:var(--sp-7) 0 var(--sp-2);padding-bottom:var(--sp-2);
+  border-bottom:2px solid color-mix(in srgb, var(--accent-b) 55%, transparent)}
+.pk-daytitle h2{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:clamp(1.5rem,3.4vw,2.1rem);line-height:1.05;margin:0;color:var(--accent-a)}
+.pk-daytitle .pk-gn{font-size:var(--text-small);color:var(--fg-muted)}
+.pk-daytitle + .pk-gtitle{margin-top:var(--sp-4)}
+/* az EGÉSZ NAPOS sor jelzése: apró jel a kezdés alatt, szöveg nélkül */
+[data-section] .pk-card.pk-row .pk-t2.pk-open{font-size:.95rem;line-height:1;opacity:.75}
+
+
+/* ===========================================================================
+   HELYSZÍNLISTA — A SOR SZŰR IS (2026-08-23, tulajdonosi döntés)
+   SORSZÁM · NÉV · PROGRAMSZÁM. A kiválasztott sor ugyanúgy néz ki, mint egy
+   bekapcsolt szűrő; a 0 találatos sor halványabb, de VÁLASZTHATÓ marad (mint a
+   szűrőpanelben). Ami nincs a térképen, annak nincs sorszáma — de szűrhető.
+   ======================================================================== */
+.pk-legn{margin-left:auto;flex:0 0 auto;font-size:var(--text-micro);
+  color:var(--fg-faint);font-variant-numeric:tabular-nums}
+.pk-legrow.is-off{cursor:pointer}
+.pk-legrow.is-empty .pk-legname{opacity:.72}
+.pk-legrow[aria-pressed="true"]{background:color-mix(in srgb, var(--accent-a) 20%, transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent-a) 55%, transparent)}
+.pk-legrow[aria-pressed="true"] .pk-legname{font-weight:700}
+.pk-legrow[aria-pressed="true"] .pk-legn{color:var(--fg)}
+/* koppintható méret telefonon */
+@media(max-width:720px){
+  .pk-legrow{min-height:44px}
+}
+
+
+/* ===========================================================================
+   ALKALMAZ — a mobil szűrőpanel FIX LÁBA (2026-08-23)
+   A panelnek fix FEJE (találatszám + X) és fix LÁBA (Alkalmaz) van, közöttük
+   görög a tartalom. Asztalin nincs: ott nincs mit „bezárni".
+   A gombon ott a találatszám, mert a szűrés amúgy is azonnali — ez „mutasd
+   ezeket", nem „mentsd el". Ugyanez a láb a TÉRKÉPLAPRA egyetlen sorral
+   bekapcsolható: a .pk-sheetfoot markupot bemásolva a .pk-mapsheet végére.
+   ======================================================================== */
+.pk-sheetfoot{display:none}
+
+@media(max-width:720px){
+  .pk-sheetfoot{display:block;flex:0 0 auto;
+    padding:var(--sp-3) var(--sp-4)
+      calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+    border-top:1px solid var(--line);
+    background:color-mix(in srgb, var(--lap-muted) 72%, var(--doodle-purple,#6B4FBB));
+    box-shadow:0 -14px 26px -24px rgba(0,0,0,.9)}
+  .pk-apply{width:100%;justify-content:center;gap:.4em;
+    min-height:48px;font-size:1.02rem}
+  .pk-apply .pk-applysep{opacity:.6}
+  .pk-apply .pk-applyn{font-variant-numeric:tabular-nums}
+}

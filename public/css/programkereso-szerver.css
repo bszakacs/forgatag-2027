@@ -1,0 +1,15 @@
+/* ============================================================================
+ *  A 2026-os programkereső stílusának (programkereso.css, betűre átvéve) KIEGÉSZÍTÉSE — CSAK ami a szerveroldali
+ *  kiszolgálásból következik. Új kinézet itt nem lehet (CLAUDE.md 2/e).
+ *  · 2026-ban a nap- és napszak-gombok <button>-ok voltak; most JS nélkül is működő űrlap-mezők vannak bennük
+ *    (rádió / jelölőnégyzet) — ezek láthatatlanok, a 2026-os gomb maga a felület.
+ *  · A lista szövegkeresője a nem illő sort `hidden`-nel rejti (2026-ban újraépítette a listát).
+ *  · A még nem működő gombok (térkép, naptár, mentés — a saját körükben kapcsolnak be) tiltottak: halványak.
+ * ========================================================================== */
+.pk-day,.pk-now,.pk-chip{position:relative}
+.pk-day input,.pk-now input,.pk-chip input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.pk-day:has(input:focus-visible),.pk-now:has(input:focus-visible),.pk-chip:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+.pk-opt[hidden]{display:none}
+.pk-mghost:disabled,.pk-save:disabled,[data-section] .btn:disabled{opacity:.45;cursor:default;transform:none}
+.pk-nojs{margin-top:var(--sp-4)}
+#pkResults.htmx-request{opacity:.55;transition:opacity var(--dur-1) var(--ease)}

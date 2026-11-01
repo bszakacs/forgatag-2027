@@ -1,19 +1,16 @@
 {{--
-  Egy nap találatai NAPSZAKONKÉNT (2026-os bontás): délelőtt / délután / este, a végén „egész nap nyitva”.
-  A napszakot a fesztiválnap skáláján számoljuk, tehát a 00:30-as kezdés az „este” végére kerül.
-  Paraméter: $sorok (Collection<ProgramSor>), $szint (h2 vagy h3 — napfejléc alatt h3).
+  Egy nap találatai NAPSZAKONKÉNT — a 2026-os `dayparts()` + `groupBlock()` jelölése: délelőtt / délután / este, a végén
+  „egész nap nyitva”. A napszakot a fesztiválnap skáláján számoljuk, tehát a 00:30-as kezdés az „este” végére kerül.
+  Paraméter: $sorok (Collection<ProgramSor>), $elotag (a csoport-kulcs előtagja, mint 2026-ban: 'd<nap>-').
 --}}
-@php $szint ??= 'h2'; @endphp
-@foreach (['delelott' => 'pk_delelott', 'delutan' => 'pk_delutan', 'este' => 'pk_este', 'egesznap' => 'pk_egesznap'] as $kulcs => $felirat)
-  @php $csoport = $sorok->filter(fn ($s) => $s->napszak() === $kulcs); @endphp
+@php $elotag ??= ''; @endphp
+@foreach (['delelott' => ['morning', 'pk_delelott'], 'delutan' => ['afternoon', 'pk_delutan'], 'este' => ['evening', 'pk_este'], 'egesznap' => ['allday', 'pk_egesznap']] as $kulcs => [$kod, $felirat])
+  @php $csoport = $sorok->filter(fn ($s) => $s->napszak() === $kulcs)->sortBy(fn ($s) => $s->kezd); @endphp
   @if ($csoport->isNotEmpty())
-    <div class="pk-gtitle">
-      <{{ $szint }}>{{ __('publikus.' . $felirat) }}</{{ $szint }}>
-      <span class="pk-gn">{{ $csoport->count() }} {{ __('publikus.pk_program_szo') }}</span>
-    </div>
-    <div class="pk-rows">
+    <div class="pk-gtitle" data-pk-group="{{ $elotag . $kod }}"><h2>{{ __('publikus.' . $felirat) }}</h2><span class="pk-gn">{{ $csoport->count() }} {{ __('publikus.pk_program_szo') }}</span></div>
+    <div class="pk-grid pk-rows">
       @foreach ($csoport as $sor)
-        @include('programok._sor', ['sor' => $sor])
+        @include('programok._kartya', ['sor' => $sor, 'listaSor' => true])
       @endforeach
     </div>
   @endif

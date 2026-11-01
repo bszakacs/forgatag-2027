@@ -41,9 +41,9 @@ class ProgramokController extends Controller
         $szovegek = new LapSzovegek($lap, Nyelv::aktualis());
         $felugro = $this->felugro($sz);
 
-        // A felugró ablak nyitása/zárása CSAK az ablakot kéri (a kártya és a bezáró gomb htmx-célja: #pk-modal).
-        if ($htmx && $request->header('HX-Target') === 'pk-modal') {
-            return response()->view('programok._felugro', ['szures' => $sz, 'sz' => $szovegek, 'felugro' => $felugro])
+        // A felugró ablak nyitása/zárása CSAK az ablakot kéri (a kártya és a bezáró gomb htmx-célja: #pkModal).
+        if ($htmx && $request->header('HX-Target') === 'pkModal') {
+            return response()->view('programok._felugro', ['szures' => $sz, 'sz' => $szovegek, 'felugro' => $felugro, 'ny' => Nyelv::aktualis()])
                 ->header('HX-Push-Url', $sz->url());
         }
 
@@ -61,7 +61,7 @@ class ProgramokController extends Controller
             'felugro' => $felugro,
             'napok' => $this->napok(),
             'kategoriak' => ProgramKereso::kategoriak(),
-            'helyszinek' => $this->helyszinFa(),
+            'helyszinek' => ProgramKereso::helyszinek(),
             'vanProgram' => ProgramKereso::programosNapok() !== [],
         ]);
 
@@ -144,24 +144,5 @@ class ProgramokController extends Controller
         $van = ProgramKereso::programosNapok();
 
         return array_values(array_filter(Festival::days(), fn ($d) => in_array($d['id'], $van, true)));
-    }
-
-    /**
-     * A helyszínek a szűrőlistához: a szülő, alatta a termei (2026-os sorrend), a hierarchia jelölésével.
-     *
-     * @return list<array{venue: \App\Models\Venue, gyerek: bool}>
-     */
-    private function helyszinFa(): array
-    {
-        $mind = ProgramKereso::helyszinek();
-        $fa = [];
-        foreach ($mind->whereNull('parent_id') as $v) {
-            $fa[] = ['venue' => $v, 'gyerek' => false];
-            foreach ($mind->where('parent_id', $v->id) as $g) {
-                $fa[] = ['venue' => $g, 'gyerek' => true];
-            }
-        }
-
-        return $fa;
     }
 }
