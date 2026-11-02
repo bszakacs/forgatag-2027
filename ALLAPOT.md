@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-02 (PROMPT-13, a mozgás- és dekor-réteg — kész HELYBEN, élesítés és telefonos próba hátra; a 12/b kör továbbra is hátra van)
+**Utolsó frissítés:** 2026-11-02 (PROMPT-13, a mozgás- és dekor-réteg — kész, ÉLESBEN telepítve és megnézve; hátra: a valódi telefonos próba; a 12/b kör továbbra is hátra van)
 
 ---
 
@@ -218,7 +218,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     a sáv görgethető marad (`programkereso-szerver.css`). A helyszínlista saját belső sávja marad.
   - **Sebesség (helyben):** a térkép adata ~30 ms, csak a teljes lapbetöltéskor; a szűrő-válasz nem nőtt. ⚠ Élesben mérendő.
 
-- **A mozgás- és dekor-réteg** (`PROMPT-13`, 2026-11-02) — **kész HELYBEN, még NINCS élesben.** Egy réteg minden publikus lapon
+- **A mozgás- és dekor-réteg** (`PROMPT-13`, 2026-11-02) — **kész, élesben telepítve és megnézve (2026-11-02)**; a valódi telefonos próba hátra van (MOST folyik, 6.). Egy réteg minden publikus lapon
   (`public/js/mozgas.js` a keretben), a téma Mozgás és Firkák beállításai vezérlik. Részletek: `CLAUDE.md` 8. pont „Mozgás- és dekor-réteg”.
   - **Mi került be a 2026-os kódból:** a Rólunk szakaszainak **felúszása**, a görgetésre rajzolódó **fonál** a képek között a rajta haladó
     **karikával**; a hírkártyák **fényes kiemelése** (sorszám szerinti színnel, mint 2026-ban); a **lapon szórt firkák** a programkeresőn
@@ -264,9 +264,13 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **+ a térkép (PROMPT-12, 2/a):** a naplóban `… helyszín térkép-adata kitöltve a 2026-os mentésből`; élesben megnézendő a térkép
    (szűrés, aztán kattintás a jelölőre), a „Mutasd a térképen”, a mobil „Térkép” gomb, és **a válaszidő mérése** (lista, szűrés).
    ⚠ **A válaszidőt élesben kell mérni:** helyben minden lap (a hírek is) ~6,5 mp — ez a Windows-os Docker mappamegosztása, nem a kód.
-6. **A mozgás- és dekor-réteg élesítése** (PROMPT-13) — helyben kész, feltolva; **a telepítés (Deploy) a felhasználóé.** A naplóban egy új
-   migráció: `2027_01_12_000100_theme_12_motifs` (az Arculatban ezután 12 motívumhely látszik, az előzményben egy „migracio” verzió).
-   **Élesben, VALÓDI TELEFONON megnézendő:** a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
+6. **A mozgás- és dekor-réteg** (PROMPT-13) — **élesben telepítve (2026-11-02, a telepítés a programkereső 11. és 12/a körét is kivitte).**
+   **Élesben mérve (proba.forgatag.ro, böngészőből):** minden lap 200 (Rólunk HU/RO, hírek, programkereső, napi nézet); a téma 12 motívuma
+   kint (a programkeresőn 12 szimbólum, 52 firka 267 kártya mellett); a firka-kapcsolók hatnak (52 → 26 → 0, lebegés ki, átlátszóság,
+   „MA” pulzálás); a Rólunkon fonál, karika, felúszás, három színfolt; 375 px-en vízszintes görgetés nincs. Válaszidő egyenként: hírek 0,27–0,34 s,
+   Rólunk 0,27 s, napi nézet 0,32 s, programkereső 0,42 s, „Minden nap” 0,55–0,6 s (a telepítés utáni első, párhuzamos kérések ~12 s-ig
+   sorban álltak — egyszeri, utána nem ismétlődött).
+   **Hátra (a felhasználóval), VALÓDI TELEFONON:** a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
    felúszása; egy hírkártya kiemelése; és a telefon „Kevesebb mozgás” / „Animációk eltávolítása” beállításával a Rólunk: semmi nem úszik, a
    programkeresőn nincs firka.
 
