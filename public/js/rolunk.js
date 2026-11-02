@@ -1,14 +1,16 @@
 /*
  * Rólunk — a történet „kötődő-fonala”: a görgetésre kirajzolódó kanyargós vonal a képek között, a rajta haladó
- * jelölőkarikával. BETŰRE a 2026-os forgatag-os/frontend/src/rolunk/script.js „STORY” blokkja. Eltérés: a görgetés-
- * kezelő képkockánként legfeljebb egyszer számol (requestAnimationFrame) — a látvány ugyanaz, telefonon kíméletesebb.
+ * jelölőkarikával. BETŰRE a 2026-os forgatag-os/frontend/src/rolunk/script.js „STORY” blokkja. Eltérések: a görgetés-
+ * kezelő képkockánként legfeljebb egyszer számol (requestAnimationFrame) — a látvány ugyanaz, telefonon kíméletesebb; a
+ * karika külön, a képek fölötti rétegben (#thread-top), mert mobilon induláskor a kép mögött volt.
  * (A szekciók felúszása a közös rétegben: public/js/mozgas.js. A Borkert-ablakot az Alpine nyitja.)
  */
 (function () {
   var story = document.querySelector('.about-page .story'); if (!story) return;
   var wrap = story.querySelector('.wrap');
   var track = document.getElementById('thread-track'), prog = document.getElementById('thread-prog'),
-      marker = document.getElementById('thread-marker'), svg = document.getElementById('thread');
+      marker = document.getElementById('thread-marker'), svg = document.getElementById('thread'),
+      felso = document.getElementById('thread-top'); // a karika rétege, a képek fölött (ugyanaz a viewBox)
   if (!wrap || !track || !prog || !svg) return;
   var samps = [], secH = 0;
   function smooth(p) {
@@ -24,6 +26,7 @@
   function build() {
     var W = story.clientWidth, H = story.clientHeight, sr = story.getBoundingClientRect();
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    if (felso) felso.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     var figEls = [].slice.call(wrap.querySelectorAll('.sfig-img'));
     var frects = figEls.map(function (f) { var r = f.getBoundingClientRect(); return { cx: r.left - sr.left + r.width / 2, cy: r.top - sr.top + r.height / 2 }; });
     var anch = [[W / 2, 0]]; frects.forEach(function (r) { anch.push([r.cx, r.cy]); }); anch.push([W / 2, H]);

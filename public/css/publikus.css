@@ -29,14 +29,18 @@
 /* ---------- ALAP ---------- */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--hd-h) + 12px)}
-body{margin:0;min-height:100vh;display:flex;flex-direction:column;
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg-raise);color:var(--fg);font-family:var(--font-body);
+  font-size:calc(1rem * var(--type-scale));line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+/* A HÁTTÉR (a 2026-os body-gradiens, három színfolttal) KÜLÖN, a képernyőhöz rögzített rétegen — NEM
+   background-attachment:fixed-del: azt a telefonos Chrome a címsáv NYITOTT állapotának magasságára festi, és görgetéskor (a
+   címsáv eltűnésekor) alul egy festetlen, sötét sáv csúszott fel (tulajdonosi jelzés, 2026-11-02). A réteg a címsáv NÉLKÜLI
+   teljes magasságra készül (100lvh), így mindig kitölti a képernyőt, és nem is méreteződik át görgetés közben. */
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:-1;pointer-events:none;
   background:
     radial-gradient(900px 480px at 88% -6%,color-mix(in srgb,var(--accent-b) 12%,transparent),transparent 60%),
     radial-gradient(760px 460px at 2% 4%,color-mix(in srgb,var(--doodle-pink) 10%,transparent),transparent 58%),
     radial-gradient(900px 700px at 50% 120%,color-mix(in srgb,var(--doodle-blue) 10%,transparent),transparent 60%),
-    linear-gradient(180deg,var(--bg) 0%,var(--bg-raise) 48%,var(--bg-raise) 100%);
-  background-attachment:fixed;color:var(--fg);font-family:var(--font-body);
-  font-size:calc(1rem * var(--type-scale));line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+    linear-gradient(180deg,var(--bg) 0%,var(--bg-raise) 48%,var(--bg-raise) 100%)}
 main{flex:1 0 auto;padding:clamp(40px,7vw,84px) 0 clamp(56px,8vw,96px)}
 /* a 2026-os design-lapok (programkereső) a saját szekcióikkal adják a térközt — @section('ter', 'sajat') */
 main.is-sajat-ter{padding:0}

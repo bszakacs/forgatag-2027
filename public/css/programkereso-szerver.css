@@ -16,4 +16,7 @@
    natív görgetősávja nem látszik (2026-ban rávitelkor megjelent). */
 .pk-mapcol{scrollbar-width:none}
 .pk-mapcol::-webkit-scrollbar{display:none}
+/* A 2026-os rögzített háttérréteg (.fgl-atmo, inset:0) a címsáv NÉLKÜLI teljes magasságra — különben telefonon görgetéskor
+   (a címsáv eltűnésekor) alul sötét sáv csúszik fel (ugyanaz, mint a közös háttérnél, publikus.css body::before). */
+body .fgl-atmo{bottom:auto;height:100vh;height:100lvh}
 #pkResults.htmx-request{opacity:.55;transition:opacity var(--dur-1) var(--ease)}

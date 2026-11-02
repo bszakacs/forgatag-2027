@@ -270,7 +270,12 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    „MA” pulzálás); a Rólunkon fonál, karika, felúszás, három színfolt; 375 px-en vízszintes görgetés nincs. Válaszidő egyenként: hírek 0,27–0,34 s,
    Rólunk 0,27 s, napi nézet 0,32 s, programkereső 0,42 s, „Minden nap” 0,55–0,6 s (a telepítés utáni első, párhuzamos kérések ~12 s-ig
    sorban álltak — egyszeri, utána nem ismétlődött).
-   **Hátra (a felhasználóval), VALÓDI TELEFONON:** a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
+   **A tulajdonos telefonos jelzése (2026-11-02), javítva:** (1) görgetéskor alul sötét sáv csúszott fel — a háttér
+   `background-attachment:fixed` volt, amit a telefonos Chrome a címsáv nyitott magasságára fest; most külön rögzített réteg
+   (`body::before`, a programkeresőn a `.fgl-atmo`) a címsáv nélküli teljes magasságra (`100lvh`); (2) a Rólunk karikája mobilon induláskor
+   a kép mögött volt — most a képek fölötti rétegben (`#thread-top`), a vonal marad alattuk. Helyben 375 px-en ellenőrizve; a címsáv-
+   viselkedést csak valódi telefon mutatja meg.
+   **Hátra (a felhasználóval), VALÓDI TELEFONON:** a fenti kettő újranézése a telepítés után, és: a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
    felúszása; egy hírkártya kiemelése; és a telefon „Kevesebb mozgás” / „Animációk eltávolítása” beállításával a Rólunk: semmi nem úszik, a
    programkeresőn nincs firka.
 
