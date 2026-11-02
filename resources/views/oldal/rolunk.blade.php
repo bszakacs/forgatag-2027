@@ -4,12 +4,17 @@
   RÓLUNK — a 2026-os lap (forgatag-os/frontend/src/rolunk/body.html) szerkezete. MINDEN látható szöveg és kép
   szerkeszthető: Tartalom → Aloldalak → Rólunk → Szerkeszthető szövegek (a kulcsok: App\Support\LapSablon).
   Ami 2026-ban beégetett volt (a logók neve, a webshop címe), az is kulcsot kapott.
-  Kimaradt (dekor, nem szöveg): a görgetésre rajzolódó „fonál” és a szekciók felúszása — a kezdőlap körében jön.
+  Mozgás (PROMPT-13): a szekciók felúszása (.reveal — public/js/mozgas.js) és a görgetésre rajzolódó „fonál” a képek
+  között, a rajta haladó karikával (public/js/rolunk.js) — a 2026-os jelöléssel. A fonál mentén 2026-ban NEM volt firka
+  (a <g id="thread-decor"> üres maradt; tulajdonosi döntés 2026-11-02: mint az élő 2026-os), ezért itt nincs is.
 --}}
 @section('title', Nyelv::valaszt($lap->title_hu, $lap->title_ro))
 @section('leiras', Nyelv::valaszt($lap->seo_description_hu, $lap->seo_description_ro))
 @push('styles')
 <link rel="stylesheet" href="@eszkoz('css/rolunk.css')">
+@endpush
+@push('scripts')
+<script src="@eszkoz('js/rolunk.js')" defer></script>
 @endpush
 @php
     $kep = fn (string $kulcs, array $p) => ($m = $sz->kep($kulcs)) ? url($m->getGlideUrl($p + ['fm' => 'webp', 'q' => 78])) : null;
@@ -20,15 +25,19 @@
 <div class="about-page" x-data="{ borkert: false }">
 
 <section class="subhero">
-  <div class="wrap">
+  <div class="wrap reveal">
     <h1><span class="ln c-w">{{ $sz->szoveg('about_hero_line1') }}</span><span class="ln c-y">{{ $sz->szoveg('about_hero_line2') }}</span><span class="ln brush">{{ $sz->szoveg('about_hero_line3') }}</span></h1>
   </div>
 </section>
 
 <section class="story">
+  <svg id="thread" aria-hidden="true" preserveAspectRatio="none">
+    <path id="thread-track" class="tp"/><path id="thread-prog" class="tp"/>
+    <g id="thread-marker" style="display:none"><circle r="15" class="mk-ring" fill="none" stroke-width="3" opacity=".9"/><circle r="13" class="mk-lime" fill="none" stroke-width="6"/><circle r="4.5" class="mk-yellow"/></g>
+  </svg>
   <div class="wrap">
     @foreach ([1 => ['about_story_p1', 'about_story_p2'], 2 => ['about_story_p3'], 3 => ['about_story_p4'], 4 => ['about_story_p5'], 5 => ['about_story_p6']] as $i => $bekezdesek)
-      <div @class(['srow', 'rev' => $i % 2 === 0])>
+      <div @class(['srow', 'rev' => $i % 2 === 0, 'reveal'])>
         <div class="stxt">
           @foreach ($bekezdesek as $k)
             <p @class(['intro' => $k === 'about_story_p1'])>{{ $sz->szoveg($k) }}</p>
@@ -50,8 +59,8 @@
 
 <section class="blk white">
   <div class="wrap">
-    <div class="sec-head"><h2>{{ $sz->szoveg('about_organizers_title') }} <span class="brush">{{ $sz->szoveg('about_organizers_title_accent') }}</span></h2></div>
-    <div class="org-row">
+    <div class="sec-head reveal"><h2>{{ $sz->szoveg('about_organizers_title') }} <span class="brush">{{ $sz->szoveg('about_organizers_title_accent') }}</span></h2></div>
+    <div class="org-row reveal">
       @foreach ([1, 2] as $i)
         @if ($src = $kep("about_organizer_logo{$i}", $logo))
           <div class="org"><img src="{{ $src }}" alt="{{ $sz->szoveg("about_organizer_name{$i}") }}" loading="lazy"></div>
@@ -65,8 +74,8 @@
 
 <section class="blk">
   <div class="wrap">
-    <div class="sec-head"><h2>{{ $sz->szoveg('about_related_title') }} <span class="brush">{{ $sz->szoveg('about_related_title_accent') }}</span></h2></div>
-    <div class="relrow">
+    <div class="sec-head reveal"><h2>{{ $sz->szoveg('about_related_title') }} <span class="brush">{{ $sz->szoveg('about_related_title_accent') }}</span></h2></div>
+    <div class="relrow reveal">
       {{-- JavaScript nélkül a link a #borkert ablakra ugrik (CSS :target nyitja); Alpine-nal helyben nyit. --}}
       <a class="relcard borkert" href="#borkert" role="button" aria-haspopup="dialog" aria-controls="borkert"
          @click.prevent="borkert = true">

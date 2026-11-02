@@ -68,7 +68,7 @@
   </section>
 
   <section class="pv-motifs-wrap">
-    <h2 class="pv-small">Firka-motívumok (a 6 hely)</h2>
+    <h2 class="pv-small">Firka-motívumok (a {{ \App\Support\Theme::MOTIF_SLOTS }} hely)</h2>
     <div class="pv-motifs" data-decor="ambient">
       @for ($i = 0; $i < \App\Support\Theme::MOTIF_SLOTS; $i++)
         <div class="decor pv-motif" data-motif="{{ $i }}"></div>

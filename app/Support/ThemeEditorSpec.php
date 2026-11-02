@@ -136,23 +136,23 @@ class ThemeEditorSpec
                     ['kind' => 'slider', 'path' => 'space.contentMax', 'label' => 'Tartalom max-szélesség', 'min' => 1040, 'max' => 1320, 'step' => 20, 'unit' => 'px'],
                 ]],
             ['id' => 'motion', 'title' => '8 · Mozgás',
-                'note' => 'prefers-reduced-motion esetén minden automatikusan kikapcsol.',
+                'note' => 'Ha a látogató a telefonján/gépén „kevesebb mozgást” kért (prefers-reduced-motion), nála minden mozgás kikapcsol — ez erősebb ezeknél a beállításoknál.',
                 'controls' => [
-                    ['kind' => 'radio', 'path' => 'motion.level', 'label' => 'Mozgás-mennyiség', 'options' => [
+                    ['kind' => 'radio', 'path' => 'motion.level', 'label' => 'Mozgás-mennyiség', 'hint' => 'Finom = a firkák nem lebegnek (a felúszás marad) · Minimális = semmi nem mozog, nincs felúszás, a gombok is azonnal váltanak', 'options' => [
                         ['value' => 'full', 'label' => 'Teljes'], ['value' => 'subtle', 'label' => 'Finom'], ['value' => 'minimal', 'label' => 'Minimális']]],
-                    ['kind' => 'slider', 'path' => 'motion.dur1', 'label' => 'Mikrointerakció-sebesség', 'min' => 0.1, 'max' => 0.4, 'step' => 0.02, 'unit' => 's'],
-                    ['kind' => 'slider', 'path' => 'motion.dur2', 'label' => 'Reveal-sebesség', 'min' => 0.3, 'max' => 1, 'step' => 0.05, 'unit' => 's'],
-                    ['kind' => 'slider', 'path' => 'motion.pulseDur', 'label' => '„MA” pulzálás', 'min' => 1.5, 'max' => 5, 'step' => 0.1, 'unit' => 's'],
-                    ['kind' => 'toggle', 'path' => 'motion.doodleFloat', 'label' => 'Firka-lebegés', 'hint' => 'a kezdőlap lebegő firkái'],
+                    ['kind' => 'slider', 'path' => 'motion.dur1', 'label' => 'Mikrointerakció-sebesség', 'min' => 0.1, 'max' => 0.4, 'step' => 0.02, 'unit' => 's', 'hint' => 'a gombok, kártyák, menük reakciója egérrel fölé víve / kattintáskor'],
+                    ['kind' => 'slider', 'path' => 'motion.dur2', 'label' => 'Reveal-sebesség', 'min' => 0.3, 'max' => 1, 'step' => 0.05, 'unit' => 's', 'hint' => 'a szakaszok és kártyák beúszása görgetéskor (Rólunk, napi nézet), a felcsúszó panelek és a program-ablak'],
+                    ['kind' => 'slider', 'path' => 'motion.pulseDur', 'label' => '„MA” pulzálás', 'min' => 1.5, 'max' => 5, 'step' => 0.1, 'unit' => 's', 'hint' => 'a programkereső „Most zajlik” gombjának lüktető pontja (egy lüktetés ideje)'],
+                    ['kind' => 'toggle', 'path' => 'motion.doodleFloat', 'label' => 'Firka-lebegés', 'hint' => 'a lebegő, sodródó firkák (programkereső, kezdőlap, beküldő űrlap); kikapcsolva a helyükön állnak'],
                 ]],
             ['id' => 'doodles', 'title' => '9 · Dekor (firkák)',
-                'note' => 'A kezdőlap firkái a landing designból jönnek: a nyitókép két szélén lengő motívumok + a lapon szórt, lassan lefelé sodródó firkák. Ezek a vezérlők azt szabályozzák, ami ott van — új réteg nem kerül be.',
+                'note' => 'A firkák a 2026-os designból jönnek: a nyitókép két szélén lengő motívumok (kezdőlap, beküldő űrlap) és a lapon szórt, lassan sodródó firkák (programkereső, kezdőlap). Ezek a vezérlők azt szabályozzák, ami ott van — új réteg nem kerül be. A firka-színek a háttér színfoltjaira és a hírkártyák kiemelésére is hatnak.',
                 'controls' => [
-                    ['kind' => 'radio', 'path' => 'doodles.density', 'label' => 'Firka-sűrűség', 'hint' => 'Visszafogott = a szórt firkák fele; Nincs = a kezdőlap összes firkája eltűnik', 'options' => [
+                    ['kind' => 'radio', 'path' => 'doodles.density', 'label' => 'Firka-sűrűség', 'hint' => 'Visszafogott = a szórt firkák fele; Nincs = minden firka eltűnik', 'options' => [
                         ['value' => 'none', 'label' => 'Nincs'], ['value' => 'subtle', 'label' => 'Visszafogott'], ['value' => 'default', 'label' => 'Alap']]],
                     ['kind' => 'slider', 'path' => 'doodles.opacity', 'label' => 'Firka-átlátszóság', 'min' => 0, 'max' => 1, 'step' => 0.05, 'hint' => 'a gyári 0,72 a design szerinti látvány'],
                     ['kind' => 'toggle', 'path' => 'doodles.zones.hero', 'label' => 'Nyitókép szélein', 'hint' => 'a hero két oldalán lengő motívumok'],
-                    ['kind' => 'toggle', 'path' => 'doodles.zones.noPhotoCards', 'label' => 'Fotó nélküli kártyákon', 'hint' => 'a program-kártyák sarok-firkája'],
+                    ['kind' => 'toggle', 'path' => 'doodles.zones.noPhotoCards', 'label' => 'Fotó nélküli kártyákon', 'hint' => 'a program-kártyák sarok-firkája (2026-ban a kezdőlapon és a helyszín-/kategórialapokon — azokkal a lapokkal együtt épül meg)'],
                     ['kind' => 'color', 'path' => 'doodles.palette.green', 'label' => 'Firka-szín · zöld'],
                     ['kind' => 'color', 'path' => 'doodles.palette.lime', 'label' => 'Firka-szín · lime'],
                     ['kind' => 'color', 'path' => 'doodles.palette.orange', 'label' => 'Firka-szín · narancs'],
@@ -161,8 +161,8 @@ class ThemeEditorSpec
                     ['kind' => 'color', 'path' => 'doodles.palette.yellow', 'label' => 'Firka-szín · sárga'],
                     ['kind' => 'color', 'path' => 'doodles.palette.blue', 'label' => 'Firka-szín · kék'],
                     ['kind' => 'color', 'path' => 'doodles.palette.purple', 'label' => 'Firka-szín · lila'],
-                    ['kind' => 'motifs', 'path' => 'doodles.motifs', 'label' => 'Firka-motívumok (6 hely)', 'slots' => Theme::MOTIF_SLOTS,
-                        'hint' => 'a kezdőlap első hat firka-motívuma · mind feltöltött .svg fájl, üres hely nincs · vissza: „Gyári”'],
+                    ['kind' => 'motifs', 'path' => 'doodles.motifs', 'label' => 'Firka-motívumok (12 hely)', 'slots' => Theme::MOTIF_SLOTS,
+                        'hint' => 'a lapokon szórt és lebegő firkák ezekből válogatnak · mind feltöltött .svg fájl, üres hely nincs · hogy a firka-színek hassanak rá, a kitöltés var(--doodle-…) legyen · vissza: „Gyári”'],
                 ]],
             ['id' => 'analytics', 'title' => '10 · Analitika',
                 'note' => 'Google Tag Manager. A konténer-azonosítót (GTM-XXXXXXX) a saját GTM-fiókodban találod. A GA4 magán a GTM-en belül fut, ezért ide csak a GTM-azonosító kell. Üresen hagyva semmilyen mérőkód nem töltődik be.',

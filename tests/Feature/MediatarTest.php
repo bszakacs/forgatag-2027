@@ -245,7 +245,7 @@ class MediatarTest extends TestCase
     public function test_az_arculat_fajljai_az_arculat_gyujtemenyben_vannak_es_nem_torolhetok(): void
     {
         $arculat = Media::where('origin', MediaOrigin::Arculat)->get();
-        $this->assertCount(9, $arculat, 'logó + fejléc-logó + favicon + 6 firka');
+        $this->assertCount(3 + \App\Support\Theme::MOTIF_SLOTS, $arculat, 'logó + fejléc-logó + favicon + 12 firka');
         foreach ($arculat as $m) {
             $this->assertTrue($m->isIn(Gyujtemeny::Arculat));
             $this->assertSame(Theme::DISK, $m->disk, 'ugyanaz a fájl, nem másolat');

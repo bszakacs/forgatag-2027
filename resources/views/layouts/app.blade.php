@@ -64,6 +64,10 @@
      historyCacheSize 0 + refreshOnHistoryMiss: a „vissza” gomb a TELJES lapot tölti újra a szerverről (nem egy régi
      DOM-másolatot, és nem csak egy részt — így a térkép és minden más a címsor állapotából épül újra). --}}
 <meta name="htmx-config" content='{"historyCacheSize":0,"refreshOnHistoryMiss":true}'>
+{{-- MOZGÁS: a felúszás csak akkor indul rejtve, ha szabad mozogni (a rendszer nem kért kevesebb mozgást, a téma nem „Minimális”).
+     Itt, a <head>-ben, hogy a rejtés még az első kirajzolás előtt eldőljön (különben a tartalom felvillanna). --}}
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!document.documentElement.hasAttribute('data-motion'))document.documentElement.classList.add('mozgas')</script>
+<script src="@eszkoz('js/mozgas.js')" defer></script>
 <script src="@eszkoz('js/vendor/htmx-2.0.4.min.js')" defer></script>
 <script src="@eszkoz('js/vendor/alpine-3.14.9.min.js')" defer></script>
 </head>

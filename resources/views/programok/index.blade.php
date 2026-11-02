@@ -2,6 +2,7 @@
 @use('App\Support\Festival')
 @use('App\Support\Nyelv')
 @use('App\Support\ProgramSzures')
+@use('App\Support\Theme')
 @php
     /**
      * A PROGRAMKERESŐ — a 2026-os `programkereso/body.html` jelölése BETŰRE (CLAUDE.md 2/e); a stílus a 2026-os style.css
@@ -66,7 +67,10 @@
   </div>
 </section>
 
-<div class="fgl-decor" id="pageDecor" aria-hidden="true"></div>
+{{-- A LAPON SZÓRT FIRKÁK (2026: lib/decor.ts pageDecorScript) — a réteget a public/js/mozgas.js tölti, egy írással; a
+     motívumok a lap közös készletéből (Theme::motifSprite). A téma firka-beállításai a [data-decor="ambient"]-re hatnak. --}}
+{!! Theme::motifSprite() !!}
+<div class="fgl-decor" id="pageDecor" data-decor="ambient" data-szoras="oldal" aria-hidden="true"></div>
 
 {{-- GÖRGETÉSKOR BEÚSZÓ SÁV (2026): a szűrőblokk kigörgetése után a lap neve, „Szűrés” és a találatszám. --}}
 <div class="pk-utilbar" id="pkUtil">

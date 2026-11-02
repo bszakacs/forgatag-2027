@@ -76,7 +76,7 @@ class TemaController extends Controller
                 throw new RuntimeException('A fájl túl nagy (legfeljebb 5 MB).');
             }
             $ext = strtolower($f->getClientOriginalExtension());
-            if (preg_match('/^doodles\.motifs\.([0-5])$/', $path, $m)) {
+            if (preg_match('/^doodles\.motifs\.(\d{1,2})$/', $path, $m) && (int) $m[1] < Theme::MOTIF_SLOTS) {
                 [$slot, $exts] = ['firka-' . ($m[1] + 1), ['svg']];
             } elseif (isset(ThemeEditorSpec::MEDIA[$path])) {
                 [$slot, $exts] = [ThemeEditorSpec::MEDIA[$path]['slot'], ThemeEditorSpec::MEDIA[$path]['ext']];

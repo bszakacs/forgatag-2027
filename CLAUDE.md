@@ -656,6 +656,20 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
 - Tesztek: `tests/Feature/ProgramkeresoTest.php` (19). ⚠ SQLite-on futnak: az ékezet-független keresést (MySQL
   `utf8mb4_unicode_ci`) csak böngészőben lehet mérni. ⚠ A `withHeaders` a következő kérésre is megmarad (`flushHeaders()`).
 
+**Mozgás- és dekor-réteg — kész helyben (2026-11-02, PROMPT-13).** EGY réteg minden publikus lapon; a lapok nem írnak saját mozgás-kódot.
+- **Fájlok:** `public/js/mozgas.js` (a keretben, `defer`) — felúszás + szórt firkák; `public/js/rolunk.js` — a Rólunk fonala (lapspecifikus);
+  a CSS a `publikus.css` „MOZGÁS- ÉS DEKOR-RÉTEG” részében. Forrás: a 2026-os `rolunk/script.js`, `layouts/Base.astro`, `lib/decor.ts` (betűre).
+- **Felúszás:** `.reveal` → `.in` (szakaszok) és a kártyák automatikus felúszása (a 2026-os Base-lista: `.pc, .taxon-card, .sponsor-card, .rail-row, .prog-card`
+  + ideiglenesen `.pk-napi .pk-card`), EGY IntersectionObserverrel, görgetés-figyelő nélkül. A rejtés CSAK ha a `<html>` „mozgas” osztályt
+  kapott — a keret `<head>`-je teszi ki, ha nincs „kevesebb mozgás” és a téma nem „Minimális”. ⚠ Kártyánál a `.reveal-in` átmenete
+  `!important` (a kártya saját átmenete különben elnyomja), a végén a JS leveszi az osztályt.
+- **Szórt firkák:** `<div … data-decor="ambient" data-szoras="oldal">` + `{!! Theme::motifSprite() !!}` a lapon: a 12 motívum EGYSZER
+  (`<symbol id="fgm-N">`), a firkák `<use href="#fgm-N">`-nal hivatkoznak; a réteg EGY írással töltődik; újraszórás csak szélesség-változásra.
+  A téma szabályai (`ThemeCss`: `[data-decor]` sűrűség/zóna/lebegés) erre a jelölésre hatnak — **új dekor-elem csak ezzel a jelöléssel készülhet.**
+- **Motívumok: 12 hely** (`Theme::MOTIF_SLOTS`, tulajdonosi döntés 2026-11-02); a kitöltés `var(--doodle-…)`, hogy a firka-színek hassanak.
+- Tesztek: `tests/Feature/MozgasDekorTest.php` (minden laptípus megkapja; minden kapcsoló valódi szabályt ad; „Minimális”/„kevesebb mozgás”;
+  közös készlet; Rólunk-jelölés; a 6 → 12 migráció).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a

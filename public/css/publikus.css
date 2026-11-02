@@ -33,6 +33,7 @@ body{margin:0;min-height:100vh;display:flex;flex-direction:column;
   background:
     radial-gradient(900px 480px at 88% -6%,color-mix(in srgb,var(--accent-b) 12%,transparent),transparent 60%),
     radial-gradient(760px 460px at 2% 4%,color-mix(in srgb,var(--doodle-pink) 10%,transparent),transparent 58%),
+    radial-gradient(900px 700px at 50% 120%,color-mix(in srgb,var(--doodle-blue) 10%,transparent),transparent 60%),
     linear-gradient(180deg,var(--bg) 0%,var(--bg-raise) 48%,var(--bg-raise) 100%);
   background-attachment:fixed;color:var(--fg);font-family:var(--font-body);
   font-size:calc(1rem * var(--type-scale));line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
@@ -168,7 +169,22 @@ footer.site-ft .copy{margin-top:24px;font-size:.82rem;color:var(--fg-faint)}
 .nw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,20px)}
 .ncard{display:flex;flex-direction:column;background:var(--card);border:var(--border-w) solid var(--line);border-radius:var(--r-card);overflow:hidden;
   text-decoration:none;color:inherit;transition:transform var(--dur-1),border-color var(--dur-1),box-shadow var(--dur-1)}
-.ncard:hover,.ncard:focus-visible{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:0 18px 40px -20px color-mix(in srgb,var(--accent-b) 45%,transparent)}
+/* KIEMELÉS (glow) — a 2026-os lib/glow.ts receptje: emelés + keret a kártya színére + 3 rétegű szórás. A szín a kártya
+   SORSZÁMÁTÓL függ (nem véletlen, így stabil a kép). 2026-ban beégetett hexák voltak; most a téma színei: a 7-ből 5 betűre
+   a firka-paletta (pink, lime, sárga, kék, lila), a narancs (#FFB84D) a gyári --accent-a; a 6. (#F06A6E) nincs a témában,
+   ezért a firka-piros világosítva (döntés, 2026-11-02). */
+.ncard:nth-child(7n+1){--glow:var(--doodle-pink)}
+.ncard:nth-child(7n+2){--glow:var(--doodle-lime)}
+.ncard:nth-child(7n+3){--glow:var(--doodle-yellow)}
+.ncard:nth-child(7n+4){--glow:var(--doodle-blue)}
+.ncard:nth-child(7n+5){--glow:var(--doodle-purple)}
+.ncard:nth-child(7n+6){--glow:color-mix(in srgb,var(--doodle-red) 70%,#fff)}
+.ncard:nth-child(7n+7){--glow:var(--accent-a)}
+.ncard:hover,.ncard:focus-visible{transform:translateY(-4px);border-color:var(--glow);
+  box-shadow:0 16px 40px -24px rgba(0,0,0,.65),
+    0 0 0 1px var(--glow),
+    0 8px 26px -8px color-mix(in srgb,var(--glow) 78%,transparent),
+    0 0 40px -14px color-mix(in srgb,var(--glow) 60%,transparent)}
 /* Bélyegkép: 1:1, aránnyal (nem fix magassággal); kép nélkül ugyanaz a négyzet, gradienssel. */
 .ncard .thumb{aspect-ratio:1/1;flex:0 0 auto;background:linear-gradient(135deg,color-mix(in srgb,var(--accent-b) 22%,var(--card)),var(--card))}
 .ncard .thumb img{display:block;width:100%;height:100%;object-fit:cover}
@@ -235,6 +251,21 @@ main:has(.hm){padding:0}
   footer.site-ft .foot-grid{grid-template-columns:1fr}
 }
 @media (max-width:560px){.nw-grid{grid-template-columns:1fr}}
+
+/* ---------- MOZGÁS- ÉS DEKOR-RÉTEG (public/js/mozgas.js) ----------
+   Felúszás: a .reveal (2026: rolunk/style.css) csak akkor indul rejtve, ha a <html> „mozgas” osztályt kapott — azt a keret
+   <head>-je teszi ki, ha a látogató nem kért kevesebb mozgást és a téma nem „Minimális”. Így JS nélkül és „kevesebb
+   mozgás” mellett semmi nem marad láthatatlan. A sebesség a téma „Reveal-sebesség” csúszkája (--dur-2; 2026-ban a Rólunkon
+   beégetett .7s volt — a gyári .65 s-mal szinte ugyanaz, de most a csúszka hat rá).
+   A kártyák automatikus felúszása (.reveal-init → .reveal-in) a 2026-os global.css-ből. */
+.mozgas .reveal{opacity:0;transform:translateY(24px);transition:opacity var(--dur-2) ease,transform var(--dur-2) ease}
+.mozgas .reveal.in{opacity:1;transform:none}
+.reveal-init{opacity:0;transform:translateY(24px)}
+/* A beúszás ideje erősebb a kártya saját átmeneténél (különben pl. a programkártya „transition: var(--dur-1)”-e nyerne, és a
+   „Reveal-sebesség” nem hatna) — a beúszás végén a mozgas.js leveszi az osztályt, a kártya visszakapja a sajátját. */
+.reveal-in{opacity:1!important;transform:translateY(0)!important;transition:opacity var(--dur-2) var(--ease),transform var(--dur-2) var(--ease)!important}
+/* A firka-motívumok közös készlete (Theme::motifSprite) — nem látszik, csak hivatkoznak rá. */
+.fg-motivumok{position:absolute;width:0;height:0;overflow:hidden}
 
 /* Mozgás: a téma „minimális” fokozata és az operációs rendszer kérése egyaránt leveszi. */
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

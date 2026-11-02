@@ -16,7 +16,7 @@ use RuntimeException;
  * · A CSS: ThemeCss::generate() állítja elő, és fájlba íródik: public/arculat/tema-<lenyomat>.css.
  *   A lenyomat a CSS TARTALMÁBÓL számol, ezért bármilyen változás (téma-adat VAGY a generátor kódja)
  *   új fájlnevet ad → a böngésző gyorsítótára magától érvénytelenül, kézi verziószám nélkül.
- * · A fájlok (logó, fejléc-logó, favicon, a hat firka-motívum) VALÓDI feltöltött fájlok a
+ * · A fájlok (logó, fejléc-logó, favicon, a 12 firka-motívum) VALÓDI feltöltött fájlok a
  *   public/arculat/fajlok/ mappában, szintén lenyomatos névvel. Beépített tartalék NINCS (CLAUDE.md 2/c):
  *   ha valami hiányzik, a kiszolgálás hibával áll meg, nem csúszik át csendben egy kódbeli alapértékre.
  * · Téma nélkül nincs kiszolgálás: a current() hibát dob (token-szabály, CLAUDE.md 3.).
@@ -28,8 +28,12 @@ class Theme
     /** Arculati fájl-mezők (assets.*) — mind kötelező. */
     public const ASSET_KEYS = ['logo', 'logoHeader', 'favicon'];
 
-    /** A firka-motívumok helyeinek száma (doodles.motifs). */
-    public const MOTIF_SLOTS = 6;
+    /**
+     * A firka-motívumok helyeinek száma (doodles.motifs). 2026-ban a lapok 12 motívumból válogattak, de a témában
+     * csak 6 cserélhető hely volt (a másik 6 kódba égetve) — most mind a 12 feltöltött fájl (2/c; tulajdonosi
+     * döntés, 2026-11-02).
+     */
+    public const MOTIF_SLOTS = 12;
 
     /** Ezekre a címekre a témában semmi nem mutathat (a NAS-on futó 2026-os rendszer). */
     public const TILTOTT_CIMEK = ['admin.forgatag.ro', 'elo.forgatag.ro'];
@@ -86,13 +90,33 @@ class Theme
         return asset(self::DISK . '/' . self::existing((string) self::get("assets.{$key}"), "assets.{$key}"));
     }
 
-    /** Egy firka-motívum (0–5) tisztított SVG-je, a lapba ágyazáshoz. */
+    /** Egy firka-motívum (0–11) tisztított SVG-je, a lapba ágyazáshoz. */
     public static function motifSvg(int $i): string
     {
         $path = self::existing((string) self::get("doodles.motifs.{$i}"), "doodles.motifs.{$i}");
         $svg = self::sanitizeSvg((string) self::disk()->get($path));
 
         return $svg !== '' ? $svg : throw new RuntimeException("Téma: a(z) {$i}. firka-motívum nem érvényes SVG.");
+    }
+
+    /**
+     * A 12 firka-motívum EGY rejtett SVG-készletként (<symbol id="fgm-N">), a lapba EGYSZER ágyazva. A szórt firkák
+     * (public/js/mozgas.js) csak hivatkoznak rá (<use href="#fgm-N">) — így 50 firka sem jelent 50 teljes SVG-másolatot
+     * a lapon (a programkereső több száz kártyája mellett ez telefonon számít). A színek a motívum var(--doodle-…)
+     * kitöltéséből, a téma szerint.
+     */
+    public static function motifSprite(): string
+    {
+        $jelek = '';
+        for ($i = 0; $i < self::MOTIF_SLOTS; $i++) {
+            if (! preg_match('/^<svg\b([^>]*)>([\s\S]*)<\/svg>$/i', trim(self::motifSvg($i)), $m)
+                || ! preg_match('/\bviewBox\s*=\s*"([^"]+)"/i', $m[1], $vb)) {
+                throw new RuntimeException("Téma: a(z) {$i}. firka-motívumnak nincs viewBox-a (nem méretezhető).");
+            }
+            $jelek .= '<symbol id="fgm-' . $i . '" viewBox="' . e($vb[1]) . '">' . $m[2] . '</symbol>';
+        }
+
+        return '<svg class="fg-motivumok" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' . $jelek . '</svg>';
     }
 
     /** Az előtöltendő betűfájlok (a témában választott betűkből — nem beégetve). @return list<string> */
@@ -241,7 +265,7 @@ class Theme
 
     /**
      * A kezdő téma betöltése: seed/tema/tema.json (a 2026-os rendszer utolsó publikált témája).
-     * A logó, a fejléc-logó, a favicon és a hat firka-motívum RENDES feltöltésként kerül az arculati
+     * A logó, a fejléc-logó, a favicon és a 12 firka-motívum RENDES feltöltésként kerül az arculati
      * tárba (seed/tema/fajlok/), és a téma-adat ezekre mutat — nincs kódbeli tartalék (CLAUDE.md 2/c).
      */
     public static function importSeed(string $byName): ThemeVersion

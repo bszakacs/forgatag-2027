@@ -10,20 +10,33 @@ main:has(.about-page){padding:0}
 
 /* ---- szekció-alap ---- */
 .about-page section.blk{position:relative;padding:84px 0;overflow:hidden}
+.about-page .blk > .wrap{position:relative;z-index:2}
+.about-page .sec-head{position:relative;z-index:2}
 .about-page .blk .sec-head h2{font-size:clamp(2.3rem,4.8vw,3.6rem)}
 .about-page .blk .sec-head h2 .brush{font-size:1.16em}
 .about-page .blk.white{background:var(--lap-bg);color:var(--lap-fg);border-top:var(--border-w) solid var(--lap-line);border-bottom:var(--border-w) solid var(--lap-line)}
 .about-page .blk.white .sec-head h2{color:var(--lap-fg)}
 
 /* ---- NYITÓCÍM ---- */
-.about-page .subhero{position:relative;padding:104px 0 34px;text-align:center}
+.about-page .subhero{position:relative;padding:104px 0 34px;overflow:hidden;text-align:center}
+.about-page .subhero .wrap{position:relative;z-index:2}
 .about-page .subhero h1{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--fg);font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.08;margin:0 auto;letter-spacing:.005em}
 .about-page .subhero h1 .ln{display:block}
 .about-page .subhero h1 .c-y{color:var(--doodle-yellow)}
 
 /* ---- TÖRTÉNET ---- */
-.about-page .story{position:relative;padding:40px 0 96px}
-.about-page .srow{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,72px);align-items:center;margin:0 0 clamp(64px,10vw,132px)}
+.about-page .story{position:relative;padding:40px 0 96px;overflow:hidden}
+.about-page .story .wrap{position:relative;z-index:2}
+/* A FONÁL (2026: #thread) — a 2026-os nyomvonal-szín (#8E7BD6) nincs a témában: a firka-lila világosítva (döntés,
+   2026-11-02); a karika fehér gyűrűje a --fg. */
+.about-page #thread{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
+.about-page #thread path.tp{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.about-page #thread-track{stroke:color-mix(in srgb,var(--doodle-purple) 75%,#fff);stroke-width:2.5;opacity:.5}
+.about-page #thread-prog{stroke:var(--accent-b);stroke-width:6}
+.about-page #thread-marker .mk-ring{stroke:var(--fg)}
+.about-page #thread-marker .mk-lime{stroke:var(--doodle-lime)}
+.about-page #thread-marker .mk-yellow{fill:var(--doodle-yellow)}
+.about-page .srow{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,72px);align-items:center;margin:0 0 clamp(64px,10vw,132px)}
 .about-page .srow:last-child{margin-bottom:8px}
 .about-page .srow.rev .stxt{order:2}
 .about-page .srow.rev .sfig{order:1}
@@ -79,6 +92,8 @@ main:has(.about-page){padding:0}
   .about-page .srow{grid-template-columns:1fr;gap:20px}
   .about-page .srow .sfig,.about-page .srow.rev .sfig{order:1}
   .about-page .srow .stxt,.about-page .srow.rev .stxt{order:2}
+  .about-page #thread-track{opacity:.22;stroke-width:2}
+  .about-page #thread-prog{opacity:.5;stroke-width:4}
 }
 @media (max-width:640px){
   .about-page .subhero{padding:56px 0 24px}

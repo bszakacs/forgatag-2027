@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-01 (PROMPT-12/a, programkereső — a térkép; hátra a 12/b: helyszín- és kategórialapok, összevetés)
+**Utolsó frissítés:** 2026-11-02 (PROMPT-13, a mozgás- és dekor-réteg — kész HELYBEN, élesítés és telefonos próba hátra; a 12/b kör továbbra is hátra van)
 
 ---
 
@@ -174,7 +174,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
       térképszámai~~ — **kész (PROMPT-12, 2/a rész)**;
     · **kedvencek-kör:** a szív a sorokon/kártyákon és a felugró ablak „Mentés” gombja;
     · **naptár-kör:** a felugró ablak „Naptárba” gombja;
-    · **mozgás-/dekor-kör:** a lapon szórt firkák (`#pageDecor` üres) és a kártyák felúszása;
+    · ~~**mozgás-/dekor-kör:** a lapon szórt firkák és a kártyák felúszása~~ — **kész (PROMPT-13)**; a kereső kártyái 2026-ban sem úsztak fel;
     · **ellenőrizendő a 2. részben:** a napi nézet (`/nap/…`) és a program lapja kinézete a 2026-os `DailyProgramView`/`ProgramDetailView`
       mellé téve — ezeket ebben a körben nem vetettem össze sorról sorra.
   - **Napi nézet** `/nap/<dátum>`, **„Mi van ma?”** `/ma` (ha ma nincs fesztivál: a **nyitónap**), **program lapja** `/program/<slug>`.
@@ -218,6 +218,30 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     a sáv görgethető marad (`programkereso-szerver.css`). A helyszínlista saját belső sávja marad.
   - **Sebesség (helyben):** a térkép adata ~30 ms, csak a teljes lapbetöltéskor; a szűrő-válasz nem nőtt. ⚠ Élesben mérendő.
 
+- **A mozgás- és dekor-réteg** (`PROMPT-13`, 2026-11-02) — **kész HELYBEN, még NINCS élesben.** Egy réteg minden publikus lapon
+  (`public/js/mozgas.js` a keretben), a téma Mozgás és Firkák beállításai vezérlik. Részletek: `CLAUDE.md` 8. pont „Mozgás- és dekor-réteg”.
+  - **Mi került be a 2026-os kódból:** a Rólunk szakaszainak **felúszása**, a görgetésre rajzolódó **fonál** a képek között a rajta haladó
+    **karikával**; a hírkártyák **fényes kiemelése** (sorszám szerinti színnel, mint 2026-ban); a **lapon szórt firkák** a programkeresőn
+    (`#pageDecor`); a napi nézet kártyáinak lépcsőzött felúszása; a háttér **kék színfoltja** (minden lapon).
+  - **Amit a 2026-os kód mutatott, nem a feladatleírás** (2/e): a 2026-os élő Rólunkon a **fonál mentén nem volt firka** (csak a makettben) — nincs
+    (tulajdonosi döntés); a **programkereső kártyái 2026-ban nem úsztak fel**, és a **hírlista kártyái sem** (a 2026-os kód rossz osztálynevet
+    keresett) — ezért ott nincs felúszás. Ez a teljesítménynek is jó: a több száz kártyás keresőn nincs kártyánkénti figyelő.
+  - **12 firka-motívum az Arculatban** (tulajdonosi döntés): 2026-ban a lapok 12 motívumból válogattak, de csak 6 hely volt (a másik 6 kódba
+    égetve). Most 12 hely, mind feltöltött fájl; a 7–12. a 2026-os színleképezéssel (a firka-színek rájuk is hatnak). Egy migráció a kint lévő
+    témát új verzióként kiegészíti (a meglévő 6-hoz nem nyúl).
+  - **Minden kapcsoló hat** — böngészőben a programkeresőn mérve: sűrűség (52 → 26 → 0 firka), átlátszóság, firka-szín, lebegés ki, „MA”
+    pulzálás, mikrointerakció; a Rólunkon és a napi nézeten a reveal-sebesség. Közben javítva: a napi nézet kártyáinál a kártya saját átmenete
+    elnyomta a beúszásét (a csúszka nem hatott volna). A szerkesztő súgói most megmondják, melyik kapcsoló hol hat.
+  - **„Kevesebb mozgás” (rendszerbeállítás) mindent felülír:** nincs felúszás (minden azonnal látszik), a firkák fel sem épülnek, minden
+    animáció áll. JavaScript nélkül is minden látszik (a rejtés csak mozgás-engedéllyel indul). Böngészőben a szkript-ág kipróbálva; a CSS-ágat
+    teszt őrzi (a panel ezt a beállítást nem tudja utánozni).
+  - **Sebesség (helyben, mobilnézet, 272 kártya):** 52 firka felépítése átlag 8 ms; a 12 motívum egyszer van a lapon (közös készlet, a firkák
+    csak hivatkoznak rá); görgetés-figyelő nincs; a firkák csak szélesség-változásra szóródnak újra (2026-ban telefonon a címsor
+    be-/kicsúszására is — ettől ugráltak). ⚠ **Valódi telefonon még NINCS mérve** (lásd „MOST folyik”, 6.).
+  - Döntések (egy-egy sor): a Rólunk felúszása a téma reveal-idejét kapja (2026: beégetett 0,7 mp) · a fonál halvány vonalának színe és a
+    hírkártya 6. kiemelő-színe nincs a témában → a legközelebbi téma-színből kevertem · a Rólunk görgetés-számolása képkockánként egyszer fut.
+  - 375 px-en: Rólunk, napi nézet, programkereső — vízszintes görgetés nincs. **168 teszt zöld** (új: `MozgasDekorTest`, 7).
+
 ## Ami MOST folyik
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
@@ -240,6 +264,11 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **+ a térkép (PROMPT-12, 2/a):** a naplóban `… helyszín térkép-adata kitöltve a 2026-os mentésből`; élesben megnézendő a térkép
    (szűrés, aztán kattintás a jelölőre), a „Mutasd a térképen”, a mobil „Térkép” gomb, és **a válaszidő mérése** (lista, szűrés).
    ⚠ **A válaszidőt élesben kell mérni:** helyben minden lap (a hírek is) ~6,5 mp — ez a Windows-os Docker mappamegosztása, nem a kód.
+6. **A mozgás- és dekor-réteg élesítése** (PROMPT-13) — helyben kész, feltolva; **a telepítés (Deploy) a felhasználóé.** A naplóban egy új
+   migráció: `2027_01_12_000100_theme_12_motifs` (az Arculatban ezután 12 motívumhely látszik, az előzményben egy „migracio” verzió).
+   **Élesben, VALÓDI TELEFONON megnézendő:** a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
+   felúszása; egy hírkártya kiemelése; és a telefon „Kevesebb mozgás” / „Animációk eltávolítása” beállításával a Rólunk: semmi nem úszik, a
+   programkeresőn nincs firka.
 
 ## Ami ezután jön, ebben a sorrendben
 
@@ -268,19 +297,23 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    - A térkép a szűrésre CÉLZOTT frissítéssel reagáljon (pl. a válaszban egy adat-elem, nem a térkép újrarajzolása); a „szűrj, aztán
      kattints a térképre” próbát ott kell elvégezni.
 
-   ⚠️ **FONTOS: EGYETLEN TARTALMI LAP SEM VÉGLEGES KINÉZETŰ.** Ami eddig elkészült (Rólunk,
-   hírlista, hír), az **szerkezetileg kész, de dekor nélkül**. Hiányzik: a görgetésre kirajzolódó
-   „fonál" és a mentén szórt firkák, a szakaszok felúszása, a kártyák fényes kiemelése, és a
-   háttér egyik színfoltja. **Ez nem hiba, hanem szándékos halasztás** — lásd a 4. pontot.
+   ✅ A dekor-réteg (fonál, felúszás, kártya-kiemelés, színfolt, szórt firkák) **kész (PROMPT-13)** — lásd fent.
+   **A 12/b-nek ebből örökölt teendője:** a helyszín-/kategórialap és a napi nézet 2026-os kártyái (`.pc`, `.taxon-card`, `.rail-row`)
+   a `mozgas.js` listáján már szerepelnek (maguktól beúsznak); a **fotó nélküli kártya sarok-firkája** (`.pc-doodle`, az Arculat „Fotó
+   nélküli kártyákon” kapcsolója) a 2026-os `ProgramCard`-dal együtt épül meg — addig ennek a kapcsolónak nincs eleme (a súgó ezt kiírja);
+   a napi nézet **„MA” jelvénye** (2026: a mai nap fülén) az összevetéskor; ha a napi nézet a 2026-os sorokra vált, a `mozgas.js`
+   ideiglenes `.pk-napi .pk-card` eleme kivezetendő.
 
-4. **A mozgás- és dekor-réteg** — ÖNÁLLÓ LÉPÉS, nem a kezdőlap része.
+4. ~~**A mozgás- és dekor-réteg**~~ — **kész helyben (2026-11-02, PROMPT-13)**, lásd fent. ÖNÁLLÓ LÉPÉS volt, nem a kezdőlap része.
    *Indok: ez nem laponkénti munka, hanem egy réteg, amit az Arculat „Mozgás" és „Firkák"
    beállításai vezérelnek — ahogy 2026-ban is. Ha laponként készülne, elcsúsznának egymástól, és a
    `/tema` kapcsolói nem hatnának rájuk egységesen.*
    **Visszamenőleg hozzányúl minden addig elkészült laphoz** (Rólunk, hírlista, hír, programkereső),
    ezért nem szabad a kezdőlap körébe ágyazni — ott váratlanul nagyra nőne és félkészen állna meg.
 
-5. **A kezdőlap** — a legösszetettebb lap; a dekor-rétegre épül.
+5. **A kezdőlap** — a legösszetettebb lap; a dekor-rétegre épül. **Örökölt:** a `mozgas.js` szórt rétege (`data-szoras="oldal"`) és a
+   közös motívumkészlet (`Theme::motifSprite()`) kész; a nyitókép lengő firkái (`[data-decor="hero"]`) és a kezdőlap saját szórt
+   rétegei a 2026-os `home-v7/script.js` szerint ide kerülnek. ⚠ 2026-ban a „Mozgás-mennyiség” a kezdőlapon nem hatott — itt kell hatnia.
 6. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
 7. **A fordítási lánc.**
 8. **A maradék publikus lapok** — fesztiválrend, galéria, videó-archívum, támogatók, kézművesek, csapat.
