@@ -33,10 +33,6 @@
 <section class="story">
   <svg id="thread" aria-hidden="true" preserveAspectRatio="none">
     <path id="thread-track" class="tp"/><path id="thread-prog" class="tp"/>
-  </svg>
-  {{-- A KARIKA a képek FÖLÖTTI rétegben (a fonal maga a képek alatt fut): mobilon a kép a teljes szélességet kitölti, és a
-       karika induláskor épp mögötte volt, nem látszott (tulajdonosi jelzés, 2026-11-02). Ugyanaz a koordináta-rendszer. --}}
-  <svg id="thread-top" aria-hidden="true" preserveAspectRatio="none">
     <g id="thread-marker" style="display:none"><circle r="15" class="mk-ring" fill="none" stroke-width="3" opacity=".9"/><circle r="13" class="mk-lime" fill="none" stroke-width="6"/><circle r="4.5" class="mk-yellow"/></g>
   </svg>
   <div class="wrap">

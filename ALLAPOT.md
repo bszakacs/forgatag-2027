@@ -273,8 +273,12 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **A tulajdonos telefonos jelzése (2026-11-02), javítva:** (1) görgetéskor alul sötét sáv csúszott fel — a háttér
    `background-attachment:fixed` volt, amit a telefonos Chrome a címsáv nyitott magasságára fest; most külön rögzített réteg
    (`body::before`, a programkeresőn a `.fgl-atmo`) a címsáv nélküli teljes magasságra (`100lvh`); (2) a Rólunk karikája mobilon induláskor
-   a kép mögött volt — most a képek fölötti rétegben (`#thread-top`), a vonal marad alattuk. Helyben 375 px-en ellenőrizve; a címsáv-
-   viselkedést csak valódi telefon mutatja meg.
+   a kép mögött volt. Első javítás (a képek fölötti réteg) ROSSZ volt: a karika a kép közepére került, a kép fölé (tulajdonosi jelzés).
+   Most: a karika a képek alatt marad (mint 2026-ban), de ha a fonal eleje a képernyő közepe fölött van (mobil), a karika a fonal
+   ELEJÉRŐL indul (a cím és az első kép között, teljesen látszik), és onnan halad. Asztalon ez az eltolás 0 → a 2026-os viselkedés.
+   **Mérve (helyben, végiggörgetve, 40 px-enként):** mobilon (375×812) induláskor látszik, a minták 2/3-ában látszik, 1/3-ában a kép
+   mögött jár; asztalon (1366×768) 40% / 60% — mert a 2026-os fonal minden kép KÖZEPÉN megy át, és a képek alatt fut. Ha ez zavar, az
+   már eltérés a 2026-ostól (kérdés a tulajdonosnak). A sötét sáv javítása a telefonon bevált (tulajdonosi visszajelzés).
    **Hátra (a felhasználóval), VALÓDI TELEFONON:** a fenti kettő újranézése a telepítés után, és: a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
    felúszása; egy hírkártya kiemelése; és a telefon „Kevesebb mozgás” / „Animációk eltávolítása” beállításával a Rólunk: semmi nem úszik, a
    programkeresőn nincs firka.
