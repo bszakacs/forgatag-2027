@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-02 (PROMPT-13, a mozgás- és dekor-réteg — kész, ÉLESBEN telepítve és megnézve; hátra: a valódi telefonos próba; a 12/b kör továbbra is hátra van)
+**Utolsó frissítés:** 2026-11-04 (PROMPT-14, a kezdőlap — kész helyben, feltolva (`68295092`); az élesítés és a valódi telefonos mérés a felhasználóval; a 12/b kör továbbra is hátra van)
 
 ---
 
@@ -242,6 +242,38 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     hírkártya 6. kiemelő-színe nincs a témában → a legközelebbi téma-színből kevertem · a Rólunk görgetés-számolása képkockánként egyszer fut.
   - 375 px-en: Rólunk, napi nézet, programkereső — vízszintes görgetés nincs. **168 teszt zöld** (új: `MozgasDekorTest`, 7).
 
+- **A kezdőlap** (`PROMPT-14`, 2026-11-04) — **kész helyben, feltolva; élesítés: lásd „MOST folyik”, 7.** A gyökér (`/`, `/ro`) most a
+  kezdőlap (a Hamarosan lap a `/hamarosan` címen marad). Részletek: `CLAUDE.md` 8. pont „Kezdőlap”.
+  - **Betűre a 2026-osból (2/e):** a jelölés a `home-v7/body.html` (osztályok, sorrend, a `data-hs` kulcsok), a stílus a
+    `home-v7/style.css` másolata (`public/css/kezdolap.css`), a közös modulok a 2026-os `lib/*.ts` kiírt CSS-e (galéria, videó,
+    támogatói csempe + sáv, kártya-fény), a JS a `home-v7/script.js` és a `lib/gallery|video|rail` átirata. **Helyben a 2026-os élő
+    lap mellé téve, szakaszonként mérve (1024 és 375 px): a nyitókép, a számok, a média és a „mögött állnak” szakasz pixelre
+    egyezik; a hírek szakasza csak a tartalom (más hírek) miatt tér el — a kártya minden mérete azonos.**
+  - **KÉT ÁLLAPOT, EGY KÓD (tulajdonosi döntés):** Beállítások → Publikus oldal → **„A kezdőlap állapota”**: *Fesztivál előtt / alatt*
+    (a nyitóképen visszaszámláló, alatta a „Kiemelt programok” sáv) vagy *Fesztivál után* (**ma ez — a mai 2026-os lap**). A
+    visszaszámláló a 2026-08-26 előtti jelölés/CSS/JS (git `122d8b3^`), a cél a **nyitónap** + a Beállításokban megadott óra
+    (alapból 10:00, mint 2026-ban), a fesztivál időzónájával. Helyben oda-vissza kapcsolva, 375 px-en és asztalon is megnézve.
+    A Kiemelt sáv 6 kártyája szerkeszthető cím + kép (mint 2026-ban: nem programokból jön).
+  - **Minden szöveg és kép szerkeszthető:** Tartalom → Aloldalak → **Kezdőlap** (57 kulcs, a 2026-os nevekkel — a 2026-os tartalom
+    rájuk jött át). Ami 2026-ban beégetett volt, az is kulcs lett: a „számokban” öt **értéke** (pl. „110+”), a két szervező
+    neve és logója, a visszaszámláló négy felirata.
+  - **A firkák** a téma 12 motívumából, `[data-decor]` jelöléssel → a sűrűség, a lebegés és a **„Mozgás-mennyiség” a kezdőlapon is hat**
+    (2026-ban nem hatott). A felúszás a közös rétegé. „Kevesebb mozgás”: a firkák állnak, a számláló rögtön a végértéket mutatja,
+    a partner-sáv nem léptet.
+  - **A négy kivezetett elem** (fény-részecskék, „Pörgess egy programot!”, futó névsor, aurora) **nincs** — teszt őrzi (a lap, a CSS/JS,
+    a téma-szerkesztő és a téma-adat).
+  - **Teljesítmény:** az első dia `<picture>`: telefonon a kijelző arányára vágott 750×1400-as kép (asztalon 1920 széles), a fejben
+    előre kérve; a 2–5. dia csak a lap betöltése után; minden más kép lusta (`loading="lazy"`), a megjelenés arányára vágva; a
+    galéria ~470 képének címe NEM a lapban, hanem külön kérésben (`/galeria-adat.json`, csak az első megnyitáskor). ⚠ **Valódi
+    telefonon, mobilhálózaton még NINCS mérve** (MOST folyik, 7.).
+  - **Románul** a hírek nem látszanak (2026-os tulajdonosi döntés: nincsenek románul); a román szövegek a 2026-os behozatalból.
+  - **12 új teszt** (`KezdolapTest`), **180 teszt zöld**.
+  - Döntések (egy-egy sor): a partner-sáv a **legutóbbi év** támogatóit mutatja (ma a 2026-osakat — 2027-es még nincs) · az
+    „Aftermoviek” sáv a **Videó archívum lap első videós blokkja** (a feliratán jelölve) · a fesztivál előtti címet a 2026-os
+    `nowrap` helyett tördelhetőre hagytam (rövid címnél ugyanaz, hosszúnál nem lóg ki), és telefonon megkapta a 2026-09-01-i
+    oldalsó levegőt · a szervezői logó 2026-ban a forgatag2025 oldalról jött; most a Rólunk lap kezdőképe (ugyanaz a logó, a
+    médiatárban 2 új sorként) · a sorrend a 2026-os CSS-betöltési sorrend (a csúszka térköze ezen múlt).
+
 ## Ami MOST folyik
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
@@ -282,6 +314,10 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **Hátra (a felhasználóval), VALÓDI TELEFONON:** a fenti kettő újranézése a telepítés után, és: a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
    felúszása; egy hírkártya kiemelése; és a telefon „Kevesebb mozgás” / „Animációk eltávolítása” beállításával a Rólunk: semmi nem úszik, a
    programkeresőn nincs firka.
+7. **A kezdőlap (PROMPT-14) élesítése** — feltolva (`68295092`), **a cPanelben telepíteni kell** (Update from Remote → Deploy HEAD Commit).
+   A naplóban: a `2027_01_13_000100_settings_kezdolap_allapot` migráció és `LAPSZÖVEG: home: … új kulcs …`. Utána élesben megnézendő:
+   `/` és `/ro` (2026-os élő mellé téve), a Beállításokban az állapot-kapcsoló oda-vissza, egy galéria-év megnyitása, egy aftermovie
+   lejátszása, 375 px. ⚠ **A nyitókép megjelenési idejét VALÓDI TELEFONON, mobilhálózaton kell mérni** (a fejlesztőgépről nem lehet).
 
 ## Ami ezután jön, ebben a sorrendben
 
@@ -324,7 +360,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **Visszamenőleg hozzányúl minden addig elkészült laphoz** (Rólunk, hírlista, hír, programkereső),
    ezért nem szabad a kezdőlap körébe ágyazni — ott váratlanul nagyra nőne és félkészen állna meg.
 
-5. **A kezdőlap** — a legösszetettebb lap; a dekor-rétegre épül. **Örökölt:** a `mozgas.js` szórt rétege (`data-szoras="oldal"`) és a
+5. ~~**A kezdőlap**~~ — **kész helyben (2026-11-04, PROMPT-14)**, lásd fent. *(Az alábbi jegyzet teljesült.)* A legösszetettebb lap; a dekor-rétegre épül. **Örökölt:** a `mozgas.js` szórt rétege (`data-szoras="oldal"`) és a
    közös motívumkészlet (`Theme::motifSprite()`) kész; a nyitókép lengő firkái (`[data-decor="hero"]`) és a kezdőlap saját szórt
    rétegei a 2026-os `home-v7/script.js` szerint ide kerülnek. ⚠ 2026-ban a „Mozgás-mennyiség” a kezdőlapon nem hatott — itt kell hatnia.
 6. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
@@ -393,6 +429,11 @@ nem nyúlunk.**
   „…ne unește.**összeköt minket.**” — magyar szó maradt benne (a heurisztika: a román szövegben nincs ő/ű, de itt ö van). Javítani az
   adminban kell (Aloldalak → Rólunk → Szerkeszthető szövegek → „Történet — záró bekezdés”). A külön „záró kiemelés” kulcs megszűnt:
   2026-ban sem látszott (a bekezdés felülírta), és a román mezőjében az egész bekezdés állt.
+- **ÚJ (PROMPT-14) — a visszaszámláló román feliratai:** a „Még / nap / óra / perc” román változata 2026-08-26-án a kulcsokkal
+  együtt törlődött (a „Ott találkozunk!” megmaradt: „Ne vedem acolo!”). Most a román lapon a magyar látszana — **a fesztivál előtti
+  állapot bekapcsolása ELŐTT** be kell írni (Aloldalak → Kezdőlap → Visszaszámláló). Nem fordítottam magam (saját tartalom = kézi fordítás).
+- **ÚJ (PROMPT-14) — a kezdőlap két „Videó archívum” gombja** (Mesterségem Vásárhelyi, Vásárhely színe-java) a `/videoarchivum` lapra
+  visz, ami a 8. pont köréig még nem épült meg (ma 404 — mint a menü több pontja).
 - **ÚJ — a logón még „13.” áll** (a 2026-os logó). A 2027-es logót az Arculatban kell feltölteni (logó + fejléc-logó).
 - **ÚJ — világos mód a publikus oldalon?** Most sötét-only (mint 2026-ban). Ha kell váltó, szólj.
 

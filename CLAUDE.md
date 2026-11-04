@@ -670,6 +670,30 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
 - Tesztek: `tests/Feature/MozgasDekorTest.php` (minden laptípus megkapja; minden kapcsoló valódi szabályt ad; „Minimális”/„kevesebb mozgás”;
   közös készlet; Rólunk-jelölés; a 6 → 12 migráció).
 
+**Kezdőlap — kész helyben (2026-11-04, PROMPT-14).** `/` és `/ro` → `Publikus\KezdolapController` → `resources/views/kezdolap.blade.php`.
+🔴 **A JELÖLÉS ÉS A CSS A 2026-OS, BETŰRE (2/e)** — a 2026-os élő lap mellé téve szakaszonként mérve (1024 és 375 px).
+- **Fájlok:** `kezdolap.css` = a 2026-os `home-v7/style.css` másolata (a gépies eltérések a fejében és „2027:”-tel jelölve; a 13. pont a
+  fesztivál előtti nyitókép); `kezdolap-szerver.css` = CSAK a 2027-es keret/kiszolgálás miatti kiegészítés (a fejléc `.wrap`-ja, a
+  törzs `line-height:normal`, a `.kep-kitolt` képek, a /hirek kártya flexének semlegesítése, a z-index a közös skálán);
+  `galeria.css`, `video.css`, `tamogatok.css`, `kezdolap-kartyak.css` = a 2026-os `lib/*.ts` CSS-sablonjainak kiírt szövege (a fény-
+  paletta a téma firka-színeiből). JS: `kezdolap.js` (a `home-v7/script.js` átirata), `galeria.js`, `video.js` (a `lib/gallery`,
+  `lib/video` szkriptje), a partner-sáv léptetése a `rail.js`-ben (`data-autoscroll`, a `partials/rail` `$auto` paramétere).
+- ⚠ **A CSS-ek BETÖLTÉSI SORRENDJE a 2026-osé** (landing → galéria → csúszka → videó → kártya-fény → támogatók → szerver): az azonos
+  erősségű szabályok közül a későbbi nyer (pl. a `.railnav` 16 px-e a landing 4 px-e fölött). Ne rendezd át.
+- **Adat EGY helyen: `App\Support\Kezdolap`** — `allapot()` (Beállítások `public.home_state`: `fesztival` | `utana`; ismeretlen → hiba),
+  `visszaszamlaloCel()` (nyitónap + `public.countdown_time`, a fesztivál időzónájával), `REJTETT_SZEKCIOK` (románul a hírek),
+  `szam()` (a „számokban” értéke: a vezető szám + utótag; nem szám → hiba), `hirek()`, `videok()` (a Videó archívum lap ELSŐ videós
+  blokkja), `galeriak()` / `galeriaAdat()` (a képlista KÜLÖN kérés: `galeria-adat.json`), `partnerek()` (a legutóbbi év, a „Szervez…”
+  szint és a két szervező neve nélkül), `kepUrl()` (Glide, webp, a megjelenés méretén).
+- **Szövegek:** `LapSablon::SABLONOK['home']` (a 2026-os `data-hs`/`data-img` kulcsnevekkel — a 2026-os tartalom ezekre jött át).
+- **Képek:** az első dia `<picture>` + két `preload` (telefon: 750×1400 vágva; asztal: 1920 széles); a 2–5. dia `data-kep`/`data-kep-mobil`,
+  a `kezdolap.js` a `load` után teszi be; minden más `<img loading="lazy">` a 2026-os háttérkép helyén (`.kep-kitolt`, ugyanúgy kitöltve).
+  ⚠ Lusta képnek legyen MÉRETES doboza: a 2026-os CSS `width:auto`-ja a be nem töltött képnek 0×0-t ad, és az ilyen lusta kép soha
+  nem töltődik be (a szervezői logók ezért nem lusták).
+- **Firkák:** a rétegek `[data-decor]` jelölést kaptak (hero / ambient) → a téma kapcsolói hatnak; a motívum a közös készletből (`<use>`).
+- Tesztek: `tests/Feature/KezdolapTest.php` (12: állapot oda-vissza, szerkeszthető cím/szám, a négy kivezetett elem, román, partner-szűrés,
+  galéria-adat, aftermovie-forrás, képméretek és lusta betöltés, nincs Filament-CSS).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a
