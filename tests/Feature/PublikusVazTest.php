@@ -228,9 +228,10 @@ class PublikusVazTest extends TestCase
         $this->actingAs($admin, 'web')->get('/rolunk')->assertOk()->assertSee('Vannak hagyományok')->assertSee('class="admin-sav"', false);
     }
 
-    public function test_kikapcsolt_modban_csak_a_gyoker_hamarosan_amig_nincs_kezdolap(): void
+    /** A gyökér 2026-11-04 óta a kezdőlap (KezdolapTest); a Hamarosan lap a saját címén mindig elérhető. */
+    public function test_kikapcsolt_modban_a_hamarosan_lap_a_sajat_cimen_el(): void
     {
-        $this->get('/')->assertOk()->assertSee('Hamarosan');
+        $this->get('/hamarosan')->assertOk()->assertSee('Hamarosan');
         $this->get('/rolunk')->assertOk()->assertSee('Vannak hagyományok');
     }
 

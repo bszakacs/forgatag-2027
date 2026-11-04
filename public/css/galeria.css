@@ -1,0 +1,111 @@
+/* ============================================================================
+ *  2026-os KÖZÖS MODUL — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-14). Forrás: ../forgatag-os/frontend/src/lib/gallery.ts (GALLERY_CSS)
+ *  (a TS-sablon kiírt szövege; a ${...} helyeken a lib/glow kimenete). NE SZERKESZD ÉRTELMEZVE.
+ *  Gépies eltérés: ahol a cím-betű áll, a téma betűje és vastagsága (`'Tingler Print'` → var(--font-head),
+ *  `font-weight:400` → var(--head-wght); értéke ugyanaz — TemaTest, token-szabály).
+ *  Használója ma: a kezdőlap galéria-sávja és -ablaka; a Galéria lap (renderYearGrid) a saját körében.
+ * ========================================================================== */
+/* ---- Főoldali év-borító rail grid-oszlopa (a .crail viselkedés + nav a KÖZÖS RAIL_CSS-ből) ---- */
+/* Alapból PONTOSAN 6 borító látszik desktopon (3:4), a többi görgethető. Reszponzívan kevesebb.
+   A gap 14px → az oszlopszélesség = (100% - (N-1)*gap) / N.
+   A függőleges padding (KÖZÖS: lib/glow RAIL_GLOW_PAD) adja a cím-térközt ÉS azt a helyet, ahol a
+   felemelt kártya + glow elfér — a .crail overflow-y:hidden, e nélkül a kártya teteje levágódik. */
+.hp-gal-rail{gap:14px;margin-top:0;padding:max(var(--fgl-glow-top,40px),40px) 2px max(var(--fgl-glow-bottom,48px),60px);grid-auto-columns:calc((100% - 5 * 14px) / 6)}
+@media (max-width:1024px){.hp-gal-rail{grid-auto-columns:calc((100% - 3 * 14px) / 4)}}
+@media (max-width:640px){.hp-gal-rail{grid-auto-columns:calc((100% - 1.5 * 14px) / 2.5)}}
+/* ---- Rail-kártya (.gal-card): a lib adja a CSS-t (self-contained), mert a landing-CSS-ből kiesett.
+   A 6-szín sorrend-hovert a home-v7 nth-child szabályai adják a .gal-card-ra — itt csak az alap-box. ---- */
+.gal-card{display:block;width:100%;border:0;margin:0;padding:0;-webkit-appearance:none;appearance:none;font:inherit;color:inherit;background:transparent;cursor:pointer}
+/* A keret PONTOSAN a videó-kártya .va-thumb-jáé: 1px solid var(--line) — így hoverre a border
+   a glow színére vált, és a recept 0 0 0 1px gyűrűjével együtt ugyanaz a 2px vastagság. */
+.gal-card__img{display:block;width:100%;aspect-ratio:3/4;box-sizing:border-box;
+  border:1px solid var(--line,rgba(255,255,255,.1));border-radius:var(--r-card,18px);overflow:hidden;position:relative;
+  background-color:var(--bg-raise,#211B45);background-repeat:no-repeat;background-size:cover;background-position:center;
+  transition:transform var(--dur-1,.18s) var(--ease,cubic-bezier(.22,.61,.36,1)),border-color var(--dur-1,.18s),box-shadow var(--dur-1,.18s) var(--ease,cubic-bezier(.22,.61,.36,1))}
+.gal-card__img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(0,0,0,.74))}
+.gal-meta{position:absolute;left:13px;bottom:11px;z-index:1;display:flex;flex-direction:column;line-height:1.05;text-align:left}
+.gal-meta b{font-weight:var(--head-wght);font-family:var(--font-head);font-size:1.7rem;color:#fff}
+/* Hover a BELSŐ vizuális elemre (a burok-gomb csupasz), a KÖZÖS lib/glow receptjével — ugyanaz,
+   mint a hír- és a videó-kártyán. A színt a renderGalleryRail adja kártyánként inline --glow-ban. */
+.gal-card:hover .gal-card__img,.gal-card:focus-visible .gal-card__img{transform:translateY(-4px);border-color:var(--glow,#E5389E);
+  box-shadow:var(--fgl-shadow,0 16px 40px -24px rgba(0,0,0,.65)),
+    0 0 0 1px var(--glow,#E5389E),
+    0 8px 26px -8px color-mix(in srgb,var(--glow,#E5389E) 78%,transparent),
+    0 0 40px -14px color-mix(in srgb,var(--glow,#E5389E) 60%,transparent)}
+.gal-card:focus-visible{outline:3px solid var(--focus,#FFB84D);outline-offset:3px;border-radius:var(--r-card,18px)}
+/* ---- LEVEL 1: év-rács (Galéria oldal) ---- */
+.year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-4,16px);padding-bottom:var(--sp-9,64px)}
+/* Keret + hover ugyanaz, mint a videó-kártyán és a főoldali rail-borítón (1px keret + a recept gyűrűje). */
+.ycard{position:relative;box-sizing:border-box;border:1px solid var(--line,rgba(255,255,255,.1));padding:0;cursor:pointer;
+  text-align:left;color:var(--fg,#F4F1FF);font:inherit;
+  border-radius:var(--r-card,18px);overflow:hidden;aspect-ratio:4/5;background:var(--card,#2A2450);
+  transition:transform var(--dur-1,.18s) var(--ease,cubic-bezier(.22,.61,.36,1)),border-color var(--dur-1,.18s),box-shadow var(--dur-1,.18s) var(--ease,cubic-bezier(.22,.61,.36,1))}
+.ycard .gy-cover{position:absolute;inset:0;background-size:cover;background-position:center;background-color:var(--bg-raise,#211B45);transition:transform var(--dur-2,.3s) var(--ease,ease)}
+.ycard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,19,52,.05) 30%,rgba(24,19,52,.55) 66%,rgba(24,19,52,.92))}
+.ycard:hover,.ycard:focus-visible{transform:translateY(-4px);border-color:var(--glow,#E5389E);
+  box-shadow:var(--fgl-shadow,0 16px 40px -24px rgba(0,0,0,.65)),
+    0 0 0 1px var(--glow,#E5389E),
+    0 8px 26px -8px color-mix(in srgb,var(--glow,#E5389E) 78%,transparent),
+    0 0 40px -14px color-mix(in srgb,var(--glow,#E5389E) 60%,transparent)}
+.ycard:hover .gy-cover{transform:scale(1.06)}
+.ycard .yl{position:absolute;left:var(--sp-4,16px);bottom:var(--sp-4,16px);right:var(--sp-4,16px);z-index:2}
+.ycard .yl b{display:block;font-family:var(--font-head);font-weight:var(--head-wght);font-size:3.2rem;line-height:.86;color:var(--fg,#fff)}
+@media (max-width:1024px){.year-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:720px){.year-grid{grid-template-columns:repeat(2,1fr);gap:var(--sp-3,12px)}}
+
+/* ---- LEVEL 2: FEED MODAL (masonry, csak függőleges görgetés) ---- */
+body.gml-scrolllock{overflow:hidden}
+/* A betűket EXPLICITEN a modal/lightbox gyökerére tesszük: a rétegek a <body> végén állnak, tehát
+   NEM a [data-section] szekciók leszármazottai — a kezdőlapon (ahol csak a szekciók kapnak
+   font-family-t) örökléssel a böngésző alapbetűjére (Times) estek volna. */
+.gml-modal,.gml-lb{font-family:var(--font-body,'Hanken Grotesk',system-ui,sans-serif)}
+.gml-head h2,.gml-brush{font-weight:var(--head-wght);font-family:var(--font-head)}
+.gml-modal{position:fixed;inset:0;z-index:1200;display:none}
+.gml-modal.open{display:block}
+.gml-backdrop{position:absolute;inset:0;background:rgba(16,12,38,.72);backdrop-filter:blur(6px)}
+.gml-panel{position:absolute;inset:4% 0 0;margin:0 auto;left:0;right:0;max-width:var(--maxw,1240px);
+  background:linear-gradient(180deg,var(--bg-raise,#211B45),var(--bg,#151033));border:1px solid var(--line-strong,rgba(255,255,255,.2));
+  border-radius:26px 26px 0 0;box-shadow:0 20px 55px -22px rgba(0,0,0,.65);display:flex;flex-direction:column;overflow:hidden}
+.gml-head{position:relative;padding:var(--sp-5,24px) var(--sp-6,32px);border-bottom:1px solid var(--line,rgba(255,255,255,.12));flex:0 0 auto;text-align:center}
+.gml-head h2{margin:0;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1}
+.gml-brush{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--fg,#fff)}
+.gml-edition{color:var(--fg-muted,#B9B4D8);font-size:1.05rem;margin-top:.15em;letter-spacing:.01em}
+.gml-iconbtn{background:rgba(255,255,255,.06);border:1px solid var(--line-strong,rgba(255,255,255,.2));color:var(--fg,#fff);width:42px;height:42px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--dur-1,.18s)}
+.gml-iconbtn:hover{background:var(--accent-b,#E5389E);color:var(--accent-contrast,#fff);border-color:var(--accent-b,#E5389E)}
+.gml-close{position:absolute;top:50%;right:var(--sp-6,32px);transform:translateY(-50%)}
+.gml-feed{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:var(--sp-5,24px) var(--sp-6,32px) var(--sp-8,56px);
+  display:flex;gap:var(--sp-3,12px);align-items:flex-start;scrollbar-width:thin;scrollbar-color:var(--card-hover,#372F63) transparent}
+.gml-feed::-webkit-scrollbar{width:9px}.gml-feed::-webkit-scrollbar-thumb{background:var(--card-hover,#372F63);border-radius:9px}
+.gml-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:var(--sp-3,12px)}
+.gml-tile{width:100%;border:0;padding:0;display:block;cursor:pointer;line-height:0;border-radius:var(--r-field,12px);overflow:hidden;background:var(--card,#2A2450);position:relative}
+.gml-tile .gml-ph{display:block;width:100%;height:auto;transition:transform var(--dur-2,.3s) var(--ease,ease)}
+.gml-tile::after{content:"";position:absolute;inset:0;background:rgba(24,19,52,0);transition:var(--dur-1,.18s)}
+.gml-tile:hover .gml-ph{transform:scale(1.05)}
+.gml-tile:hover::after{background:rgba(24,19,52,.12)}
+@media (max-width:720px){.gml-panel{inset:0;border-radius:0}.gml-head{padding:var(--sp-4,16px)}.gml-feed{padding:var(--sp-4,16px)}.gml-close{right:var(--sp-4,16px)}}
+
+/* ---- LEVEL 3: LIGHTBOX ---- */
+.gml-lb{position:fixed;inset:0;z-index:2000;display:none;background:rgba(10,7,26,.94)}
+.gml-lb.open{display:flex;align-items:center;justify-content:center}
+.gml-stage{position:relative;width:min(92vw,1280px);height:min(86vh,860px);display:flex;align-items:center;justify-content:center}
+.gml-frame{max-width:100%;max-height:100%;display:flex;align-items:center;justify-content:center}
+.gml-frame img{max-width:100%;max-height:min(86vh,860px);width:auto;height:auto;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);display:block}
+.gml-cap{position:absolute;left:0;right:0;bottom:-40px;text-align:center;color:var(--fg-muted,#B9B4D8);font-size:.9rem}
+.gml-cap b{color:var(--fg,#fff);font-weight:600}
+/* LAPOZÓ NYILAK — csak a prev/next (középen). A szabály SZÁNDÉKOSAN nem a .gml-nav
+   gyűjtő-osztályra szól: korábban a bezáró gomb is viselte, és ez a 0,2,0 specificitású
+   szabály legyőzte a bezáró jobb-felső pozícióját (top:50% → jobb középen jelent meg). */
+.gml-lb .gml-prev,.gml-lb .gml-next{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid var(--line-strong,rgba(255,255,255,.2));color:var(--fg,#fff);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--dur-1,.18s)}
+.gml-lb .gml-prev:hover,.gml-lb .gml-next:hover{background:var(--accent-b,#E5389E);color:var(--accent-contrast,#fff);border-color:var(--accent-b,#E5389E)}
+.gml-prev{left:-72px}.gml-next{right:-72px}
+/* BEZÁRÓ — fix a jobb felső sarokban, a nyilak pozicionálásától függetlenül. */
+.gml-lb .gml-lbclose{position:fixed;top:20px;right:24px;transform:none;width:46px;height:46px;border-radius:50%;z-index:3}
+.gml-counter{position:fixed;top:26px;left:24px;color:var(--fg-muted,#B9B4D8);font-size:.9rem;letter-spacing:.05em}
+@media (max-width:720px){
+  .gml-prev{left:6px}.gml-next{right:6px}
+  .gml-lb .gml-prev,.gml-lb .gml-next{width:46px;height:46px}
+  /* Mobilon szűkebb a peremterület: a bezáró közelebb a sarokhoz, de a számlálótól elkülönítve. */
+  .gml-lb .gml-lbclose{top:12px;right:12px;width:42px;height:42px}
+}

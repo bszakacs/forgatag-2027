@@ -4,6 +4,7 @@ use App\Http\Controllers\Bekuldes\BelepesController;
 use App\Http\Controllers\Bekuldes\JelszoController;
 use App\Http\Controllers\Bekuldes\UrlapController;
 use App\Http\Controllers\Publikus\HirekController;
+use App\Http\Controllers\Publikus\KezdolapController;
 use App\Http\Controllers\Publikus\OldalController;
 use App\Http\Controllers\Publikus\ProgramokController;
 use App\Http\Middleware\BekuldoBelepve;
@@ -43,13 +44,14 @@ Route::prefix('bekuldes')->name('bekuldes.')->group(function () {
  * PUBLIKUS OLDAL — magyar a gyökérben, román a /ro/ előtag alatt (mint 2026-ban). Mindkét nyelv UGYANAZOKAT az
  * útvonalakat kapja (nevek: hu.* és ro.*). A „Hamarosan” mód CSAK ezen a csoporton fut: az admin, a beküldő
  * űrlap és a médiatár képei ezen kívül vannak, tehát a kapcsoló nem zárhatja ki őket.
- * A kezdőlap még NINCS megépítve (PROMPT-09: szándékosan) — addig a gyökér a Hamarosan lapot mutatja.
+ * A kezdőlap (PROMPT-14) a gyökérben; a galéria-ablak képei külön kérésben (galeria-adat.json), csak megnyitáskor.
  */
 foreach (['hu' => '', 'ro' => 'ro'] as $nyelv => $elotag) {
     Route::prefix($elotag)->name("{$nyelv}.")
         ->middleware([PublikusNyelv::class . ":{$nyelv}", PublikusOr::class, HamarosanMod::class])
         ->group(function () {
-            Route::view('/', 'hamarosan')->name('kezdo');
+            Route::get('/', [KezdolapController::class, 'index'])->name('kezdo');
+            Route::get('galeria-adat.json', [KezdolapController::class, 'galeria'])->name('galeria_adat');
             Route::view('hamarosan', 'hamarosan')->name('hamarosan');
             Route::get('hirek', [HirekController::class, 'index'])->name('hirek');
             Route::get('hirek/{slug}', [HirekController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('hir');

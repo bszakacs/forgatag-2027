@@ -85,4 +85,12 @@ return [
     'pk_terkep_tobb_terem' => 'mai multe săli',
     'pk_terkep_egesz_helyszin' => 'Toată locația',
     'pk_terkep_jelolo' => 'marcajul :no',
+    // Pagina principală (PROMPT-14).
+    'kp_visszaszamlalo' => 'Numărătoare inversă până la Vâltoare',
+    'kp_video_lejatszasa' => 'Redă videoclipul',
+    'kp_galeria_teljes' => 'Imagine la dimensiune completă',
+    'kp_galeria_elozo' => 'Imaginea anterioară',
+    'kp_galeria_kovetkezo' => 'Imaginea următoare',
+    'kp_galeria_kep' => 'imaginea',
+    'kp_galeria_hiba' => 'Galeria nu poate fi încărcată acum. Încearcă din nou mai târziu.',
 ];

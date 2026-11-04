@@ -1,0 +1,35 @@
+/* ============================================================================
+ *  A 2026-os kezdőlap stílusának (kezdolap.css, betűre átvéve) KIEGÉSZÍTÉSE — CSAK ami a 2027-es keretből és a
+ *  szerveroldali kiszolgálásból következik. Új kinézet itt nem lehet (CLAUDE.md 2/e).
+ * ========================================================================== */
+
+/* A 2026-os landing `.wrap` szabálya (1180 px, 24 px) a közös fejléc/lábléc `.wrap`-jára is ráülne (2026-ban a chrome.css
+   `header.site-hd .wrap` szabálya védte). A keret a saját méretét tartja, mint minden más lapon. */
+header.site-hd .wrap,footer.site-ft .wrap{max-width:var(--maxw);padding:0 var(--gutter)}
+
+/* A 2026-os kezdőlapon a törzs sormagassága a böngésző alapja („normal”) volt; a 2027-es keret 1.6-ot ad a body-nak.
+   A kezdőlap szekciói a 2026-os értéket kapják (különben minden szöveges blokk magasabb lenne). */
+main [data-section]{line-height:normal}
+
+/* A rögzített háttérréteg (.fgl-atmo, inset:0) a címsáv NÉLKÜLI teljes magasságra — különben telefonon görgetéskor alul
+   sötét sáv csúszik fel (ugyanaz, mint a közös háttérnél és a programkeresőn). */
+body .fgl-atmo{bottom:auto;height:100vh;height:100lvh}
+
+/* KÉPEK: 2026-ban háttérképek voltak (background-image: cover, középre). Itt ugyanott, ugyanúgy kitöltve egy <img> áll —
+   így a látótéren kívüli kép csak odagörgetéskor töltődik (loading="lazy"), és az első dia a telefonhoz vágott változat.
+   A kép a doboz alján ül, a 2026-os sötétítő (::after) és a feliratok fölötte maradnak. */
+.kep-kitolt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.slide picture{display:contents}
+
+/* A hír-kártya: a 2027-es /hirek kártyája (publikus.css) oszlopos flex; a 2026-os kezdőlapon asztali nézetben blokk volt
+   (a mobilos flexet a kezdolap.css adja). */
+@media(min-width:721px){
+  .grid3 > .ncard{display:block}
+}
+.grid3 .ncard .body{display:block}
+.grid3 .ncard p{line-height:normal}
+
+/* A RÉTEGSORREND EGY skálán (publikus.css --z-*): 2026-ban a galéria-ablak 1200/2000, a videó-ablak 200 volt. */
+.gml-modal{z-index:var(--z-modal)}
+.gml-lb{z-index:calc(var(--z-modal) + 1)}
+.vid-lb{z-index:var(--z-modal)}

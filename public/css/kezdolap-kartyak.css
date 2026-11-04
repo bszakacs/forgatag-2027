@@ -1,0 +1,21 @@
+/* ============================================================================
+ *  2026-os KÖZÖS MODUL — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-14). Forrás: ../forgatag-os/frontend/src/lib/glow.ts (LANDING_CARD_GLOW_CSS)
+ *  (a TS-sablon kiírt szövege; a ${...} helyeken a lib/glow kimenete). NE SZERKESZD ÉRTELMEZVE.
+ *  Gépies eltérés: ahol a cím-betű áll, a téma betűje és vastagsága (`'Tingler Print'` → var(--font-head),
+ *  `font-weight:400` → var(--head-wght); értéke ugyanaz — TemaTest, token-szabály).
+ *  2027: a 7 fény-szín a téma firka-színeiből (2026: GLOW_PALETTE hexakódok — ugyanazok az értékek; mint a publikus.css hírkártyáján).
+ *  A kiemelt programok kártyáinak (.pcard) fénye és a sávjuk függőleges térköze — a hír-kártya fénye a publikus.css-ben.
+ * ========================================================================== */
+.rail{padding:max(var(--fgl-glow-top,40px),40px) 2px max(var(--fgl-glow-bottom,48px),60px)}
+.pcard:nth-child(7n+1){--glow:var(--doodle-pink)}
+.pcard:nth-child(7n+2){--glow:var(--doodle-lime)}
+.pcard:nth-child(7n+3){--glow:var(--doodle-yellow)}
+.pcard:nth-child(7n+4){--glow:var(--doodle-blue)}
+.pcard:nth-child(7n+5){--glow:var(--doodle-purple)}
+.pcard:nth-child(7n+6){--glow:color-mix(in srgb,var(--doodle-red) 70%,#fff)}
+.pcard:nth-child(7n+7){--glow:var(--accent-a)}
+.pcard:hover,.pcard:focus-visible,.pcard:focus-within{transform:translateY(-4px);border-color:var(--glow,#E5389E);
+  box-shadow:var(--fgl-shadow,0 16px 40px -24px rgba(0,0,0,.65)),
+    0 0 0 1px var(--glow,#E5389E),
+    0 8px 26px -8px color-mix(in srgb,var(--glow,#E5389E) 78%,transparent),
+    0 0 40px -14px color-mix(in srgb,var(--glow,#E5389E) 60%,transparent)}

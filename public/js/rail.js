@@ -36,13 +36,29 @@
     var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(sync, 150); });
     if (prev) prev.addEventListener('click', function () { page(-1); });
     if (next) next.addEventListener('click', function () { page(1); });
+    var paused = false;
+    var pauseAuto = function () { paused = true; };
+    var resumeAuto = function () { paused = false; };
     if (knob && line) {
       var dragging = false, grabDx = 0;
       var drag = function (e) { var rr = line.getBoundingClientRect(); var x = (e.clientX - grabDx - rr.left) / rr.width; rail.scrollLeft = Math.max(0, Math.min(1, x)) * maxS(); };
-      knob.addEventListener('pointerdown', function (e) { dragging = true; var kr = knob.getBoundingClientRect(); grabDx = e.clientX - (kr.left + kr.width / 2); try { knob.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
+      knob.addEventListener('pointerdown', function (e) { dragging = true; pauseAuto(); var kr = knob.getBoundingClientRect(); grabDx = e.clientX - (kr.left + kr.width / 2); try { knob.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
       knob.addEventListener('pointermove', function (e) { if (dragging) drag(e); });
-      knob.addEventListener('pointerup', function (e) { dragging = false; try { knob.releasePointerCapture(e.pointerId); } catch (_) {} });
+      knob.addEventListener('pointerup', function (e) { dragging = false; resumeAuto(); try { knob.releasePointerCapture(e.pointerId); } catch (_) {} });
       knob.addEventListener('keydown', function (e) { var m = maxS(); if (e.key === 'ArrowLeft') { page(-1); e.preventDefault(); } else if (e.key === 'ArrowRight') { page(1); e.preventDefault(); } else if (e.key === 'Home') { rail.scrollLeft = 0; e.preventDefault(); } else if (e.key === 'End') { rail.scrollLeft = m; e.preventDefault(); } });
+    }
+    // AUTOMATIKUS LÉPTETÉS (csak data-autoscroll — 2026: a kezdőlapi partner-sáv): ~3,5 mp-enként egy kártya, a végén
+    // vissza az elejére; egér/fókusz/húzás alatt áll. „Kevesebb mozgás” kérésre — és 2027-ben a téma „Minimális”
+    // mozgás-fokozatán is (data-motion) — el sem indul.
+    if (rail.hasAttribute('data-autoscroll') && !RM && !document.documentElement.hasAttribute('data-motion')) {
+      ['mouseenter', 'focusin', 'pointerdown'].forEach(function (ev) { rail.addEventListener(ev, pauseAuto); });
+      ['mouseleave', 'focusout', 'pointerup'].forEach(function (ev) { rail.addEventListener(ev, resumeAuto); });
+      setInterval(function () {
+        if (paused) return;
+        var m = maxS(); if (m <= 1) return;
+        if (rail.scrollLeft >= m - 1) rail.scrollTo({ left: 0, behavior: RM ? 'auto' : 'smooth' });
+        else page(1);
+      }, 3500);
     }
     // Kezdéskor a csúszka MINDIG az elejéről induljon → a „vissza” nyíl rögtön tiltott.
     rail.scrollLeft = 0; sync();

@@ -1,0 +1,44 @@
+/* ============================================================================
+ *  2026-os KÖZÖS MODUL — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-14). Forrás: ../forgatag-os/frontend/src/lib/sponsor-tile.ts (SPONSOR_TILE_CSS) + sponsor-rail.ts (SPONSOR_RAIL_CSS)
+ *  (a TS-sablon kiírt szövege; a ${...} helyeken a lib/glow kimenete). NE SZERKESZD ÉRTELMEZVE.
+ *  Gépies eltérés: ahol a cím-betű áll, a téma betűje és vastagsága (`'Tingler Print'` → var(--font-head),
+ *  `font-weight:400` → var(--head-wght); értéke ugyanaz — TemaTest, token-szabály).
+ * ========================================================================== */
+.tmg-item{
+  flex:1 1 var(--tmg-min,180px);max-width:var(--tmg-max,240px);min-width:0;
+  display:flex;align-items:center;justify-content:center;
+  height:var(--tmg-h,96px);padding:var(--sp-4,16px);
+  background:var(--tmg-tile,var(--lap-card,#FFFFFF));
+  border:1px solid var(--tmg-tile-line,var(--lap-line,rgba(0,0,0,.10)));
+  border-radius:var(--r-card,18px);
+  text-decoration:none;
+  transition:transform var(--dur-1,.18s) var(--ease,ease),box-shadow var(--dur-1,.18s) var(--ease,ease),border-color var(--dur-1,.18s) var(--ease,ease)}
+a.tmg-item:hover,a.tmg-item:focus-visible{
+  transform:translateY(-3px);border-color:var(--tmg-accent,var(--accent-b));
+  box-shadow:0 14px 30px -18px rgba(0,0,0,.55)}
+a.tmg-item:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+/* a logó ARÁNYOSAN fér bele, és sosem színezzük át */
+.tmg-item img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+/* logó nélküli támogató: a nevét írjuk ki, ne maradjon üres csempe */
+.tmg-item .tmg-name{
+  font-family:var(--font-head);font-weight:var(--head-wght);font-size:var(--text-small);
+  color:var(--lap-fg,#1a1a1a);text-align:center;line-height:1.25}
+
+.hp-sponsor-rail{--gap:14px;gap:var(--gap);
+  grid-auto-columns:calc((100% - 5 * var(--gap)) / 6)}
+.hp-sponsor-rail .tmg-item{flex:none;max-width:none;width:100%;--tmg-h:96px}
+@media(max-width:900px){
+  .hp-sponsor-rail{grid-auto-columns:calc((100% - 3 * var(--gap)) / 4)}
+  .hp-sponsor-rail .tmg-item{--tmg-h:84px}
+}
+@media(max-width:600px){
+  .hp-sponsor-rail{--gap:10px;grid-auto-columns:calc((100% - 1 * var(--gap)) / 2)}
+  .hp-sponsor-rail .tmg-item{--tmg-h:72px;padding:var(--sp-3,12px)}
+}
+/* A CÍM és a SÁV közé levegő: a .rail-head alap-margója (--sp-4) kevés volt ehhez a
+   sávhoz — a logó-csempék felső éle beleért a feliratba. (2026-08-26) */
+.sp-rail-blk .rail-head{margin:0 0 var(--sp-6)}
+/* a sáv blokkja: a szervező-logók alatt tiszta elválasztás, a gomb alatta levegőt kap */
+.sp-rail-blk{margin-top:var(--sp-7);padding-top:var(--sp-6);
+  border-top:1px solid color-mix(in srgb, var(--lap-fg,#1a1a1a) 12%, transparent)}
+.sp-rail-blk + .center-cta{margin-top:var(--sp-7)}

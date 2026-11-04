@@ -89,4 +89,12 @@ return [
     'pk_terkep_tobb_terem' => 'több terem',
     'pk_terkep_egesz_helyszin' => 'Az egész helyszín',
     'pk_terkep_jelolo' => ':no. jelölő',
+    // Kezdőlap (PROMPT-14) — a 2026-os landing és lib/gallery, lib/video felületi feliratai.
+    'kp_visszaszamlalo' => 'Visszaszámlálás a Forgatagig',
+    'kp_video_lejatszasa' => 'Videó lejátszása',
+    'kp_galeria_teljes' => 'Kép teljes méretben',
+    'kp_galeria_elozo' => 'Előző kép',
+    'kp_galeria_kovetkezo' => 'Következő kép',
+    'kp_galeria_kep' => 'kép',
+    'kp_galeria_hiba' => 'A galéria most nem tölthető be. Próbáld újra később.',
 ];

@@ -25,7 +25,9 @@
     "coming_soon_text_hu": "Készül az új honlapunk. Nézz vissza hamarosan!",
     "coming_soon_text_ro": "Noul nostru site este în pregătire. Revino în curând!",
     "footer_text_hu": "Öt nap, egy egész város — koncertek, színház, játék és közös asztalok.",
-    "footer_text_ro": "Cinci zile, un oraș întreg — concerte, teatru, joacă și mese comune."
+    "footer_text_ro": "Cinci zile, un oraș întreg — concerte, teatru, joacă și mese comune.",
+    "home_state": "utana",
+    "countdown_time": "10:00"
   },
 
   "notifications": {

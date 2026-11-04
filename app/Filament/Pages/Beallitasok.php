@@ -10,6 +10,7 @@ use App\Support\Tesztadat;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -170,6 +171,17 @@ class Beallitasok extends Page
                 Textarea::make('public.footer_text_hu')->label('Lábléc — rövid bemutatkozás (magyar)')->required()->rows(2)->maxLength(300)
                     ->helperText('Elé magától kerül a fesztivál dátuma és a város.'),
                 Textarea::make('public.footer_text_ro')->label('Lábléc — rövid bemutatkozás (román)')->rows(2)->maxLength(300),
+                // A KEZDŐLAP KÉT ÁLLAPOTA (PROMPT-14): ugyanaz a lap, csak a két elem látszik vagy nem.
+                Radio::make('public.home_state')->label('A kezdőlap állapota')->required()->columnSpanFull()
+                    ->options([
+                        'fesztival' => 'Fesztivál előtt / alatt — a nyitóképen visszaszámláló, alatta a „Kiemelt programok” sáv',
+                        'utana' => 'Fesztivál után — visszaszámláló és „Kiemelt programok” nélkül',
+                    ])
+                    ->helperText('A partner-logó sáv mindkét állapotban látszik. A nyitókép címe és a kiemelt kártyák szövege/képe: Tartalom → Aloldalak → Kezdőlap — váltáskor érdemes azokat is átírni.'),
+                TextInput::make('public.countdown_time')->label('Visszaszámláló — a nyitás időpontja a nyitónapon')
+                    ->required()->regex('/^([01]\d|2[0-3]):[0-5]\d$/')->placeholder('10:00')
+                    ->validationMessages(['regex' => 'Óra:perc alakban add meg, pl. 10:00.'])
+                    ->helperText(fn (Get $get) => 'A visszaszámláló eddig számol: ' . ($get('festival.opening_day') ?: '—') . ' (nyitónap, fent), ennyi órakor.'),
             ]);
     }
 

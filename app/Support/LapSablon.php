@@ -37,6 +37,73 @@ class LapSablon
 
     /** @var array<string, list<array{0: string, 1: string, 2: string, 3?: string|array{hu: string, ro?: string}, csoport?: string, fajl?: string}>> */
     public const SABLONOK = [
+        // A KEZDŐLAP (PROMPT-14) — a 2026-os `home-v7/body.html` `data-hs`/`data-img` kulcsai, ugyanazzal a névvel (a 2026-os
+        // tartalom ezekre jött át). Ami 2026-ban beégetett volt (a „számokban” értékei, a szervezők neve), az is kulcsot kapott.
+        // A visszaszámláló négy kulcsa 2026-08-26-án kikerült (a fesztivál alatt) — a „fesztivál előtti” állapothoz visszajött.
+        'home' => [
+            ['home_hero_slide_1', 'Nyitókép — 1. dia (fotó)', 'kep'],
+            ['home_hero_slide_2', 'Nyitókép — 2. dia (fotó)', 'kep'],
+            ['home_hero_slide_3', 'Nyitókép — 3. dia (fotó)', 'kep'],
+            ['home_hero_slide_4', 'Nyitókép — 4. dia (fotó)', 'kep'],
+            ['home_hero_slide_5', 'Nyitókép — 5. dia (fotó)', 'kep'],
+            ['home_hero_title_a', 'Nyitókép — cím, eleje (a kiemelt rész)', 'sor', '2027. augusztus 25-29.', 'csoport' => 'hero'],
+            ['home_hero_title_b', 'Nyitókép — cím, folytatása (új sorban)', 'sor', ' között újra találkozunk!', 'csoport' => 'hero'],
+            ['home_hero_countdown_label', 'Visszaszámláló — felirat fölötte (csak „fesztivál előtt” állapotban)', 'sor', 'Még'],
+            ['home_hero_cd_days', 'Visszaszámláló — „nap”', 'sor', 'nap'],
+            ['home_hero_cd_hours', 'Visszaszámláló — „óra”', 'sor', 'óra'],
+            ['home_hero_cd_mins', 'Visszaszámláló — „perc”', 'sor', 'perc'],
+            ['home_hero_countdown_foot', 'Visszaszámláló — alsó sor', 'sor', 'Ott találkozunk!'],
+
+            ['home_highlight_title_a', 'Kiemelt programok — cím (csak „fesztivál előtt” állapotban)', 'sor', 'Kiemelt', 'csoport' => 'kiemelt'],
+            ['home_highlight_title_b', 'Kiemelt programok — cím kiemelt része', 'sor', 'programok', 'csoport' => 'kiemelt'],
+            ['home_highlight_1_img', 'Kiemelt programok — 1. kártya képe', 'kep'],
+            ['home_highlight_1_title', 'Kiemelt programok — 1. kártya címe', 'sor', 'Nagyszínpadi záróbuli'],
+            ['home_highlight_2_img', 'Kiemelt programok — 2. kártya képe', 'kep'],
+            ['home_highlight_2_title', 'Kiemelt programok — 2. kártya címe', 'sor', 'A Noszty fiú – nagyszínházi bemutató'],
+            ['home_highlight_3_img', 'Kiemelt programok — 3. kártya képe', 'kep'],
+            ['home_highlight_3_title', 'Kiemelt programok — 3. kártya címe', 'sor', 'Interaktív mesejáték gyerekeknek'],
+            ['home_highlight_4_img', 'Kiemelt programok — 4. kártya képe', 'kep'],
+            ['home_highlight_4_title', 'Kiemelt programok — 4. kártya címe', 'sor', 'Borkert – kóstoló és beszélgetés'],
+            ['home_highlight_5_img', 'Kiemelt programok — 5. kártya képe', 'kep'],
+            ['home_highlight_5_title', 'Kiemelt programok — 5. kártya címe', 'sor', 'Erdélyi Néptánc Antológia – gála'],
+            ['home_highlight_6_img', 'Kiemelt programok — 6. kártya képe', 'kep'],
+            ['home_highlight_6_title', 'Kiemelt programok — 6. kártya címe', 'sor', 'Éjszakai felolvasás a Téka udvarán'],
+
+            ['home_news_title_a', 'Hírek — cím (a román kezdőlapon a hírek nem látszanak)', 'sor', 'Ami a forgatag körül', 'csoport' => 'hirek'],
+            ['home_news_title_b', 'Hírek — cím kiemelt része', 'sor', 'történik', 'csoport' => 'hirek'],
+            ['home_news_cta', 'Hírek — gomb', 'sor', 'Összes hír'],
+
+            ['home_numbers_title_a', 'Számokban — cím', 'sor', 'Forgatag', 'csoport' => 'szamok'],
+            ['home_numbers_title_b', 'Számokban — cím kiemelt része', 'sor', 'számokban', 'csoport' => 'szamok'],
+            ['home_stats_value_programs', 'Számokban — 1. szám (pl. 370, vagy 110+)', 'sor', '370'],
+            ['home_stats_label_programs', 'Számokban — 1. felirat', 'sor', 'program'],
+            ['home_stats_value_venues', 'Számokban — 2. szám', 'sor', '42'],
+            ['home_stats_label_venues', 'Számokban — 2. felirat', 'sor', 'helyszín'],
+            ['home_stats_value_days', 'Számokban — 3. szám', 'sor', '7'],
+            ['home_stats_label_days', 'Számokban — 3. felirat', 'sor', 'nap'],
+            ['home_stats_value_partners', 'Számokban — 4. szám', 'sor', '110+'],
+            ['home_stats_label_partners', 'Számokban — 4. felirat', 'sor', 'partner'],
+            ['home_stats_value_meetings', 'Számokban — 5. szám', 'sor', '10000+'],
+            ['home_stats_label_meetings', 'Számokban — 5. felirat', 'sor', 'találkozás'],
+            ['home_numbers_cta', 'Számokban — gomb', 'sor', 'A Forgatag története'],
+
+            ['home_media_title_a', 'Képekben — cím', 'sor', 'A Forgatag', 'csoport' => 'media'],
+            ['home_media_title_b', 'Képekben — cím kiemelt része', 'sor', 'képekben', 'csoport' => 'media'],
+            ['home_media_videos_title', 'Képekben — videósáv címe (a videók: a Videó archívum lap ELSŐ videós blokkja)', 'sor', 'Aftermoviek'],
+            ['home_media_gallery_title', 'Képekben — galériasáv címe (a galériák: Tartalom → Galériák)', 'sor', 'Galéria évenként'],
+            ['home_media_cta_mestersegem', 'Képekben — narancs gomb', 'sor', 'Mesterségem Vásárhelyi'],
+            ['home_media_cta_szinejava', 'Képekben — zöld gomb', 'sor', 'Vásárhely színe-java'],
+
+            ['home_organizers_title_a', 'Mögött állnak — cím', 'sor', 'A Forgatag', 'csoport' => 'szervezok'],
+            ['home_organizers_title_b', 'Mögött állnak — cím kiemelt része', 'sor', 'mögött állnak', 'csoport' => 'szervezok'],
+            ['home_organizers_rail_title', 'Mögött állnak — „Szervező egyesületek” felirat', 'sor', 'Szervező egyesületek'],
+            ['home_org_logo_1', 'Mögött állnak — 1. szervező logója', 'kep', 'fajl' => 'rolunk/about_organizer_logo1.jpg'],
+            ['home_org_name_1', 'Mögött állnak — 1. szervező neve (a támogatói sávból ő kimarad)', 'sor', 'Marosvásárhelyért Egyesület'],
+            ['home_org_logo_2', 'Mögött állnak — 2. szervező logója', 'kep', 'fajl' => 'rolunk/about_organizer_logo2.jpg'],
+            ['home_org_name_2', 'Mögött állnak — 2. szervező neve (a támogatói sávból ő kimarad)', 'sor', 'Parapács Egyesület'],
+            ['home_sponsors_rail_title', 'Mögött állnak — a támogatói sáv címe (a logók: Tartalom → Támogatók)', 'sor', 'Partnereink és támogatóink'],
+            ['home_organizers_cta', 'Mögött állnak — gomb', 'sor', 'A Forgatag története'],
+        ],
         'rolunk' => [
             ['about_hero_line1', 'Nyitócím — 1. sor', 'sor', 'Vásárhelyi Forgatag', 'csoport' => 'hero'],
             ['about_hero_line2', 'Nyitócím — 2. sor (sárga)', 'sor', 'a rendezvény, amely', 'csoport' => 'hero'],
