@@ -693,6 +693,30 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
 - **Firkák:** a rétegek `[data-decor]` jelölést kaptak (hero / ambient) → a téma kapcsolói hatnak; a motívum a közös készletből (`<use>`).
 - Tesztek: `tests/Feature/KezdolapTest.php` (12: állapot oda-vissza, szerkeszthető cím/szám, a négy kivezetett elem, román, partner-szűrés,
   galéria-adat, aftermovie-forrás, képméretek és lusta betöltés, nincs Filament-CSS).
+- 🔴 **A firka a `<use>`-zal: a keret viewBox-a „0 0 sz m”, NEM a motívum sajátja** (különben a rajz a kereten kívül esik — 2026-11-04-ig
+  egy szórt firka sem látszott). **Dekort KIRAJZOLÁS szerint mérj** (a `<use>` getBBox-a a keret viewBox-án belül), ne elemszám szerint.
+
+**Base-lapok — kész helyben (2026-11-04, PROMPT-15):** `/helyszinek`, `/helyszin/<slug>`, `/kategoriak`, `/kategoria/<slug>`, `/terkep`
+(`Publikus\TaxonController` → `resources/views/taxon/*`), `/nap/<dátum>` és `/nap/allando`, `/program/<slug>` (`ProgramokController`).
+🔴 **A 2026-os Base.astro lapjai BETŰRE (2/e)** — a 2026-os élő lap mellé téve mérve.
+- **Stílus:** `alap.css` = a 2026-os `global.css` (gépies eltérések a fejében); `alap-szerver.css` = CSAK a 2027-es kiegészítés (a böngésző
+  címsor-/bekezdés-margójának visszaállítása `:where(main)`-nel — a 2026-os lapokon az élt —, a tiltott szív, a 2026-os `LINKIFY_CSS`, az
+  `article.css` két hiányzó szabálya, a térképszám-jelvény); `programlap.css` = a `ProgramDetailView` `<style>`-ja; `terkep-lap.css` = a
+  programkereső CSS-éből a térképhez kellő szabályok (a teljes `programkereso.css` itt nem tölthető: asztalon a térképet a szűrőrácsba rendezi).
+  A közös betöltés: `partials/alap-fej` (alap.css + alap-szerver.css + `alap.js`).
+- **Kártya EGY helyen:** `partials/programkartya` (a 2026-os `ProgramCard`, a `.pc-doodle`-lal — az Arculat „Fotó nélküli kártyákon”
+  kapcsolója erre hat) + `App\Support\ProgramKartya` (kártya-adat, `rovidNap` „aug. 28.”, `helyszinMegj` „Vár › terem”, `idopontok`,
+  `extrak` = a 2026-os `extra-fields.ts`, `abc` = magyar ábécérend Collatorral, `KAPCSOLATOK`).
+- **JS:** `alap.js` (a Base szkriptjéből: „MA” jelölés, a mai nap fülének jelvénye, nyomtatás), `napi.js` (a `DailyProgramView` szűrője +
+  élő állapot), `programlap.js` (megosztás). A felúszás a `mozgas.js`-é. A szív és a „Naptárba” a saját körükig `disabled`.
+- **A `/terkep` (tulajdonosi döntés, 2026-11-04):** a programkereső rajzolt térképe (`programok/_terkep`) `$mod = 'lap'`-pal → a `terkep.js`
+  `LAP` ága: kattintásra a helyszín lapja, `?helyszin=` kiemelés. `Terkep::jeloloje()` = a helyszínlap térképszáma (saját vagy a szülőé).
+  ⚠ A rajzok `public/terkeprajz/` alatt — **`public/` alá ne kerüljön olyan mappa, aminek a neve egy publikus útvonal** (a webszerver a
+  mappát szolgálja ki: `/terkep` → 301).
+- **Helyszín-adat:** `HelyszinTerkepImport` (csomag: `database/import/helyszin-terkep-2026.json` — név, román név, cím, szülő, térkép): a
+  `POTLANDO` 8 helyszín létrehozása, a román név/cím és a térkép CSAK az üresbe; a `ProgramTesztImport` egyszeri pótló lépése
+  (`JELOLES_POTLAS`) a 8 helyszín programjait hozza — ha a tesztadatot törölték, semmit.
+- Tesztek: `tests/Feature/HelyszinKategoriaTest.php` (10).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
