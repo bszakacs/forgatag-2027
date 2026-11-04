@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-04 (PROMPT-14, a kezdőlap — kész, ÉLESBEN telepítve és megnézve; hátra: a nyitókép mérése valódi telefonon, mobilneten; a 12/b kör továbbra is hátra van)
+**Utolsó frissítés:** 2026-11-04 (PROMPT-14, a kezdőlap — kész, ÉLESBEN telepítve és megnézve, telefonon mobilneten 1–2 mp a nyitókép; hátra: a kapcsoló élő próbája belépve; a 12/b kör továbbra is hátra van)
 
 ---
 
@@ -242,7 +242,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     hírkártya 6. kiemelő-színe nincs a témában → a legközelebbi téma-színből kevertem · a Rólunk görgetés-számolása képkockánként egyszer fut.
   - 375 px-en: Rólunk, napi nézet, programkereső — vízszintes görgetés nincs. **168 teszt zöld** (új: `MozgasDekorTest`, 7).
 
-- **A kezdőlap** (`PROMPT-14`, 2026-11-04) — **kész, élesben telepítve és megnézve (2026-11-04); hátra a valódi telefonos mérés („MOST folyik”, 7.).** A gyökér (`/`, `/ro`) most a
+- **A kezdőlap** (`PROMPT-14`, 2026-11-04) — **kész, élesben telepítve és megnézve (2026-11-04); telefonon, mobilneten a nyitókép 1–2 mp („MOST folyik”, 7.).** A gyökér (`/`, `/ro`) most a
   kezdőlap (a Hamarosan lap a `/hamarosan` címen marad). Részletek: `CLAUDE.md` 8. pont „Kezdőlap”.
   - **Betűre a 2026-osból (2/e):** a jelölés a `home-v7/body.html` (osztályok, sorrend, a `data-hs` kulcsok), a stílus a
     `home-v7/style.css` másolata (`public/css/kezdolap.css`), a közös modulok a 2026-os `lib/*.ts` kiírt CSS-e (galéria, videó,
@@ -320,8 +320,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    aftermovie lejátszó nyílik és bezárul. **Válaszidő** (az első bájtig + letöltés): `/` 0,35–0,53 s, `/ro` 0,31–0,43 s, a lap 34 kB
    (tömörítve); a galéria-adat (12 év, 467 kép) 0,33 s, csak megnyitáskor. **A nyitókép első képe telefonon 67 kB** (a vágott 750×1400-as;
    asztalon 123 kB — 2026-ban a telefon is az 1920-as képet kapta).
-   **Hátra (a felhasználóval):** ⚠ **a nyitókép megjelenési ideje VALÓDI TELEFONON, mobilneten** (a fejlesztőgépről nem mérhető); a
-   Beállításokban az állapot-kapcsoló ki-be próbája belépve (helyben kipróbálva, élesben még nem).
+   **Valódi telefonon, mobilneten mérve (a tulajdonos, 2026-11-04): a nyitókép fotója 1–2 mp alatt jelenik meg.**
+   **Hátra (a felhasználóval):** a Beállításokban az állapot-kapcsoló ki-be próbája belépve (helyben kipróbálva, élesben még nem).
 
 ## Ami ezután jön, ebben a sorrendben
 
