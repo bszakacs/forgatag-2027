@@ -297,7 +297,9 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   a firkán látszik · a motívum-helyek (2026: 6, most 12) a közös készletet töltik. **„Fotó nélküli kártyákon”:** a 2026-os élő oldalon
   SEHOL nincs ilyen elem (minden kártyának volt képe vagy nem ProgramCard volt) — 2027-ben a 12/b kör ProgramCard-jával jön; addig
   a kapcsoló súgója kiírja, hogy nincs eleme (nem néma).
-  **Élesben a javítás telepítés után mérendő.**
+  **Élesben mérve a telepítés után (2026-11-04, proba.forgatag.ro, 1600 px, kirajzolás szerint):** kezdőlap HU és RO 92/92 (nyitókép
+  10, lap 52, média 16, szervezők 14; „fesztivál előtt” állapotban +12 a Kiemelt sávban) · programkereső 23/23 (a mai lista hosszán) ·
+  Hamarosan 2/2 · beküldő űrlap 2/2 (beágyazott SVG) · Rólunk, hírlista, hír, napi nézet, program lapja 0 — mint 2026-ban.
 
 ## Ami MOST folyik
 
