@@ -4,6 +4,9 @@
    az eszközsor és a „Vissza a programkeresőhöz” helye. A fejléc a programkereső első (2026-10-30-i) napi nézetéé volt.
    ======================================================================== */
 .pk-napi{--pk-logo-lelog:max(0px,calc(var(--logo-header) - 64px))}
+/* 🔴 NINCS JOBB OLDALI HASÁB (tulajdonosi szabály, 2026-11-04): a programkereső asztali szabálya (1041 px fölött) minden
+   `programs-results` szekciót kéthasábos rácsba tesz (lista + 440 px-es térkép-sáv) — a listalapon EGY hasáb, teljes szélességben. */
+.blk.pk-napi > .wrap{display:block}
 @media (max-width:860px){.pk-napi{--pk-logo-lelog:max(0px,calc(var(--logo-header-mobile) - 56px))}}
 
 .pk-naphead{padding-top:calc(var(--pk-logo-lelog) + var(--sp-4));margin-bottom:var(--sp-5);text-align:center}
@@ -20,6 +23,6 @@
 .pk-daytabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;max-width:720px;margin:0 auto var(--sp-5);
   --pk-fill:var(--panel);--pk-fill-2:var(--bg-raise)}
 .pk-napi-eszkoz{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap;margin:0 0 var(--sp-5)}
-.pk-napi-eszkoz .pk-count{text-align:left;max-width:none}
+.pk-napi-eszkoz .pk-count{text-align:left;max-width:none;flex:0 1 auto} /* a kereső asztali szabálya 100%-ra nyújtaná */
 /* VISSZA A KERESŐBE — hangsúlyosan, fent és a lista végén (tulajdonosi szabály: minden a keresőbe vezet vissza) */
 .pk-lista-vege{display:flex;justify-content:center;margin:var(--sp-7) 0 var(--sp-8)}
