@@ -392,8 +392,11 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    (a közbülső rácsos megoldást felülírja). A napi nézet, a kategória- és a helyszínlap a kereső sorait mutatja (jobb oldali hasáb
    nélkül), fent és lent hangsúlyos „Vissza a programkeresőhöz” gombbal, a lap szűrésére; a sor a kereső felugró ablakát nyitja; a
    program lapjának morzsája és kategóriái is a keresőbe visznek. A képhely mindig ott van: fotó nélkül a sarok-firka (a keresőben is).
-   Helyben ellenőrizve (asztal + 375 px + román; vízszintes görgetés nincs), 192 teszt zöld. **Feltolva (a80a758b), a cPanelben
-   telepíteni kell, utána élesben mérni.**
+   Helyben ellenőrizve (asztal + 375 px + román; vízszintes görgetés nincs), 192 teszt zöld. **Élesben telepítve és mérve (2026-11-04):**
+   minden lap 200 (HU és RO), a sorok a kereső sorai, a gomb a lap szűrésére visz, listáról kategória-/helyszín-/programlapra 0 link,
+   a fotó nélküli sorokban ott a firka; 375 px-en vízszintes görgetés nincs. **Válaszidő (háromszor):** Vár 309 sor 0,54–0,56 s ·
+   Bernády 0,32–0,33 s · napi nézet 0,40–0,44 s · `/nap/allando` 0,44–0,51 s · a legnagyobb kategória (Csicsergő, 105 sor) 0,39–0,45 s.
+   (A keresőben a sor `href`-je JS nélkül továbbra is a program lapja — kattintásra a felugró ablak nyílik, mint eddig.)
 
 ## Ami ezután jön, ebben a sorrendben
 
