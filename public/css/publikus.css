@@ -89,6 +89,11 @@ header.site-hd nav.main{display:flex;align-items:center;gap:2px;margin-left:8px}
 .navitem .drop a{display:block;padding:.62em .8em;border-radius:9px;color:var(--fg-muted);font-size:var(--text-small);transition:color var(--dur-1),background var(--dur-1)}
 .navitem .drop a:hover,.navitem .drop a:focus-visible{background:var(--card-hover);color:var(--fg)}
 header.site-hd .head-tools{display:flex;align-items:center;gap:10px;margin-left:auto}
+/* a fejléc keresője (téma: header.showSearch) — a 2026-os chrome.css szabályai (--ink → --fg, --muted-2 → --fg-faint, mint fent) */
+header.site-hd .search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:var(--border-w) solid var(--line);border-radius:var(--r-pill);padding:.5em .85em;min-width:200px}
+header.site-hd .search input{background:none;border:none;outline:none;color:var(--fg);font-family:inherit;font-size:.9rem;width:100%}
+header.site-hd .search input::placeholder{color:var(--fg-faint)}
+header.site-hd .search svg{flex:0 0 auto;opacity:.7}
 header.site-hd .lang{display:flex;border:var(--border-w) solid var(--line);border-radius:var(--r-pill);overflow:hidden;font-size:.82rem;font-weight:600}
 header.site-hd .lang a{padding:.55em .75em;color:var(--fg-faint)}
 header.site-hd .lang a.on{background:var(--accent-b);color:var(--accent-contrast)}
@@ -246,11 +251,13 @@ main:has(.hm){padding:0}
 @media (max-width:1120px){
   header.site-hd nav.main{display:none}
   header.site-hd .burger{display:block}
+  header.site-hd .search{min-width:150px}
 }
 @media (max-width:900px){.nw-grid{grid-template-columns:1fr 1fr}}
 @media (max-width:720px){
   :root{--hd-h:66px}
   header.site-hd .bar{gap:10px}
+  header.site-hd .search{display:none}
   header.site-hd .logo img{height:var(--logo-header-mobile);margin:6px 0 calc(54px - var(--logo-header-mobile))}
   footer.site-ft .foot-grid{grid-template-columns:1fr}
 }

@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Publikus;
 
 use App\Enums\ContentStatus;
+use App\Enums\TranslatableField;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\ProgramItem;
+use App\Models\Venue;
 use App\Support\Festival;
 use App\Support\LapSzovegek;
 use App\Support\Nyelv;
+use App\Support\ProgramKartya;
 use App\Support\ProgramKereso;
 use App\Support\ProgramSor;
+use App\Support\ProgramSzoveg;
 use App\Support\ProgramSzures;
 use App\Support\Terkep;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -75,18 +80,29 @@ class ProgramokController extends Controller
         return $htmx ? $valasz->header('HX-Push-Url', $sz->url()) : $valasz;
     }
 
+    /**
+     * A napi nézet — a 2026-os DailyProgramView (PROMPT-15): egy nap sorai, vagy az „Állandó” fülön (`allando`) a legalább két
+     * KÜLÖNBÖZŐ napon futó programok, cím szerint. A napfülek a fesztivál MINDEN programnapja (2026: FESTIVAL.days).
+     */
     public function nap(string $datum): Response
     {
-        abort_unless(Festival::isProgramDay($datum), 404);
-        $lap = $this->lap();
-        $sorok = ProgramKereso::napi($datum);
+        $allando = $datum === 'allando';
+        abort_unless($allando || Festival::isProgramDay($datum), 404);
+        $sorok = $allando ? collect() : ProgramKereso::napi($datum);
+        $programok = $allando
+            ? ProgramKartya::abc(ProgramItem::query()->publicVisible()->with(ProgramKartya::KAPCSOLATOK)->get()
+                ->filter(fn (ProgramItem $p) => ProgramKartya::idopontok($p)->map(fn ($o) => $o->date->format('Y-m-d'))->unique()->count() >= 2),
+                fn (ProgramItem $p) => ProgramSzoveg::mezo($p, TranslatableField::Title)['szoveg'])
+            : collect();
+        // a sorok programjai a keresőszöveghez (további kategóriák) — egy lekérdezéssel, nem soronként
+        (new EloquentCollection($sorok->map(fn (ProgramSor $s) => $s->program())->unique('id')->values()->all()))->loadMissing('extraCategories');
 
         return response()->view('programok.nap', [
-            'lap' => $lap,
-            'sz' => new LapSzovegek($lap, Nyelv::aktualis()),
             'datum' => $datum,
-            'napok' => $this->napok(),
+            'napok' => Festival::days(),
             'sorok' => $sorok,
+            'programok' => $programok,
+            'fohelyszinek' => ProgramKartya::abc(Venue::query()->whereNull('parent_id')->get(), fn (Venue $v) => $v->name),
         ]);
     }
 

@@ -206,7 +206,13 @@
   function venueOn(id) { var b = box(id); return !!(b && b.checked); }
   var utolso = null;
   function setVenue(id, on) { var b = box(id); if (b) { b.checked = !!on; utolso = b; } }
-  function toggleVenue(id) { setVenue(id, !venueOn(id)); }
+  /* „LAP” MÓD (a /terkep, PROMPT-15, tulajdonosi döntés): nincs szűrő-űrlap — a jelölő, a pakli terme, a jelmagyarázat sora
+     és a szélső jelvény a helyszín LAPJÁRA visz. Minden más (fülek, nagyítás, pakli, buborék, kiemelés) ugyanaz. */
+  var LAP = terkep.dataset.mod === 'lap';
+  function toggleVenue(id) {
+    if (LAP) { location.href = terkep.dataset.helyszinUt + encodeURIComponent(id); return; }
+    setVenue(id, !venueOn(id));
+  }
   function venueFamily(id) { return [String(id)].concat((VKIDS[String(id)] || []).map(String)); }
   function venueSel() {
     var sel = {};
@@ -555,4 +561,20 @@
   fgMapInit();
   mmapAllapot();
   window.addEventListener('load', function () { placeEdges(); });
+
+  /* „LAP” mód: a helyszínlap „Mutasd a térképen” linkje (?helyszin=<slug>) — a jelölő fülére vált, odagörget és kiemeli
+     (ugyanaz a vízgyűrű, mint a programkereső „Mutasd a térképen” gombjánál). */
+  if (LAP) {
+    var kert = new URLSearchParams(location.search).get('helyszin');
+    var cel = kert && legendTarget(kert);
+    if (cel) {
+      var nezet = cel.closest('.pk-mapview');
+      var tab = nezet && document.querySelector('.pk-maptab[aria-controls="' + nezet.id + '"]');
+      if (tab && tab.getAttribute('aria-selected') !== 'true') tab.click();
+      window.addEventListener('load', function () {
+        cel.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+        setTimeout(function () { pingTarget(cel); }, 350);
+      });
+    }
+  }
 })();

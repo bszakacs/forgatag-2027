@@ -1,0 +1,28 @@
+/* ============================================================================
+ *  A Base-lapok (alap.css = a 2026-os global.css, betűre) KIEGÉSZÍTÉSE — CSAK ami a 2027-es keretből, a még be nem
+ *  kapcsolt funkciókból vagy egy tulajdonosi döntésből következik. Új kinézet itt nem lehet (CLAUDE.md 2/e).
+ * ========================================================================== */
+
+/* A 2027-es keret (publikus.css) a címsorok és bekezdések margóját nullázza; a 2026-os Base-lapokon a böngésző alapmargója
+   élt (a global.css csak a saját elemeinél állított margót). Visszaállítva — (0,0,1) erősséggel, tehát a global.css minden
+   saját margó-szabálya (pl. `main > h2`, `.lead`, `.section-title`) továbbra is nyer. Mérve a 2026-os helyszínlap mellett. */
+:where(main) :is(h1,h2,h3,h4,p,figure,blockquote){margin:revert}
+
+/* A kedvenc-szív a kedvencek köréig tiltott (mint a programkeresőben: halvány, nem kattintható). */
+.fav-btn:disabled{opacity:.45;cursor:default}
+
+/* A beküldött szövegekből épített linkek (jegyinfó, leírás) — a 2026-os lib/linkify.ts LINKIFY_CSS-e BETŰRE
+   (2026-ban a napi nézet és a program lapja maga töltötte be). */
+.fg-link{color:var(--accent-a);text-decoration:underline;text-underline-offset:3px;
+  overflow-wrap:anywhere;word-break:break-word}
+.fg-link:hover{color:var(--accent-b)}
+.fg-link:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* A 2026-os styles/article.css két szabálya, ami a 2027-es publikus.css cikk-részéből hiányzik (a program lapja használja). */
+.article-wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(16px,3vw,24px)}
+.article-hero.is-43{aspect-ratio:4/3;background-size:cover;background-position:center}
+
+/* TULAJDONOSI DÖNTÉS (2026-11-04): a helyszínlap térképszáma — a térkép jelmagyarázatának számkarikája (.pk-legno). */
+.hk-terkepszam{display:flex;align-items:center;gap:.6em}
+.hk-szam{flex:0 0 auto;min-width:26px;height:26px;display:inline-grid;place-content:center;border-radius:50%;
+  background:var(--accent-b);color:var(--accent-contrast);font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums}

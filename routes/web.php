@@ -7,6 +7,7 @@ use App\Http\Controllers\Publikus\HirekController;
 use App\Http\Controllers\Publikus\KezdolapController;
 use App\Http\Controllers\Publikus\OldalController;
 use App\Http\Controllers\Publikus\ProgramokController;
+use App\Http\Controllers\Publikus\TaxonController;
 use App\Http\Middleware\BekuldoBelepve;
 use App\Http\Middleware\HamarosanMod;
 use App\Http\Middleware\PublikusNyelv;
@@ -57,12 +58,18 @@ foreach (['hu' => '', 'ro' => 'ro'] as $nyelv => $elotag) {
             Route::get('hirek/{slug}', [HirekController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('hir');
             // Programkereső (a szűrés a címsorban), napi nézet, „Mi van ma?”, a program lapja.
             Route::get('programok', [ProgramokController::class, 'index'])->name('programok');
-            Route::get('nap/{datum}', [ProgramokController::class, 'nap'])->where('datum', '\d{4}-\d{2}-\d{2}')->name('nap');
+            Route::get('nap/{datum}', [ProgramokController::class, 'nap'])->where('datum', '\d{4}-\d{2}-\d{2}|allando')->name('nap');
             Route::get('ma', [ProgramokController::class, 'ma'])->name('ma');
             Route::get('program/{slug}', [ProgramokController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('program');
+            // Helyszínek, kategóriák, a térkép lapja (PROMPT-15).
+            Route::get('helyszinek', [TaxonController::class, 'helyszinek'])->name('helyszinek');
+            Route::get('helyszin/{slug}', [TaxonController::class, 'helyszin'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('helyszin');
+            Route::get('kategoriak', [TaxonController::class, 'kategoriak'])->name('kategoriak');
+            Route::get('kategoria/{slug}', [TaxonController::class, 'kategoria'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('kategoria');
+            Route::get('terkep', [TaxonController::class, 'terkep'])->name('terkep');
             // Aloldal a slugja alapján — a foglalt első szavak (admin, beküldés, rendszer-útvonalak) kizárva.
             Route::get('{lap}', [OldalController::class, 'show'])
-                ->where('lap', '(?!(?:admin|bekuldes|curator|livewire|filament|storage|up|ro|hamarosan|hirek|programok|nap|ma|program)$)[a-z0-9]+(?:-[a-z0-9]+)*')
+                ->where('lap', '(?!(?:admin|bekuldes|curator|livewire|filament|storage|up|ro|hamarosan|hirek|programok|nap|ma|program|helyszinek|helyszin|kategoriak|kategoria|terkep)$)[a-z0-9]+(?:-[a-z0-9]+)*')
                 ->name('oldal');
         });
 }

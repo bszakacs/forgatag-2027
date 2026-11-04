@@ -20,11 +20,9 @@
   var mozoghat = root.classList.contains('mozgas');
 
   /* ---------- FELÚSZÁS ---------- */
-  // 2026: a Base-es lapok kártyái hatosával lépcsőzve (0,06 mp-enként) úsztak be. A 2026-os lista; ami ma még nincs a
-  // 2027-es lapokon (helyszín-/kategórialap, támogatók, kereső), az a saját körében ugyanígy megkapja.
-  // A „.pk-napi .pk-card”: a 2026-os napi nézet sorai (.rail-row) úsztak be — a 2027-es napi nézet addig a kereső
-  // kártyáit használja, amíg a 12/b kör a 2026-os DailyProgramView-ra nem cseréli.
-  var KARTYAK = '.pc, .taxon-card, .sponsor-card, .rail-row, .prog-card, .pk-napi .pk-card';
+  // 2026: a Base-es lapok kártyái hatosával lépcsőzve (0,06 mp-enként) úsztak be. A 2026-os lista — a helyszín-, kategória-
+  // és napi lap (PROMPT-15) már ezekkel a kártyákkal él; a támogatók lapja a saját körében ugyanígy megkapja.
+  var KARTYAK = '.pc, .taxon-card, .sponsor-card, .rail-row, .prog-card';
 
   var io = null;
   if (mozoghat && 'IntersectionObserver' in window) {

@@ -1,0 +1,73 @@
+/* ============================================================================
+ *  A PROGRAM LAPJA (/program/<slug>) saját szabályai — a 2026-os components/ProgramDetailView.astro <style> blokkja
+ *  BETŰRE (CLAUDE.md 2/e, PROMPT-15). A cikk-ritmus a publikus.css cikk-részéből és az alap-szerver.css-ből jön.
+ *  Gépies eltérés: a cím-betűs szabály (.pd-xlong2 h2) a téma vastagságát kapja (TemaTest; értéke 400). 2027-es sor: a
+ *  naptár-körig tiltott „Naptárba” gomb halványítása (a fájl végén).
+ * ========================================================================== */
+/* A cikk-ritmus a styles/article.css-ből jön; itt CSAK a program-lap sajátjai. */
+.pd-crumb { font-size: .86rem; color: var(--fg-faint); margin-bottom: 10px; }
+.pd-crumb a { color: var(--fg-muted); text-decoration: none; }
+.pd-crumb a:hover { color: var(--accent-b); }
+.pd-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pd-pill { display: inline-block; padding: .32em .8em; border-radius: var(--r-pill, 999px);
+  background: var(--accent-b); color: var(--accent-contrast); font-weight: 700; font-size: .78rem;
+  letter-spacing: .04em; text-transform: uppercase; }
+.pd-pill-extra { background: color-mix(in srgb, var(--fg) 12%, transparent); color: var(--fg-muted); }
+/* GÉPI FORDÍTÁS JELZÉSE — szándékosan APRÓ és HALVÁNY: tájékoztat, de nem riaszt,
+   és nem versenyez a címmel. Csak a program saját lapján és a popupban jelenik meg;
+   a kártyákon és a lista-sorokon NINCS (ott zaj lenne). */
+/* IDŐPONT-MEGJEGYZÉS a „Mikor" blokk alatt — halkabb, mint maguk az időpontok. */
+.pd-note { font-size: .9rem; line-height: 1.5; color: var(--fg-muted); margin: 8px 0 0; }
+.pd-mt { font-size: .8rem; line-height: 1.4; color: var(--fg-faint); margin: -6px 0 14px; }
+.pd-lead-meta { display: flex; flex-wrap: wrap; gap: .4em 1.1em; color: var(--fg-muted);
+  font-size: .98rem; margin: -.35em 0 26px; }
+.pd-lead-meta strong { color: var(--accent-a); }
+.pd-credit { color: var(--fg-faint); font-size: .82rem; margin: -26px 0 30px; }
+
+/* MIKOR / HOL — két hasáb asztalin, egy hasáb mobilon */
+.pd-facts2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 32px; }
+.pd-fact2 { background: color-mix(in srgb, var(--fg) 4%, transparent);
+  border: 1px solid var(--line); border-radius: var(--r-card); padding: 16px 18px; }
+.pd-fact2 h2 { font-family: var(--font-body); font-size: .78rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--fg-faint); margin: 0 0 8px; }
+.pd-fact2 ul { margin: 0; padding-left: 1.1em; }
+.pd-fact2 li { color: var(--fg); line-height: 1.5; }
+.pd-fact2 li strong { color: var(--accent-a); }
+.pd-fact2 p { margin: 0 0 4px; color: var(--fg-muted); }
+.pd-venue2 { color: var(--fg) !important; font-weight: 600; }
+.pd-fact2 a { color: var(--accent-a); }
+.pd-entry { margin-top: 10px !important; }
+
+.pd-xgrid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px; margin: 28px 0 0; }
+.pd-x2 { border: 1px solid var(--line); border-radius: var(--r-field); padding: 10px 12px; }
+.pd-x2 dt { color: var(--fg-faint); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+.pd-x2 dd { margin: 4px 0 0; color: var(--fg); }
+.pd-xlong2 { margin-top: 28px; }
+.pd-xlong2 h2 { font-family: var(--font-head); font-weight: var(--head-wght); color: var(--accent-b);
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem); margin: 0 0 .3em; }
+.pd-xlong2 p { color: var(--fg-muted); line-height: 1.78; margin: 0; }
+
+/* A gombfelirat mobilon rövid („Naptár"), asztalin hosszú — nincs hozzá JS. */
+.pd-only-narrow { display: none; }
+.pd-icsnote { color: var(--fg-faint); font-size: .84rem; margin: 8px 0 0; }
+.pd-actions2 { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 34px; }
+.pd-ghost { display: inline-flex; align-items: center; gap: .5em; cursor: pointer;
+  font-family: inherit; font-weight: 700; font-size: .92rem; color: var(--fg);
+  background: color-mix(in srgb, var(--fg) 6%, transparent);
+  border: 1px solid var(--line-strong); border-radius: var(--r-pill, 999px);
+  padding: 9px 16px; text-decoration: none; }
+.pd-ghost:hover { border-color: var(--accent-b); color: var(--accent-a); }
+
+@media (max-width: 720px) {
+  .pd-facts2 { grid-template-columns: 1fr; }
+  .pd-only-wide { display: none; }
+  .pd-only-narrow { display: inline; }
+  .pd-lead-meta { font-size: .92rem; }
+  .pd-actions2 { gap: 8px; }
+  .pd-ghost { padding: 8px 13px; font-size: .88rem; }
+}
+
+/* 2027: a „Naptárba” a naptár-körig tiltott (mint a programkereső felugró ablakában). */
+.pd-ghost:disabled { opacity: .45; cursor: default; }
+.pd-ghost:disabled:hover { border-color: var(--line-strong); color: var(--fg); }

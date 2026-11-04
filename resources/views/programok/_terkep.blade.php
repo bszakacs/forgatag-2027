@@ -12,7 +12,8 @@
         . ' aria-pressed="false"><span class="pk-legno">' . e($it['onMap'] ? $it['no'] : '') . '</span><span class="pk-legname">' . e($it['name'])
         . '</span><span class="pk-legn" aria-hidden="true"></span></button>';
 @endphp
-<div class="pk-map" data-comp="program-map" data-slot="venues" data-csalad="{{ json_encode((object) $terkep['csalad'], JSON_UNESCAPED_UNICODE) }}" data-egesz="{{ __('publikus.pk_terkep_egesz_helyszin') }}" data-programszo="{{ __('publikus.pk_program_szo') }}">
+{{-- $mod = 'lap' (a /terkep lapon, PROMPT-15): a kattintás nem szűr, hanem a helyszín lapjára visz ($helyszinUt + slug). --}}
+<div class="pk-map" data-comp="program-map" data-slot="venues" @if (($mod ?? null) === 'lap') data-mod="lap" data-helyszin-ut="{{ $helyszinUt }}" @endif data-csalad="{{ json_encode((object) $terkep['csalad'], JSON_UNESCAPED_UNICODE) }}" data-egesz="{{ __('publikus.pk_terkep_egesz_helyszin') }}" data-programszo="{{ __('publikus.pk_program_szo') }}">
   <div class="pk-maptabs" role="tablist" aria-label="{{ __('publikus.pk_terkep_cim') }}">@foreach ($terkep['zonak'] as $i => $m)<button class="btn btn-fill {{ $i === 0 ? 'lime' : 'pink' }} pk-maptab" type="button" role="tab" id="pkTab-{{ $m['zone'] }}" data-mapzone="{{ $m['zone'] }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}" aria-controls="pkMap-{{ $m['zone'] }}"><span>{{ $m['label'] }}</span><span class="pk-tabn"><b>{{ count($m['marks']) + count($m['edges']) }}</b></span></button>@endforeach</div>
   <div class="pk-mapstage">
     <div class="pk-deck" id="pkDeck" hidden></div>

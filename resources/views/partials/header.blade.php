@@ -14,6 +14,14 @@
       @include('partials.nav', ['fa' => $fomenu, 'valtozat' => 'asztali'])
     </nav>
     <div class="head-tools">
+      {{-- KERESŐ (téma: Arculat → Fejléc → „Kereső a fejlécben”) — a 2026-os SiteHeader jelölése; 2026-ban Enterre a /kereses
+           lapra vitt (az a 2027-ben nincs), itt a programkereső szabadszavas keresőjére (PROMPT-15). Űrlap: JS nélkül is megy. --}}
+      @if (Theme::get('header.showSearch'))
+        <form class="search" role="search" action="{{ Nyelv::ut('/programok') }}" method="get">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" name="q" data-comp="search" placeholder="{{ __('publikus.b_kereso_hely') }}" aria-label="{{ __('publikus.b_kereso_hely') }}">
+        </form>
+      @endif
       @if (Theme::get('header.showLangSwitch'))
         <nav class="lang" aria-label="{{ __('publikus.nyelvvalto') }}">
           @foreach (Nyelv::NYELVEK as $n)

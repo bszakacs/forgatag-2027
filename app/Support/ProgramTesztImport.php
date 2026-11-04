@@ -35,6 +35,9 @@ class ProgramTesztImport
 
     public const JELOLES = 'import-2026/programok-teszt.json';
 
+    /** A helyszín-pótlás utáni egyszeri pótló behozatal jelölése (PROMPT-15, 2026-11-04). */
+    public const JELOLES_POTLAS = 'import-2026/programok-teszt-potlas.json';
+
     private const ELTOLAS_NAP = 364;
 
     /** A fejlesztőgépen: a mentésből → a csomag (a tárolóba kerül). @return array<string, int> */
@@ -87,20 +90,17 @@ class ProgramTesztImport
     {
         if (Storage::disk('local')->exists(self::JELOLES)) {
             $naplo('egyszer már behozva (' . self::JELOLES . '), nem hozom újra.');
+            $this->potlas($naplo);
 
             return;
         }
-        $csomag = json_decode((string) @file_get_contents(base_path(self::CSOMAG)), true)
-            ?? throw new RuntimeException('a csomag nem olvasható: ' . self::CSOMAG);
-
-        $kat = Category::query()->pluck('id', 'slug');
-        $hely = Venue::query()->pluck('id', 'slug');
-        $borito = Media::query()->whereNotNull('legacy_id')->pluck('id', 'legacy_id');
+        $csomag = $this->csomag();
         $db = ['program' => 0, 'időpont' => 0, 'fordítás' => 0, 'kategória nélkül' => 0, 'kép nélkül' => 0, 'kihagyva (helyszín nélkül)' => 0];
         $nincsHely = [];
         $kihagyottBoritok = [];
+        $hely = Venue::query()->pluck('id', 'slug');
 
-        DB::transaction(function () use ($csomag, $kat, $hely, $borito, &$db, &$nincsHely, &$kihagyottBoritok): void {
+        DB::transaction(function () use ($csomag, $hely, &$db, &$nincsHely, &$kihagyottBoritok): void {
             foreach ($csomag['programok'] as $p) {
                 // HELYSZÍN NÉLKÜL NEM JÖN (tulajdonosi döntés, 2026-10-30): a tesztelésnél nem érnek semmit — a
                 // képükkel együtt mennek (lent). Ide tartozik a 2027-es listában nem szereplő helyszín is.
@@ -111,34 +111,7 @@ class ProgramTesztImport
 
                     continue;
                 }
-                $program = new ProgramItem([
-                    'title' => $p['title'], 'description' => $p['description'], 'organizer_names' => $p['organizer_names'],
-                    'status' => 'published', 'entry_type' => $p['entry_type'], 'ticket_info' => $p['ticket_info'],
-                    'schedule_note' => $p['schedule_note'], 'extra_fields' => $p['extra_fields'],
-                    'category_id' => $kat[$p['category']] ?? null, 'venue_id' => $hely[$p['venue']] ?? null,
-                    'source' => ProgramSource::Internal, 'photo_rights_declared' => true,
-                ]);
-                $program->slug = ProgramItem::uniqueSlug($p['slug'] ?: $p['title']);
-                $program->is_test = true;
-                $program->cover_media_id = $borito[$p['cover']] ?? null;
-                $program->save();
-
-                foreach ($p['idopontok'] as $o) {
-                    $program->occurrences()->create($o);
-                    $db['időpont']++;
-                }
-                foreach ($p['forditasok'] as $f) {
-                    $program->translations()->create(['locale' => 'ro', 'field' => $f['field'], 'translated_text' => $f['text'],
-                        'status' => $f['status'], 'source_text_hash' => $f['hash']]);
-                    $db['fordítás']++;
-                }
-                $db['program']++;
-                if ($program->category_id === null) {
-                    $db['kategória nélkül']++;
-                }
-                if ($program->cover_media_id === null) {
-                    $db['kép nélkül']++;
-                }
+                $this->behoz($p, $db);
             }
         });
 
@@ -147,6 +120,95 @@ class ProgramTesztImport
         $naplo(collect($db)->map(fn ($n, $mi) => "{$n} {$mi}")->implode(', ') . ' — mind TESZT jelöléssel.');
         if ($nincsHely) {
             $naplo('kihagyva, mert a helyszíne nincs a 2027-es listában (a képével együtt törölve): ' . implode(', ', array_keys($nincsHely)));
+        }
+    }
+
+    /**
+     * PÓTLÓ BEHOZATAL, EGYSZER (PROMPT-15, tulajdonosi döntés 2026-11-04): a 8 pótolt helyszín (HelyszinTerkepImport::POTLANDO)
+     * programjai az első behozatalkor kimaradtak, mert a helyszínük nem volt a listában. Most azok jönnek, AMELYEKNEK a
+     * helyszíne már megvan, és még nincsenek bent (a slug alapján). A borítójuk nincs: 2026-10-30-án a képeikkel együtt
+     * törölték őket (a médiatár-behozatal lezárt) — ezek a programok fotó nélkül jönnek.
+     * Ha közben a tesztadatot törölték (nincs egyetlen TESZT-program sem), NEM hoz semmit: a törlés szándékos volt.
+     */
+    private function potlas(callable $naplo): void
+    {
+        $tar = Storage::disk('local');
+        if ($tar->exists(self::JELOLES_POTLAS)) {
+            return;
+        }
+        if (! ProgramItem::query()->where('is_test', true)->exists()) {
+            $tar->put(self::JELOLES_POTLAS, json_encode(['kihagyva' => 'a tesztadat törölve', 'ekkor' => now()->toIso8601String()], JSON_UNESCAPED_UNICODE));
+            $naplo('pótlás: a tesztadat törölve — a kimaradt programokat sem hozom.');
+
+            return;
+        }
+        $csomag = $this->csomag();
+        $hely = Venue::query()->pluck('id', 'slug');
+        $db = ['program' => 0, 'időpont' => 0, 'fordítás' => 0, 'kategória nélkül' => 0, 'kép nélkül' => 0, 'továbbra is helyszín nélkül' => 0];
+
+        DB::transaction(function () use ($csomag, $hely, &$db): void {
+            foreach ($csomag['programok'] as $p) {
+                // Az első futáskor PONTOSAN ezek maradtak ki a helyszínük miatt: a 8 pótolt helyszín programjai.
+                if (! in_array($p['venue'], HelyszinTerkepImport::POTLANDO, true)) {
+                    if (! isset($hely[$p['venue'] ?? ''])) {
+                        $db['továbbra is helyszín nélkül']++;
+                    }
+
+                    continue;
+                }
+                if (! isset($hely[$p['venue']])) {
+                    throw new RuntimeException("pótlás: a(z) „{$p['venue']}” helyszín nincs meg — előbb a forgatag:helyszin-terkep-import");
+                }
+                $this->behoz($p, $db);
+            }
+        });
+
+        $tar->put(self::JELOLES_POTLAS, json_encode(['db' => $db, 'ekkor' => now()->toIso8601String()], JSON_UNESCAPED_UNICODE));
+        $naplo('pótlás (a 8 pótolt helyszín programjai): ' . collect($db)->map(fn ($n, $mi) => "{$n} {$mi}")->implode(', ') . ' — mind TESZT jelöléssel.');
+    }
+
+    /** @return array{programok: list<array<string, mixed>>} */
+    private function csomag(): array
+    {
+        return json_decode((string) @file_get_contents(base_path(self::CSOMAG)), true)
+            ?? throw new RuntimeException('a csomag nem olvasható: ' . self::CSOMAG);
+    }
+
+    /** Egy program a csomagból — TESZT jelöléssel, a helyszíne és kategóriája a slug alapján. @param array<string, int> $db */
+    private function behoz(array $p, array &$db): void
+    {
+        static $kat, $hely, $borito;
+        $kat ??= Category::query()->pluck('id', 'slug');
+        $hely = Venue::query()->pluck('id', 'slug');
+        $borito ??= Media::query()->whereNotNull('legacy_id')->pluck('id', 'legacy_id');
+
+        $program = new ProgramItem([
+            'title' => $p['title'], 'description' => $p['description'], 'organizer_names' => $p['organizer_names'],
+            'status' => 'published', 'entry_type' => $p['entry_type'], 'ticket_info' => $p['ticket_info'],
+            'schedule_note' => $p['schedule_note'], 'extra_fields' => $p['extra_fields'],
+            'category_id' => $kat[$p['category']] ?? null, 'venue_id' => $hely[$p['venue']] ?? null,
+            'source' => ProgramSource::Internal, 'photo_rights_declared' => true,
+        ]);
+        $program->slug = ProgramItem::uniqueSlug($p['slug'] ?: $p['title']);
+        $program->is_test = true;
+        $program->cover_media_id = $borito[$p['cover']] ?? null;
+        $program->save();
+
+        foreach ($p['idopontok'] as $o) {
+            $program->occurrences()->create($o);
+            $db['időpont']++;
+        }
+        foreach ($p['forditasok'] as $f) {
+            $program->translations()->create(['locale' => 'ro', 'field' => $f['field'], 'translated_text' => $f['text'],
+                'status' => $f['status'], 'source_text_hash' => $f['hash']]);
+            $db['fordítás']++;
+        }
+        $db['program']++;
+        if ($program->category_id === null) {
+            $db['kategória nélkül']++;
+        }
+        if ($program->cover_media_id === null) {
+            $db['kép nélkül']++;
         }
     }
 

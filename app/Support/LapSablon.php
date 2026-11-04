@@ -200,7 +200,6 @@ class LapSablon
             ['programs_now_empty_title', '„Most zajlik”, de nincs program — cím', 'sor', ['hu' => 'Most nem zajlik program', 'ro' => 'Acum nu se desfășoară niciun program']],
             ['programs_now_before', '„Most zajlik” a fesztivál ELŐTT — szöveg (a dátumot a rendszer írja elé)', 'szoveg', ['hu' => 'Válassz napot a fenti sávból, és tervezz előre!', 'ro' => 'Alege o zi din bara de sus și plănuiește din timp!']],
             ['programs_now_after', '„Most zajlik” a fesztivál UTÁN — szöveg', 'szoveg', ['hu' => 'A fesztivál véget ért, ezért most nem zajlik program. A napokra kattintva a program továbbra is megnézhető.', 'ro' => 'Festivalul s-a încheiat, așa că acum nu se desfășoară niciun program. Programul rămâne disponibil pe zile.']],
-            ['programs_day_title', 'Napi nézet — cím (utána a nap neve)', 'sor', ['hu' => 'A nap programja', 'ro' => 'Programul zilei']],
         ],
     ];
 

@@ -7,7 +7,7 @@ use App\Models\Venue;
 /**
  * A PROGRAMKERESŐ TÉRKÉPÉNEK adata — a 2026-os `lib/finder-map.ts` `buildFinderMaps()` betűre (CLAUDE.md 2/e).
  *
- * Két térkép (vár, város): a rajz a public/terkep/ alatt (a 2026-os fájlok), a jelölő a rajz dobozához mért SZÁZALÉK
+ * Két térkép (vár, város): a rajz a public/terkeprajz/ alatt (a 2026-os fájlok; NEM „terkep”: az a /terkep lap címe — a mappa elnyelné, 2026-11-04), a jelölő a rajz dobozához mért SZÁZALÉK
  * (venues.map_x/map_y, a térkép-szerkesztő tölti; a 2026-os adat a HelyszinTerkepImport-tal jött). A helyszín azonosítója
  * a SLUG (2026-ban a lap-adatcsomag indexe volt — a szerepe ugyanaz: a helyszín-szűrő kulcsa).
  *  · jelölő: zóna + x/y van, és nem szélső; sorszám szerint; `kids` = a termei (pakli);
@@ -19,8 +19,8 @@ final class Terkep
 {
     /** A két rajz — a 2026-os lib/map-assets.ts értékei (a jelölők ehhez a dobozhoz képest állnak százalékban). */
     public const RAJZOK = [
-        'castle' => ['src' => 'terkep/varterkep-vektor.svg', 'w' => 779.93, 'h' => 475.18, 'hu' => 'Vár', 'ro' => 'Cetate'],
-        'city' => ['src' => 'terkep/varosterkep-2000.webp', 'w' => 2000, 'h' => 1194, 'hu' => 'Város', 'ro' => 'Oraș'],
+        'castle' => ['src' => 'terkeprajz/varterkep-vektor.svg', 'w' => 779.93, 'h' => 475.18, 'hu' => 'Vár', 'ro' => 'Cetate'],
+        'city' => ['src' => 'terkeprajz/varosterkep-2000.webp', 'w' => 2000, 'h' => 1194, 'hu' => 'Város', 'ro' => 'Oraș'],
     ];
 
     /** A 8 irány felirata (2026: lib/offmap.ts BEARINGS — a szélső jelvény akadálymentes címkéjében). */
@@ -81,6 +81,20 @@ final class Terkep
             ->filter(fn ($g, $k) => $k !== '')->map(fn ($g) => $g->pluck('slug')->values()->all())->all();
 
         return ['zonak' => $zonak, 'jelmagyarazat' => $jelmagyarazat, 'csalad' => $csalad];
+    }
+
+    /**
+     * A helyszín lapjának térképszáma (PROMPT-15, tulajdonosi döntés 2026-11-04): a saját jelölője, vagy — ha terem és
+     * nincs saját pozíciója — a SZÜLŐ jelölője (a térképen is az képviseli). Sorszám és hely nélkül null (nem találunk ki).
+     *
+     * @return ?array{no: int, slug: string}
+     */
+    public static function jeloloje(Venue $v): ?array
+    {
+        $rajta = fn (?Venue $x) => $x !== null && $x->map_no !== null && ($x->map_edge || ($x->map_x !== null && $x->map_y !== null));
+        $cel = $rajta($v) ? $v : ($rajta($v->parent) ? $v->parent : null);
+
+        return $cel === null ? null : ['no' => (int) $cel->map_no, 'slug' => $cel->slug];
     }
 
     /**

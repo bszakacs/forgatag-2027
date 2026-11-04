@@ -1,0 +1,91 @@
+/* ============================================================================
+ *  A /terkep LAP (PROMPT-15) — a programkereső 2026-os térképe önállóan (tulajdonosi döntés, 2026-11-04).
+ *  A térkép maga: terkep.css (a 2026-os FINDER_MAP_CSS + OFFMAP_CSS). Ez a fájl a programkereso.css-ből BETŰRE kivett
+ *  szabályok, amelyekre a térképnek szüksége van (a programkereső teljes stíluslapja itt nem tölthető be: asztalon a
+ *  térképet a szűrő-rácsba rendezi — `.pk-map{display:contents}`):
+ *   · a gombok (2. GOMBOK — a fülek .btn-fill gombok),
+ *   · a helyszín-jelmagyarázat és a „Közérdekű” doboz (a ≥1041 px-es blokkból; itt MINDEN szélességen látszik, mert
+ *     nincs mellette lista, és telefonon sincs felcsúszó lap),
+ *   · a jelmagyarázat-sor állapotai (HELYSZÍNLISTA — A SOR SZŰR IS).
+ *  Saját, 2027-es sor csak a doboz szélessége (a 2026-os Base `main > .map-wrap` mintájára).
+ * ========================================================================== */
+main > .map-lap{max-width:var(--maxw);margin-left:auto;margin-right:auto;padding-left:clamp(16px,3vw,24px);padding-right:clamp(16px,3vw,24px)}
+
+/* ---- programkereso.css: 2. GOMBOK ---- */
+[data-section] .btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--font-body);
+  font-weight:700;font-size:.98rem;border-radius:var(--r-pill);padding:.75em 1.35em;cursor:pointer;
+  border:1px solid transparent;transition:var(--dur-1) var(--ease)}
+[data-section] .btn:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+[data-section] .btn-primary{background:var(--accent-grad);color:var(--accent-contrast);
+  box-shadow:0 8px 22px -10px color-mix(in srgb, var(--accent-b) 70%, transparent)}
+[data-section] .btn-primary:hover{transform:translateY(-2px);
+  box-shadow:0 14px 30px -10px color-mix(in srgb, var(--accent-b) 80%, transparent)}
+[data-section] .btn-ghost{border-color:var(--line-strong);color:var(--fg);
+  background:color-mix(in srgb, var(--fg) 3%, transparent)}
+[data-section] .btn-ghost:hover{background:color-mix(in srgb, var(--fg) 8%, transparent);
+  border-color:var(--fg-muted)}
+
+/* Firka-palettás gombok (médiatár alja) — a --accent-grad receptje a saját színükből
+   képezve (világosabb -> alapszín -> sötétebb), sötét felirattal, mint a .btn-primary. */
+[data-section] .btn-fill{
+  --fgl-btn:var(--doodle-pink);
+  background:linear-gradient(135deg,
+    color-mix(in srgb, var(--fgl-btn) 70%, white) 0%,
+    var(--fgl-btn) 55%,
+    color-mix(in srgb, var(--fgl-btn) 86%, black) 100%);
+  color:var(--accent-contrast);border-color:transparent;
+  box-shadow:0 8px 22px -10px color-mix(in srgb, var(--fgl-btn) 70%, transparent)}
+[data-section] .btn-fill.pink{--fgl-btn:var(--doodle-pink)}
+[data-section] .btn-fill.orange{--fgl-btn:var(--doodle-orange)}
+[data-section] .btn-fill.lime{--fgl-btn:var(--doodle-lime)}
+[data-section] .btn-fill:hover{transform:translateY(-2px);
+  box-shadow:0 14px 30px -10px color-mix(in srgb, var(--fgl-btn) 85%, transparent),
+             0 0 40px -16px color-mix(in srgb, var(--fgl-btn) 70%, transparent)}
+
+/* ---- programkereso.css: HELYSZÍN-JELMAGYARÁZAT + KÖZÉRDEKŰ (a @media(min-width:1041px) blokkból) ---- */
+/* HELYSZÍN-JELMAGYARÁZAT (nem szűrő) */
+.pk-legend{margin-top:var(--sp-4);background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3) var(--sp-3) var(--sp-2)}
+.pk-legend-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2);
+  margin-bottom:var(--sp-2)}
+.pk-legend-head h3{font-size:.98rem;margin:0}
+.pk-legend-head span{font-size:var(--text-micro);color:var(--fg-faint)}
+.pk-legend-list{max-height:280px;overflow:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;padding-right:2px}
+.pk-leggroup + .pk-leggroup{margin-top:2px;padding-top:2px;border-top:1px solid var(--line)}
+.pk-legrow{display:flex;align-items:center;gap:.6em;width:100%;text-align:left;
+  padding:.34em .4em;border:0;border-radius:var(--r-field);background:transparent;
+  color:var(--fg);font:inherit;font-size:var(--text-small);cursor:pointer}
+.pk-legrow.is-kid{padding-left:1.5em}
+.pk-legrow:hover,.pk-legrow:focus-visible{background:color-mix(in srgb, var(--fg) 8%, transparent);
+  color:var(--accent-a);outline:none}
+.pk-legrow:focus-visible{box-shadow:inset 0 0 0 2px var(--focus)}
+.pk-legno{flex:0 0 auto;min-width:22px;height:22px;display:inline-grid;place-content:center;
+  border-radius:50%;background:var(--accent-b);color:var(--accent-contrast);
+  font-size:.72rem;font-weight:700;font-variant-numeric:tabular-nums}
+.pk-legname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ami nincs a térképen: halvány, nem kattintható — de OTT VAN a listában */
+.pk-legrow.is-off{cursor:default;color:var(--fg-faint)}
+.pk-legrow.is-off .pk-legno{background:transparent;
+  box-shadow:inset 0 0 0 1px var(--line-strong)}
+
+/* KÖZÉRDEKŰ: a rajzon lévő jelek megfejtése */
+.pk-mapinfo{margin-top:var(--sp-3);background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3)}
+.pk-mapinfo h3{font-size:.98rem;margin:0 0 var(--sp-2)}
+.pk-mapinfo p{margin:0 0 .35em;font-size:var(--text-small);color:var(--fg-muted);line-height:1.45}
+.pk-ii{margin-right:.15em}
+
+/* ---- programkereso.css: HELYSZÍNLISTA — A SOR SZŰR IS ---- */
+.pk-legn{margin-left:auto;flex:0 0 auto;font-size:var(--text-micro);
+  color:var(--fg-faint);font-variant-numeric:tabular-nums}
+.pk-legrow.is-off{cursor:pointer}
+.pk-legrow.is-empty .pk-legname{opacity:.72}
+.pk-legrow[aria-pressed="true"]{background:color-mix(in srgb, var(--accent-a) 20%, transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent-a) 55%, transparent)}
+.pk-legrow[aria-pressed="true"] .pk-legname{font-weight:700}
+.pk-legrow[aria-pressed="true"] .pk-legn{color:var(--fg)}
+/* koppintható méret telefonon */
+@media(max-width:720px){
+  .pk-legrow{min-height:44px}
+}

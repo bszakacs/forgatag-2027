@@ -81,13 +81,15 @@ class ProgramkeresoTest extends TestCase
         $this->program('Hajnali táncház', [['2027-08-27', '00:30', '02:00']]);
         $this->program('Délutáni mese', [['2027-08-27', '15:00', '16:00']]);
 
-        foreach (['/programok?nap=2027-08-27', '/nap/2027-08-27'] as $url) {
-            $html = $this->get($url)->assertOk()->getContent();
-            $this->assertMatchesRegularExpression('~Délutáni mese.*Késő esti koncert.*Hajnali táncház~s', $html, $url);
-            $this->assertStringContainsString('23.00', $html);
-            $this->assertStringContainsString('–0.30', $html);
-            $this->assertStringContainsString('(éjjel)', $html); // a 00:30-as kezdés a nap végén, jelölve
-        }
+        $html = $this->get('/programok?nap=2027-08-27')->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('~Délutáni mese.*Késő esti koncert.*Hajnali táncház~s', $html);
+        $this->assertStringContainsString('23.00', $html);
+        $this->assertStringContainsString('–0.30', $html);
+        $this->assertStringContainsString('(éjjel)', $html); // a 00:30-as kezdés a nap végén, jelölve
+        // A napi nézet (PROMPT-15: a 2026-os DailyProgramView jelölése) ugyanebben a sorrendben, a 2026-os idő-alakkal.
+        $nap = $this->get('/nap/2027-08-27')->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('~Délutáni mese.*Késő esti koncert.*Hajnali táncház~s', $nap);
+        $this->assertStringContainsString('<span>23:00</span><small>00:30</small>', $nap);
         $this->assertStringNotContainsString('Késő esti koncert', $this->talalatok('/programok?nap=2027-08-28'));
     }
 
@@ -338,9 +340,9 @@ class ProgramkeresoTest extends TestCase
     {
         $p = $this->program('Vásári komédia', [['2027-08-26', '18:00', '19:30'], ['2027-08-27', '18:00', '19:30']],
             ['description' => "Első bekezdés.\n\nJegyek: https://jegy.example/forgatag"]);
-        $this->get('/program/' . $p->slug)->assertOk()->assertSee('Vásári komédia')->assertSee('18.00–19.30')
-            ->assertSee('class="fg-link" href="https://jegy.example/forgatag"', false)
-            ->assertSee('/programok?helyszin=var', false);
+        // a program lapja (PROMPT-15: a 2026-os ProgramDetailView jelölése) — 2026-os idő-alak, kattintható cím
+        $this->get('/program/' . $p->slug)->assertOk()->assertSee('Vásári komédia')->assertSee('18:00–19:30')
+            ->assertSee('class="fg-link" href="https://jegy.example/forgatag"', false);
 
         $vazlat = $this->program('Még nincs kint', [['2027-08-26', '18:00']], ['status' => 'draft']);
         $this->get('/program/' . $vazlat->slug)->assertNotFound();
