@@ -274,6 +274,31 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     oldalsó levegőt · a szervezői logó 2026-ban a forgatag2025 oldalról jött; most a Rólunk lap kezdőképe (ugyanaz a logó, a
     médiatárban 2 új sorként) · a sorrend a 2026-os CSS-betöltési sorrend (a csúszka térköze ezen múlt).
 
+- **FIRKA-HIBA, javítva (2026-11-04, `5a6345f5`) — a tulajdonos jelezte: a kezdőlapon egy sodródó firka sem látszott.**
+  **Ok:** a szórt firkák a közös motívumkészletre hivatkoznak (`<use href="#fgm-N">`), a keret viszont a motívum SAJÁT viewBox-át
+  kapta → a `<use>` a rajzot a keret 0,0 pontjára teszi, a látható részen kívülre. Az elemek ott voltak, ezért a PROMPT-13 és -14
+  mérése (elemszám) zöld volt — **a programkereső firkái is a PROMPT-13 óta láthatatlanok voltak.** Javítva mindkét építőben
+  (`mozgas.js`, `kezdolap.js`), teszt őrzi. ⚠ **Tanulság: dekort KIRAJZOLÁS szerint kell mérni** (a rajz a keretén belül van-e —
+  `getBBox` a viewBox-hoz), nem elemszám szerint.
+  **Firka-leltár, oldalanként (1600 px, kirajzolódó firka / összes):**
+
+  | Lap | 2026 (forgatag.ro) | 2027 a javítás előtt | 2027 a javítás után (helyben) |
+  |---|---|---|---|
+  | Kezdőlap (HU és RO) | 92 (nyitókép 10, lap 52, média 16, szervezők 14) | 0 / 92 | **92 / 92** |
+  | Programkereső | 52 (a lap hosszától függ) | 0 | **mind** (helyben 32/32 — rövidebb lista) |
+  | Fesztiválrend | 14 (nyitókép) | — a lap még nincs (8. pont) | — |
+  | Kézművesek | 37 | — a lap még nincs (8. pont) | — |
+  | Kedvencek | 20 | — a funkció nyitott kérdés | — |
+  | Rólunk, hírlista, hír, napi nézet, program lapja, helyszín-, kategória-, galéria-, videóarchívum-, támogatók-, térkép-lap, 404 | 0 | 0 | 0 (egyezik) |
+  | Hamarosan (2027-es lap) | — | 2 (beágyazott, mindig látszott) | 2 |
+
+  **A téma firka-kapcsolói a kezdőlapon (helyben, a téma által generált CSS-sel mérve):** sűrűség 92 → 51 („ritka”) → 0 („nincs”) ·
+  „nyitókép szélein” ki: 92 → 82 · átlátszóság 0,67 → 0,19 · lebegés ki: áll · a 8 szín mind használt a motívumokban, és az átállítás
+  a firkán látszik · a motívum-helyek (2026: 6, most 12) a közös készletet töltik. **„Fotó nélküli kártyákon”:** a 2026-os élő oldalon
+  SEHOL nincs ilyen elem (minden kártyának volt képe vagy nem ProgramCard volt) — 2027-ben a 12/b kör ProgramCard-jával jön; addig
+  a kapcsoló súgója kiírja, hogy nincs eleme (nem néma).
+  **Élesben a javítás telepítés után mérendő.**
+
 ## Ami MOST folyik
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
