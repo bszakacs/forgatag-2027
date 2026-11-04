@@ -4,6 +4,8 @@
   EGY KATEGÓRIA LAPJA — a 2026-os components/TaxonDetailView.astro (kind=category) jelölése BETŰRE (CLAUDE.md 2/e).
   A programok az ELSŐDLEGES és a TOVÁBBI kategória szerint is (2026: inCategory), az első időpont szerint.
   (A csoport-színes fejléc 2026-ban a csoportokkal megszűnt — a kategóriának nincs színe —, ezért a sima cím-ág él.)
+  TULAJDONOSI DÖNTÉS (2026-11-04) — tudatos eltérés: a kártyák RÁCSBAN, a 2026-os „Állandó” fül rácsával (.allando-grid);
+  2026-ban rács nélkül, teljes szélességben álltak.
 --}}
 @php $nev = Nyelv::valaszt($k->name_hu, $k->name_ro); @endphp
 @section('title', $nev)
@@ -12,9 +14,13 @@
 @section('content')
   <p><a href="{{ Nyelv::ut('/kategoriak') }}">← {{ __('publikus.b_kategoriak') }}</a></p>
   <h2>{{ $nev }}</h2>
-  @forelse ($programok as $program)
-    @include('partials.programkartya', ['program' => $program])
-  @empty
+  @if ($programok->isEmpty())
     <div class="empty">{{ __('publikus.b_nincs_kategoria') }}</div>
-  @endforelse
+  @else
+    <div class="allando-grid">
+      @foreach ($programok as $program)
+        @include('partials.programkartya', ['program' => $program])
+      @endforeach
+    </div>
+  @endif
 @endsection

@@ -7,6 +7,8 @@
      * „része ennek”, név, címdoboz (+ OpenStreetMap-keresés), alhelyszínek, a helyszín ÉS a termei programjai.
      * TULAJDONOSI DÖNTÉS (2026-11-04) — tudatos eltérés: a címdobozban a TÉRKÉPSZÁM és „Mutasd a térképen” (a /terkep a
      * jelölőt kiemeli). Terem saját pozíció nélkül a szülője jelölőjét kapja (a térképen is az képviseli).
+     * TULAJDONOSI DÖNTÉS (2026-11-04) — tudatos eltérés: a kártyák RÁCSBAN (2026-ban rács nélkül, teljes szélességben álltak —
+     * 1280 px-en egy kártya 1265 × 990 px volt). A rács a 2026-os „Állandó” fül rácsa (.allando-grid), új kinézet nincs.
      */
     $ny = Nyelv::aktualis();
     $nev = ProgramKartya::helyszinNev($v);
@@ -43,9 +45,13 @@
   @endif
 
   <h3 class="section-title" style="margin-top:22px">{{ __('publikus.b_napi_program') }}</h3>
-  @forelse ($programok as $program)
-    @include('partials.programkartya', ['program' => $program])
-  @empty
+  @if ($programok->isEmpty())
     <div class="empty">{{ __('publikus.b_nincs_helyszin') }}</div>
-  @endforelse
+  @else
+    <div class="allando-grid">
+      @foreach ($programok as $program)
+        @include('partials.programkartya', ['program' => $program])
+      @endforeach
+    </div>
+  @endif
 @endsection

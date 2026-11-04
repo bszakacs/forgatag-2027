@@ -142,6 +142,16 @@ class HelyszinKategoriaTest extends TestCase
         $this->assertStringContainsString('Concert', $this->get('/ro/kategoria/koncert')->getContent());
     }
 
+    /** Tulajdonosi döntés (2026-11-04): a helyszín- és kategórialap kártyái rácsban (a 2026-os „Állandó” fül rácsával). */
+    public function test_a_helyszin_es_kategorialap_kartyai_racsban(): void
+    {
+        [$var, , $koncert] = $this->adat();
+        $this->program('Rácsos program', $var, $koncert, ['2027-08-27']);
+        foreach (['/helyszin/var', '/kategoria/koncert'] as $ut) {
+            $this->assertMatchesRegularExpression('#<div class="allando-grid">\s*<article class="pc#', $this->get($ut)->getContent(), $ut);
+        }
+    }
+
     public function test_a_foto_nelkuli_kartya_sarok_firkaja_es_a_kapcsoloja(): void
     {
         [$var, , $koncert] = $this->adat();

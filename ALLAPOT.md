@@ -388,7 +388,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    375 px-en 8 lap, vízszintes görgetés nincs; hibás kérés 0.
    **Válaszidő (háromszor mérve, letöltéssel):** helyszínlap (Bernády) 0,33–0,35 s · napi nézet 0,32–0,38 s · `/terkep` 0,39–0,43 s ·
    `/nap/allando` (70 kártya) 0,53–0,54 s · **a Vár lapja (190 kártya, a termeivel) 0,62–0,65 s**, 244 kB tömörítés előtt.
-   **Hátra (a felhasználóval):** a kártyák szélessége a helyszín-/kategórialapon (Nyitott kérdések, PROMPT-15).
+   **Utána (tulajdonosi döntés, 2026-11-04): a helyszín- és kategórialap kártyái rácsban** (Nyitott kérdések, eldöntve) — feltolva,
+   a cPanelben telepíteni kell.
 
 ## Ami ezután jön, ebben a sorrendben
 
@@ -487,9 +488,10 @@ nem nyúlunk.**
   Ugyanide tartozik: **23 helyszínnek nincs román neve** — mind olyan, ami csak a 2027-es kezdőlistában van, 2026-ban nem
   (pl. Vár, Csicsergő · Vár, Szűcsök Bástyája · Somostető, szabadtéri amfiteátrum · Spectrum Színház); a román lapon a magyar látszik.
   Kézi fordítás kell (Helyszínek → román név) — nem fordítottam gépen (saját tartalom).
-- **ÚJ (PROMPT-15) — a 2026-os helyszín- és kategórialap kártyái TELJES szélességűek** (1280 px-en egy kártya 1265 × 990 px, mert a
-  2026-os Base a kártyákat rács nélkül tette a lapra). Betűre átvettem (2/e); ha rácsba rendezzük (mint a „Állandó” fülön), az eltérés
-  a 2026-ostól — szólj, ha kéred.
+- ~~A helyszín- és kategórialap kártyáinak szélessége~~ — **eldöntve (2026-11-04): RÁCS** („ez csúnya így”). Tudatos eltérés a
+  2026-ostól (ott rács nélkül, 1280 px-en egy kártya 1265 × 990 px volt): a 2026-os „Állandó” fül rácsa (`.allando-grid`) — asztalon
+  soronként 4 kártya (288 × 423 px), telefonon egy oszlop. Közben a fotó nélküli kártya (2026-ban élesben sosem látszott) kategórianeve
+  aláhúzás nélkül, a hosszú szó tördelve (a rácsban levágódott) — `alap-szerver.css`.
 - ~~A tesztadat törlése~~ — **eldöntve (2026-10-30): a 61 helyszín nélküli tesztprogram a képeivel együtt törölve** (lásd fent, Tesztadat).
 
 - **ÚJ — a Rólunk román zárómondata hibás adat** (a 2026-os behozatalból): a „záró bekezdés” román szövege így végződik:
