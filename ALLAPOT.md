@@ -397,6 +397,9 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    a fotó nélküli sorokban ott a firka; 375 px-en vízszintes görgetés nincs. **Válaszidő (háromszor):** Vár 309 sor 0,54–0,56 s ·
    Bernády 0,32–0,33 s · napi nézet 0,40–0,44 s · `/nap/allando` 0,44–0,51 s · a legnagyobb kategória (Csicsergő, 105 sor) 0,39–0,45 s.
    (A keresőben a sor `href`-je JS nélkül továbbra is a program lapja — kattintásra a felugró ablak nyílik, mint eddig.)
+   **Hiba, javítva és élesben ellenőrizve (2026-11-04, a tulajdonos jelezte):** 1041 px fölött a kereső asztali szabálya a listalapot is
+   kéthasábos rácsba tette (jobbra 440 px-es üres hasáb). Most `.blk.pk-napi > .wrap{display:block}` (`programlista.css`); 1440 és 1920
+   px-en mérve mindhárom laptípus egy hasábos. ⚠ Tanulság: a listalapokat SZÉLES asztalon is nézd meg, ne csak keskeny ablakban.
 
 ## Ami ezután jön, ebben a sorrendben
 
