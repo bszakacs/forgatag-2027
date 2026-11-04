@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-04 (PROMPT-14, a kezdőlap — kész helyben, feltolva (`68295092`); az élesítés és a valódi telefonos mérés a felhasználóval; a 12/b kör továbbra is hátra van)
+**Utolsó frissítés:** 2026-11-04 (PROMPT-14, a kezdőlap — kész, ÉLESBEN telepítve és megnézve; hátra: a nyitókép mérése valódi telefonon, mobilneten; a 12/b kör továbbra is hátra van)
 
 ---
 
@@ -242,7 +242,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     hírkártya 6. kiemelő-színe nincs a témában → a legközelebbi téma-színből kevertem · a Rólunk görgetés-számolása képkockánként egyszer fut.
   - 375 px-en: Rólunk, napi nézet, programkereső — vízszintes görgetés nincs. **168 teszt zöld** (új: `MozgasDekorTest`, 7).
 
-- **A kezdőlap** (`PROMPT-14`, 2026-11-04) — **kész helyben, feltolva; élesítés: lásd „MOST folyik”, 7.** A gyökér (`/`, `/ro`) most a
+- **A kezdőlap** (`PROMPT-14`, 2026-11-04) — **kész, élesben telepítve és megnézve (2026-11-04); hátra a valódi telefonos mérés („MOST folyik”, 7.).** A gyökér (`/`, `/ro`) most a
   kezdőlap (a Hamarosan lap a `/hamarosan` címen marad). Részletek: `CLAUDE.md` 8. pont „Kezdőlap”.
   - **Betűre a 2026-osból (2/e):** a jelölés a `home-v7/body.html` (osztályok, sorrend, a `data-hs` kulcsok), a stílus a
     `home-v7/style.css` másolata (`public/css/kezdolap.css`), a közös modulok a 2026-os `lib/*.ts` kiírt CSS-e (galéria, videó,
@@ -314,10 +314,14 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    **Hátra (a felhasználóval), VALÓDI TELEFONON:** a fenti kettő újranézése a telepítés után, és: a programkereső görgetése „Minden nap” nézetben (a lista aljáig) sima-e; a Rólunk fonala és
    felúszása; egy hírkártya kiemelése; és a telefon „Kevesebb mozgás” / „Animációk eltávolítása” beállításával a Rólunk: semmi nem úszik, a
    programkeresőn nincs firka.
-7. **A kezdőlap (PROMPT-14) élesítése** — feltolva (`68295092`), **a cPanelben telepíteni kell** (Update from Remote → Deploy HEAD Commit).
-   A naplóban: a `2027_01_13_000100_settings_kezdolap_allapot` migráció és `LAPSZÖVEG: home: … új kulcs …`. Utána élesben megnézendő:
-   `/` és `/ro` (2026-os élő mellé téve), a Beállításokban az állapot-kapcsoló oda-vissza, egy galéria-év megnyitása, egy aftermovie
-   lejátszása, 375 px. ⚠ **A nyitókép megjelenési idejét VALÓDI TELEFONON, mobilhálózaton kell mérni** (a fejlesztőgépről nem lehet).
+7. **A kezdőlap (PROMPT-14)** — **élesben telepítve (2026-11-04).** **Élesben mérve (proba.forgatag.ro, böngészőből):** `/` és `/ro` 200,
+   hibás kérés 0; asztalon (1024 px) mind az öt szakasz magassága **pixelre egyezik** a 2026-os élő forgatag.ro-val (691 / 876 / 621 /
+   1270 / 902); 375 px-en vízszintes görgetés nincs; románul a hírek nélkül. Galéria: év → 34 kép hasábokban → nagy kép → Esc; az
+   aftermovie lejátszó nyílik és bezárul. **Válaszidő** (az első bájtig + letöltés): `/` 0,35–0,53 s, `/ro` 0,31–0,43 s, a lap 34 kB
+   (tömörítve); a galéria-adat (12 év, 467 kép) 0,33 s, csak megnyitáskor. **A nyitókép első képe telefonon 67 kB** (a vágott 750×1400-as;
+   asztalon 123 kB — 2026-ban a telefon is az 1920-as képet kapta).
+   **Hátra (a felhasználóval):** ⚠ **a nyitókép megjelenési ideje VALÓDI TELEFONON, mobilneten** (a fejlesztőgépről nem mérhető); a
+   Beállításokban az állapot-kapcsoló ki-be próbája belépve (helyben kipróbálva, élesben még nem).
 
 ## Ami ezután jön, ebben a sorrendben
 
