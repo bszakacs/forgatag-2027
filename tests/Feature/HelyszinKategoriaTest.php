@@ -121,8 +121,11 @@ class HelyszinKategoriaTest extends TestCase
         $html = $this->get('/helyszin/var')->assertOk()->getContent();
         $this->assertStringContainsString('A várbeli koncert', $html);
         $this->assertStringContainsString('A termi előadás', $html, 'a szülő lapja a termei programjait is mutatja');
-        $this->assertStringContainsString('<a class="chip cat" href="/helyszin/var-terem">', $html);
+        // a terme a KERESŐBE visz, arra a helyszínre szűrve (tulajdonosi szabály: minden a keresőbe vezet vissza)
+        $this->assertStringContainsString('<a href="/programok?nap=mind&amp;helyszin=var-terem">', $html);
         $this->assertMatchesRegularExpression('#<span class="hk-szam"[^>]*>25</span>\s*<a href="/terkep\?helyszin=var">#', $html);
+        $this->assertStringContainsString('<a class="btn btn-primary pk-vissza" href="/programok?nap=mind&amp;helyszin=var">', $html);
+        $this->assertStringNotContainsString('href="/helyszin', $html, 'a helyszínlapról más helyszínlapra nem vezet link');
         // a terem saját pozíció nélkül a szülő jelölőjét kapja
         $this->assertStringContainsString('href="/terkep?helyszin=var"', $this->get('/helyszin/var-terem')->getContent());
         $this->assertStringContainsString('Cetate', $this->get('/ro/helyszin/var')->getContent());
@@ -138,17 +141,33 @@ class HelyszinKategoriaTest extends TestCase
         $this->assertStringContainsString('Koncert<small>1 program</small>', $this->get('/kategoriak')->assertOk()->getContent());
         $html = $this->get('/kategoria/koncert')->assertOk()->getContent();
         $this->assertStringContainsString('Zenés színház', $html);
-        $this->assertStringContainsString('<h2>Koncert</h2>', $html);
+        $this->assertStringContainsString('<h1>Koncert</h1>', $html);
+        $this->assertStringContainsString('<a class="btn btn-primary pk-vissza" href="/programok?nap=mind&amp;kategoria=koncert">', $html);
+        $this->assertStringNotContainsString('href="/kategori', $html, 'a kategórialapról a kategórialistára / más kategórialapra nem vezet link');
         $this->assertStringContainsString('Concert', $this->get('/ro/kategoria/koncert')->getContent());
     }
 
-    /** Tulajdonosi döntés (2026-11-04): a helyszín- és kategórialap kártyái rácsban (a 2026-os „Állandó” fül rácsával). */
-    public function test_a_helyszin_es_kategorialap_kartyai_racsban(): void
+    /**
+     * Tulajdonosi szabály (2026-11-04): BÁRHOL listázunk programot, a programkereső sora listázza (ugyanaz a sablon:
+     * programok/_kartyak), és a sor a KERESŐ felugró ablakára visz, a lap szűrésével.
+     */
+    public function test_minden_programlista_a_kereso_soraival_es_a_keresobe_visz(): void
     {
         [$var, , $koncert] = $this->adat();
-        $this->program('Rácsos program', $var, $koncert, ['2027-08-27']);
-        foreach (['/helyszin/var', '/kategoria/koncert'] as $ut) {
-            $this->assertMatchesRegularExpression('#<div class="allando-grid">\s*<article class="pc#', $this->get($ut)->getContent(), $ut);
+        $p = $this->program('Soros program', $var, $koncert, ['2027-08-27']);
+        $o = $p->occurrences()->first();
+        $utak = [
+            '/helyszin/var' => '/programok?nap=mind&amp;helyszin=var&amp;program=',
+            '/kategoria/koncert' => '/programok?nap=mind&amp;kategoria=koncert&amp;program=',
+            '/nap/2027-08-27' => '/programok?nap=2027-08-27&amp;program=',
+        ];
+        foreach ($utak as $ut => $link) {
+            $html = $this->get($ut)->assertOk()->getContent();
+            $this->assertStringContainsString('<article class="pcard pk-card pk-row"', $html, $ut);
+            $this->assertStringContainsString('<a class="pk-cardlink" href="' . $link . $p->slug . '&amp;idopont=' . $o->id . '"', $html, $ut);
+            $this->assertStringContainsString('class="btn btn-primary pk-vissza"', $html, $ut);
+            $this->assertStringNotContainsString('allando-grid', $html, $ut);
+            $this->assertStringNotContainsString('href="/program/', $html, $ut);
         }
     }
 
@@ -158,9 +177,8 @@ class HelyszinKategoriaTest extends TestCase
         $this->program('Kép nélküli program', $var, $koncert, ['2027-08-27']);
 
         $html = $this->get('/helyszin/var')->getContent();
-        $this->assertStringContainsString('class="pc-noimg"', $html);
-        $this->assertStringContainsString('<svg class="pc-doodle"', $html);
-        $this->assertStringContainsString('<span class="pc-groupname">Koncert</span>', $html);
+        // a képhely MINDIG ott van: fotó nélkül a helyőrző csempe a sarok-firkával (a keresőben is — ProgramkeresoTest)
+        $this->assertStringContainsString('<div class="thumb pk-noimg"><svg class="pc-doodle"', $html);
 
         // Az Arculat „Fotó nélküli kártyákon” kapcsolója: kikapcsolva a téma CSS-e rejti — most már VAN eleme, amire hat.
         $d = Theme::data();
@@ -189,12 +207,10 @@ class HelyszinKategoriaTest extends TestCase
         $this->program('Többnapos kiállítás', $var, $koncert, ['2027-08-26', '2027-08-27']);
 
         $html = $this->get('/nap/2027-08-27')->assertOk()->getContent();
-        $this->assertStringContainsString('<h2 class="section-title">Napi program</h2>', $html);
-        $this->assertSame(8, substr_count($html, 'data-day=') + 1, '7 programnap + „Állandó”');
-        $this->assertStringContainsString('class="rail-row filterable"', $html);
-        $this->assertStringContainsString('<div class="rail-time"><span>18:00</span><small>19:30</small></div>', $html);
-        $this->assertStringContainsString('id="venue-filter"', $html);
-        $this->assertStringContainsString('<span class="rail-sub">· aug. 27. · péntek</span>', $html);
+        $this->assertStringContainsString('<nav class="pk-daytabs"', $html);
+        $this->assertSame(8, substr_count($html, '<a class="pk-day'),'7 programnap + „Állandó”');
+        $this->assertStringContainsString('<article class="pcard pk-card pk-row"', $html);
+        $this->assertStringContainsString('<a class="btn btn-primary pk-vissza" href="/programok?nap=2027-08-27">', $html);
 
         $allando = $this->get('/nap/allando')->assertOk()->getContent();
         $this->assertStringContainsString('Többnapos kiállítás', $allando);
@@ -211,7 +227,7 @@ class HelyszinKategoriaTest extends TestCase
 
         $html = $this->get('/program/' . $p->slug)->assertOk()->getContent();
         $this->assertStringContainsString('<a class="article-back" href="/programok?program=' . $p->slug . '">', $html);
-        $this->assertMatchesRegularExpression('#<nav class="pd-crumb"[^>]*>\s*<a href="/kategoriak">Program</a> › <a href="/kategoria/koncert">Koncert</a> › <a href="/kategoria/szinhaz">#', $html);
+        $this->assertMatchesRegularExpression('#<nav class="pd-crumb"[^>]*>\s*<a href="/programok">Program</a> › <a href="/programok\?nap=mind&amp;kategoria=koncert">Koncert</a> › <a href="/programok\?nap=mind&amp;kategoria=szinhaz">#', $html);
         $this->assertStringContainsString('<span class="pd-pill">Koncert</span><span class="pd-pill pd-pill-extra">Színház</span>', $html);
         $this->assertStringContainsString('<p class="lead">Első bekezdés.</p>', $html);
         $this->assertStringContainsString('<dd>Zenekar</dd>', $html);

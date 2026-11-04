@@ -2,23 +2,19 @@
 
 namespace App\Support;
 
-use App\Enums\ProgramStatus;
-use App\Enums\TranslatableField;
 use App\Models\ProgramItem;
 use App\Models\ProgramOccurrence;
 use App\Models\Venue;
 use Carbon\CarbonInterface;
 
 /**
- * A 2026-os Base-lapok (helyszín, kategória, napi nézet, program lapja) közös szabályai — a 2026-os
- * `components/ProgramCard.astro`, `lib/festival.ts shortDay`, `DailyProgramView venueDisplay` átirata, betűre.
- * A kártya jelölése: resources/views/partials/programkartya.blade.php.
+ * A program lapjának és a helyszín-/kategórialapoknak a segédszabályai — a 2026-os `lib/festival.ts shortDay`,
+ * `ProgramDetailView venueDisplay`, `lib/extra-fields.ts` átirata, betűre; és a magyar ábécérend.
+ * (A 2026-os ProgramCard kártyája 2026-11-04-én kivezetve: BÁRHOL listázunk programot, a programkereső sorai listázzák —
+ * tulajdonosi szabály; programok/_kartyak.)
  */
 class ProgramKartya
 {
-    /** A programok ehhez a laphoz kellő kapcsolatai (egy helyen, hogy a kártya ne kérdezzen soronként). */
-    public const KAPCSOLATOK = ['category', 'extraCategories', 'venue.parent', 'cover', 'translations', 'occurrences'];
-
     /** 2026: shortDay — „aug. 28.” (mindkét nyelven így volt). */
     public static function rovidNap(CarbonInterface|string $d): string
     {
@@ -69,43 +65,6 @@ class ProgramKartya
         return $p->occurrences
             ->filter(fn (ProgramOccurrence $o) => Festival::isProgramDay($o->date->format('Y-m-d')))
             ->sortBy(fn (ProgramOccurrence $o) => $o->date->format('Y-m-d') . ' ' . $o->start_time)->values();
-    }
-
-    /**
-     * A kártya adatai — 2026: ProgramCard.astro frontmatter.
-     *
-     * @return array<string, mixed>
-     */
-    public static function adat(ProgramItem $p, ?ProgramOccurrence $occ = null): array
-    {
-        $occs = self::idopontok($p);
-        $sav = fn (ProgramOccurrence $o) => self::rovidNap($o->date) . ' ' . self::ora($o->start_time) . ($o->end_time ? '–' . self::ora($o->end_time) : '');
-        $ido = match (true) {
-            $occ !== null => $sav($occ),
-            $occs->count() === 1 => $sav($occs[0]),
-            $occs->count() > 1 => self::rovidNap($occs[0]->date) . ' ' . self::ora($occs[0]->start_time) . ' · +' . ($occs->count() - 1) . ' ' . __('publikus.b_idopont'),
-            default => '',
-        };
-        $statusz = match ($p->status) {
-            ProgramStatus::Cancelled => 'off',
-            ProgramStatus::Changed => 'chg',
-            default => null,
-        };
-        $jegy = ProgramSzoveg::mezo($p, TranslatableField::TicketInfo)['szoveg'];
-
-        return [
-            'href' => Nyelv::ut('/program/' . $p->slug),
-            'cim' => ProgramSzoveg::mezo($p, TranslatableField::Title)['szoveg'],
-            // 2026: a kategóriacsoport neve, csoport nélkül a kategória neve (a csoportok 2026 júliusában megszűntek).
-            'csoportNev' => $p->category ? Nyelv::valaszt($p->category->name_hu, $p->category->name_ro) : '',
-            'ido' => $ido,
-            'helyszin' => self::helyszinNev($p->venue),
-            'datumok' => $occs->map(fn ($o) => $o->date->format('Y-m-d'))->unique()->implode(','),
-            'statusz' => $statusz,
-            'statuszFelirat' => $statusz === 'off' ? __('publikus.b_elmarad') : ($statusz === 'chg' ? __('publikus.b_valtozott') : ''),
-            'belepes' => $p->entry_type?->value ?? 'free',
-            'jegy' => $jegy,
-        ];
     }
 
     /**

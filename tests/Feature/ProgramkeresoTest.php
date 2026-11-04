@@ -86,10 +86,13 @@ class ProgramkeresoTest extends TestCase
         $this->assertStringContainsString('23.00', $html);
         $this->assertStringContainsString('–0.30', $html);
         $this->assertStringContainsString('(éjjel)', $html); // a 00:30-as kezdés a nap végén, jelölve
-        // A napi nézet (PROMPT-15: a 2026-os DailyProgramView jelölése) ugyanebben a sorrendben, a 2026-os idő-alakkal.
+        // a képhely MINDIG ott van (tulajdonosi döntés, 2026-11-04): fotó nélkül a helyőrző csempe a sarok-firkával
+        $this->assertStringContainsString('<div class="thumb pk-noimg"><svg class="pc-doodle"', $html);
+        // A napi nézet a kereső SORAIVAL (tulajdonosi szabály, 2026-11-04): ugyanaz a sorrend, ugyanaz az idő-alak.
         $nap = $this->get('/nap/2027-08-27')->assertOk()->getContent();
         $this->assertMatchesRegularExpression('~Délutáni mese.*Késő esti koncert.*Hajnali táncház~s', $nap);
-        $this->assertStringContainsString('<span>23:00</span><small>00:30</small>', $nap);
+        $this->assertStringContainsString('23.00', $nap);
+        $this->assertStringContainsString('(éjjel)', $nap);
         $this->assertStringNotContainsString('Késő esti koncert', $this->talalatok('/programok?nap=2027-08-28'));
     }
 

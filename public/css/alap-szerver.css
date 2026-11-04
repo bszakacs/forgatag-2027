@@ -8,11 +8,6 @@
    saját margó-szabálya (pl. `main > h2`, `.lead`, `.section-title`) továbbra is nyer. Mérve a 2026-os helyszínlap mellett. */
 :where(main) :is(h1,h2,h3,h4,p,figure,blockquote){margin:revert}
 
-/* A FOTÓ NÉLKÜLI KÁRTYA képmezője (2026-ban élesben sosem látszott — minden programnak volt képe): a képmező egy link,
-   ezért a kategória neve aláhúzva jelent meg, és a hosszú szó („gyermekprogramok”) a rácsba tett kártyán levágódott.
-   A 2026-os méret marad; csak az aláhúzás megy le, és a hosszú szó tördelődik (2026-11-04, a rács bevezetésekor). */
-.pc-noimg{text-decoration:none}
-.pc-noimg .pc-groupname{overflow-wrap:anywhere;hyphens:auto}
 
 /* A kedvenc-szív a kedvencek köréig tiltott (mint a programkeresőben: halvány, nem kattintható). */
 .fav-btn:disabled{opacity:.45;cursor:default}

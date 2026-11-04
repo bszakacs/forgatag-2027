@@ -3,21 +3,16 @@
 namespace App\Http\Controllers\Publikus;
 
 use App\Enums\ContentStatus;
-use App\Enums\TranslatableField;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\ProgramItem;
-use App\Models\Venue;
 use App\Support\Festival;
 use App\Support\LapSzovegek;
 use App\Support\Nyelv;
-use App\Support\ProgramKartya;
 use App\Support\ProgramKereso;
 use App\Support\ProgramSor;
-use App\Support\ProgramSzoveg;
 use App\Support\ProgramSzures;
 use App\Support\Terkep;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -81,28 +76,28 @@ class ProgramokController extends Controller
     }
 
     /**
-     * A napi nézet — a 2026-os DailyProgramView (PROMPT-15): egy nap sorai, vagy az „Állandó” fülön (`allando`) a legalább két
-     * KÜLÖNBÖZŐ napon futó programok, cím szerint. A napfülek a fesztivál MINDEN programnapja (2026: FESTIVAL.days).
+     * A napi nézet — a közös programlista-lap (programok/lista) a KERESŐ lekérdezésével és soraival (tulajdonosi szabály,
+     * 2026-11-04): egy nap sorai napszakonként, vagy az „Állandó” fülön (`allando`) a legalább két KÜLÖNBÖZŐ napon futó
+     * programok, programonként egyszer (az első napjuknál). A „Vissza a programkeresőhöz” ugyanarra a napra visz.
      */
     public function nap(string $datum): Response
     {
         $allando = $datum === 'allando';
         abort_unless($allando || Festival::isProgramDay($datum), 404);
-        $sorok = $allando ? collect() : ProgramKereso::napi($datum);
-        $programok = $allando
-            ? ProgramKartya::abc(ProgramItem::query()->publicVisible()->with(ProgramKartya::KAPCSOLATOK)->get()
-                ->filter(fn (ProgramItem $p) => ProgramKartya::idopontok($p)->map(fn ($o) => $o->date->format('Y-m-d'))->unique()->count() >= 2),
-                fn (ProgramItem $p) => ProgramSzoveg::mezo($p, TranslatableField::Title)['szoveg'])
-            : collect();
-        // a sorok programjai a keresőszöveghez (további kategóriák) — egy lekérdezéssel, nem soronként
-        (new EloquentCollection($sorok->map(fn (ProgramSor $s) => $s->program())->unique('id')->values()->all()))->loadMissing('extraCategories');
+        $kereso = new ProgramSzures($allando ? ProgramSzures::MIND : $datum);
+        $sorok = (new ProgramKereso($kereso))->talalatok()['sorok'];
+        if ($allando) {
+            $napjai = $sorok->groupBy(fn (ProgramSor $s) => $s->program()->id)->map(fn ($g) => $g->map(fn ($s) => $s->nap())->unique()->count());
+            $sorok = $sorok->filter(fn (ProgramSor $s) => $napjai[$s->program()->id] >= 2)->unique(fn (ProgramSor $s) => $s->program()->id)->values();
+        }
 
         return response()->view('programok.nap', [
             'datum' => $datum,
             'napok' => Festival::days(),
+            'kereso' => $kereso,
             'sorok' => $sorok,
-            'programok' => $programok,
-            'fohelyszinek' => ProgramKartya::abc(Venue::query()->whereNull('parent_id')->get(), fn (Venue $v) => $v->name),
+            'egyNap' => ! $allando,
+            'ures' => __('publikus.b_nincs_napon'),
         ]);
     }
 

@@ -59,7 +59,9 @@
     <a class="article-back" href="{{ $kereso }}"><span aria-hidden="true">←</span> {{ __('publikus.b_vissza_kereso') }}</a>
 
     <nav class="pd-crumb" aria-label="breadcrumb">
-      <a href="{{ Nyelv::ut('/kategoriak') }}">{{ __('publikus.b_morzsa') }}</a>@foreach ($kategoriak as [$k]) › <a href="{{ Nyelv::ut('/kategoria/' . $k->slug) }}">{{ Nyelv::valaszt($k->name_hu, $k->name_ro) }}</a>@endforeach
+      {{-- Tulajdonosi szabály (2026-11-04): MINDEN a keresőbe vezet vissza — a morzsa a programkeresőre, a kategória a keresőre
+           szűrve (2026-ban a kategórialistára és a kategórialapra vitt). --}}
+      <a href="{{ Nyelv::ut('/programok') }}">{{ __('publikus.b_morzsa') }}</a>@foreach ($kategoriak as [$k]) › <a href="{{ (new \App\Support\ProgramSzures(\App\Support\ProgramSzures::MIND, [], [$k->slug]))->url() }}">{{ Nyelv::valaszt($k->name_hu, $k->name_ro) }}</a>@endforeach
     </nav>
 
     <div class="pd-pills">

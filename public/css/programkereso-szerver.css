@@ -20,3 +20,8 @@
    (a címsáv eltűnésekor) alul sötét sáv csúszik fel (ugyanaz, mint a közös háttérnél, publikus.css body::before). */
 body .fgl-atmo{bottom:auto;height:100vh;height:100lvh}
 #pkResults.htmx-request{opacity:.55;transition:opacity var(--dur-1) var(--ease)}
+/* TULAJDONOSI DÖNTÉS (2026-11-04): a KÉPHELY MINDIG OTT VAN — fotó nélkül a 2026-os helyőrző csempe (.pk-noimg, a
+   programkereso.css-ben) a fotó nélküli program sarok-firkájával (a 2026-os ProgramCard .pc-doodle-ja; az Arculat
+   „Fotó nélküli kártyákon” kapcsolója rejti — a csempe akkor üresen marad). */
+.pk-card .thumb.pk-noimg{display:grid;place-items:center}
+.pk-card .thumb.pk-noimg .pc-doodle{width:56%;height:auto;opacity:.85}

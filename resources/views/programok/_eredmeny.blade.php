@@ -44,12 +44,7 @@
     @endif
     <a class="pk-mghost" href="{{ $mind->url() }}" data-pk-torol="*">{{ __('publikus.pk_osszes_torles') }}</a>
   </div>
-@elseif ($szures->datum())
-  @include('programok._csoportok', ['sorok' => $t['sorok']])
 @else
-  @foreach ($t['sorok']->groupBy(fn ($s) => $s->nap()) as $nap => $napiSorok)
-    <div class="pk-daytitle"><h2>{{ Festival::fullDayLabel(\Carbon\CarbonImmutable::parse($nap), $ny) }}</h2><span class="pk-gn">{{ $napiSorok->count() }} {{ __('publikus.pk_program_szo') }}</span></div>
-    @include('programok._csoportok', ['sorok' => $napiSorok, 'elotag' => 'd' . $nap . '-'])
-  @endforeach
+  @include('programok._napok', ['sorok' => $t['sorok'], 'egyNap' => (bool) $szures->datum()])
 @endif
 </div>

@@ -8,6 +8,8 @@ use App\Models\ProgramItem;
 use App\Models\Venue;
 use App\Support\Nyelv;
 use App\Support\ProgramKartya;
+use App\Support\ProgramKereso;
+use App\Support\ProgramSzures;
 use App\Support\Terkep;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
@@ -45,27 +47,37 @@ class TaxonController extends Controller
         return view('taxon.lista', ['cim' => __('publikus.b_kategoriak'), 'kat' => true, 'lista' => $lista]);
     }
 
+    /**
+     * A helyszín és a kategória lapja a PROGRAMKERESŐ lekérdezésével és soraival (tulajdonosi szabály, 2026-11-04): a lap
+     * pontosan azt mutatja, amit a kereső erre a szűrésre (minden nap) — és a „Vissza a programkeresőhöz” ide visz.
+     */
     public function helyszin(string $slug): View
     {
         $v = Venue::query()->with('parent')->where('slug', $slug)->firstOrFail();
-        $gyerekek = ProgramKartya::abc(Venue::query()->where('parent_id', $v->id)->get(), fn (Venue $c) => ProgramKartya::helyszinNev($c));
-        $ids = $gyerekek->pluck('id')->push($v->id)->all();
+        $kereso = new ProgramSzures(ProgramSzures::MIND, [], [], [$v->slug]);
 
         return view('taxon.helyszin', [
             'v' => $v,
-            'gyerekek' => $gyerekek,
-            'programok' => $this->rendezve($this->programok()->whereIn('venue_id', $ids)),
+            'gyerekek' => ProgramKartya::abc(Venue::query()->where('parent_id', $v->id)->get(), fn (Venue $c) => ProgramKartya::helyszinNev($c)),
             'jelolo' => Terkep::jeloloje($v),
+            'kereso' => $kereso,
+            'sorok' => (new ProgramKereso($kereso))->talalatok()['sorok'],
+            'egyNap' => false,
+            'ures' => __('publikus.b_nincs_helyszin'),
         ]);
     }
 
     public function kategoria(string $slug): View
     {
         $k = Category::query()->where('slug', $slug)->firstOrFail();
+        $kereso = new ProgramSzures(ProgramSzures::MIND, [], [$k->slug]);
 
         return view('taxon.kategoria', [
             'k' => $k,
-            'programok' => $this->rendezve($this->programok()->filter(fn (ProgramItem $p) => in_array($k->id, $this->kategoriaIdk($p), true))),
+            'kereso' => $kereso,
+            'sorok' => (new ProgramKereso($kereso))->talalatok()['sorok'],
+            'egyNap' => false,
+            'ures' => __('publikus.b_nincs_kategoria'),
         ]);
     }
 
@@ -86,21 +98,15 @@ class TaxonController extends Controller
         return view('taxon.terkep', ['terkep' => $terkep, 'terkepAllapot' => Terkep::allapot($db, [])]);
     }
 
-    /** @return Collection<int, ProgramItem> a közzétett programok a kártyához kellő kapcsolatokkal */
+    /** @return Collection<int, ProgramItem> a közzétett programok — a listák és a térkép darabszámaihoz */
     private function programok(): Collection
     {
-        return ProgramItem::query()->publicVisible()->with(ProgramKartya::KAPCSOLATOK)->get();
+        return ProgramItem::query()->publicVisible()->with(['venue.parent', 'extraCategories'])->get();
     }
 
     /** @return list<int> */
     private function kategoriaIdk(ProgramItem $p): array
     {
         return array_values(array_unique(array_filter([$p->category_id, ...$p->extraCategories->pluck('id')->all()])));
-    }
-
-    /** 2026: az első időpont dátuma szerint. */
-    private function rendezve(Collection $programok): Collection
-    {
-        return $programok->sortBy(fn (ProgramItem $p) => ProgramKartya::idopontok($p)->first()?->date->format('Y-m-d') ?? '9999')->values();
     }
 }

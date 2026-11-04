@@ -1,0 +1,25 @@
+/* ===========================================================================
+   PROGRAMLISTA-LAP (napi nézet, kategória- és helyszínlap — resources/views/programok/lista.blade.php). A sorok, a csoport-
+   címek, a napgombok és a gombok a programkereső stíluslapjából jönnek (programkereso.css, betűre); itt CSAK a lap fejléce,
+   az eszközsor és a „Vissza a programkeresőhöz” helye. A fejléc a programkereső első (2026-10-30-i) napi nézetéé volt.
+   ======================================================================== */
+.pk-napi{--pk-logo-lelog:max(0px,calc(var(--logo-header) - 64px))}
+@media (max-width:860px){.pk-napi{--pk-logo-lelog:max(0px,calc(var(--logo-header-mobile) - 56px))}}
+
+.pk-naphead{padding-top:calc(var(--pk-logo-lelog) + var(--sp-4));margin-bottom:var(--sp-5);text-align:center}
+.pk-naphead h1{font-family:var(--font-head);font-weight:var(--head-wght);letter-spacing:var(--head-track);
+  font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.1;margin:0}
+.pk-naphead .brush{display:block;font-size:.8em}
+/* a helyszínlap adatai (cím, térkép, termek) a cím alatt, halkan */
+.pk-lista-info{margin:var(--sp-3) auto 0;max-width:60ch;color:var(--fg-muted);font-size:var(--text-small);line-height:1.6}
+.pk-lista-info p{margin:.2em 0}
+.pk-lista-info a{color:var(--accent-a)}
+.pk-lista-info .hk-szam{display:inline-grid;place-content:center;min-width:24px;height:24px;margin-right:.4em;border-radius:50%;
+  background:var(--accent-b);color:var(--accent-contrast);font-size:.78rem;font-weight:700;vertical-align:middle}
+
+.pk-daytabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;max-width:720px;margin:0 auto var(--sp-5);
+  --pk-fill:var(--panel);--pk-fill-2:var(--bg-raise)}
+.pk-napi-eszkoz{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap;margin:0 0 var(--sp-5)}
+.pk-napi-eszkoz .pk-count{text-align:left;max-width:none}
+/* VISSZA A KERESŐBE — hangsúlyosan, fent és a lista végén (tulajdonosi szabály: minden a keresőbe vezet vissza) */
+.pk-lista-vege{display:flex;justify-content:center;margin:var(--sp-7) 0 var(--sp-8)}
