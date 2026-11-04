@@ -70,8 +70,12 @@
 
   /* ---------- SZÓRT FIRKÁK (#pageDecor) ---------- */
   function rnd(a, b) { return a + Math.random() * (b - a); }
+  // 🔴 A firka keretének viewBox-a „0 0 szélesség magasság” — NEM a motívum saját viewBox-a: a <use> a <symbol>-t a keret
+  // 0,0 pontjára teszi, és ha a keret a motívum koordinátáit kapja (pl. „181.65 284.47 39.15 38.06”), a rajz a kereten kívül
+  // esik — a firka üres doboz lesz (2026-11-04-ig így volt: a firkák a lapon voltak, de egy sem látszott).
   var MOTIVUMOK = [].map.call(document.querySelectorAll('.fg-motivumok symbol'), function (s) {
-    return { id: s.id, vb: s.getAttribute('viewBox') };
+    var v = (s.getAttribute('viewBox') || '').trim().split(/[\s,]+/);
+    return { id: s.id, vb: '0 0 ' + v[2] + ' ' + v[3] };
   });
 
   function szor(reteg) {

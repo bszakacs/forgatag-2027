@@ -88,8 +88,10 @@
   }
 
   /* ---- 5. FIRKA-DEKOR -------------------------------------------------- */
+  // 🔴 A keret viewBox-a „0 0 sz m” (NEM a motívum sajátja) — különben a <use> a rajzot a kereten kívülre teszi (mozgas.js).
   var MOTIVUMOK = [].map.call(document.querySelectorAll('.fg-motivumok symbol'), function(s){
-    return '<svg viewBox="' + s.getAttribute('viewBox') + '"><use href="#' + s.id + '"/></svg>';
+    var v = (s.getAttribute('viewBox') || '').trim().split(/[\s,]+/);
+    return '<svg viewBox="0 0 ' + v[2] + ' ' + v[3] + '"><use href="#' + s.id + '"/></svg>';
   });
   function pick(){ return MOTIVUMOK[(Math.random()*MOTIVUMOK.length)|0]; }
   /* a szórt átlátszóság a --doodle-opacity tokenre van skálázva:

@@ -226,4 +226,18 @@ class KezdolapTest extends TestCase
             $this->assertDoesNotMatchRegularExpression('#filament|admin-tema|tailwind|/build/|livewire#i', $forras, $forras);
         }
     }
+
+    /**
+     * 2026-11-04-i hiba: a firkák a lapon voltak (az elemszám stimmelt), de EGY SEM rajzolódott ki — a keret a motívum saját
+     * viewBox-át kapta, a <use> pedig a rajzot a keret 0,0 pontjára teszi, vagyis a látható részen kívülre. Mindkét
+     * firka-építő (a közös réteg és a kezdőlap) „0 0 szélesség magasság” keretet adjon.
+     */
+    public function test_a_firka_keret_a_motivum_meretet_kapja_nem_a_koordinatait(): void
+    {
+        foreach (['js/mozgas.js', 'js/kezdolap.js'] as $f) {
+            $js = (string) file_get_contents(public_path($f));
+            $this->assertMatchesRegularExpression("/0 0 ' \\+ v\\[2\\] \\+ ' ' \\+ v\\[3\\]/", $js, "{$f}: a keret nem „0 0 sz m”");
+            $this->assertDoesNotMatchRegularExpression('/viewBox="\'\s*\+\s*s\.getAttribute\(\'viewBox\'\)/', $js, "{$f}: a motívum viewBox-a a keretre került");
+        }
+    }
 }
