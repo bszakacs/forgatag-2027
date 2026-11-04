@@ -703,12 +703,16 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
   címsor-/bekezdés-margójának visszaállítása `:where(main)`-nel — a 2026-os lapokon az élt —, a tiltott szív, a 2026-os `LINKIFY_CSS`, az
   `article.css` két hiányzó szabálya, a térképszám-jelvény); `programlap.css` = a `ProgramDetailView` `<style>`-ja; `terkep-lap.css` = a
   programkereső CSS-éből a térképhez kellő szabályok (a teljes `programkereso.css` itt nem tölthető: asztalon a térképet a szűrőrácsba rendezi).
-  A közös betöltés: `partials/alap-fej` (alap.css + alap-szerver.css + `alap.js`).
-- **Kártya EGY helyen:** `partials/programkartya` (a 2026-os `ProgramCard`, a `.pc-doodle`-lal — az Arculat „Fotó nélküli kártyákon”
-  kapcsolója erre hat) + `App\Support\ProgramKartya` (kártya-adat, `rovidNap` „aug. 28.”, `helyszinMegj` „Vár › terem”, `idopontok`,
-  `extrak` = a 2026-os `extra-fields.ts`, `abc` = magyar ábécérend Collatorral, `KAPCSOLATOK`).
-- **JS:** `alap.js` (a Base szkriptjéből: „MA” jelölés, a mai nap fülének jelvénye, nyomtatás), `napi.js` (a `DailyProgramView` szűrője +
-  élő állapot), `programlap.js` (megosztás). A felúszás a `mozgas.js`-é. A szív és a „Naptárba” a saját körükig `disabled`.
+  A közös betöltés: `partials/alap-fej` (alap.css + alap-szerver.css) — a listák, a program lapja, a `/terkep`.
+- 🔴 **PROGRAMLISTA — TULAJDONOSI SZABÁLY (2026-11-04): BÁRHOL listázunk programot, a PROGRAMKERESŐ sablonja listázza — nem hasonló,
+  hanem UGYANAZ a kód.** Lánc: `programok/_napok` (nap → napszak) → `_csoportok` → `_kartyak`. A kereső (`_eredmeny`) és a közös
+  listalap (`programok/lista`: napi nézet, kategória-, helyszínlap — jobb oldali hasáb nélkül) egyaránt ezt hívja. **MINDEN a keresőbe
+  vezet vissza:** a listalapon fent és lent `pk-vissza` gomb a lap szűrésére (`$kereso` = `ProgramSzures`), a sor a kereső felugró
+  ablakára (`?…&program=<slug>&idopont=<id>`), a program lapjának morzsája és kategóriái a keresőbe. Kategórialistára / más
+  kategória- vagy helyszínlapra listáról NEM linkelünk. **A képhely MINDIG ott van:** fotó nélkül `.thumb.pk-noimg` + `.pc-doodle`
+  (az Arculat „Fotó nélküli kártyákon” kapcsolója erre hat — a keresőben is). A 2026-os `ProgramCard` (`partials/programkartya`),
+  az `alap.js` és a `napi.js` kivezetve. `App\Support\ProgramKartya` maradéka: `rovidNap`, `helyszinMegj`, `idopontok`, `extrak`, `abc`.
+- **JS:** `programlap.js` (megosztás). A felúszás a `mozgas.js`-é. A szív és a „Naptárba” a saját körükig `disabled`.
 - **A `/terkep` (tulajdonosi döntés, 2026-11-04):** a programkereső rajzolt térképe (`programok/_terkep`) `$mod = 'lap'`-pal → a `terkep.js`
   `LAP` ága: kattintásra a helyszín lapja, `?helyszin=` kiemelés. `Terkep::jeloloje()` = a helyszínlap térképszáma (saját vagy a szülőé).
   ⚠ A rajzok `public/terkeprajz/` alatt — **`public/` alá ne kerüljön olyan mappa, aminek a neve egy publikus útvonal** (a webszerver a
@@ -716,7 +720,7 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
 - **Helyszín-adat:** `HelyszinTerkepImport` (csomag: `database/import/helyszin-terkep-2026.json` — név, román név, cím, szülő, térkép): a
   `POTLANDO` 8 helyszín létrehozása, a román név/cím és a térkép CSAK az üresbe; a `ProgramTesztImport` egyszeri pótló lépése
   (`JELOLES_POTLAS`) a 8 helyszín programjait hozza — ha a tesztadatot törölték, semmit.
-- Tesztek: `tests/Feature/HelyszinKategoriaTest.php` (10).
+- Tesztek: `tests/Feature/HelyszinKategoriaTest.php` (a listaszabály: `test_minden_programlista_a_kereso_soraival_es_a_keresobe_visz`).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 

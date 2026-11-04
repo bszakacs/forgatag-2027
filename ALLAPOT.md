@@ -388,8 +388,12 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    375 px-en 8 lap, vízszintes görgetés nincs; hibás kérés 0.
    **Válaszidő (háromszor mérve, letöltéssel):** helyszínlap (Bernády) 0,33–0,35 s · napi nézet 0,32–0,38 s · `/terkep` 0,39–0,43 s ·
    `/nap/allando` (70 kártya) 0,53–0,54 s · **a Vár lapja (190 kártya, a termeivel) 0,62–0,65 s**, 244 kB tömörítés előtt.
-   **Utána (tulajdonosi döntés, 2026-11-04): a helyszín- és kategórialap kártyái rácsban** (Nyitott kérdések, eldöntve) — feltolva,
-   a cPanelben telepíteni kell.
+   **Utána — TULAJDONOSI SZABÁLY (2026-11-04): BÁRHOL listázunk programot, a programkereső sorai listázzák, ugyanazzal a kóddal**
+   (a közbülső rácsos megoldást felülírja). A napi nézet, a kategória- és a helyszínlap a kereső sorait mutatja (jobb oldali hasáb
+   nélkül), fent és lent hangsúlyos „Vissza a programkeresőhöz” gombbal, a lap szűrésére; a sor a kereső felugró ablakát nyitja; a
+   program lapjának morzsája és kategóriái is a keresőbe visznek. A képhely mindig ott van: fotó nélkül a sarok-firka (a keresőben is).
+   Helyben ellenőrizve (asztal + 375 px + román; vízszintes görgetés nincs), 192 teszt zöld. **Feltolva (a80a758b), a cPanelben
+   telepíteni kell, utána élesben mérni.**
 
 ## Ami ezután jön, ebben a sorrendben
 
@@ -488,10 +492,9 @@ nem nyúlunk.**
   Ugyanide tartozik: **23 helyszínnek nincs román neve** — mind olyan, ami csak a 2027-es kezdőlistában van, 2026-ban nem
   (pl. Vár, Csicsergő · Vár, Szűcsök Bástyája · Somostető, szabadtéri amfiteátrum · Spectrum Színház); a román lapon a magyar látszik.
   Kézi fordítás kell (Helyszínek → román név) — nem fordítottam gépen (saját tartalom).
-- ~~A helyszín- és kategórialap kártyáinak szélessége~~ — **eldöntve (2026-11-04): RÁCS** („ez csúnya így”). Tudatos eltérés a
-  2026-ostól (ott rács nélkül, 1280 px-en egy kártya 1265 × 990 px volt): a 2026-os „Állandó” fül rácsa (`.allando-grid`) — asztalon
-  soronként 4 kártya (288 × 423 px), telefonon egy oszlop. Közben a fotó nélküli kártya (2026-ban élesben sosem látszott) kategórianeve
-  aláhúzás nélkül, a hosszú szó tördelve (a rácsban levágódott) — `alap-szerver.css`.
+- ~~A helyszín- és kategórialap kártyáinak szélessége~~ — **eldöntve (2026-11-04): előbb rács, aztán SZABÁLY: bárhol listázunk
+  programot, a programkereső sorai listázzák, ugyanaz a kód** („MINDEN a keresőre vezet vissza”). Tudatos eltérés a 2026-ostól
+  (ott a napi nézet, a kategória- és a helyszínlap a `ProgramCard` kártyáit mutatta). Részletek: CLAUDE.md, Base-lapok.
 - ~~A tesztadat törlése~~ — **eldöntve (2026-10-30): a 61 helyszín nélküli tesztprogram a képeivel együtt törölve** (lásd fent, Tesztadat).
 
 - **ÚJ — a Rólunk román zárómondata hibás adat** (a 2026-os behozatalból): a „záró bekezdés” román szövege így végződik:
