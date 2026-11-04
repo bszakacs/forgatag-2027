@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-04 (PROMPT-15, helyszín- és kategórialapok, `/terkep`, napi nézet, program lapja — kész helyben, feltolva; az élesítés a felhasználóval)
+**Utolsó frissítés:** 2026-11-04 (PROMPT-15, helyszín- és kategórialapok, `/terkep`, napi nézet, program lapja — kész, ÉLESBEN telepítve és megmérve)
 
 ---
 
@@ -275,7 +275,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     médiatárban 2 új sorként) · a sorrend a 2026-os CSS-betöltési sorrend (a csúszka térköze ezen múlt).
 
 - **Helyszín- és kategórialapok, `/terkep`, napi nézet, program lapja** (`PROMPT-15` = a korábbi 12/b, 2026-11-04) — **kész helyben,
-  feltolva (`7bcbb4cb`); élesítés: „MOST folyik”, 8.** Részletek: `CLAUDE.md` 8. pont „Base-lapok”.
+  ÉLESBEN telepítve és megmérve (2026-11-04) — „MOST folyik”, 8.** Részletek: `CLAUDE.md` 8. pont „Base-lapok”.
   - **A 8 hiányzó helyszín pótolva** (tulajdonosi döntés, 2026-11-04) a 2026-os nevükkel, címükkel, szülőjükkel és térkép-adatukkal
     (`seed/venues.csv` + `forgatag:helyszin-terkep-import`, ismételhető). Közben **mind a 46 2026-os helyszín megkapta a 2026-os román
     nevét** (2027-ben egyiknek sem volt — a román lapokon magyar helyszínnév állt volna; csak üres mezőbe ír). A **tesztprogram-behozatal
@@ -380,11 +380,15 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    asztalon 123 kB — 2026-ban a telefon is az 1920-as képet kapta).
    **Valódi telefonon, mobilneten mérve (a tulajdonos, 2026-11-04): a nyitókép fotója 1–2 mp alatt jelenik meg.**
    ~~**Hátra:** a Beállításokban az állapot-kapcsoló ki-be próbája~~ — **a tulajdonos élesben kipróbálta (2026-11-04): működik.**
-8. **Helyszín- és kategórialapok, `/terkep`, napi nézet, program lapja (PROMPT-15)** — feltolva (`7bcbb4cb`), **a cPanelben telepíteni
-   kell.** A naplóban: `HELYSZÍN-TÉRKÉP: 8 hiányzó helyszín pótolva …`, `… helyszín román neve/címe pótolva …`, és
-   `PROGRAM-TESZT: pótlás (a 8 pótolt helyszín programjai): 60 program …`. Élesben megnézendő: a 8 új helyszín lapja a programjaival,
-   `/terkep` (jelölő → helyszínlap, `?helyszin=` kiemelés), a programkereső „szűrj, aztán kattints” próbája, `/nap/…` és `/nap/allando`,
-   egy program lapja, románul és 375 px-en, mért válaszidővel.
+8. **Helyszín- és kategórialapok, `/terkep`, napi nézet, program lapja (PROMPT-15)** — **élesben telepítve és megnézve (2026-11-04).**
+   **Élesben mérve (proba.forgatag.ro, böngészőből):** minden új lap 200 (HU és RO), a régi `/terkep/…svg` 404 (a mappa megszűnt);
+   **a 8 pótolt helyszín lapján ott vannak a programjaik** (17 + 19 + 1 + 4 + 1 + 1 + 1 + 16 = 60, mind fotó nélküli kártya sarok-firkával);
+   `/terkep`: 41 jelölő + 3 szélső jelvény + 69 soros jelmagyarázat, a `?helyszin=bernady-haz` a Város fülre vált és kiemel, a szélső
+   jelvényre (Fociakadémia) kattintva a helyszínlap nyílik (41-es térképszámmal); a programkeresőben „szűrj, aztán kattints” → 31 → 14;
+   375 px-en 8 lap, vízszintes görgetés nincs; hibás kérés 0.
+   **Válaszidő (háromszor mérve, letöltéssel):** helyszínlap (Bernády) 0,33–0,35 s · napi nézet 0,32–0,38 s · `/terkep` 0,39–0,43 s ·
+   `/nap/allando` (70 kártya) 0,53–0,54 s · **a Vár lapja (190 kártya, a termeivel) 0,62–0,65 s**, 244 kB tömörítés előtt.
+   **Hátra (a felhasználóval):** a kártyák szélessége a helyszín-/kategórialapon (Nyitott kérdések, PROMPT-15).
 
 ## Ami ezután jön, ebben a sorrendben
 
