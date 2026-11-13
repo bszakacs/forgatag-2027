@@ -472,6 +472,15 @@ nem nyúlunk.**
    csak **18%-a** szerkeszthető. Átjött, ami szerkeszthető volt (85 kulcs, az aloldal lapján „Szerkeszthető szövegek”);
    **a többi a publikus sablonok körében pótlandó** *(2026-10-29: a Rólunk és a hírlista TÖRLESZTVE — `App\Support\LapSablon`)* (forrás: `..\forgatag-os\frontend\src\rolunk\`, `fesztivalrend\`,
    `videoarchivum\`, `home-v7\` stb. — csak olvasásra), úgy, hogy minden szöveg kulcsra kerüljön, HU/RO.
+10. **A 2026-os élő oldal galériája legfeljebb 100 képet mutat** (mérve 2026-11-13, PROMPT-16 élesítés után): a
+    „Forgatag 2026” galériában 108 kép van, kint 100. Ok: `..\forgatag-os\frontend\src\lib\directus.ts` 694. sor —
+    a beágyazott `images` listára a Directus alapból 100-as korlátot tesz (`deep[images][_limit]=-1` hiányzik).
+    A régebbi galériák 100 alattiak (max. 99), ezért eddig nem jött elő. **Befagyasztott kód — NEM javítottuk.**
+    A 2026-os archívum újraépítésekor (`/forgatag2026`) ez magától előjön — akkor javítandó, a tulajdonos döntésével.
+    A 2027-es rendszer (Laravel) galériája nem érintett.
+    *Mellékes, szintén a befagyasztott kódban:* `scripts/publish-live.sh` 101. sora egy bemenet nélküli `sed` — kézi
+    indításnál a szabványos bemenetre vár (a build-runner zárt bemenettel indítja, ott ártalmatlan); a runner
+    „elavult-e az élő oldal” figyelője a galéria/videó változást nem észlelte (`contentChangedAt: null`).
 
 ## Amit a mentés leltára felszínre hozott
 
