@@ -465,7 +465,9 @@ nem nyúlunk.**
    látszanak (ugyanaz a fájl, nem másolat); cserélni továbbra is a /tema-ban lehet.
 7. **Az admin témáját kézzel kell fordítani** (`npm run admin-tema`, a fejlesztőgépen), ha új Filament-nézet
    új Tailwind-osztályt használ — különben az új osztály a szerveren hatástalan. A lefordított fájl a tárolóban van.
-8. **A Curator két részletét átvettük** (a panel „Fájlok hozzáadása” művelete, a képválasztó panel-indítója) —
+8. **A Curator három részletét átvettük** (a panel „Fájlok hozzáadása” művelete, a képválasztó panel-indítója, és
+   2026-11-14 óta a panel NÉZETE is: `resources/views/mediatar/curator-panel.blade.php` — a feltöltés utáni számláló sor
+   és a gombsorrend miatt; a befejező gomb „Beillesztés a galériába (N kép)”, elsődleges; a másik „Csak a médiatárba”) —
    a csomag frissítésekor össze kell vetni a sajátunkat az újjal (`App\Livewire\MediaPanel`, `App\Filament\Forms\MediaPicker`).
 9. **A 2026-os aloldalak szövegének nagy része BEÉGETETT magyar** (tulajdonosi rögzítés, 2026-10-28 — MOST NEM javítjuk).
    A 2026-os Astro-sablonokban a szöveg zöme nem szerkeszthető kulcson volt; a fesztiválrend lapján például a szövegnek

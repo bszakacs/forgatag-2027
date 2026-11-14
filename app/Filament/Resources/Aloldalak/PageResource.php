@@ -74,6 +74,7 @@ class PageResource extends Resource
                 MediaPicker::make('hero_media_id')->label('Nyitókép')
                     ->relationship('hero', 'id')
                     ->gyujtemeny(Gyujtemeny::Lapok)
+                    ->befejezoFelirat('Beállítás nyitóképként')
                     ->columnSpanFull(),
             ]),
             Section::make('Magyar')->columnSpanFull()->schema([
@@ -111,6 +112,7 @@ class PageResource extends Resource
                             MediaPicker::make('media_id')->label('Kép')
                                 ->relationship('media', 'id')
                                 ->gyujtemeny(Gyujtemeny::Lapok)
+                                ->befejezoFelirat('Kép beállítása')
                                 ->visible(fn (Get $get) => self::szovegTipus($get) === 'kep'),
                         ]),
                 ]),
@@ -142,6 +144,7 @@ class PageResource extends Resource
                             MediaPicker::make('media_id')->label('Kép')
                                 ->relationship('media', 'id')
                                 ->gyujtemeny(Gyujtemeny::Lapok)
+                                ->befejezoFelirat('Kép beállítása')
                                 ->visible(fn (Get $get) => $get('type') === 'image'),
                             Grid::make(['default' => 1, 'md' => 3])
                                 ->visible(fn (Get $get) => $get('type') === 'cta')

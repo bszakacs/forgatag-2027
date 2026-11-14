@@ -57,7 +57,8 @@ class GalleryResource extends Resource
                     ->orderColumn('sort')
                     ->multiple()
                     ->listDisplay(false)
-                    ->gyujtemeny(Gyujtemeny::Galeriak),
+                    ->gyujtemeny(Gyujtemeny::Galeriak)
+                    ->befejezoFelirat('Beillesztés a galériába'),
             ]),
         ]);
     }

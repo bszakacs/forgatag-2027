@@ -76,6 +76,33 @@ class MediatarTest extends TestCase
         $this->assertSame(MediaLicense::Sajat, $m->license, 'adminban feltöltött kép: saját forrás az alapérték');
     }
 
+    public function test_a_feltoltes_utani_gombok_megmondjak_mi_tortenik(): void
+    {
+        // A BEFEJEZŐ gomb (mentés + betétel + bezárás) az elsődleges, a felirata a mezőhöz igazodik és megszámolja a
+        // képeket; a másik csak a médiatárba ment (tulajdonosi kérés, 2026-11-14).
+        $this->actingAs($this->admin);
+        $lw = Livewire::test(MediaPanel::class, ['settings' => [
+            'diskName' => 'mediatar', 'visibility' => 'public', 'isMultiple' => true, 'statePath' => 'data.media',
+            'acceptedFileTypes' => ['image/*'], 'gyujtemeny' => Gyujtemeny::Galeriak->value, 'befejezo' => 'Beillesztés a galériába',
+        ]])->set('panelData.files_to_add', [UploadedFile::fake()->image('a.jpg', 20, 20), UploadedFile::fake()->image('b.jpg', 20, 20)]);
+
+        // A befejező gomb ELÖL áll, a „Csak a médiatárba” utána; fölöttük a számláló sor.
+        $html = $lw->html();
+        // (a „Csak a médiatárba” a súgóban is szerepel — a GOMB az utolsó előfordulás)
+        $poz = [mb_strpos($html, '2 feltöltött kép vár beillesztésre.'), mb_strpos($html, 'Beillesztés a galériába (2 kép)'), mb_strrpos($html, 'Csak a médiatárba')];
+        $this->assertNotContains(false, $poz, 'hiányzik a számláló vagy valamelyik gomb felirata');
+        $this->assertSame($poz, collect($poz)->sort()->values()->all(), 'a sorrend: számláló, befejező gomb, „Csak a médiatárba”');
+
+        $lw->assertSee('2 feltöltött kép vár beillesztésre.')
+            ->assertActionHasLabel('addInsertFiles', 'Beillesztés a galériába (2 kép)')
+            ->assertActionHasColor('addInsertFiles', 'primary')
+            ->assertActionHasLabel('addFiles', 'Csak a médiatárba')
+            ->assertActionHasColor('addFiles', 'gray');
+
+        $lw->callAction('addInsertFiles')->assertDispatched('insert-media');
+        $this->assertSame(2, Media::query()->inCollection(Gyujtemeny::Galeriak)->where('origin', MediaOrigin::Admin)->count());
+    }
+
     public function test_kozvetlenul_a_mediatarba_feltoltott_kep_rendezetlen(): void
     {
         $this->actingAs($this->admin);

@@ -61,6 +61,7 @@ class SponsorResource extends Resource
                 MediaPicker::make('logo_media_id')->label('Logó')
                     ->relationship('logo', 'id')
                     ->gyujtemeny(Gyujtemeny::Tamogatok)
+                    ->befejezoFelirat('Beállítás logóként')
                     ->columnSpanFull(),
             ]),
         ]);

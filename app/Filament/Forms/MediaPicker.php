@@ -26,6 +26,16 @@ class MediaPicker extends CuratorPicker
         return $this;
     }
 
+    /** A képválasztó BEFEJEZŐ gombjának felirata, pl. „Beillesztés a galériába” (App\Livewire\MediaPanel). */
+    protected ?string $befejezoFelirat = null;
+
+    public function befejezoFelirat(string $felirat): static
+    {
+        $this->befejezoFelirat = $felirat;
+
+        return $this;
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -66,6 +76,7 @@ class MediaPicker extends CuratorPicker
                     'statePath' => $component->getStatePath(),
                     'visibility' => $component->getVisibility(),
                     'gyujtemeny' => $component->gyujtemeny?->value,
+                    'befejezo' => $component->befejezoFelirat,
                 ],
             ]));
     }
