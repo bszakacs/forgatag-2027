@@ -478,7 +478,9 @@ nem nyúlunk.**
     „Forgatag 2026” galériában 108 kép van, kint 100. Ok: `..\forgatag-os\frontend\src\lib\directus.ts` 694. sor —
     a beágyazott `images` listára a Directus alapból 100-as korlátot tesz (`deep[images][_limit]=-1` hiányzik).
     A régebbi galériák 100 alattiak (max. 99), ezért eddig nem jött elő.
-    **JAVÍTVA A FORRÁSBAN, ÉLESÍTÉS SZÜNETEL (2026-11-14, tulajdonosi kérés, majd szüneteltetés):** `forgatag-os`
+    **LEZÁRVA — NEM FOLYTATJUK (tulajdonosi döntés, 2026-11-14: „a 2026-ossal nem járunk többet”).** Az alábbi
+    előkészület (helyi commit, a NAS-on váró fájl) érvényét vesztette; ne élesítsd, ne töltsd fel.
+    *Korábbi állapot:* **JAVÍTVA A FORRÁSBAN, ÉLESÍTÉS SZÜNETEL (2026-11-14, tulajdonosi kérés, majd szüneteltetés):** `forgatag-os`
     commit `3f2ab4a` (helyben, nincs feltolva) — `&deep[images][_limit]=-1`; a NAS-on mérve 2026 = 108 kép.
     A javított fájl a NAS-on vár: `/volume1/homes/Portik/forgatag-javitas/directus.ts`. **Hátra:** (1) root
     DSM-feladat, ami a helyére másolja: `cp …/forgatag-javitas/directus.ts …/forgatag/frontend/src/lib/directus.ts`
