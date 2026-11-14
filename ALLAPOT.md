@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-14 (PROMPT-17 **1. része**: fesztiválrend + kézművesek — kész HELYBEN, még NINCS feltolva/élesben; a 2. rész: galéria, videó-archívum, támogatók)
+**Utolsó frissítés:** 2026-11-14 (PROMPT-17 **1. része**: fesztiválrend + kézművesek — kész, ÉLESBEN telepítve és megmérve; a 2. rész: galéria, videó-archívum, támogatók)
 
 ---
 
@@ -332,8 +332,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   10, lap 52, média 16, szervezők 14; „fesztivál előtt” állapotban +12 a Kiemelt sávban) · programkereső 23/23 (a mai lista hosszán) ·
   Hamarosan 2/2 · beküldő űrlap 2/2 (beágyazott SVG) · Rólunk, hírlista, hír, napi nézet, program lapja 0 — mint 2026-ban.
 
-- **A maradék publikus lapok — 1. rész: fesztiválrend + kézművesek** (`PROMPT-17`, 2026-11-14) — **kész HELYBEN, még NINCS feltolva
-  és élesben** („MOST folyik”, 9.). **A kör kettévágva** (a tulajdonos javaslatára): ez a szöveges rész; a **2. rész a média-nehéz
+- **A maradék publikus lapok — 1. rész: fesztiválrend + kézművesek** (`PROMPT-17`, 2026-11-14) — **kész, ÉLESBEN telepítve és mérve
+  (2026-11-14, `d6c9ee29`)** („MOST folyik”, 9.). **A kör kettévágva** (a tulajdonos javaslatára): ez a szöveges rész; a **2. rész a média-nehéz
   lapok** (galéria, videó-archívum, támogatók — „Ami ezután jön”, 6.). **A „Csapat” lap KIMARAD — tulajdonosi döntés (2026-11-14):** a
   2026-os élő oldalon nem volt ilyen lap, a menüben sincs, és a csapat-sáv 2026-07-27-én a kezdőlapról is kikerült (forgatag-os `1d2ffde`)
   — nincs mit átemelni. A csapat adatai (56 fő) a 2. részben jönnek be az adatbázisba, lap nélkül. A menüből ezzel csak a 2. rész három
@@ -439,11 +439,16 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    kéthasábos rácsba tette (jobbra 440 px-es üres hasáb). Most `.blk.pk-napi > .wrap{display:block}` (`programlista.css`); 1440 és 1920
    px-en mérve mindhárom laptípus egy hasábos. ⚠ Tanulság: a listalapokat SZÉLES asztalon is nézd meg, ne csak keskeny ablakban.
 
-9. **A maradék lapok 1. része (PROMPT-17: fesztiválrend + kézművesek)** — **helyben kész, NINCS feltolva és telepítve.** Telepítés után
-   a naplóban: egy új migráció (`craftspeople`), `KEZMUVESEK: 67 kézműves behozva (67 képpel, a médiatárból).` és `LAPSZÖVEG:
-   fesztivalrend: 102 új kulcs, 1 üres mező kitöltve` / `kezmuvesek: 8 új kulcs`. Élesben megnézendő és mérendő: `/fesztivalrend` és
-   `/kezmuvesek` (HU és RO, 375 px), egy lenyíló, a kézműves felugró ablaka és lapozója, a **válaszidő** (helyben a Docker miatt ~7 mp —
-   nem mérhető); az adminban Tartalom → Kézművesek, és egy szöveg átírása Aloldalak → Fesztiválrend alatt.
+9. **A maradék lapok 1. része (PROMPT-17: fesztiválrend + kézművesek)** — **élesben telepítve (2026-11-14, `d6c9ee29`) és megnézve.**
+   **Élesben mérve (proba.forgatag.ro):** `/fesztivalrend`, `/kezmuvesek` HU és RO 200; 8 lenyíló, 67 kézműves kártya, „1–18. a 67
+   kézművesből” / „1–18. din 67 de meșteșugari”, a 2027-es dátum mindkét nyelven; minden CSS/JS és a kézművesek képei (webp, 560×420 és
+   900×506) 200. **375 px-en:** vízszintes görgetés nincs; a fesztiválrend nyitott lenyílókkal betűre a 2026-os számokkal (787 / 1880 /
+   10276 / 661; lenyílók 1027 … 523), a lenyíló kattintásra nyílik, a nyitókép 10/10 firkája kirajzolódik; a kézműveseken 52/52 firka
+   kirajzolva, a felugró ablak a nagy képpel és a közös görgetővel nyílik. **Válaszidő (háromszor, tömörítve):** fesztiválrend 0,34–0,39 s
+   (31 kB), kézművesek 0,35–0,40 s (49 kB), román kézművesek 0,36–0,40 s. **A menüből már CSAK a 2. rész lapjai 404-esek** (Galéria,
+   Támogatók, Videó archívum — a két videós horgony is).
+   **Hátra (a felhasználóval, az ő belépésével):** az adminban Tartalom → Kézművesek (lista, egy kézműves szerkesztése), és egy szöveg
+   átírása Aloldalak → Fesztiválrend → Szerkeszthető szövegek alatt — megjelenik-e a lapon.
 
 ## Ami ezután jön, ebben a sorrendben
 
