@@ -1,0 +1,199 @@
+/* ============================================================================
+ *  A 2026-os FESZTIVÁLREND STÍLUSLAPJA — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-17).
+ *  Forrás: ../forgatag-os/frontend/src/fesztivalrend/style.css (a befagyasztott, mai állapot).
+ *  NE SZERKESZD ÉRTELMEZVE: ami itt változik, az a 2026-os lap kinézetétől tér el.
+ *  A 2027-es keret miatti kiegészítés KÜLÖN fájlban: fesztivalrend-szerver.css.
+ *  A gépies eltérések (mind megjelölve „2027:”-tel):
+ *   · a `body{…}` szabály kikerült: a háttér ugyanez a recept a közös keret rögzített rétegén (publikus.css body::before —
+ *     a background-attachment:fixed telefonon sötét sávot hagyott), a body overflow-x:hidden a ragadós fejlécet törné;
+ *   · a fejléc nyelvváltójának `.lang a` szabálya kikerült: a nyelvváltó a közös fejlécé, minden lapon ugyanaz;
+ *   · a felúszás (.reveal) a közös mozgás-rétegé (publikus.css + mozgas.js), itt nincs második példánya;
+ *   · a címbetűs szabályokban `var(--font-display)` → `var(--font-head)` (ugyanaz a betű — a --font-display a --font-head
+ *     álneve volt) és a téma vastagsága (értéke ugyanúgy 400; TemaTest).
+ * ========================================================================== */
+/* ============================================================================
+   Fesztiválrend aloldal — a design (forgatag_2026_fesztivalrend_3.html) stílusa.
+   • Minden szabály a .fr-page alá szűkítve → nem ütközik a Base fejlécével/láblécével.
+   • Betűk: az Amphora token-fontok (--font-head / --font-body / --font-accent);
+     a design saját @font-face (Tingler/Hanken Grotesk) ELDOBVA — a fontok a fonts.css-ből jönnek.
+   • Színek: ahol van Amphora-token (--accent/--ink/--muted/--line/--r/--shadow), azt használjuk
+     (a global.css téma-érzékenyen adja); csak a design-specifikus „confetti" palettát adjuk hozzá.
+   ========================================================================== */
+
+/* v7 sötét lila háttér az oldalnak (csak ez az oldal tölti ezt a CSS-t). */
+/* A lap-háttér, a szövegszín és a betű A TÉMÁBÓL (2026-07-29) — ugyanaz a recept, mint a
+   kezdőlap .fgl-atmo rétegénél. Korábban itt beégetett literálok voltak, és a gradiens harmadik
+   stopja (#3a3563 = a RÉGI panel-érték) miatt ez a három oldal látható módon kilógott a
+   kanonikus palettából. Token-szabály: téma-tulajdonú érték nem lehet beégetve. */
+/* 2027: a body-szabály kikerült (lásd a fejet). */
+*{box-sizing:border-box}
+
+/* A PALETTA A TÉMÁBÓL JÖN (2026-07-28). Ez az oldal SAJÁT token-neveket használ (--ink, --surface,
+   --pink…), ezért nem törölni kell őket, hanem RÁKÖTNI a téma tokenjeire: így a nevek maradnak
+   (a lap többi szabályát nem kell átírni), de az érték egyetlen helyről, a /tema-ból jön.
+   A beégetett értékek pontosan a kanonikus téma értékei voltak, tehát a látvány nem változik.
+   A fejléc/láblécet továbbra is a közös chrome.css adja. */
+.fr-page{
+  --ink:var(--fg); --muted:var(--fg-muted); --muted-2:var(--fg-faint);
+  --accent:var(--accent-b); --accent-2:var(--accent-a); --accent-ink:var(--accent-contrast);
+  --surface:var(--panel); --surface-2:var(--card-hover);
+  --line-2:var(--line-strong);
+  --pink:var(--doodle-pink); --lime:var(--doodle-lime); --yellow:var(--doodle-yellow);
+  --blue:var(--doodle-blue); --red:var(--doodle-red); --violet:var(--doodle-purple);
+  --font-display:var(--font-head);
+  /* saját szerkezeti tokenek (a téma nem ad ki ilyet) */
+  --r:18px; --r-sm:12px; --maxw:1240px; --shadow:0 20px 55px -22px rgba(0,0,0,.65);
+  color:var(--ink);
+}
+
+/* 2027: a .lang a szabályok kikerültek (a nyelvváltó a közös fejlécé). */
+
+/* ---------- konténer + szekció-alap ---------- */
+.fr-page .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative}
+.fr-page section.blk{position:relative;padding:84px 0;overflow:hidden}
+.fr-page .blk>.wrap{position:relative;z-index:2}
+.fr-page h1,.fr-page h2,.fr-page h3{font-family:var(--font-head);font-weight:var(--head-wght);line-height:1.03;letter-spacing:-.015em}
+
+/* világos + lila szekcióváltozatok (a design szándéka szerint) */
+.fr-page .blk.white{background:#fff;color:#2a2450;border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06)}
+.fr-page .blk.purple{background:linear-gradient(180deg,#36315D 0%,#6F5A9D 100%);color:#F3EEFB}
+
+/* 2027: a .reveal a közös mozgás-rétegé (publikus.css + mozgas.js). */
+
+/* ---------- lebegő márka-firkák (hero) ---------- */
+.fr-page .decor-layer{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.fr-page .decor{position:absolute;pointer-events:none;will-change:transform;
+  animation:fr-floatDown var(--dur,26s) ease-in-out infinite alternate;animation-delay:var(--dl,0s)}
+.fr-page .decor svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 10px rgba(20,10,45,.18))}
+.fr-page .decor.hero-decor{animation:fr-floatHero var(--dur,10s) ease-in-out infinite alternate;animation-delay:var(--dl,0s)}
+@keyframes fr-floatDown{from{transform:translate(0,0) rotate(var(--r0,0deg))}to{transform:translate(var(--dx,0px),var(--dy,60px)) rotate(var(--r1,0deg))}}
+@keyframes fr-floatHero{0%{transform:translate(calc(var(--ax)*-1),calc(var(--ay)*-1)) rotate(var(--r0,0deg))}100%{transform:translate(var(--ax),var(--ay)) rotate(var(--r1,0deg))}}
+
+/* ---------- HERO (subhero) ---------- */
+.fr-page .subhero{position:relative;overflow:hidden;padding:104px 0 66px;text-align:center}
+.fr-page .subhero .wrap{position:relative;z-index:3}
+.fr-page .subhero h1{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--ink);
+  font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.08;margin:0 auto;letter-spacing:.005em}
+.fr-page .subhero h1 .ln{display:block}
+.fr-page .fr-h1{color:var(--accent);text-shadow:0 0 18px rgba(245,145,30,.55),0 0 44px rgba(245,145,30,.35),0 0 78px rgba(255,184,77,.28)}
+.fr-page .fr-sub-lead{max-width:640px;margin:16px auto 0;color:var(--muted);font-size:clamp(1.02rem,1.6vw,1.2rem)}
+.fr-page .fr-intro{max-width:760px;margin:52px auto 0;text-align:center}
+.fr-page .fr-intro .lead{font-size:clamp(1.12rem,1.9vw,1.34rem);line-height:1.55;color:var(--ink)}
+.fr-page .fr-intro .lead+.lead{margin-top:16px}
+.fr-page .fr-intro .ott{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--accent);
+  font-size:clamp(1.9rem,4.4vw,3rem);margin-top:52px;line-height:1.12;padding-bottom:.06em}
+
+/* ---------- szekció- és kártyacímek ---------- */
+.fr-page .fr-sec-title{font-family:var(--font-head);font-weight:var(--head-wght);color:var(--accent);
+  font-size:clamp(2.2rem,4.6vw,3.5rem);line-height:1.16;padding-bottom:.08em;margin:0}
+.fr-page .fr-ct{font-family:var(--font-head);font-weight:var(--head-wght);line-height:1.28;padding-bottom:.12em;
+  background-image:linear-gradient(135deg,#7E64C6 0%,#5A3EA6 52%,#3C2A72 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.fr-page .fr-ic2,.fr-page .fr-ic3{width:100%;height:100%;display:block}
+
+/* ---------- Gyors tudnivalók ---------- */
+.fr-page .fr-quick{padding-top:96px}
+.fr-page .fr-quick .fr-sec-title{margin-bottom:34px}
+.fr-page .fr-qcard{background:#fffdf8;border:2px solid rgba(245,145,30,.55);border-radius:26px;
+  box-shadow:0 0 0 6px rgba(245,145,30,.10),0 26px 60px -26px rgba(245,145,30,.55),0 0 60px -10px rgba(245,145,30,.35);
+  padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fr-page .fr-qitem{display:flex;gap:20px;padding:26px;border-radius:18px}
+.fr-page .fr-qitem:hover{background:rgba(245,145,30,.06)}
+.fr-page .fr-qico{flex:0 0 auto;width:64px;height:64px}
+.fr-page .fr-qitem h3{font-size:clamp(1.5rem,2.4vw,2rem);margin-bottom:8px}
+.fr-page .fr-quick .fr-qitem p{color:#4b4568;font-size:1rem;line-height:1.6}
+
+/* ---------- accordion ---------- */
+.fr-page .fr-acc-list{display:flex;flex-direction:column;gap:20px}
+.fr-page .fr-acc{border-radius:22px;background:transparent;
+  box-shadow:0 0 0 1px rgba(255,184,77,.55),0 0 34px -6px rgba(245,145,30,.55),0 18px 40px -20px rgba(245,145,30,.6);
+  transition:box-shadow .3s}
+.fr-page .fr-acc.open{box-shadow:0 0 0 1px rgba(255,200,110,.8),0 0 50px -4px rgba(245,145,30,.75),0 22px 48px -18px rgba(245,145,30,.7)}
+.fr-page .fr-acc-head{width:100%;display:flex;align-items:center;gap:20px;padding:18px 24px;border:0;cursor:pointer;
+  text-align:left;font-family:var(--font-body);border-radius:22px;
+  background:linear-gradient(135deg,#FFD879 0%,#FBB03B 42%,var(--accent) 78%,#E9800E 100%)}
+.fr-page .fr-acc.open .fr-acc-head{border-radius:22px 22px 0 0}
+.fr-page .fr-acc-head:focus-visible{outline:3px solid #fff;outline-offset:-3px}
+.fr-page .fr-acc-ico{flex:0 0 auto;width:54px;height:54px;filter:drop-shadow(0 3px 6px rgba(120,60,0,.25))}
+.fr-page .fr-acc-title{flex:1;font-size:clamp(1.35rem,2.6vw,1.95rem);background:none;-webkit-text-fill-color:#36315d;color:#36315d}
+.fr-page .fr-chev{flex:0 0 auto;width:26px;height:26px;color:#7a3e00;transition:transform .35s ease}
+.fr-page .fr-acc.open .fr-chev{transform:rotate(180deg)}
+.fr-page .fr-acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1);
+  background:#fffdf8;border-radius:0 0 22px 22px}
+.fr-page .fr-acc.open .fr-acc-panel{grid-template-rows:1fr}
+.fr-page .fr-acc-panel>.fr-acc-body{overflow:hidden;min-height:0}
+.fr-page .fr-acc-body-in{padding:28px}
+.fr-page .fr-acc-body-in>*+*{margin-top:14px}
+.fr-page .fr-acc-body-in p{color:#4b4568;line-height:1.66}
+.fr-page .fr-acc-note{font-style:italic;color:#8a86a0;font-size:.95rem;text-align:center}
+.fr-page .fr-bcol-head{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:22px}
+.fr-page .fr-bcol-head h3{margin-bottom:0}
+
+/* ---------- mit hozz / mit ne ---------- */
+.fr-page .fr-bring{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:6px}
+.fr-page .fr-bcol{border:1px solid #e8e2d6;border-radius:16px;padding:24px;background:#fff}
+.fr-page .fr-bcol h3{font-family:var(--font-body);font-weight:800;font-size:1.1rem;color:#2c2650;margin-bottom:22px;display:flex;align-items:center;justify-content:center;gap:10px}
+.fr-page .fr-mk{width:22px;height:22px;flex:0 0 auto;display:block}
+.fr-page .fr-mk.mk-yes{color:var(--lime)}
+.fr-page .fr-mk.mk-no{color:var(--red)}
+.fr-page .fr-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:22px 14px}
+.fr-page .fr-chip{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;width:calc((100% - 28px)/3)}
+.fr-page .fr-cico{width:88px;height:88px}
+.fr-page .fr-cico svg{filter:drop-shadow(0 3px 6px rgba(30,20,60,.14))}
+.fr-page .fr-bw{opacity:.92}
+.fr-page .fr-chip span{font-size:.92rem;color:#3a3560;line-height:1.25}
+
+/* ---------- szabály-listák ---------- */
+.fr-page .fr-rules{list-style:none;display:flex;flex-direction:column;gap:11px;padding-left:2px}
+.fr-page .fr-rules li{position:relative;padding-left:26px;color:#4b4568;line-height:1.6}
+.fr-page .fr-rules li::before{content:"";position:absolute;left:2px;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+
+/* ---------- al-témák ---------- */
+.fr-page .fr-subs{display:flex;flex-direction:column;gap:28px}
+.fr-page .fr-sub{display:flex;gap:20px}
+.fr-page .fr-sub-ico{flex:0 0 auto;width:54px;height:54px}
+.fr-page .fr-sub h4{font-family:var(--font-head);font-weight:var(--head-wght);font-size:clamp(1.2rem,2vw,1.55rem);margin-bottom:8px}
+.fr-page .fr-sub p{color:#4b4568;line-height:1.66}
+.fr-page .fr-sub p+p{margin-top:9px}
+.fr-page .fr-emergency{font-weight:800;color:#C2620A}
+
+/* ---------- záró szekció ---------- */
+.fr-page .fr-closing{max-width:760px;margin-inline:auto;text-align:center}
+.fr-page .fr-closing .fr-sec-title{color:#fff;font-size:clamp(2.1rem,4.6vw,3.4rem)}
+.fr-page .closing-glow{color:var(--yellow);text-shadow:0 0 16px rgba(255,255,255,.5),0 0 34px rgba(242,195,28,.85),0 0 66px rgba(255,212,80,.6)}
+.fr-page .fr-close-p{color:#EAE3FB;line-height:1.7;font-size:1.06rem;margin-top:34px}
+.fr-page .fr-fx{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.fr-page .fr-burst{position:absolute;width:0;height:0;pointer-events:none;z-index:1}
+.fr-page .fr-spark{position:absolute;left:0;top:0;transform:translate(-50%,-50%) scale(.2);opacity:0;will-change:transform,opacity}
+.fr-page .fr-spark svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 10px rgba(10,4,30,.35))}
+.fr-page .fr-spark.go{animation:fr-frPop 1.5s cubic-bezier(.15,.7,.3,1) var(--d) forwards}
+@keyframes fr-frPop{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
+  16%{opacity:1}70%{opacity:.95}
+  100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(1);opacity:0}}
+.fr-page .closing-brush{position:relative;z-index:3;max-width:640px;margin:46px auto 0;text-align:center;
+  font-family:var(--font-head);font-weight:var(--head-wght);color:var(--accent);font-size:clamp(1.9rem,4.4vw,3.1rem);line-height:1.3;padding-bottom:.06em}
+
+/* ---------- reszponzív ---------- */
+@media(max-width:820px){
+  .fr-page .fr-qcard{grid-template-columns:1fr}
+  .fr-page .fr-bring{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .fr-page .fr-acc-body-in{padding:18px}
+  .fr-page .fr-bcol{border:none;border-radius:0;background:none;padding:0}
+  .fr-page .fr-bcol h3{justify-content:center}
+  .fr-page .fr-bcol.no h3{margin-bottom:16px}
+  .fr-page .fr-bcol-head{flex-direction:column;align-items:center;gap:6px;margin-bottom:16px}
+  .fr-page .fr-acc-note{text-align:center}
+  .fr-page .fr-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:20px 8px}
+  .fr-page .fr-chip{gap:8px;width:calc((100% - 16px)/3)}
+  .fr-page .fr-cico{width:60px;height:60px}
+  .fr-page .fr-chip span{font-size:.82rem}
+  .fr-page .subhero{padding:84px 0 44px}
+}
+@media(prefers-reduced-motion:reduce){
+  .fr-page .decor,.fr-page .decor.hero-decor{animation:none}
+  .fr-page .fr-acc-panel,.fr-page .fr-chev{transition:none}
+  .fr-page .fr-spark.go{animation:none;opacity:0}
+  /* 2027: .reveal → közös réteg */
+}

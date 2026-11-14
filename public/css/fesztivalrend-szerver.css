@@ -1,0 +1,9 @@
+/* ============================================================================
+ *  A 2026-os fesztiválrend stílusának (fesztivalrend.css, betűre átvéve) KIEGÉSZÍTÉSE — CSAK ami a 2027-es keretből
+ *  következik. Új kinézet itt nem lehet (CLAUDE.md 2/e).
+ * ========================================================================== */
+
+/* A 2027-es keret (publikus.css) a címsorok és bekezdések margóját nullázza; a 2026-os fesztiválrend-lapon (csak a chrome.css
+   és a saját stílusa töltött) a böngésző alapmargója élt. Visszaállítva — (0,0,1) erősséggel, így a lap minden saját
+   margó-szabálya (pl. `.fr-sec-title{margin:0}`, `.fr-sub h4{margin-bottom:8px}`) továbbra is nyer. */
+:where(.fr-page) :is(h1,h2,h3,h4,p,ul){margin:revert}

@@ -1,0 +1,22 @@
+/* KÖZÖS függőleges görgető — a 2026-os lib/rail VSCROLL_CSS-e BETŰRE (a színek a téma firka- és kiemelő tokenjei; a
+   2026-os hexa tartalékértékek nélkül, mint a rail.css-ben — a téma nélkül a lap amúgy sem fut). Használó: a Kézműves
+   vásár felugró ablaka (2026-ban is). A jelölés: partials/vrail, a viselkedés: public/js/vrail.js. */
+.vrail{flex:none;width:46px;display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 0}
+.vrail[hidden]{display:none}
+.vrailarrow{flex:none;width:34px;height:46px;background:none;border:0;padding:0;cursor:pointer;color:var(--doodle-lime);transition:transform .15s,color .15s}
+.vrailarrow:hover{transform:translateY(-1px);color:var(--accent-a)}
+.vrailarrow:disabled{opacity:.3;cursor:default;transform:none}
+.vrailarrow svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 6px var(--doodle-lime)) drop-shadow(0 0 14px var(--doodle-green))}
+.vrailarrow:hover svg{filter:drop-shadow(0 0 8px var(--accent-a)) drop-shadow(0 0 18px var(--accent-b))}
+.vrailarrow:disabled svg{filter:none}
+.vrailarrow .mk-dot{fill:var(--accent-a)}
+.vrailline{position:relative;flex:1;width:34px;min-height:56px}
+.vrailline::before,.vrailline::after{content:"";position:absolute;top:2px;bottom:2px;left:50%;width:4px;transform:translateX(-50%);border-radius:999px;
+  background:linear-gradient(180deg,var(--doodle-pink) 0%,var(--doodle-orange) 20%,var(--doodle-yellow) 38%,var(--doodle-lime) 56%,var(--doodle-blue) 76%,var(--doodle-purple) 100%)}
+.vrailline::after{filter:blur(9px);opacity:.9;z-index:0}
+.vrailline::before{z-index:1}
+.vrailknob{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);width:34px;height:34px;cursor:grab;touch-action:none;z-index:2}
+.vrailknob:active{cursor:grabbing}
+.vrailknob svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 7px var(--doodle-lime)) drop-shadow(0 0 16px var(--doodle-yellow)) drop-shadow(0 2px 5px rgba(20,15,45,.5))}
+.vrailknob .mk-lime{stroke:var(--doodle-lime)}
+.vrailknob .mk-yellow{fill:var(--doodle-yellow)}

@@ -127,4 +127,15 @@ return [
     'b_vissza_kereso' => 'Toate programele',
     'b_megnyitas_kereso' => 'Deschide în căutarea de programe',
     'b_kereso_hely' => 'Caută program, locație…',
+
+    // Kézműves vásár (PROMPT-17) — a lapozó és a felugró ablak képernyőolvasós feliratai (2026: CraftspeopleView, beégetve).
+    'cv_lapozas' => 'Paginare meșteșugari',
+    'cv_felul' => 'sus',
+    'cv_alul' => 'jos',
+    'cv_elozo' => 'Pagina anterioară',
+    'cv_kovetkezo' => 'Pagina următoare',
+    'cv_lap_n' => 'Pagina {n}',
+    'cv_gorgetes' => 'Derulare text',
+    'cv_fel' => 'Sus',
+    'cv_le' => 'Jos',
 ];

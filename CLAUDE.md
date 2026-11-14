@@ -722,6 +722,19 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
   (`JELOLES_POTLAS`) a 8 helyszín programjait hozza — ha a tesztadatot törölték, semmit.
 - Tesztek: `tests/Feature/HelyszinKategoriaTest.php` (a listaszabály: `test_minden_programlista_a_kereso_soraival_es_a_keresobe_visz`).
 
+**Maradék lapok, 1. rész — kész helyben (2026-11-14, PROMPT-17):** `/fesztivalrend`, `/kezmuvesek` (rendszerlap-sablon: `oldal/<slug>`,
+`OldalController`). 🔴 **A 2026-os jelölés és CSS BETŰRE (2/e)** — a 2026-os élő lap mellé téve pixelre mérve. A „Csapat” lap NINCS (nem volt 2026-os lapja).
+- **Recept (a 2. rész is így):** stílus = a 2026-os stíluslap másolata gépies eltérésekkel a fejében („2027:”), a keret miatti kiegészítés
+  külön `-szerver.css`; a szkript átirat, a felúszás a közös `.reveal`, a firkák a téma motívumaiból (`Theme::motifSprite()` a lapon, a réteg
+  `[data-decor]` jelöléssel); MINDEN látható szöveg `LapSablon`-kulcs (a 2026-os `data-hs` kulcsnév megmarad), a román alapszöveg a 2026-os
+  román szöveg. Sok szövegnél a kulcsokat gépiesen, a 2026-os HU és RO törzsből párhuzamosan húzd ki (a fesztiválrend 103 kulcsa így készült).
+- **Próba:** `tests/Feature/MaradekLapokTest.php` — a sablon és a leírás kulcsai pontosan egyeznek (holt kulcs sincs), és minden szöveg
+  kicserélve (HU/RO) nem marad változatlan szó. Új lap → a `LAPOK` listába.
+- **Kézművesek:** `craftspeople` (`Craftsperson`, `CraftspersonPolicy` = ContentPolicy), admin: Tartalom → Kézművesek
+  (`CraftspersonResource`). Lap-adat EGY helyen: `App\Support\Kezmuvesek` (bekezdések, 170 karakteres kivonat, képméretek). Behozatal:
+  `forgatag:kezmuves-csomag` (fejlesztőgép) → `database/import/kezmuvesek-2026.json` → `forgatag:kezmuves-import` (telepítés, csak üres táblába).
+- **Közös függőleges görgető:** `partials/vrail` + `vrail.css` + `vrail.js` (a 2026-os `lib/rail` VSCROLL betűre).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a

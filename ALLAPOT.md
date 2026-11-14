@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-04 (PROMPT-15, helyszín- és kategórialapok, `/terkep`, napi nézet, program lapja — kész, ÉLESBEN telepítve és megmérve)
+**Utolsó frissítés:** 2026-11-14 (PROMPT-17 **1. része**: fesztiválrend + kézművesek — kész HELYBEN, még NINCS feltolva/élesben; a 2. rész: galéria, videó-archívum, támogatók)
 
 ---
 
@@ -332,6 +332,44 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   10, lap 52, média 16, szervezők 14; „fesztivál előtt” állapotban +12 a Kiemelt sávban) · programkereső 23/23 (a mai lista hosszán) ·
   Hamarosan 2/2 · beküldő űrlap 2/2 (beágyazott SVG) · Rólunk, hírlista, hír, napi nézet, program lapja 0 — mint 2026-ban.
 
+- **A maradék publikus lapok — 1. rész: fesztiválrend + kézművesek** (`PROMPT-17`, 2026-11-14) — **kész HELYBEN, még NINCS feltolva
+  és élesben** („MOST folyik”, 9.). **A kör kettévágva** (a tulajdonos javaslatára): ez a szöveges rész; a **2. rész a média-nehéz
+  lapok** (galéria, videó-archívum, támogatók — „Ami ezután jön”, 6.). **A „Csapat” lap KIMARAD — tulajdonosi döntés (2026-11-14):** a
+  2026-os élő oldalon nem volt ilyen lap, a menüben sincs, és a csapat-sáv 2026-07-27-én a kezdőlapról is kikerült (forgatag-os `1d2ffde`)
+  — nincs mit átemelni. A csapat adatai (56 fő) a 2. részben jönnek be az adatbázisba, lap nélkül. A menüből ezzel csak a 2. rész három
+  lapja ad még 404-et (Galéria, Videó archívum, Támogatók és partnerek).
+  - **BETŰRE a 2026-osból (2/e):** a jelölés a 2026-os `fesztivalrend/body.html`, illetve `CraftspeopleView.astro` (osztályok, sorrend),
+    a stílus a 2026-os stíluslap másolata (`fesztivalrend.css`, `kezmuvesek.css` — a gépies eltérések a fejükben, „2027:”-tel), a
+    szkript az átirat (`fesztivalrend.js`, `kezmuvesek.js`). A 2027-es keret miatti kiegészítés külön (`fesztivalrend-szerver.css`: a
+    böngésző címsor-/bekezdés-margójának visszaállítása, mint a Base-lapoknál). A kézművesek felugró ablakának görgetője a 2026-os közös
+    `lib/rail` függőleges változata — most közös modul: `partials/vrail` + `vrail.css` + `vrail.js` (a 2. rész is használhatja).
+    **Mérve a 2026-os élő lap mellett (beépített böngésző, mindkét lap ugyanabban):** a fesztiválrend szakaszai 1024 px-en
+    681 / 856 / 1028 / 571 — pixelre; mind a 8 lenyíló NYITVA is pixelre (767 … 300); 375 px-en is (787 / 1880 / 10276 / 661). A
+    kézművesek: a sáv, a nyitókép, a kártya és a képe 1024 és 375 px-en pixelre, magyarul és románul; ugyanaz a 67 név ugyanabban a
+    sorrendben; lapozó (12 gomb, „19–36.”), felugró ablak (kép, cím, bekezdések, Esc, fókusz). Vízszintes görgetés nincs.
+  - **A BEÉGETETT SZÖVEGEK (9. adósság) — mindkét lapon törlesztve:** a fesztiválrend **103 kulcs** (2026-ban 25 volt szerkeszthető, a
+    többi beégetett magyar; a román lapon egy egyszer lefordított külön törzs — a román alapszöveg most onnan, kulcsonként); a kézművesek
+    **8 kulcs** (2026: 5 — most a „Bővebben”, a számláló és az üres állapot is). Admin: Tartalom → Aloldalak → a lap → Szerkeszthető
+    szövegek, emberi feliratokkal. **A próba teszt (`MaradekLapokTest`): az admin felől MINDEN szöveg kicserélve (a kézműves nevét és
+    bemutatkozását is), magyarul és románul → a lapon nem marad változatlan szó.** Ellenpróbával: egy beírt szóra elbukik. A csak
+    képernyőolvasónak szóló feliratok (lapozó, bezárás, görgető) a `lang/*/publikus.php` `cv_*` kulcsai — mint minden eddigi lapon.
+  - **A kézművesek az adminban: Tartalom → Kézművesek** (tulajdonosi döntés, 2026-11-14 — nem új főmenüpont): név, kép (médiatár,
+    „Kézművesek” gyűjtemény), bemutatkozás HU/RO, látható-kapcsoló, sorrend húzással. Új tábla: `craftspeople`. A használt kép nem
+    törölhető (`Media::usages`). Jog: mint a támogatóknál (kategóriagazda 403, teszt).
+  - **A 2026-os kézművesek behozva — számra: 67/67, mind képpel, mind román bemutatkozással; a 67 kép a médiatárból (`legacy_id`), NEM
+    újrafeltöltve.** Csomag: `database/import/kezmuvesek-2026.json` (`forgatag:kezmuves-csomag`, fejlesztőgépen); a telepítés
+    `forgatag:kezmuves-import` lépése tölti be — csak üres táblába, hiányzó képnél semmit nem ír.
+  - **A dekor-réteg hat:** a fesztiválrend nyitóképén 14 lengő firka (2026: 14), a kézműveseken 34 szórt (2026: 34) — **kirajzolás szerint
+    mérve** (a rajz a keretén belül: 14/14, 34/34). A rétegek `[data-decor]` jelölést kaptak, a motívum a téma 12 motívumából (`<use>`).
+    A záró szekció „tűzijátéka” is a téma motívumaiból. „Kevesebb mozgás”: nincs firka, nincs tűzijáték.
+  - **200 teszt zöld** (új: `MaradekLapokTest`, 8). ⚠ A teljes tesztsor a konténer alap 128 MB-os PHP-memóriáján a végén elfogy —
+    `php -d memory_limit=512M vendor/bin/phpunit`.
+  - Döntések (egy-egy sor): a fesztiválrend két dátum-kulcsa a 2027-es dátum (CLAUDE.md 1.: aug. 25–29.; 2026-ban „2026. augusztus 26–30.”
+    — a román lapon is magyar formában állt), a román alakja „25–29 august 2027” · a fesztivál sorszáma („a 13. Vásárhelyi Forgatagon!”) a
+    2026-os szöveg — nem találom ki (Nyitott kérdések) · a kézművesek román bevezetőjében a hibás „al Vâltoarei” → „al Vâltorii” (CLAUDE.md
+    1.: a „Vâltoarei” mindig hibás) · a naptej-ikon „SPF” felirata a rajz része, nem szöveg · a firkák csak szélesség-változásra szóródnak
+    újra (mint a mozgas.js és a kezdőlap; 2026-ban telefonon a címsor mozgására is ugráltak).
+
 ## Ami MOST folyik
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
@@ -401,6 +439,12 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    kéthasábos rácsba tette (jobbra 440 px-es üres hasáb). Most `.blk.pk-napi > .wrap{display:block}` (`programlista.css`); 1440 és 1920
    px-en mérve mindhárom laptípus egy hasábos. ⚠ Tanulság: a listalapokat SZÉLES asztalon is nézd meg, ne csak keskeny ablakban.
 
+9. **A maradék lapok 1. része (PROMPT-17: fesztiválrend + kézművesek)** — **helyben kész, NINCS feltolva és telepítve.** Telepítés után
+   a naplóban: egy új migráció (`craftspeople`), `KEZMUVESEK: 67 kézműves behozva (67 képpel, a médiatárból).` és `LAPSZÖVEG:
+   fesztivalrend: 102 új kulcs, 1 üres mező kitöltve` / `kezmuvesek: 8 új kulcs`. Élesben megnézendő és mérendő: `/fesztivalrend` és
+   `/kezmuvesek` (HU és RO, 375 px), egy lenyíló, a kézműves felugró ablaka és lapozója, a **válaszidő** (helyben a Docker miatt ~7 mp —
+   nem mérhető); az adminban Tartalom → Kézművesek, és egy szöveg átírása Aloldalak → Fesztiválrend alatt.
+
 ## Ami ezután jön, ebben a sorrendben
 
 1. ~~**A publikus váz**~~ — **kész (2026-10-29)**, lásd fent. Ami tőle örökölve a következő lapokra: a `LapSablon` (minden szöveg kulcs),
@@ -427,14 +471,34 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 5. ~~**A kezdőlap**~~ — **kész helyben (2026-11-04, PROMPT-14)**, lásd fent. *(Az alábbi jegyzet teljesült.)* A legösszetettebb lap; a dekor-rétegre épül. **Örökölt:** a `mozgas.js` szórt rétege (`data-szoras="oldal"`) és a
    közös motívumkészlet (`Theme::motifSprite()`) kész; a nyitókép lengő firkái (`[data-decor="hero"]`) és a kezdőlap saját szórt
    rétegei a 2026-os `home-v7/script.js` szerint ide kerülnek. ⚠ 2026-ban a „Mozgás-mennyiség” a kezdőlapon nem hatott — itt kell hatnia.
-6. **A két hátralévő egyedi szerkesztő** — `/szerkeszto`, térkép-szerkesztő (a `/tema` kész).
-   ⚠ **A térkép-szerkesztő első teendője (tulajdonosi rögzítés, 2026-11-04 — NEM a szervezők listája):** két helyszín valóban
-   beállítatlan, mert 2026-ban sem volt pozíciója, pedig a város belsejében van: **Vár, Várkert** és **Kultúrpalota, nagyterem** —
-   két húzás a szerkesztőben. (Az Állatkert, a vikendtelep és a Fociakadémia NEM hiányzik: a térkép szélén, irányjelvénnyel vannak.)
-   A GPS nem kell: a rendszer a rajzolt térkép pozícióin működik.
-7. **A fordítási lánc.**
-8. **A maradék publikus lapok** — fesztiválrend, galéria, videó-archívum, támogatók, kézművesek, csapat.
-9. **Élesbe tétel** — **a legutolsó lépés**, lásd lentebb. Addig nem téma.
+6. **A maradék publikus lapok** — ~~fesztiválrend, kézművesek~~ **(1. rész kész helyben, 2026-11-14, fent)** · ~~csapat~~ (kimarad,
+   tulajdonosi döntés 2026-11-14 — nem volt 2026-os lapja) · **2. RÉSZ, KÖVETKEZŐ KÖR: galéria, videó-archívum, támogatók.**
+   🔴 **ELŐRE KERÜLT (tulajdonosi döntés, 2026-11-14):** a lapoknak **a szerkesztő ELŐTT** kell meglenniük.
+   A `/szerkeszto` olyasmit szerkeszt, ami még nincs — fordított sorrendben kétszer kellene hozzányúlni.
+   **Itt kell pótolni a beégetett szövegeket is** (9. adósság), laponként, a saját sablonjával.
+   **A 2. rész örökségei (ne építsd újra):** a galéria-néző és az aftermovie-lejátszó a kezdőlapé (`galeria.css/js`, `video.css/js`,
+   `Kezdolap::galeriaAdat()`), a támogatói csempe CSS-e (`tamogatok.css`), a függőleges görgető (`partials/vrail`, PROMPT-17), a
+   `MaradekLapokTest` „minden szöveg kicserélve” próbája (a `LAPOK` listába kell felvenni az új lapot). A csapat 56 tagja: csak adat
+   (a `Gyujtemeny::Csapat` képei a médiatárban). ⚠ A Balázs Ferenc Önképző Kör 109 MP-es logója még bent van (MOST folyik, 1.) — a
+   támogatók lapján jelezni kell, ha még mindig az.
+
+7. **A `/szerkeszto`** — csak a lapok elkészülte után.
+   ⚠ **Nyitott kérdés, mielőtt elkezdjük (2026-11-14):** kell-e egyáltalán? 2026-ban azért kellett, mert a
+   Directus nem tudta a laptartalmat a helyén megmutatni. A 2027-es adminban a szerkeszthető szövegek
+   **már most szerkeszthetők**, emberi feliratokkal, a lapon elfoglalt sorrendben, képválasztóval.
+   Amit a `/szerkeszto` ezen felül adna, az a **helyben szerkesztés** (látod a lapot, belekattintasz) —
+   kényelmesebb, de a 2026-os változat egy több mint ezer soros külön alkalmazás volt.
+   **A tulajdonos dönti el, amikor a lapok megvannak, és látja, mennyire kényelmes az admin.**
+
+8. **A térkép-szerkesztő** — független a többitől, rövid kör, bárhova beilleszthető.
+   ⚠ **Első teendője (tulajdonosi rögzítés, 2026-11-04 — NEM a szervezők listája):** két helyszín valóban
+   beállítatlan, mert 2026-ban sem volt pozíciója, pedig a város belsejében van: **Vár, Várkert** és
+   **Kultúrpalota, nagyterem** — két húzás a szerkesztőben. (Az Állatkert, a vikendtelep és a Fociakadémia
+   NEM hiányzik: a térkép szélén, irányjelvénnyel vannak.) A GPS nem kell: a rendszer a rajzolt térkép
+   pozícióin működik.
+
+9. **A fordítási lánc** — a lapok után, hogy legyen mit fordítani és hol ellenőrizni.
+10. **Élesbe tétel** — **a legutolsó lépés**, lásd lentebb. Addig nem téma.
 
 **A három hátralévő űrlap** (szabadulószoba `PROMPT-03`, olimpia, önkéntes) **levél a fán**: semmi
 nem épül rájuk, bárhova beilleszthetők — például egy nagyobb darab után rövidebb körként.
@@ -472,7 +536,8 @@ nem nyúlunk.**
 9. **A 2026-os aloldalak szövegének nagy része BEÉGETETT magyar** (tulajdonosi rögzítés, 2026-10-28 — MOST NEM javítjuk).
    A 2026-os Astro-sablonokban a szöveg zöme nem szerkeszthető kulcson volt; a fesztiválrend lapján például a szövegnek
    csak **18%-a** szerkeszthető. Átjött, ami szerkeszthető volt (85 kulcs, az aloldal lapján „Szerkeszthető szövegek”);
-   **a többi a publikus sablonok körében pótlandó** *(2026-10-29: a Rólunk és a hírlista TÖRLESZTVE — `App\Support\LapSablon`)* (forrás: `..\forgatag-os\frontend\src\rolunk\`, `fesztivalrend\`,
+   **a többi a publikus sablonok körében pótlandó** *(2026-10-29: a Rólunk és a hírlista TÖRLESZTVE — `App\Support\LapSablon`; 2026-11-04:
+   a kezdőlap; 2026-11-14: a fesztiválrend (103 kulcs) és a kézművesek (8) — hátra: galéria, videó-archívum, támogatók)* (forrás: `..\forgatag-os\frontend\src\rolunk\`, `fesztivalrend\`,
    `videoarchivum\`, `home-v7\` stb. — csak olvasásra), úgy, hogy minden szöveg kulcsra kerüljön, HU/RO.
 
 ## Amit a mentés leltára felszínre hozott
@@ -514,6 +579,11 @@ nem nyúlunk.**
   állapot bekapcsolása ELŐTT** be kell írni (Aloldalak → Kezdőlap → Visszaszámláló). Nem fordítottam magam (saját tartalom = kézi fordítás).
 - **ÚJ (PROMPT-14) — a kezdőlap két „Videó archívum” gombja** (Mesterségem Vásárhelyi, Vásárhely színe-java) a `/videoarchivum` lapra
   visz, ami a 8. pont köréig még nem épült meg (ma 404 — mint a menü több pontja).
+- **ÚJ (PROMPT-17) — a fesztiválrend záró ecsetírása:** „a **13.** Vásárhelyi Forgatagon!” (románul „la a 13-a ediție…”) — a 2026-os
+  szöveg, a sorszámot nem találtam ki. Ha 2027-ben a 14., az adminban kell átírni (Aloldalak → Fesztiválrend → „Köszönjük — ecsetírás,
+  3. sor”). A két dátum-kulcs már a 2027-es dátumot mutatja (aug. 25–29.).
+- **ÚJ (PROMPT-17) — a kézművesek listája a 2026-os 67 kézműves** (mind látható). A 2026-os modellnek nem volt éve; ha a 2027-es vásáron
+  mások lesznek, az adminban rejthetők/törölhetők (Tartalom → Kézművesek). Évhez kötni (mint a támogatókat) új mező lenne — szólj, ha kell.
 - **ÚJ — a logón még „13.” áll** (a 2026-os logó). A 2027-es logót az Arculatban kell feltölteni (logó + fejléc-logó).
 - **ÚJ — világos mód a publikus oldalon?** Most sötét-only (mint 2026-ban). Ha kell váltó, szólj.
 

@@ -141,6 +141,9 @@ class Media extends CuratorMedia
         foreach (DB::table('sponsors')->where('logo_media_id', $this->id)->pluck('name') as $s) {
             $hol[] = "támogató logója: {$s}";
         }
+        foreach (DB::table('craftspeople')->where('image_media_id', $this->id)->pluck('name') as $k) {
+            $hol[] = "kézműves képe: {$k}";
+        }
         // Nyers lekérdezés szándékosan: a program sor-szintű szűkítése itt ne rejtse el a használatot
         // (különben egy kategóriagazda „nem használt”-nak látna egy idegen program borítóját).
         foreach (DB::table('program_items')->where('cover_media_id', $this->id)->pluck('title') as $p) {

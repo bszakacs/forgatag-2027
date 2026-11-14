@@ -1,0 +1,614 @@
+{
+    "forras": "MENTES-2026/2026-10-21 (Directus PostgreSQL-mentés, craftsperson)",
+    "szamok": {
+        "kézműves": 67,
+        "látható": 67,
+        "képpel": 67,
+        "román bemutatkozással": 67
+    },
+    "kezmuvesek": [
+        {
+            "id": "0ebeb4d2-4aee-43b1-89c2-a5b572f946d9",
+            "name": "HaZsoTi",
+            "description_hu": "A Hazsoti Creations a személyre szabott, egyedi tervezésű táskák és kiegészítők világában kiemelkedik, ahol minden termékünkkel az ügyfeleink egyedi igényeit és kényelmét szolgáljuk. Legyen szó egyedi kozmetikai táskákról, biztonságos tablet tartókról, laptoptáskákról, vagy illóolaj-tárolóinkról, amelyek tökéletes megoldást nyújtanak az aromaterápia szerelmeseinek utazáskor is. Különleges figyelmet fordítunk a környezettudatosságra és az eleganciára, amit Meli és Emily menstruációs bugyijaink is tükröznek, melyek kényelmet és stílust nyújtanak, miközben óvjuk bolygónkat. A Hazsoti Creationsnél az egyediség, magas minőség és a fenntarthatóság találkozik, hogy minden termékünkkel örömöt szerezzünk.",
+            "description_ro": "Hazsoti Creations se remarcă în lumea genților și accesoriilor personalizate, create în mod unic, unde fiecare produs este conceput pentru a răspunde nevoilor și confortului individual al clienților noștri. Fie că este vorba despre truse cosmetice personalizate, huse sigure pentru tabletă, genți pentru laptop sau suporturi pentru uleiuri esențiale – soluția perfectă pentru iubitorii de aromaterapie în călătorii – oferim produse practice și elegante. Acordăm o atenție deosebită sustenabilității și eleganței, aspecte reflectate și de chiloții menstruali Meli și Emily, care oferă confort și stil, protejând în același timp planeta. La Hazsoti Creations, unicitatea, calitatea superioară și durabilitatea se îmbină pentru a aduce bucurie prin fiecare produs.",
+            "kep": "a98a545b-e5b2-48a0-b59c-96c34dfc2921",
+            "sort": 1,
+            "visible": true
+        },
+        {
+            "id": "9f013b75-d37c-4c67-a54d-c158d4b1a354",
+            "name": "LeafBe ecoprint",
+            "description_hu": "Természetes anyagokból, levélnyomattal és növényi festéssel készült egyedi textíliák, ruhanemük, kiegészítők. Továbbá kézzel nemezelt kiegészítők és ruhadarabok. A termékekre jellemző, hogy minden egyes darab egyedi és megismételhetetlen",
+            "description_ro": "Țesături, articole vestimentare și accesorii unice, realizate din materiale naturale, prin imprimare cu frunze și vopsire vegetală. De asemenea, accesorii și piese vestimentare împâslite manual. Produsele se caracterizează prin faptul că fiecare piesă este unică și irepetabilă.",
+            "kep": "865c2402-9869-4801-8f50-9106f0524901",
+            "sort": 2,
+            "visible": true
+        },
+        {
+            "id": "0f68facb-f3ed-40a8-82e1-296168c96633",
+            "name": "Orsiékszer",
+            "description_hu": "Saját tervezésű és kézzel készített ezüstözött ékszerek és kiegészítők, amelyeket részben ékszergyantával díszítek. Minden darab egyedi, gondos kivitelezéssel készül, ötvözve a kreativitást és a kézműves igényességet.",
+            "description_ro": "Bijuterii și accesorii argintate, create și realizate manual după propriile modele, unele decorate cu rășină pentru bijuterii. Fiecare piesă este unicat, realizată cu atenție la detalii, îmbinând creativitatea cu măiestria lucrului manual.",
+            "kep": "c9e39bc0-7db1-4f4b-9632-4dfb8f35abe2",
+            "sort": 3,
+            "visible": true
+        },
+        {
+            "id": "b5e0929f-1bf9-4b81-a7cf-fa5dccfc4e6e",
+            "name": "FLUA",
+            "description_hu": "Kézzel nemezelt termékeim természetes gyapjúból készülnek, sok szeretettel és türelemmel. Legyen szó játékról, dekorációról, ékszerről vagy használati tárgyról, minden alkotásom célja, hogy egy kis melegséget, vidámságot és mesebeli hangulatot csempésszen a hétköznapokba.",
+            "description_ro": "Produsele mele din fetru sunt realizate manual din lână naturală, cu multă răbdare și dragoste. Fie că este vorba despre jucării, decorațiuni, bijuterii sau obiecte utile, fiecare creație își propune să aducă în viața de zi cu zi un strop de căldură, bucurie și farmec de poveste.",
+            "kep": "c9b870b5-910b-4377-8330-ab64467d707f",
+            "sort": 4,
+            "visible": true
+        },
+        {
+            "id": "784d98ef-8f2f-4f37-a851-fa416365fd5e",
+            "name": "Fahéj",
+            "description_hu": "A Fahéj termékek fából készülnek, saját tervezésű formáinkat pedig kézzel festjük, így minden darab egyedi és különleges. Legyen szó kitűzőről, fülbevalóról vagy otthoni dekorációról, alkotásainkkal igyekszünk vidámságot és színeket csempészni a mindennapokba.",
+            "description_ro": "Produsele Fahéj sunt realizate din lemn, după modele proprii, fiecare piesă fiind pictată manual, ceea ce o face unică și deosebită. Fie că este vorba despre broșe, cercei sau decorațiuni pentru casă, creațiile noastre își propun să aducă un plus de culoare și voie bună în viața de zi cu zi.",
+            "kep": "b780c113-f5cd-498f-bfd0-d8511a588a74",
+            "sort": 5,
+            "visible": true
+        },
+        {
+            "id": "5d129d46-493b-400a-9361-3066d1a3a658",
+            "name": "KNB Toys",
+            "description_hu": "Minden termékem egyedi, gondosan kiválasztott faanyagból készül. A teljes alkotási folyamatot magam végzem: a tervezéstől és az asztalosmunkán át a csiszolásig, festésig és lakkozásig. Kizárólag a gyártók által garantált, gyermekbarát felületkezelő anyagokat használok. Munkáimat a tartósság, az egyszerű formavilág és a természetes alapanyagok szeretete jellemzi.",
+            "description_ro": "Fiecare produs este unic și realizat din lemn atent selecționat. Mă ocup personal de întregul proces de creație, de la proiectare și prelucrarea lemnului până la șlefuire, vopsire și lăcuire. Folosesc exclusiv materiale de finisare certificate de producători ca fiind sigure pentru copii. Creațiile mele se remarcă prin durabilitate, un design simplu și aprecierea materialelor naturale.",
+            "kep": "d679d90a-7387-4f01-b3a0-25d0f3331658",
+            "sort": 6,
+            "visible": true
+        },
+        {
+            "id": "2afd7efe-52c3-4740-be2a-89985839e336",
+            "name": "ZaNa Junior new-world",
+            "description_hu": "A Zana Junior New-World egy családi vállalkozás, ahol szeretettel és odafigyeléssel készítünk egyedi, kézműves termékeket. Kínálatunkban megtalálhatók a patchwork babatakarók, személyre szabott párnák, babaváró csomagok, nyuszi balerinák, Montessori készségfejlesztő labdák, valamint puha takarók kicsiknek és nagyoknak egyaránt. Az óvodások számára egyedi ovis- és tornazsákokat is készítünk, emellett számos más kézműves alkotással várjuk vásárlóinkat. Munkánk során a minőségre, az esztétikumra és a megbízhatóságra törekszünk, hogy mindenki pontosan azt kapja, amit megálmodott.",
+            "description_ro": "Zana Junior New-World este o afacere de familie dedicată realizării unor produse artizanale unice, create cu grijă și pasiune. În oferta noastră se regăsesc pături patchwork pentru bebeluși, perne personalizate, pachete pentru nou-născuți, iepurași balerine, mingi Montessori pentru dezvoltarea abilităților, precum și pături moi pentru copii și adulți. Realizăm, de asemenea, săculeți și genți personalizate pentru grădiniță, alături de multe alte creații handmade. Punem accent pe calitate, frumusețe și seriozitate, astfel încât fiecare client să primească exact produsul pe care și-l dorește.",
+            "kep": "59945a60-5f07-4727-a0d2-0a6d14409466",
+            "sort": 7,
+            "visible": true
+        },
+        {
+            "id": "7704e702-6689-4cc8-a95e-95af57a2fdc3",
+            "name": "Golden Beetle Jewelry",
+            "description_hu": "A Golden Beetle ékszereknek saját ritmusuk van: a természet időtlen szépségét és törékeny pillanatait örök értékké formálják. Minden egyes darab kézzel készül, tisztelgésként a Teremtő előtt, ihletét az évszakok változásából, a növények csendes erejéből és a lassú, tudatos alkotás öröméből merítve.",
+            "description_ro": "Bijuteriile Golden Beetle au propriul lor ritm, transformând frumusețea atemporală a naturii și fragilitatea clipelor în valori care dăinuie. Fiecare piesă este realizată manual, ca un omagiu adus Creatorului, inspirată de schimbarea anotimpurilor, de forța tăcută a plantelor și de bucuria creației lente și conștiente.",
+            "kep": "e70f4a6e-ae56-4dec-9a4e-6f3aff515a22",
+            "sort": 8,
+            "visible": true
+        },
+        {
+            "id": "7f5e1b3c-0c0b-4712-980e-a4558f3e1926",
+            "name": "Cseh tanya",
+            "description_hu": "Saját termesztésű gyümölcsökből készítünk lekvárokat és szörpöket, cukros és hozzáadott cukor nélküli változatban egyaránt. Kínálatunkban a hagyományos ízek mellett különleges lekvárkülönlegességek is megtalálhatók, amelyek a természetes alapanyagok gazdag ízvilágát idézik.",
+            "description_ro": "Preparăm dulcețuri și siropuri din fructe cultivate în propria livadă, atât în variante cu zahăr, cât și fără zahăr adăugat. Pe lângă rețetele tradiționale, oferim și specialități de dulceață, realizate din ingrediente naturale și cu arome deosebite.",
+            "kep": "f14c75e5-678a-410e-971e-8649c9190aea",
+            "sort": 9,
+            "visible": true
+        },
+        {
+            "id": "afe5e204-28d3-4a1a-bb86-afd97a5edeff",
+            "name": "Baron K",
+            "description_hu": "Kézzel szabott és készített bőrtermékeink között női és férfi nadrágszíjak, táskák, pénztárcák, karkötők, fülbevalók, kulcstartók és súlyemelő övek is megtalálhatók. Alkotásainkat az egyedi tervezés és a sajátos stílus jellemzi, számos termékünk pedig kiváló minőségű, növényi cserzésű bőrből készül.",
+            "description_ro": "Realizăm manual articole din piele pentru femei și bărbați, precum curele, genți, portofele, brățări, cercei, brelocuri și centuri pentru haltere. Produsele noastre se remarcă prin designul original și stilul propriu, multe dintre ele fiind confecționate din piele tăbăcită vegetal, de înaltă calitate.",
+            "kep": "6169e5fe-215b-4e71-9f9e-5457153205b7",
+            "sort": 10,
+            "visible": true
+        },
+        {
+            "id": "b8a01e81-e38a-4253-96dc-0d1e33ca6b74",
+            "name": "TulipArt Design",
+            "description_hu": "A TulipArt Design termékei a népi motívumaink hagyományait ötvözik a mai igényekkel. Természetes bőrt használunk, kizárólag helyi forrásból, továbbá vízálló és softshell anyagokat, melyekre saját tervezésű mintáinkat nyomtatjuk, így minden darab egyedi és különleges lesz.",
+            "description_ro": "Produsele TulipArt Design combină tradițiile motivelor populare cu cerințele contemporane. Folosim piele naturală, exclusiv din surse locale, precum și materiale impermeabile și softshell, pe care imprimăm modelele noastre proprii, făcând fiecare piesă unică și specială.",
+            "kep": "0b004319-79d3-4426-9e52-9852a2aa2f9e",
+            "sort": 11,
+            "visible": true
+        },
+        {
+            "id": "b6fca616-6e04-4b3b-8639-968910cae48a",
+            "name": "Kakukk Herbal Transylvania",
+            "description_hu": "Erdélyben, elsősorban Székelyföldön gyűjtött és termesztett gyógynövényeket dolgozok fel, hogy újra közelebb hozzam az emberekhez a helyi növények jótékony hatásait. Fontosnak tartom, hogy megismerjük és használjuk mindazt, amit közvetlen környezetünk kínál számunkra. Emellett saját termesztésű, valamint helyi kistermelőktől származó zöldségekből készítek természetes ételízesítőt egy több évtized alatt tökéletesített családi recept alapján. Termékeimmel a természetességet, a helyi értékeket és a hagyományok tiszteletét szeretném képviselni.",
+            "description_ro": "Prelucrez plante medicinale culese și cultivate în Transilvania, în special în Ținutul Secuiesc, cu dorința de a readuce în atenția oamenilor beneficiile plantelor care cresc în imediata noastră apropiere. Consider important să redescoperim și să folosim darurile pe care natura ni le oferă. De asemenea, prepar un condiment natural din legume cultivate în propria grădină și achiziționate de la mici producători locali, după o rețetă de familie perfecționată de-a lungul mai multor decenii. Prin aceste produse promovez naturalețea, valorile locale și respectul pentru tradiție.",
+            "kep": "e886f6f7-b426-4210-b668-466db9a3c181",
+            "sort": 12,
+            "visible": true
+        },
+        {
+            "id": "3978766f-33f0-42b4-a72b-749063ed67c5",
+            "name": "Mátka",
+            "description_hu": "A Mátka egy Maros megyei bőrdíszműves vállalkozás, amelynek ötlete évekkel ezelőtt született meg, és 2022-ben vált valóra. Természetes bőrből, saját kezűleg készített termékeinket magyar motívumvilág ihleti, amely különleges karaktert kölcsönöz minden darabnak.",
+            "description_ro": "Mátka este o afacere meșteșugărească din județul Mureș, al cărei concept a luat naștere acum câțiva ani și s-a concretizat în 2022. Produsele noastre, realizate manual din piele naturală, sunt inspirate de motivele tradiționale maghiare, conferind fiecărei piese un caracter aparte.",
+            "kep": "a9479b85-ca42-4ddc-adf9-7d76655d89aa",
+            "sort": 13,
+            "visible": true
+        },
+        {
+            "id": "944fd8e1-3ba5-4381-a2f5-6facbf6fb447",
+            "name": "TordaiGlass design",
+            "description_hu": "A speciális TordaiGlass design ékszereink muránói és dichroic üvegből készülnek; a dichroic üveg egy vékony, nemesfémréteggel kezelt anyag, amely különleges fényhatásokat eredményez. Minden ékszerünket saját képzeletünk alapján, limitált példányszámban, fúziós technikával, 800 Celsius fokon olvasztjuk össze, így egyedi és eredeti darabok születnek.",
+            "description_ro": "Bijuteriile noastre speciale TordaiGlass sunt realizate din sticlă murano și dichroică; sticla dichroică este un material tratat cu un strat subțire de metal prețios, care creează efecte luminoase deosebite. Fiecare bijuterie este creată după propria noastră imaginație, în ediție limitată, prin tehnica fuziunii, topită la 800 de grade Celsius, rezultând piese unice și originale.",
+            "kep": "1787b462-c815-4304-9986-010699f165d6",
+            "sort": 14,
+            "visible": true
+        },
+        {
+            "id": "bcb4c35c-3b7e-48a8-bb41-fb91d578e0ae",
+            "name": "Berni's Garden",
+            "description_hu": "Marosvásárhely mellett, Udvarfalván termesztjük fűszernövényeinket immár több mint 15 éve. Palántáinkat saját fóliasátrainkban, helyben gondosan neveljük .",
+            "description_ro": "Cultivăm plantele noastre aromatice în Curteni, lângă Târgu Mureș, de peste 15 ani. Răsadurile le creștem cu grijă local, în propriile sere.",
+            "kep": "f2058fed-517f-4d42-8480-d6c05cec7b98",
+            "sort": 15,
+            "visible": true
+        },
+        {
+            "id": "35017861-efb3-45fd-b473-9ffcb362bf70",
+            "name": "Puskás Zsuzsa mézesei",
+            "description_hu": "Frissen sütött mézespogácsák és házi jellegű pékáruk, hagyományos recept alapján. Termékeink természetes alapanyagokból készülnek.",
+            "description_ro": "Turtă dulce cu miere, proaspăt coaptă, și produse de patiserie de casă, preparate după rețete tradiționale. Produsele noastre sunt realizate din ingrediente naturale.",
+            "kep": "3a83cd5f-b327-4ddd-bc68-0133c3b0f783",
+            "sort": 16,
+            "visible": true
+        },
+        {
+            "id": "8ea3cd75-7e5d-4a49-a901-92dfaa6f8f66",
+            "name": "Distileria Orbán pálinkafőzde",
+            "description_hu": "Hagyományos rézüstben készült, kiváló minőségű gyümölcspálinkák. A párlatok gondosan válogatott gyümölcsökből, családi recept alapján készülnek.",
+            "description_ro": "Țuici de fructe de calitate superioară, preparate în cazane tradiționale de cupru. Distilate din fructe atent selecționate, după o rețetă de familie.",
+            "kep": "5bb3f75e-c4c7-473c-9b83-20a309de0336",
+            "sort": 17,
+            "visible": true
+        },
+        {
+            "id": "ce5a1218-dbcf-418e-98cf-742fdd761f76",
+            "name": "Bona Planta",
+            "description_hu": "Termékeink természetes szárítással készülnek, hozzáadott só, cukor vagy más adalékanyag nélkül, helyi, erdélyi alapanyagok felhasználásával. Egyedi fűszereink, ételízesítőink és szárított gyümölcs-csipszeink – köztük például a különleges medvehagymás keverék – gluténérzékenyek, vegánok és kisgyermekek számára is bátran fogyaszthatók.",
+            "description_ro": "Produsele noastre sunt realizate prin uscare naturală, fără adaos de sare, zahăr sau alte ingrediente adăugate, folosind materii prime locale din Transilvania. Condimentele, aromele și chipsurile noastre de fructe uscate – inclusiv amestecul special cu usturoi sălbatic – pot fi consumate în siguranță de persoanele cu sensibilitate la gluten, de vegani și de copii mici.",
+            "kep": "60cdf006-a96e-40f5-9aa4-d79fc7db3138",
+            "sort": 18,
+            "visible": true
+        },
+        {
+            "id": "86524ba0-dc39-4af0-a8e6-b72619b7cd57",
+            "name": "Napfény Ereje / Savoarea Soarelui",
+            "description_hu": "Családi vállalkozásunkat azzal a céllal indítottuk, hogy kistermelőként megtermelt javainkat tovább feldolgozva finom és egészséges termékeket hozzunk létre. Fontos számunkra a környezettudatosság, a tájegységünkön honos növények termesztése – különösen a hagyományos tájfajták újraélesztése –, valamint a vegyszermentes gazdálkodás folytatása és meghonosítása.      Az általunk feldolgozott alapanyagok nagy részét mi magunk termeljük, a többit pedig gondosan válogatott forrásokból szerezzük be. Alkalmazott technológiánk egyszerű, hagyományos, kézműves jellegű, így az alapanyagok fontos összetevői – nyomelemek, vitaminok, omega-3 és omega-6 zsírsavak – sértetlenül kerülnek a kész termékekbe.     Lisztjeinket saját termelésű bánkúti és alakor búzából készítjük hagyományos kövesmalmunkon, kíméletes kis fordulaton őrölve, így a liszt nem melegszik túl, és megőrzi jótékony tulajdonságait és értékes összetevőit.",
+            "description_ro": "Am început afacerea noastră de familie cu scopul de a prelucra produsele cultivate de noi ca mici producători, pentru a crea produse delicioase și sănătoase. Ne pasă mult de responsabilitatea față de mediu, de cultivarea plantelor native zonei noastre – în special revigorarea soiurilor tradiționale locale –, precum și de continuarea și promovarea agriculturii fără pesticide. Majoritatea materiilor prime pe care le prelucrăm sunt cultivate de noi, iar restul le achiziționăm din surse atent selectate. Tehnologia folosită este simplă, tradițională și artizanală, astfel încât ingredientele importante – oligoelemente, vitamine, acizi grași omega-3 și omega-6 – rămân intacte în produsele finale. Făinurile noastre sunt produse din grâu băncuțean și alakor, cultivate de noi, măcinate cu grijă la moara noastră tradițională de piatră, la turații joase, pentru a preveni supraîncălzirea făinii și a păstra proprietățile benefice și valorile nutritive ale acesteia.",
+            "kep": "663acfda-0cd1-4ffa-8c07-abe96048e15a",
+            "sort": 19,
+            "visible": true
+        },
+        {
+            "id": "0342688a-c667-4b4e-917a-511c91a2796a",
+            "name": "ZsaBa Gubanc",
+            "description_hu": "A mi világunk nagyon színes, bohém és merész, ugyanakkor harmonikus összhangban van a környezettel és az életünkkel. Alkotásainkban ezt visszatükrözzük, rengeteg szeretettel és vidámsággal átszőve, amelyet örömmel adunk tovább nektek. Bátran kóstoljatok bele színeinkbe és hangulatainkba, legyenek a mi műveink otthonotok vidám vagy derűs hangulatának részei.",
+            "description_ro": "Lumea noastră este foarte colorată, boemă și îndrăzneață, dar, în același timp, se află în armonie cu mediul înconjurător și cu viața noastră. Reflectăm toate acestea în creațiile noastre, împletite cu multă iubire și veselie, pe care le transmitem cu bucurie mai departe către voi. Îndrăzniți să gustați din culorile și stările noastre – lăsați ca lucrările noastre să devină parte din atmosfera voastră senină și plină de voie bună de acasă.",
+            "kep": "6fa5b44b-5672-4a63-a868-ddc6a5c938ee",
+            "sort": 20,
+            "visible": true
+        },
+        {
+            "id": "05251822-5c68-4f7a-a053-f8e8874e1754",
+            "name": "VEDA-organic products",
+            "description_hu": "A VEDA Organic Products egy egyszerű gondolatból született: otthonunk lehet tiszta anélkül is, hogy felesleges vegyszerekkel terhelnénk a környezetet. Saját tapasztalataim vezettek ahhoz, hogy az ipari tisztítószereket természetes, környezetbarát alternatívákra cseréljem, majd olyan termékeket hozzak létre, amelyek hatékonyak, természetes összetevőkből készülnek, és a fenntartható szemléletet képviselik. A VEDA célja, hogy a mindennapi takarítás egyszerűbbé, természetesebbé és környezetkímélőbbé váljon, a természet erejére támaszkodva.",
+            "description_ro": "VEDA Organic Products s-a născut dintr-o idee simplă: putem avea o casă curată fără a încărca inutil mediul înconjurător cu substanțe chimice. Din propria experiență am ales să înlocuiesc produsele industriale de curățenie cu alternative naturale și ecologice, iar acest parcurs m-a inspirat să creez produse eficiente, realizate din ingrediente naturale și în armonie cu principiile sustenabilității. Scopul VEDA este de a face curățenia de zi cu zi mai simplă, mai naturală și mai prietenoasă cu mediul, valorificând puterea naturii.",
+            "kep": "1be9b84c-1ed2-4bf4-99bd-3222354c2422",
+            "sort": 21,
+            "visible": true
+        },
+        {
+            "id": "11a23d22-56f8-4936-9efe-e3fc554ddabc",
+            "name": "bbeatricedraws",
+            "description_hu": "A bbeatricedraws termékek mindig megújulnak, folyamatosan friss ötletekkel és egyedi dizájnokkal érkeznek. Minden darab Marosvásárhelyen, egy kis műhelyben készül szeretettel és odafigyeléssel. Saját rajzokkal díszített bögrék, kulacsok és kiegészítők nemcsak különlegesek, hanem a legszebb ajándékok is lehetnek születésnapra, ünnepre, vagy csak úgy, hogy örömet szerezz valakinek. A bbeatricedraws világában mindig találsz valami újat, ami mosolyt csal az arcokra.",
+            "description_ro": "Produsele bbeatricedraws sunt mereu înnoite, cu idei proaspete și designuri unice. Fiecare piesă este realizată cu dragoste și atenție într-un mic atelier din Târgu Mureș. Cănile, sticlele și accesoriile decorate cu desene originale nu sunt doar speciale, ci pot fi și cele mai frumoase cadouri pentru zile de naștere, sărbători sau pur și simplu pentru a aduce bucurie cuiva. În universul bbeatricedraws vei găsi mereu ceva nou, care aduce zâmbete pe chipuri.",
+            "kep": "96ebaf29-f5c8-452f-8a3b-95e2209e4e73",
+            "sort": 22,
+            "visible": true
+        },
+        {
+            "id": "451733d3-127f-4ce1-b56a-595a39230858",
+            "name": "Clay and Wings",
+            "description_hu": "Ráduly Margit munkáit a hagyományos és modern kerámiaelemek harmonikus összehangolása jellemzi. Alkotásai ötvözik a forma és funkció tökéletes egyensúlyát, miközben egyedi rajzokkal díszíti letisztult formájú kerámiáit. Inspirációját a mindennapi életből, a népművészetből és a természet szépségeiből meríti.",
+            "description_ro": "Lucrările lui Ráduly Margit se caracterizează printr-o armonioasă îmbinare a elementelor ceramice tradiționale și moderne. Creațiile sale îmbină perfect forma și funcționalitatea, fiind decorate cu desene unice pe suprafețe ceramice cu linii curate. Inspirația ei provine din viața de zi cu zi, din arta populară și din frumusețea naturii.",
+            "kep": "337893f9-d709-4ada-a039-b1d87bda3b0d",
+            "sort": 23,
+            "visible": true
+        },
+        {
+            "id": "6da2b767-8a64-45af-8ae5-f0f6a99ddb23",
+            "name": "BARABÁS DESIGN",
+            "description_hu": "Barabás Design műhelyben egyedi tervezésű, sajátos megjelenésű termékek születnek. Nagy odafigyeléssel, alapos munkával készítünk el minden egyes darabot, így tudjuk biztosítani a kiváló minőséget, a megfelelő minőségi anyagokkal pedig a tartósságot. Fő alapanyagot a bőr képezi, emellett dolgozunk Cordurából, vásznakból, és különleges anyagokból.",
+            "description_ro": "În atelierul Barabás Design iau naștere produse cu design unic și aspect distinctiv. Fiecare piesă este realizată cu mare atenție și muncă minuțioasă, asigurând astfel o calitate excelentă, iar materialele de înaltă calitate pe care le folosim garantează durabilitatea. Principalul nostru material este pielea, dar lucrăm și cu Cordura, pânză și materiale speciale",
+            "kep": "6e7b9e19-531b-4c62-a41e-002a3874ea4b",
+            "sort": 24,
+            "visible": true
+        },
+        {
+            "id": "1c1b460c-876c-4c2b-95d5-0d7adf5a629d",
+            "name": "BALÁZS ERZSÉBET",
+            "description_hu": "Balázs Erzsébet divat- és stílustervezőként egyedi tervezésű női ruhakollekciókat álmodik és készít. Alkotásait a harmonikus formavilág, a természetes alapanyagok és a színek tudatos párosítása jellemzi, amelyek időtálló, nőies megjelenést kölcsönöznek. Ruhadarabjai kényelmesek, méretre igazíthatók, így segítik viselőjüket abban, hogy megtalálja a számára legmegfelelőbb fazont és stílust. A WRAP kollekció szoknyákból, ruhákból, nadrágokból és blúzokból áll. Különlegességük, hogy oldalaik nincsenek összevarrva: a ruhadarabok a derék köré tekerhetők és megkötőkkel rögzíthetők, így több mérethez is könnyedén igazíthatók. Sportos és elegáns viseletként egyaránt megállják a helyüket.",
+            "description_ro": "Balázs Erzsébet este designer de modă și stil, creatoarea unor colecții unice de îmbrăcăminte pentru femei. Creațiile sale se remarcă prin echilibrul dintre forme, culori și materialele naturale, oferind un aspect armonios și atemporal. Piesele vestimentare sunt confortabile și ajustabile, astfel încât fiecare femeie să își poată găsi modelul potrivit stilului și siluetei sale. Colecția WRAP include fuste, rochii, pantaloni și bluze, iar elementul său distinctiv este sistemul de înfășurare și prindere în talie, fără cusături laterale. Acest design permite ajustarea pe mai multe mărimi și oferă versatilitate, fiind potrivit atât pentru ținute casual, cât și elegante.",
+            "kep": "88a10234-28f5-4452-a714-aeff8ef39289",
+            "sort": 25,
+            "visible": true
+        },
+        {
+            "id": "c0e00b25-2653-46eb-9e34-03ed15cc31ba",
+            "name": "ibrik.",
+            "description_hu": "Az Ibriknél hétköznapi tárgyakat töltünk meg történetekkel. Minden mintánkat mi magunk tervezzük és rajzoljuk, termékeinket pedig saját műhelyünkben, kézzel és szeretettel készítjük. Zománcbögréinkben a régi idők nosztalgiája találkozik a mai életérzéssel, kínálatunkat pedig a bögrék mellett kulacsok, termoszok és más egyedi kiegészítők teszik teljessé. Hol megnevettetünk, hol elgondolkodtatunk, hol hagyományainkat visszük tovább – de mindig azért alkotunk, hogy egy kis pluszt adjunk a mindennapokhoz.",
+            "description_ro": "La Ibrik dăm povești obiectelor de zi cu zi. Toate modelele sunt desenate și create de noi, iar produsele sunt realizate manual, cu grijă și pasiune, în propriul nostru atelier. Cănile noastre emailate îmbină nostalgia vremurilor de odinioară cu spiritul vieții de astăzi, iar gama noastră este completată de sticle, termosuri și alte accesorii unicat. Uneori aducem zâmbete, alteori invităm la reflecție, iar uneori ducem mai departe tradițiile noastre – dar întotdeauna creăm pentru a adăuga un strop de bucurie și personalitate vieții de zi cu zi.",
+            "kep": "e5f36c58-cb0b-41f7-84f7-b62012415d57",
+            "sort": 26,
+            "visible": true
+        },
+        {
+            "id": "1b7cfc5a-1120-4fbd-9ccd-c39937149d86",
+            "name": "Zsuzsaságok",
+            "description_hu": "Minden termékem saját kezűleg készül, a felhasznált alapanyagok közül csupán a fa alapok és a textíliák érkeznek készen. A textiltermékeket saját tervek alapján szabom, állítom össze és varrom, míg a faékszereket akrilfestékkel kézzel festem, lakkozom, majd egyedi összeállításokban készítem el. Munkáimat a kreativitás, az egyediség és a gondos kézi kivitelezés jellemzi.",
+            "description_ro": "Toate produsele mele sunt realizate manual, singurele elemente achiziționate fiind bazele din lemn pentru bijuterii și materialele textile. Produsele textile sunt croite, asamblate și cusute după propriile mele modele, iar bijuteriile din lemn sunt pictate manual cu vopsea acrilică, lăcuite și combinate în numeroase variante originale. Fiecare creație reflectă creativitatea, unicitatea și atenția acordată fiecărui detaliu.",
+            "kep": "6cb4a0b6-6a5a-4f34-90e8-bd4e9d068e2a",
+            "sort": 27,
+            "visible": true
+        },
+        {
+            "id": "e5f3bfa5-f134-4849-829f-0ef0df5af899",
+            "name": "Erika Levendula",
+            "description_hu": "Levendulából készült kézműves termékekkel és dekorációkkal várjuk a természetes szépségek kedvelőit. Kínálatunkban illatos levendulás alkotások és egyedi dísztárgyak találhatók, amelyek otthonunkat meghitt hangulattal gazdagítják, és ajándéknak is kiváló választások.",
+            "description_ro": "Oferim produse artizanale și decorațiuni realizate cu lavandă, dedicate iubitorilor de frumusețe naturală. În oferta noastră se regăsesc creații parfumate și obiecte decorative unice, care aduc un plus de căldură și eleganță oricărui cămin și reprezintă totodată cadouri deosebite.",
+            "kep": "00e7cec6-cf08-4655-a1fd-a3a92fad86c8",
+            "sort": 28,
+            "visible": true
+        },
+        {
+            "id": "3b9cdccc-e53e-4a70-b16a-70b65c744036",
+            "name": "Matherra",
+            "description_hu": "Minőségi játékokat, kiegészítőket és ruházatot kínálunk kisbabáknak és kisgyermekeknek, a legjobb alapanyagok felhasználásával. Termékeink között megtalálhatók például pamutból, lenből és fából készült darabok.",
+            "description_ro": "Oferim jucării, accesorii și îmbrăcăminte de calitate pentru bebeluși și copii mici, realizate din cele mai bune materiale. Printre produsele noastre veți găsi articole din bumbac, in și lemn.",
+            "kep": "cea8bb09-f0ac-4266-9af0-f10bb6b8c670",
+            "sort": 29,
+            "visible": true
+        },
+        {
+            "id": "e79ed45d-c7e3-4665-8f0d-574c1913f984",
+            "name": "PollyLand",
+            "description_hu": "Egyedi textilbabákat és állatfigurákat készítek hímzett arcokkal, sok szeretettel. Célom, hogy a gyerekek ne csupán egy játékot kapjanak, hanem egy biztonságot adó kis barátot, aki hosszú éveken át elkíséri őket.",
+            "description_ro": "Realizez păpuși textile și figurine de animale unice, cu fețe brodate și multă dragoste. Scopul meu este acela ca cei mici să nu primească doar o jucărie, ci un mic prieten care le oferă siguranță și îi însoțește ani de-a rândul.",
+            "kep": "149df98f-2e30-4c2c-a617-71ed53c5cc97",
+            "sort": 30,
+            "visible": true
+        },
+        {
+            "id": "a4fa9ae7-b291-4685-a5d0-fe64986227ea",
+            "name": "Inizza",
+            "description_hu": "Inizza kézzel készített üvegékszereket és dekorációkat kínál olvasztott üvegből. Termékeink üvegrogyasztásos technikával készülnek, mely során az üveg magas hőmérsékleten, kemencében formálódik.",
+            "description_ro": "Inizza oferă bijuterii și decorațiuni lucrate manual din sticlă topită. Produsele noastre sunt realizate prin tehnica topirii sticlei, în care sticla se modelează la temperaturi ridicate, într-un cuptor special.",
+            "kep": "70a30e0d-4dcc-44d4-acc3-0149dafc727d",
+            "sort": 31,
+            "visible": true
+        },
+        {
+            "id": "03a1fd23-9b87-4fe8-acea-dd7dc43ddb5b",
+            "name": "Gaby Bizsu",
+            "description_hu": "Kis műhelyemben kézzel készült ékszerek, evőeszközök, bögrék, zsebtükrök és egyéb kiegèszítök készülnek, melyeknek fő alapanyaga az égetett gyurma. Evőeszközeink sok odafigyelèssel és aprolèkos munkàval készülnek, egy kis varázslatot csempèszve a gyerekeink ètkezèsèbe. Ékszereinkkel a színek világát erősítjük, hiszünk benne, hogy egy jól kiválasztott kiegèszítő vidàmsàgot és fényt hozhat a mindennapokba.",
+            "description_ro": "În micul meu atelier iau naștere bijuterii, tacâmuri, căni, oglinjoare de buzunar și alte accesorii lucrate manual, al căror material principal este pasta polimerică coaptă. Tacâmurile noastre sunt realizate cu multă atenție și migală, aducând o notă de magie în mesele copiilor noștri. Prin bijuteriile noastre celebrăm lumea culorilor, crezând cu tărie că un accesoriu bine ales poate aduce veselie și lumină în viața de zi cu zi.",
+            "kep": "aff0e795-d1aa-4a2c-8921-0fdaa4b49704",
+            "sort": 32,
+            "visible": true
+        },
+        {
+            "id": "bac5bd9b-9de4-4eb6-8502-3a85f65bdaa1",
+            "name": "Mukit Manufaktúra",
+            "description_hu": "Ha gyanta és fa, akkor Mukit! A Mukitot leginkább a színek és a változatosság jellemzik. Fa felületre akrilfestékkel viszem fel inspirációimat, majd epoxi gyantával vonom be őket. Szeretem látni, hogy az ékszereim viselőin hogyan válnak igazán személyessé, ahogy egy adott darab egyéni stílushoz és személyiséghez kapcsolódik. Ez motivál, hogy a Mukit egyre színesebb és változatosabb legyen.",
+            "description_ro": "Dacă este rășină și lemn, atunci e Mukit! Mukit se caracterizează mai ales prin culori și diversitate. Îmi aplic inspirația pe suprafețe de lemn cu vopsea acrilică pe care le acopăr apoi cu rășină epoxidică. Îmi place să văd cum bijuteriile mele devin cu adevărat personale pe purtătorii lor, fiecare piesă legându-se de un stil și o personalitate unică. Acesta este motivul pentru care Mukit devine din ce în ce mai colorat și mai variat.",
+            "kep": "6e27d013-67e8-4580-9819-012455b672bf",
+            "sort": 33,
+            "visible": true
+        },
+        {
+            "id": "5d907bd0-250e-42a5-baa4-f6e846ebe6dc",
+            "name": "Pur Herbet",
+            "description_hu": "Számomra nagyon fontos, hogy mindig a legmagasabb minőséget nyújtsam, folyamatosan a jelenlegi legjobb tudásom szerint dolgozom. Figyelmem és törekvésem arra összpontosul, hogy fejlődjek, így termékeim is folyamatosan megújulnak és javulnak. A Pur Herbet termékek természetes alapanyagokból, kézzel készülnek, különös figyelemmel az illóolajok és gyógynövények harmonikus kombinációjára. Egyediségük abban rejlik, hogy minden darab kis szériában, környezettudatos szemlélettel, magas minőségi elvárások mellett készül.",
+            "description_ro": "Pentru mine este foarte important să ofer întotdeauna cea mai înaltă calitate și să lucrez continuu la cel mai bun nivel al cunoștințelor mele actuale. Atenția și efortul meu se concentrează pe dezvoltare, astfel produsele mele se îmbunătățesc și se reînnoiesc constant. Produsele Pur Herbet sunt realizate manual din ingrediente naturale, cu o atenție specială acordată combinației armonioase de uleiuri esențiale și plante medicinale. Unicitatea lor constă în faptul că fiecare piesă este produsă în serii mici, cu o abordare eco-responsabilă și respectând standarde înalte de calitate.",
+            "kep": "67f0cd23-13ce-4658-b0dc-155acfd93b40",
+            "sort": 34,
+            "visible": true
+        },
+        {
+            "id": "faaceb9b-f36d-41c3-9333-928113d63740",
+            "name": "Timea sweets",
+            "description_hu": "A Timea Sweets kézműves cukrászda kis szériában, nagy odafigyeléssel és minőségi alapanyagok felhasználásával készíti édességeit. Kínálatunkban sütemények, pogácsák, házi csokoládék, amerikai kekszek, havasi és pozsonyi kiflik, sajtos perecek, sajtos tallérok, diós kosarak, valamint A hagyományos ízeket modern megjelenéssel ötvözzük, hogy minden falat különleges élményt nyújtson.",
+            "description_ro": "Timea Sweets este o cofetărie artizanală care produce în cantități mici, cu multă atenție și folosind ingrediente de cea mai bună calitate. Oferta noastră include prăjituri, pogăcele, ciocolată de casă, biscuiți americani, cornulețe Havasi și Pozsonyi, covrigei și rondele cu brânză, coșulețe cu nucă. Îmbinăm gusturile tradiționale cu un aspect modern, pentru ca fiecare produs să ofere o experiență deosebită.",
+            "kep": "421a8d4f-6975-4442-b129-583453aea369",
+            "sort": 35,
+            "visible": true
+        },
+        {
+            "id": "528a8aa2-983c-4d27-ae29-408eda9d9793",
+            "name": "Keresztes Handmade",
+            "description_hu": "Csomózási technikával készítek egyedi ékszereket, minden darabot kézzel, nagy odafigyeléssel alkotok meg. Munkáimra jellemző a részletgazdagság, a színek harmóniája és az időtálló kézműves minőség.",
+            "description_ro": "Realizez bijuterii unice prin tehnica nodurilor, fiecare piesă fiind creată manual, cu mare atenție. Lucrările mele se caracterizează prin bogăția detaliilor, armonia culorilor și calitatea artizanală durabilă.",
+            "kep": "bb39412c-eff6-4245-8505-23b1b3856f0b",
+            "sort": 36,
+            "visible": true
+        },
+        {
+            "id": "79ae14d6-e220-4324-b2d4-d4421b9a82ee",
+            "name": "Eva Bijou",
+            "description_hu": "Ékszereimet kiváló minőségű japán gyöngyökből, rozsdamentes acélból és antiallergén kellékekből készítem, így nemcsak szépek, hanem tartósak és bőrbarátok is. Minden darab kézzel, nagy odafigyeléssel és szeretettel születik meg. Kollekcióimban a modern dizájn és a hagyományos minták találkoznak, a letisztulttól a színes, karakteres stílusokig. Célom, hogy ékszereim ne csak díszítsenek, hanem örömet és önkifejezést is nyújtsanak viselőiknek. Szeretettel várom, hogy személyesen is bemutathassam munkáimat a vásáron!",
+            "description_ro": "Bijuteriile mele sunt realizate din mărgele japoneze de înaltă calitate, oțel inoxidabil și accesorii antialergice, astfel încât nu sunt doar frumoase, ci și durabile și prietenoase cu pielea. Fiecare piesă este lucrată manual, cu mare atenție și dragoste. În colecțiile mele se întâlnesc designul modern și modelele tradiționale, de la stiluri simple la cele colorate și expresive. Scopul meu este ca bijuteriile mele să nu fie doar ornamente, ci să aducă bucurie și să ofere mijloace de exprimare personală purtătorilor lor. Vă aștept cu drag să vă prezint personal creațiile mele la târg!",
+            "kep": "70741e82-edc2-406e-b859-e0a9d92131a6",
+            "sort": 37,
+            "visible": true
+        },
+        {
+            "id": "2936103e-5a55-407d-9646-7f03cc78c5df",
+            "name": "Wondernest",
+            "description_hu": "Több mint 10 éve készítünk minőségi pamut anyagokból gyerekszoba-kiegészítőket, valamint baba- és gyermekruházatot. Kiemelkedő termékeink közé tartoznak a jól ismert tipegő hálózsákok, softshell overallok, minky takarók, rácsvédők, és nem utolsó sorban a készségfejlesztő matató kockák.",
+            "description_ro": "De mai bine de 10 ani confecționăm accesorii pentru camere de copii, precum și îmbrăcăminte pentru bebeluși și copii, din materiale de bumbac de calitate. Printre produsele noastre deosebite se numără sacii de dormit pentru primii pași, combinezoanele softshell, pături minky, protecții pentru grilaj și, nu în ultimul rând, cuburile senzoriale pentru dezvoltarea abilităților.",
+            "kep": "701e3842-b4e2-4b3a-9813-6799220b4210",
+            "sort": 38,
+            "visible": true
+        },
+        {
+            "id": "414952d5-50dc-4451-8ba7-45b80563b289",
+            "name": "Sic Oil",
+            "description_hu": "Az előállított ötféle illóolaj – jegenyefenyő, lucfenyő, erdeifenyő, zsálya és izsóp – valamint ezen növények hidrolátumai vízgőz-desztillációval készülnek. Ez az eljárás lehetővé teszi a nagy tisztaságú illóolajok kinyerését. Mind az öt illóolaj általános fertőtlenítő hatással bír, ezért kiválóan alkalmasak légúti megbetegedések tüneteinek enyhítésére. A fenyőfélék különösen ajánlottak ízületi és reumás panaszok kezelésére, míg a zsálya hatékony bőrproblémák, például gyulladások, afták, fekélyek és ekcéma kezelésére. Termékeink célja felhívni a figyelmet a gyógynövények, különösen a fenyőfélék jelentőségére. A kiváló minőségű, hazai fenyőillóolajok pozitív hatással vannak a mindennapokra, használhatók párologtatóban, fürdővízben, szaunában vagy masszázsolajhoz keverve.",
+            "description_ro": "Cele cinci uleiuri esențiale produse – de brad argintiu, molid, brad de pădure, salvie și isop – precum și hidrolații acestor plante sunt obținute prin distilare cu abur. Această metodă permite extragerea uleiurilor esențiale de înaltă puritate. Toate cele cinci uleiuri esențiale au efect antiseptic general, fiind astfel ideale pentru ameliorarea simptomelor afecțiunilor respiratorii. Speciile de conifere sunt recomandate în mod special pentru tratarea problemelor articulare și reumatice, în timp ce salvia este eficientă în tratarea afecțiunilor pielii, precum inflamații, afte, ulcere și eczeme. Produsele noastre își propun să atragă atenția asupra importanței plantelor medicinale, în special a coniferelor. Uleiurile esențiale locale de cea mai bună calitate au un efect pozitiv asupra vieții cotidiene și pot fi utilizate în difuzoare, în apa de baie, în saună sau combinate cu uleiuri pentru masaj.",
+            "kep": "48d39e7d-5166-4340-8ab7-804dbf8cdfbb",
+            "sort": 39,
+            "visible": true
+        },
+        {
+            "id": "f67144fc-a93e-402e-bafe-81c98fad909c",
+            "name": "Ambrus Annamária",
+            "description_hu": "Kínálatomban kézzel festett kerámia- és porcelánbögrék, tányérok, egyedi naplók, valamint fa- és bőralapú, kézzel festett ékszerek találhatók. Emellett kézzel díszített textiltermékeket, szatyrokat és gyöngyből készült ékszereket is készítek. Minden alkotás egyedi, gondos kézimunkával készül, a kreativitást és az igényes kivitelezést ötvözve.",
+            "description_ro": "Realizez căni și farfurii din ceramică și porțelan pictate manual, jurnale unicat, bijuterii pictate manual pe suport din lemn și piele, precum și sacoșe și alte produse textile decorate manual. De asemenea, creez bijuterii realizate din mărgele, fiecare piesă fiind unică și lucrată cu atenție la detalii, îmbinând creativitatea cu măiestria artizanală.",
+            "kep": "096b1366-4701-4ca5-89ce-8c3e70995fa8",
+            "sort": 40,
+            "visible": true
+        },
+        {
+            "id": "4d28fab1-1ffe-4562-aa59-513b68c833ca",
+            "name": "Az ÉlezŐ",
+            "description_hu": "Kézzel készített késeket, bicskákat, horgászcsalikat és egyedi bőrtokokat készítünk saját műhelyünkben. Termékeink gondosan válogatott alapanyagokból készülnek, kiemelt figyelmet fordítva a tartósságra, a funkcionalitásra és az esztétikus megjelenésre. Minden darab egyedi, a kézműves munka hagyományát és a minőségi kivitelezést képviseli.",
+            "description_ro": "Realizăm manual cuțite, bricege, năluci pentru pescuit și teci din piele personalizate, toate create în propriul nostru atelier. Produsele sunt confecționate din materiale atent selecționate, punând accent pe durabilitate, funcționalitate și un aspect estetic deosebit. Fiecare piesă este unicat și reflectă valoarea meșteșugului autentic și a execuției de înaltă calitate.",
+            "kep": "0bc127ed-1ece-47b0-8804-4e9a23e34d5a",
+            "sort": 41,
+            "visible": true
+        },
+        {
+            "id": "b2b0eef4-54bd-4358-a9dd-780ba0684432",
+            "name": "em`Ok natural",
+            "description_hu": "Az em'Ok natural natúrkozmetikumok kézzel készülnek, és mindig frissen kerülnek értékesítésre. Kizárólag növényi eredetű összetevőket használunk, valamint a bőrápolás „nagyágyúinak” számító hatóanyagok növényi alternatíváit alkalmazzuk. Termékeink mentesek a szintetikus tartósítószerektől, parfümöktől, alumíniumtól, alkoholtól, szilikontól és parabénektől. Nem használunk kész krémalapokat, sem natúrkozmetikumokban engedélyezett nem természetes összetevőket.        Lehetőség szerint termékeinket üvegcsomagolásban kínáljuk, ami külön figyelmet és előkészületet igényel. Fontos számunkra az átláthatóság, ezért a csomagolás részletes információkat is tartalmaz.",
+            "description_ro": "Produsele cosmetice em'Ok natural sunt realizate manual și sunt mereu proaspete la vânzare. Folosim exclusiv ingrediente de origine vegetală, precum și alternative vegetale pentru ingredientele-cheie cunoscute în îngrijirea pielii. Produsele noastre sunt lipsite de conservanți sintetici, parfumuri, aluminiu, alcool, silicon și parabeni. Nu folosim baze de cremă gata preparate, nici ingrediente non-naturale permise în cosmeticele naturale. Pe cât posibil, oferim produsele noastre în ambalaje de sticlă, ceea ce necesită o atenție și o pregătire specială. Transparența este foarte importantă pentru noi, de aceea ambalajul conține informații detaliate.",
+            "kep": "854647e2-9f76-46a5-8715-fb40da6f33c4",
+            "sort": 42,
+            "visible": true
+        },
+        {
+            "id": "a601fda2-10ca-407b-a027-e0d311ed0cd4",
+            "name": "Haboleum",
+            "description_hu": "Haboleum – természetesen tiszta, kézzel készült szappanok. A Haboleum szappanokat kézzel, szeretettel és odafigyeléssel készítem hagyományos hideg eljárással. Így megőrzöm a növényi olajok és zsírok – mint az olívaolaj, kókuszolaj, sheavaj, napraforgó-, repce- és mandulaolaj – bőrtápláló, regeneráló hatását. Természetes adalékanyagokat használok, például agyagport, virágpolleneket, mézet, kávét, mákot és gyógynövényeket, amelyek különlegessé és egyedivé teszik minden szappant. Illatosításhoz kizárólag tiszta illóolajokat alkalmazok, melyek nemcsak kellemes illatot biztosítanak, hanem aromaterápiás hatással is bírnak. Számomra fontos, hogy minden szappanban ott legyen a természet tisztasága, a gondos odafigyelés, valamint az a hit, hogy a valódi érték az egyszerűségben rejlik.",
+            "description_ro": "Haboleum – săpunuri naturale, curate, făcute manual. Săpunurile Haboleum le prepar manual, cu dragoste și atenție, prin metoda tradițională la rece. Astfel, păstrez proprietățile hrănitoare și regeneratoare ale uleiurilor și grăsimilor vegetale precum uleiul de măsline, uleiul de cocos, untul de shea, uleiul de floarea-soarelui, uleiul de rapiță și uleiul de migdale. Folosesc adaosuri naturale, cum ar fi argila, polenul floral, mierea, cafeaua, macul și plantele medicinale, care conferă fiecărui săpun un caracter special și unic. Pentru parfumare utilizez exclusiv uleiuri esențiale pure, care oferă nu doar o aromă plăcută, ci și efecte aromaterapeutice. Pentru mine este important ca în fiecare săpun să se regăsească puritatea naturii, grija atentă și convingerea că adevărata valoare stă în simplitate.",
+            "kep": "8f4b2dc8-37ac-4495-9d53-29c22e389bf6",
+            "sort": 43,
+            "visible": true
+        },
+        {
+            "id": "7b59952e-ddac-49ab-bb39-322714e813ea",
+            "name": "ceramică Kopacz kerámia",
+            "description_hu": "Hagyományos technikákkal, kézzel korongozott, egyedi mázas díszkerámiákat készítünk. Minden darab külön figyelemmel és szeretettel születik meg, hogy egyszerre legyen szépség és használati érték. Törekszünk arra, hogy munkáink egyszerre tükrözzék a hagyomány tiszteletét és a modern formavilágot.",
+            "description_ro": "Folosind metode tradiționale, realizăm manual ceramică decorativă, pe roata olarului, glazurată cu grijă. Fiecare piesă este unică, lucrată cu pasiune și atenție la detalii. Lucrăm pentru a aduce în casele voastre obiecte ce combină frumusețea tradiției cu funcționalitatea contemporană.",
+            "kep": "df09b12d-02c0-4f3e-a807-86dac2c17b96",
+            "sort": 44,
+            "visible": true
+        },
+        {
+            "id": "b8ca2450-dbba-449f-b7a5-705f8831dc18",
+            "name": "Naomi Store Boutique",
+            "description_hu": "Termékcsaládom saját készítésű, egyedi műgyanta ékszerekből áll, amelyeket valódi, szárított virágok és rozsdamentes acél kiegészítők tesznek különlegessé. Minden darab kézzel, gondos odafigyeléssel készül, kizárólag minőségi alapanyagok felhasználásával. Az ékszerek a természet szépségét ötvözik a modern formavilággal, egyediségükkel, tartósságukkal és időtálló megjelenésükkel különleges kiegészítői lehetnek a mindennapoknak.",
+            "description_ro": "Colecția mea cuprinde bijuterii unicat din rășină, realizate manual și decorate cu flori naturale uscate și accesorii din oțel inoxidabil. Fiecare piesă este creată cu grijă, folosind exclusiv materiale de calitate. Bijuteriile îmbină frumusețea naturii cu un design modern, remarcându-se prin unicitate, durabilitate și eleganță atemporală, oferind purtătorilor accesorii deosebite pentru orice ocazie.",
+            "kep": "086bddb2-f8c1-4194-8f59-c68b22d5ec87",
+            "sort": 45,
+            "visible": true
+        },
+        {
+            "id": "c20ac0c9-7c70-4c02-b3bf-852279f8d055",
+            "name": "Melinda Handmade Dolls",
+            "description_hu": "Textilből készült termékeink részben géppel, de túlnyomórészt kézzel készülnek, pamut és más minőségi alapanyagok felhasználásával. Egyedi textilbabáink eltérnek a hagyományos Waldorf- és horgolt babáktól, ugyanakkor elérhető áron kínáljuk őket, hogy minél több gyermek örömét lelhessen bennük. A babák különlegessége a fonható haj, valamint a levehető és cserélhető ruházat és kiegészítők, amelyek még játékosabbá és személyesebbé teszik őket.",
+            "description_ro": "Produsele noastre textile sunt realizate parțial la mașină, dar în cea mai mare parte manual, din bumbac și alte materiale textile de calitate. Păpușile noastre sunt creații originale, diferite de păpușile Waldorf sau cele croșetate, fiind oferite la prețuri accesibile pentru a ajunge în cât mai multe case. Farmecul lor constă în părul care poate fi împletit, precum și în hainele și accesoriile detașabile și interschimbabile, care oferă copiilor și mai multe posibilități de joacă.",
+            "kep": "310ccd3f-edc6-4188-a98d-e4ec0c53b139",
+            "sort": 46,
+            "visible": true
+        },
+        {
+            "id": "6439562d-ab39-4169-be8a-5c6b8b995ae1",
+            "name": "B&I NATURAL PRODUCTS",
+            "description_hu": "Termékeink kis szériában, kézműves eljárással készülő natúrkozmetikumok. Kiemelt termékcsaládunk a műanyagmentes sampon- és tusfürdőtömbök, valamint a természetes krémdezodorok, amelyek hatékony és környezetbarát alternatívát kínálnak a hagyományos kozmetikumokkal szemben. A növényi eredetű, bőr- és hajbarát összetevőkből készült sampon- és tusfürdőtömbök koncentrált formulájuknak köszönhetően hosszú ideig használhatók, ezáltal a csomagolási hulladék mennyiségét is csökkentik. Krémdezodoraink alumíniumsó- és alkoholmentesek, így a érzékenyebb bőr számára is kíméletes megoldást nyújtanak. Minden termékünk gondosan válogatott természetes alapanyagokból, kézzel készül, a vonatkozó európai kozmetikai előírásoknak megfelelően. Számunkra a minőség, a fenntarthatóság, a környezettudatos csomagolás és a bőrbarát összetétel a legfontosabb értékek.",
+            "description_ro": "Produsele noastre sunt cosmetice naturale, realizate artizanal, în serii mici. Gama noastră principală include șampoane și geluri de duș solide, fără plastic, precum și deodorante cremă naturale, care oferă o alternativă eficientă și prietenoasă cu mediul la produsele cosmetice convenționale. Șampoanele și gelurile de duș solide sunt fabricate din ingrediente de origine vegetală, blânde cu pielea și părul, iar formula lor concentrată asigură o utilizare îndelungată și reduce cantitatea de deșeuri generate de ambalaje. Deodorantele noastre cremă nu conțin săruri de aluminiu și alcool, fiind potrivite inclusiv pentru pielea sensibilă. Toate produsele sunt realizate manual din ingrediente naturale atent selecționate, în conformitate cu normele europene aplicabile produselor cosmetice. Punem accent pe calitate, sustenabilitate, ambalaje ecologice și formule delicate cu pielea.",
+            "kep": "ceca70f2-5e7f-49a8-8cdb-1ba775badb9a",
+            "sort": 47,
+            "visible": true
+        },
+        {
+            "id": "f8d97b5f-474b-42af-ae5a-ff6306879cbe",
+            "name": "BioBee",
+            "description_hu": "Családunkban a méhészet közel százéves hagyományra tekint vissza. Az évtizedek során nemcsak a méhészkedés szakmai tudását örökítettük tovább, hanem a méhészeti termékek jótékony hatásait is számtalanszor megtapasztaltuk. Ezt a felhalmozott tapasztalatot és elhivatottságot visszük tovább minden termékünkben, hogy természetes értékekkel és minőségi méhészeti termékekkel szolgáljuk vásárlóinkat.",
+            "description_ro": "În familia noastră, apicultura are o tradiție de aproape o sută de ani. De-a lungul generațiilor am acumulat nu doar cunoștințe despre creșterea albinelor, ci și o experiență valoroasă privind beneficiile produselor apicole. Toată această experiență și pasiune se regăsesc în fiecare dintre produsele noastre, prin care dorim să oferim consumatorilor produse apicole naturale și de cea mai bună calitate.",
+            "kep": "c9af7534-7269-4d7b-a4e5-2232fd4cad02",
+            "sort": 48,
+            "visible": true
+        },
+        {
+            "id": "0ee15357-9172-4156-b19d-7b4829844f9e",
+            "name": "Andihodor",
+            "description_hu": "Vállalkozásom egy szívemhez közel álló hobbiból született. Az égethető gyurma sokoldalúsága inspirál arra, hogy olyan kézzel készített ékszereket alkossak, amelyek harmonikusan illeszkednek különböző öltözködési stílusokhoz és alkalmakhoz. A színek, formák és textúrák játékával minden darabot egyedivé és különlegessé teszek. Kínálatomban a hétköznapokra szánt visszafogott ékszerektől az elegáns alkalmi kiegészítőkig számos kézzel készített alkotás megtalálható. Minden ékszer szeretettel, gondos odafigyeléssel készül, hogy viselőjének örömet és önazonos megjelenést nyújtson",
+            "description_ro": "Afacerea mea s-a născut dintr-un hobby foarte drag sufletului meu. Versatilitatea lutului polimeric îmi oferă posibilitatea de a crea bijuterii realizate manual, care se potrivesc armonios diferitelor stiluri vestimentare și ocazii. Prin jocul culorilor, formelor și texturilor, fiecare piesă devine unică și specială. Colecția mea cuprinde atât bijuterii discrete pentru purtarea de zi cu zi, cât și accesorii elegante pentru momente speciale. Fiecare creație este realizată cu grijă, pasiune și atenție la detalii, pentru ca purtătorul să se regăsească în frumusețea și unicitatea ei.",
+            "kep": "465a43a9-566e-45db-8d86-3314bcef5c64",
+            "sort": 49,
+            "visible": true
+        },
+        {
+            "id": "a9de1759-d73d-4396-b10e-9444770e80ff",
+            "name": "Non's táskái",
+            "description_hu": "Színes, vidám és változatos, minőségi alapanyagokból szabom ki az általam megálmodott termékek szabásmintáját. Ezeket nagy odafigyeléssel varrom össze, hogy a táskák praktikusak és kényelmesek legyenek, miközben megőrzik a népi hagyomány motívumait is.",
+            "description_ro": "Croiesc modelele produselor pe care le visez din materiale de calitate, colorate, vesele și variate. Le cos cu mare atenție, astfel încât gențile să fie practice și confortabile, păstrând totodată și motivele tradiției populare.",
+            "kep": "fbdfb3db-5463-4a54-af65-4fa0b0557bdc",
+            "sort": 50,
+            "visible": true
+        },
+        {
+            "id": "faac02d0-40f0-4f26-8af8-490f9f1e8103",
+            "name": "PEPOS",
+            "description_hu": "A PEPOS egy egyszerű ötletből született: új ízekkel gazdagítani a hagyományos tökmagot. Hosszú kísérletezés eredményeként jött létre a héjatlan, pörkölt és különféle fűszerekkel ízesített tökmagok kínálata, amely egészséges és különleges alternatívát nyújt a mindennapi nassoláshoz. Minden termék gondos odafigyeléssel készül, természetes, helyi alapanyagok felhasználásával. A tökmagok romániai termelőktől származnak, a felhasznált só pedig a parajdi sóbányából érkezik, így minden csomag a helyi értékeket és a minőséget képviseli.",
+            "description_ro": "PEPOS s-a născut din dorința de a oferi o nouă experiență unui produs tradițional: semințele de dovleac. După ani de experimentare, am creat o gamă de semințe decojite, prăjite și asezonate cu diverse condimente, o gustare sănătoasă și deosebită pentru orice moment al zilei. Fiecare produs este realizat cu grijă, folosind ingrediente naturale și locale. Semințele provin de la producători din România, iar sarea utilizată este extrasă din Salina Praid, oferind fiecărui produs autenticitate și un gust deosebit.",
+            "kep": "19164ac1-bdef-4563-a330-9bf56028e2dd",
+            "sort": 51,
+            "visible": true
+        },
+        {
+            "id": "a4f3d00c-f6d2-418d-a431-f1fb57352def",
+            "name": "mANDIbo handmade",
+            "description_hu": "Fa dísztermékeket készítek, amelyeket kézi pirográfiával, festéssel és szalvétatechnikával díszítek. Kínálatomban ajándéktárgyak, képecskék, dobozok, valamint műgyantából készült kulcstartók is megtalálhatók.",
+            "description_ro": "Confecționez obiecte decorative din lemn, pe care le împodobesc manual prin pirogravură, pictură și tehnica șervețelului. În oferta mea se regăsesc suveniruri, tablouri mici, cutii, precum și brelocuri realizate din rășină artificială.",
+            "kep": "5677967f-1e7b-4324-b129-a9e6e24798b8",
+            "sort": 52,
+            "visible": true
+        },
+        {
+            "id": "9e084ac1-23a9-40d8-851f-77c8828be6dc",
+            "name": "Farm Flowers",
+            "description_hu": "Dísz- és gyógynövényeinket 2016 óta Marosvásárhely mellett, Koronkán található kis virágfarmunkon termesztjük. Kínálatunkban évelő cserepes növények is megtalálhatók, amelyek különleges díszei lehetnek a kerteknek és balkonládáknak. Különlegességként kiemelnénk eukaliptuszainkat, amelyek nagy népszerűségnek örvendenek. Saját termesztésű vágott virágainkból egyedi csokrokat és különböző alkalmakra – esküvőre, keresztelőre, ballagásra – személyre szabott virágdíszeket készítünk. Tavasztól őszig friss virágokkal dolgozunk, télen pedig szárított virágokból készülnek koszorúk és csokrok.",
+            "description_ro": "Din anul 2016, cultivăm plante ornamentale și aromatice pe mica noastră fermă de flori din Corunca, lângă Târgu Mureș. Oferim plante perene la ghiveci, care pot deveni adevărate podoabe pentru grădini și jardiniere. Printre plantele noastre se remarcă eucalipții, deosebit de apreciați de iubitorii de plante. Din florile tăiate cultivate în propria fermă realizăm buchete unicat și decorațiuni florale personalizate pentru diverse evenimente, precum nunți, botezuri sau festivități de absolvire. Din primăvară până în toamnă lucrăm cu flori proaspete, iar în sezonul rece creăm coronițe și buchete din flori uscate.",
+            "kep": "cccf67d2-41ca-4001-a3e5-8e8abf536975",
+            "sort": 53,
+            "visible": true
+        },
+        {
+            "id": "19d18342-4aa9-493c-815d-88d91e817a51",
+            "name": "Panni design",
+            "description_hu": "A Panni Design Marosvásárhelyen készített, kézzel varrott táskákat és kiegészítőket kínál. Kollekciónkban stílusos övtáskák és egyedi kiegészítők találhatók, amelyek prémium minőségű, részben vízálló anyagokból készülnek. Minden darab gondos odafigyeléssel készül, hogy egyszerre legyen tartós, praktikus és divatos társa a mindennapoknak.",
+            "description_ro": "Panni Design înseamnă genți și accesorii realizate manual, cu grijă și pasiune, în Târgu Mureș. Colecția noastră cuprinde borsete elegante și accesorii unicat, confecționate din materiale premium, unele cu proprietăți impermeabile. Fiecare produs este realizat cu atenție la detalii, pentru a oferi un accesoriu durabil, practic și modern, potrivit pentru utilizarea de zi cu zi.",
+            "kep": "8ef86595-f9b0-4323-9c44-bcea092c801f",
+            "sort": 54,
+            "visible": true
+        },
+        {
+            "id": "72f9eb34-ab5f-4c9e-a23c-7c52c805534e",
+            "name": "Agyagási Jolán",
+            "description_hu": "Elsősorban székelyruha készítéssel, népi hímzéssel és táncos szoknyák készítésével foglalkozom. Emellett kézzel festett és készített ékszereket, kiegészítőket, apró dekorációkat is kínálok. Termékeim a legkisebbektől a legnagyobbakig minden korosztálynak szólnak.",
+            "description_ro": "Mă ocup în principal cu confecționarea costumelor secuiești, broderii populare și realizarea de fuste pentru dansatori. De asemenea, ofer bijuterii pictate și lucrate manual, accesorii și mici decorațiuni. Produsele mele se adresează tuturor vârstelor, de la cei mai mici până la cei mari.",
+            "kep": "9b34db24-5195-4732-9bed-836de9d026d4",
+            "sort": 55,
+            "visible": true
+        },
+        {
+            "id": "2170b4b3-19cd-4300-a5ad-4a98fc032f99",
+            "name": "PiriHandmade",
+            "description_hu": "Kézzel horgolt állatokat, mesefigurákat és mesehősöket készítek. Minden darab szeretettel és aprólékos odafigyeléssel születik meg, hogy egyedi, bájos tárgyakkal ajándékozhassam meg a kicsiket és nagyokat egyaránt.",
+            "description_ro": "Confecționez manual animale croșetate, personaje de poveste și eroi din basme. Fiecare piesă este realizată cu dragoste și atenție la detalii, pentru a oferi cadouri unice și încântătoare atât celor mici, cât și celor mari.",
+            "kep": "be22f97c-9c8c-47cd-9eed-65084de1fcfe",
+            "sort": 56,
+            "visible": true
+        },
+        {
+            "id": "98a3dd22-7afe-4299-8c9a-d8b50e73c936",
+            "name": "FLORATITUDE",
+            "description_hu": "A FlorAtitud célja, hogy közelebb hozza a természetet. Minden termékünk szárított növények bio összetevőit használja. A fémmegmunkálás és a körülöttünk élő növények ötvözésével egyedi dizájnnal és különleges kompozícióval rendelkező ékszereket alkotunk.",
+            "description_ro": "Scopul FlorAtitud este acela de a aduce natura mai aproape de noi. Toate produsele noastre folosesc ingrediente bio provenite din plante uscate. Prin îmbinarea prelucrării metalului cu plantele care ne înconjoară, creăm bijuterii cu un design unic și compoziții deosebite.",
+            "kep": "e817bdcb-a2d7-49bd-b16b-50331859ea86",
+            "sort": 57,
+            "visible": true
+        },
+        {
+            "id": "cbdce24a-d68e-44e9-8bf2-ec96fab11894",
+            "name": "GRACE ON A PLATE",
+            "description_hu": "A Grace on a Plate egy fiatal, lendületes startup, amely kézműves mogyoróvajakat készít különféle diófélékből – többek között földimogyoróból, mandulából, kesudióból, pisztáciából és erdei mogyoróból. Termékeinket nagy gondossággal, természetes alapanyagokból állítjuk elő, hogy valódi ízeket és tiszta élményt nyújtsanak.",
+            "description_ro": "Grace on a Plate este un startup tânăr și dinamic care produce unturi de alune artizanale din diverse nuci – printre care arahide, migdale, caju, fistic și alune de pădure. Produsele noastre sunt realizate cu mare grijă, din ingrediente naturale, pentru a oferi arome autentice și o experiență pură.",
+            "kep": "32922bf0-cd6a-407b-99ad-2c3901186ff6",
+            "sort": 58,
+            "visible": true
+        },
+        {
+            "id": "439f179b-666b-4e80-91c8-42d8a752af25",
+            "name": "Poienița cu afine",
+            "description_hu": "Családi vállalkozásunk a Maros megyei Alsóbölkény községhez tartozó Erdőszentmihályon működik, ahol erdei bogyós gyümölcsök termesztésével és értékesítésével foglalkozunk. Kínálatunkban elsősorban friss áfonya, málna és szeder található. Hisszük, hogy ezek a gyümölcsök nemcsak ízletesek, hanem számos jótékony hatással is rendelkeznek, ezért elkötelezetten dolgozunk azon, hogy kiváló minőségű, friss termékeket kínáljunk vásárlóinknak.",
+            "description_ro": "Suntem o afacere de familie din Sânmihai de Pădure, comuna Beica de Jos, județul Mureș, specializată în cultivarea și comercializarea fructelor de pădure. Oferim în principal afine, zmeură și mure proaspete, cultivate cu grijă și responsabilitate. Credem în beneficiile acestor fructe și ne dedicăm cu pasiune producerii unor produse proaspete și de cea mai bună calitate pentru clienții noștri.",
+            "kep": "503d5691-b701-4f9b-8d48-90deeb96ec00",
+            "sort": 59,
+            "visible": true
+        },
+        {
+            "id": "a8f4874d-454a-48fb-aea8-effdbc8e2637",
+            "name": "Mirodenya Mix",
+            "description_hu": "Gyümölcsök és zöldségek szárítása, zöldségkeverékek, fűszerek, gyümölcsroládok. Mindezeket mi szárítjuk megfelelő hőmérsékleten, hogy megőrizzék tápanyagaikat, ízüket és aromájukat. Az alapanyagok egy részét mi termesztjük, a többit helyi termelőktől szerezzük be.",
+            "description_ro": "Uscarea fructelor și legumelor, amestecuri de legume, condimente, rulade de fructe. Toate produsele noastre sunt uscate de noi la temperaturi adecvate, pentru a păstra nutrienții, gustul și aroma. O parte din materiile prime folosite sunt cultivate de noi, iar pe restul le procurăm de la producători locali.",
+            "kep": "a57d691d-62a2-4ea7-8f9d-3f6ca11c7577",
+            "sort": 60,
+            "visible": true
+        },
+        {
+            "id": "9e8f7a86-aa1a-4616-bd78-df61afcfa33f",
+            "name": "Gyöngyi handmade&bijou",
+            "description_hu": "Értéktárgyaimba próbálom becsempészni a mandala szépségét a magyar motívum különlegességét és saját ötleteim.A kiegyensúlyozott színhasználatra és különlegességre törekszem.",
+            "description_ro": "În creațiile mele încerc să redau frumusețea mandalei, unicitatea motivelor tradiționale maghiare și propriile mele idei.\r\nUrmăresc o armonie cromatică echilibrată și un caracter aparte pentru fiecare obiect de valoare pe care îl creez.",
+            "kep": "acbd80f6-d162-4d27-af26-c6cf764c5a46",
+            "sort": 61,
+            "visible": true
+        },
+        {
+            "id": "f4071b53-102f-4a36-8321-3935abb97b63",
+            "name": "IdArt Tulip",
+            "description_hu": "Kézzel készített játékokat és bababútorokat készítek, amelyeket fára és textilre festett népi motívumok díszítenek. Minden alkotás a hagyományos mintavilág és a kézműves igényesség találkozása, egyedi és szerethető darabokat kínálva a gyermekek és családok számára.",
+            "description_ro": "Realizez manual jucării și mobilier pentru păpuși, decorate cu motive populare pictate pe lemn și textile. Fiecare creație îmbină tradiția cu măiestria artizanală, oferind piese unice și pline de farmec pentru copii și familiile lor.",
+            "kep": "b678c1ad-59a6-4ee4-8ced-f8acade9a6b9",
+            "sort": 62,
+            "visible": true
+        },
+        {
+            "id": "9750693f-d95d-428a-9d71-3f48af74c7c5",
+            "name": "Eni boutique",
+            "description_hu": "Fedezd fel a kézzel készült, finom és nőies ékszerek, valamint dísztárgyak világát, ahol a természet szépsége és az alkotás szeretete találkozik. Szárított virágokat öntök műgyantába, hogy megőrizzem törékeny bájukat és romantikus hangulatukat időtálló formában. Ezüstözött rézdrótból és féldrágakövekből készült ékszereim és dísztárgyaim mind egyedi, gondosan megmunkált alkotások, amelyek a természet ihlette eleganciát és a kézműves minőséget képviselik.",
+            "description_ro": "Descoperă universul bijuteriilor și obiectelor decorative realizate manual, unde frumusețea naturii se îmbină cu pasiunea pentru creație. Florile naturale uscate sunt încastrate în rășină pentru a le păstra farmecul delicat și romantismul într-o formă durabilă. Bijuteriile și decorațiunile din sârmă de cupru placată cu argint și pietre semiprețioase sunt create cu grijă, fiecare piesă fiind unicat și reflectând eleganța feminină, inspirația naturii și măiestria lucrului manual.",
+            "kep": "03ffca87-0786-42e2-bddc-317cfc053cb9",
+            "sort": 63,
+            "visible": true
+        },
+        {
+            "id": "111396d6-1e18-4fea-ab08-0a50bdf6b6bd",
+            "name": "Lila Gold Lavender",
+            "description_hu": "Kínálatomban levendulaolaj, levendulavíz, masszázsolajok, kézzel készített gyertyák és különféle levendulás dekorációk találhatók. Termékeimet a természet ihlette, a levendula sokoldalúságát és nyugtató hatását ötvözve készítem, hogy otthonába harmóniát és kellemes illatokat vigyenek.",
+            "description_ro": "În oferta mea se regăsesc ulei de lavandă, apă de lavandă, uleiuri pentru masaj, lumânări realizate manual și diverse decorațiuni cu lavandă. Produsele sunt inspirate de frumusețea și proprietățile benefice ale lavandei, aducând un plus de naturalețe, armonie și parfum în viața de zi cu zi.",
+            "kep": "1b79c728-fc45-4c48-a3a6-f14a82249cb4",
+            "sort": 64,
+            "visible": true
+        },
+        {
+            "id": "8cf0a971-3990-46cf-a098-12b394e5fb01",
+            "name": "Lárka",
+            "description_hu": "A Lárka család termékei 0–99 éves korig minden korosztálynak ajánlottak. Helyi zöldségekből és gyümölcsökből készítünk természetes leveket és különlegességeket, amelyeket kizárólag nálunk találhatnak meg – a család minden tagja aktívan részt vesz a termelésben.",
+            "description_ro": "Produsele familiei Larka sunt recomandate tuturor vârstelor, de la 0 până la 99 de ani. Preparăm sucuri naturale și delicatese din legume și fructe locale, pe care le găsiți doar la noi – fiecare membru al familiei este implicat activ în producție.",
+            "kep": "f105aeb1-9a9f-4f03-b33b-2c9a43b1a506",
+            "sort": 65,
+            "visible": true
+        },
+        {
+            "id": "178ce975-7815-4c5b-be2f-bce37e5de471",
+            "name": "Kékiringó Kerámia",
+            "description_hu": "Kézzel formált és korongozott agyagtárgyak, amelyekben a föld színei, a természet formái és az alkotás öröme találkoznak. Minden darab egyedi, kis szériában készülő kézműves alkotás, amely szépséget és személyességet visz a mindennapokba.",
+            "description_ro": "Obiecte din lut modelate manual și lucrate la roată, în care se întâlnesc culorile pământului, formele naturii și bucuria creației. Fiecare piesă este unicat, realizată artizanal în serii mici, aducând frumusețe și autenticitate în viața de zi cu zi.",
+            "kep": "2852e76b-8b73-4b1e-9ed6-aa596a660891",
+            "sort": 66,
+            "visible": true
+        },
+        {
+            "id": "2c2a6242-a97d-4038-a891-699757328d5a",
+            "name": "Jardin Secret",
+            "description_hu": "Egyedi csokrok és virágkompozíciók, ahol minden alkotás saját történetet mesél el. A gondosan összeállított virágköltemények különleges hangulatot teremtenek, legyen szó ajándékról vagy az otthon díszítéséről.",
+            "description_ro": "Buchete și aranjamente florale originale, fiecare creație spunând o poveste unică. Compozițiile florale sunt realizate cu grijă și creativitate, fiind potrivite atât pentru a fi oferite în dar, cât și pentru a aduce un plus de eleganță oricărui spațiu.",
+            "kep": "0b63350c-62a8-48ba-b8c0-500339280ef1",
+            "sort": 67,
+            "visible": true
+        }
+    ]
+}

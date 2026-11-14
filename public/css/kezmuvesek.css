@@ -1,0 +1,205 @@
+/* ============================================================================
+ *  A 2026-os KÉZMŰVES VÁSÁR STÍLUSLAPJA — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-17).
+ *  Forrás: ../forgatag-os/frontend/src/kezmuvesek/style.css (a befagyasztott, mai állapot). A lap 2026-ban a Base keretben
+ *  futott (global.css = alap.css), a felugró ablak görgetője a közös lib/rail (most: vrail.css).
+ *  NE SZERKESZD ÉRTELMEZVE. A 2027-es keret miatti kiegészítés KÜLÖN fájlban: kezmuvesek-szerver.css.
+ *  A gépies eltérések (mind megjelölve „2027:”-tel):
+ *   · a felúszás (2026: .cv-reveal) a közös mozgás-rétegé (publikus.css .reveal + mozgas.js) — a jelölésben .reveal áll;
+ *   · a címbetűs szabályokban `font-weight:400` → a téma vastagsága (értéke ugyanúgy 400; TemaTest).
+ * ========================================================================== */
+/* ============================================================================
+   KÉZMŰVES VÁSÁR aloldal — a `designs/forgatag_2026_kezmuvesvasar.html` bekötve.
+   Osztály-prefix: .cv-*  (nem ütközik a .va-*, .pcard, .relcard, .fr-*, .decor
+   családokkal). Natív Grid/Flex, nulla külső függőség.
+
+   TOKEN-SZABÁLY: itt SEMMI szín/betű/forma nincs beégetve és nincs `:root`-
+   felülírás — minden téma-tulajdonú érték a publikált témából (`themeToCss`)
+   öröklődik, tehát a /tema színezi ezt a lapot is.
+   A modál görgetője a KÖZÖS knob (`lib/rail.ts` → VSCROLL_CSS/.vrail*), nem
+   saját grafika — így egyezik a sliderek alatti csúszkával.
+   ========================================================================= */
+
+/* ---------- világos „nappali lap" ----------
+   A sáv formulája SZÓ SZERINT a landing `.blk.light`-jáé (home-v7/style.css) —
+   ugyanaz a szekció-háttér, mint a Videó archívum „Aftermovie-k" sávja. Base-
+   oldalon a `.blk` osztályok nincsenek betöltve, ezért itt, tokenekből áll elő. */
+.cv-lap{position:relative;overflow:hidden;
+  background:var(--lap-band-bg);
+  color:var(--lap-fg);
+  border-top:1px solid var(--lap-band-line-top);
+  border-bottom:1px solid var(--lap-line)}
+/* A Base <main> függőleges térköze itt nem kell: a világos sáv edge-to-edge fut
+   a fejléc alatt (a design így adja). A vízszintes térköz a .cv-wrap-ban van. */
+main:has(> .cv-lap){padding-top:0;padding-bottom:0}
+.cv-wrap{max-width:var(--content-max);margin:0 auto;padding:0 24px}
+section.cv-sec{position:relative;background:none}
+section.cv-sec>.cv-wrap{position:relative;z-index:2}
+/* 2027: a .cv-reveal felúszás a közös rétegé (.reveal — publikus.css + mozgas.js). */
+
+/* ---------- úszó firka-dekor ----------
+   A konténer `#pageDecor`, az elemek `.decor` — SZÁNDÉKOSAN a rendszer nevei,
+   mert a /tema firka-vezérlői (sűrűség, kikapcsolás, kevesebb mozgás) EZEKRE a
+   szelektorokra generálnak szabályt (lib/theme-css.ts D_AMBIENT/D_ITEMS). */
+.cv-decor{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.cv-decor .decor{position:absolute;pointer-events:none;will-change:transform;
+  animation:cvFloatDown var(--dur,26s) ease-in-out infinite alternate;animation-delay:var(--dl,0s)}
+.cv-decor .decor svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 10px rgba(20,10,45,.18))}
+@keyframes cvFloatDown{
+  from{transform:translate(0,0) rotate(var(--r0,0deg))}
+  to{transform:translate(var(--dx,0px),var(--dy,60px)) rotate(var(--r1,0deg))}
+}
+
+/* ---------- HERO ---------- */
+section.cv-hero{padding:var(--sp-9) 0 var(--sp-7);text-align:center}
+.cv-hero h1{font-family:var(--font-head);font-synthesis:none;font-weight:var(--head-wght);
+  color:var(--lap-fg);font-size:clamp(2.4rem,7vw,5rem);line-height:1.12;margin:0}
+.cv-hero h1 .cv-brush{font-family:var(--font-accent);font-weight:var(--accent-wght);font-style:var(--accent-style);letter-spacing:0;color:var(--accent-b);
+  filter:drop-shadow(0 0 9px var(--accent-a)) drop-shadow(0 0 28px var(--accent-a))}
+.cv-lead{max-width:780px;margin:var(--sp-6) auto 0}
+.cv-lead p{font-family:var(--font-body);font-size:clamp(1rem,1.5vw,1.14rem);
+  line-height:1.72;color:var(--lap-muted)}
+.cv-lead p:first-child{color:var(--lap-fg)}
+.cv-lead p+p{margin-top:var(--sp-4)}
+
+/* ---------- LISTA-SZEKCIÓ ---------- */
+section.cv-makers{padding:var(--sp-6) 0 var(--sp-9);scroll-margin-top:88px}
+.cv-count{font-family:var(--font-body);font-weight:600;font-size:.92rem;
+  color:var(--lap-muted);letter-spacing:.02em;margin:0}
+/* felső sáv: a lapozó középen, a számláló jobbra (üres 1. hasáb tartja középen) */
+.cv-toolbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  gap:var(--sp-4);margin-bottom:var(--sp-5)}
+.cv-toolbar .cv-pager{grid-column:2;margin-top:0}
+.cv-toolbar .cv-count{grid-column:3;justify-self:end;text-align:right}
+
+/* ---------- kártyarács: 18 / lap → 3 × 6 pontosan kiadja ---------- */
+.cv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-5)}
+.cv-card{min-width:0}
+.cv-card[hidden]{display:none}
+.cv-open{--cv-glow:var(--accent-a);            /* a JS hoverenként újrasorsolja */
+  display:block;width:100%;padding:0;text-align:left;cursor:pointer;
+  font:inherit;color:inherit;background:var(--lap-card);
+  border:var(--border-w) solid var(--lap-line);border-radius:var(--r-card);overflow:hidden;
+  transition:transform var(--dur-1) var(--ease),box-shadow var(--dur-1) var(--ease),
+             border-color var(--dur-1)}
+/* HOVER: finom glow — a szín hoverenként véletlen neon a firka-palettából */
+.cv-open:hover,.cv-open:focus-visible{transform:translateY(-5px);border-color:var(--cv-glow);
+  box-shadow:0 0 0 1px var(--cv-glow),0 0 34px -6px var(--cv-glow),
+             0 26px 48px -30px rgba(20,10,45,.75)}
+.cv-open:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.cv-thumb{display:block;position:relative;overflow:hidden;aspect-ratio:4/3;background:var(--panel)}
+.cv-img{display:block;width:100%;height:100%;object-fit:cover;
+  transition:transform var(--dur-2) var(--ease)}
+.cv-open:hover .cv-img{transform:scale(1.06)}
+.cv-thumb::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 62%,rgba(20,15,45,.34))}
+.cv-body{display:block;padding:var(--sp-4) var(--sp-4) var(--sp-5)}
+/* kártyacím: a téma cím-betűje — bő sorköz + alsó padding, hogy a g/y szárát ne vágja */
+.cv-name{display:block;font-family:var(--font-head);font-synthesis:none;font-weight:var(--head-wght);
+  font-size:1.42rem;line-height:1.22;padding-bottom:.08em;color:var(--lap-fg);
+  letter-spacing:.005em}
+.cv-teaser{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin-top:.45em;font-family:var(--font-body);font-size:.93rem;line-height:1.55;color:var(--lap-muted)}
+.cv-more{display:inline-flex;align-items:center;gap:.4em;margin-top:var(--sp-3);
+  font-family:var(--font-body);font-weight:700;font-size:.85rem;color:var(--accent-c);opacity:.7;
+  transition:opacity var(--dur-1)}
+.cv-more svg{width:14px;height:14px;transition:transform var(--dur-1) var(--ease)}
+.cv-open:hover .cv-more{opacity:1}
+.cv-open:hover .cv-more svg{transform:translateX(3px)}
+.cv-full{display:none}                          /* a teljes leírás — a modál olvassa ki */
+.cv-note{font-family:var(--font-body);font-size:.85rem;color:var(--lap-muted);
+  margin-top:var(--sp-5);text-align:center}
+.cv-empty{font-family:var(--font-body);color:var(--lap-muted);text-align:center;margin:var(--sp-7) 0}
+
+/* ---------- LAPOZÓ ---------- */
+.cv-pager{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  margin-top:var(--sp-7);flex-wrap:wrap}
+.cv-pager[hidden]{display:none}
+.cv-pg{font-family:var(--font-body);font-weight:700;font-size:.95rem;
+  min-width:44px;height:44px;padding:0 .75em;display:inline-flex;align-items:center;
+  justify-content:center;cursor:pointer;color:var(--lap-fg);background:var(--lap-card);
+  border:var(--border-w) solid var(--lap-line);border-radius:var(--r-pill);
+  transition:transform var(--dur-1) var(--ease),box-shadow var(--dur-1),
+             border-color var(--dur-1),color var(--dur-1)}
+.cv-pg:hover:not(:disabled):not([aria-current]){transform:translateY(-2px);
+  border-color:var(--accent-a);color:var(--accent-c);box-shadow:0 0 20px -6px var(--accent-a)}
+.cv-pg[aria-current="page"]{background:var(--accent-grad);color:var(--accent-contrast);
+  border-color:transparent;box-shadow:0 12px 26px -14px var(--accent-b)}
+.cv-pg:disabled{opacity:.38;cursor:default}
+.cv-pg:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.cv-pg svg{width:15px;height:15px}
+.cv-gap{font-family:var(--font-body);font-weight:700;color:var(--lap-muted);padding:0 .15em;
+  align-self:flex-end;line-height:2.4}
+
+/* ---------- MODÁL (a Rólunk/Borkert popup viselkedése) ----------
+   Az osztálynevek `cv-` előtaggal (a design generikus `.modal`/`.modal-card`
+   neveit nem visszük be, hogy semmilyen közös stílussal ne ütközzenek). */
+.cv-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:var(--sp-5)}
+.cv-modal[hidden]{display:none}
+.cv-scrim{position:absolute;inset:0;background:rgba(20,14,45,.76);backdrop-filter:blur(5px);cursor:pointer}
+.cv-mcard{position:relative;z-index:1;animation:cvPop var(--dur-1) var(--ease);
+  width:100%;max-width:680px;max-height:min(88vh,900px);
+  background:var(--lap-card);color:var(--lap-fg);border-radius:var(--r-lap);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 44px 100px -34px rgba(20,10,45,.7)}
+@keyframes cvPop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+
+/* bezáró: SVG kereszt, így mértani középen van (nem betű-metrikán múlik) */
+.cv-x{position:absolute;top:var(--sp-3);right:var(--sp-3);z-index:3;
+  width:44px;height:44px;padding:0;border-radius:var(--r-pill);cursor:pointer;
+  display:grid;place-items:center;color:var(--lap-card);
+  background:rgba(20,14,45,.62);border:var(--border-w) solid rgba(255,255,255,.3);
+  transition:background var(--dur-1),transform var(--dur-1) var(--ease),color var(--dur-1)}
+.cv-x svg{width:17px;height:17px;display:block}
+.cv-x:hover{background:var(--accent-b);color:var(--accent-contrast);transform:scale(1.06)}
+.cv-x:focus-visible{outline:3px solid var(--lap-card);outline-offset:2px}
+
+.cv-mimg{position:relative;flex:none;aspect-ratio:16/9;overflow:hidden;background:var(--panel)}
+.cv-mimg img{display:block;width:100%;height:100%;object-fit:cover}
+.cv-mimg::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(20,15,45,.28) 0%,transparent 40%)}
+
+/* ---------- görgethető törzs + a KÖZÖS (álló) knob ---------- */
+.cv-mscroll{position:relative;flex:1;min-height:0;display:flex;align-items:stretch}
+.cv-mscroll::after{content:"";position:absolute;left:0;right:46px;bottom:0;height:56px;
+  pointer-events:none;background:linear-gradient(180deg,transparent,var(--lap-card));
+  transition:opacity var(--dur-1)}
+.cv-mscroll.is-vend::after{opacity:0}          /* a közös görgető teszi ki az osztályt */
+.cv-mbody{flex:1;min-width:0;overflow-y:auto;overscroll-behavior:contain;
+  padding:var(--sp-6) var(--sp-3) var(--sp-7) var(--sp-6);
+  scrollbar-width:none;-ms-overflow-style:none}          /* natív csúszka elrejtve */
+.cv-mbody::-webkit-scrollbar{width:0;height:0;display:none}
+.cv-mbody h3{font-family:var(--font-head);font-synthesis:none;font-weight:var(--head-wght);color:var(--lap-fg);
+  font-size:clamp(1.7rem,3.4vw,2.35rem);line-height:1.12;margin:0 0 var(--sp-4);padding-bottom:.05em}
+.cv-mbody p{font-family:var(--font-body);color:var(--lap-muted);font-size:1.02rem;
+  line-height:1.74;margin:0 0 1.05em}
+.cv-mbody p:last-child{margin-bottom:0}
+.cv-mscroll .vrail{padding:var(--sp-4) 0}
+
+/* ---------- RESZPONZÍV ---------- */
+@media(max-width:1000px){
+  .cv-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  section.cv-hero{padding:var(--sp-8) 0 var(--sp-6)}
+  section.cv-makers{padding:var(--sp-5) 0 var(--sp-8)}
+  .cv-grid{grid-template-columns:1fr;gap:var(--sp-4)}
+  .cv-pg{min-width:40px;height:40px;padding:0 .55em;font-size:.9rem}
+  .cv-toolbar{grid-template-columns:1fr;gap:var(--sp-3)}
+  .cv-toolbar .cv-count{grid-column:1;grid-row:1}
+  .cv-toolbar .cv-pager{grid-column:1;grid-row:2}
+  /* MOBILON IS KÁRTYA marad — nincs full screen */
+  .cv-modal{padding:var(--sp-4)}
+  .cv-mcard{max-width:none;max-height:86vh;border-radius:var(--r-lap)}
+  .cv-mbody{padding:var(--sp-5) var(--sp-2) var(--sp-6) var(--sp-5)}
+  .cv-mscroll::after{right:40px}
+  .cv-mscroll .vrail{width:40px;padding:var(--sp-3) 0}
+  .cv-mscroll .vrailarrow{width:28px;height:38px}
+  .cv-mscroll .vrailline{width:28px;min-height:48px}
+  .cv-mscroll .vrailknob{width:28px;height:28px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cv-decor .decor{animation:none}
+  .cv-open,.cv-img,.cv-pg,.cv-mcard,.cv-x,.cv-more svg{transition:none;animation:none}
+  .cv-open:hover{transform:none}
+  .cv-open:hover .cv-img{transform:none}
+}
