@@ -30,6 +30,11 @@ class Kezdolap
     public const REJTETT_SZEKCIOK = ['hu' => [], 'ro' => ['news']];
 
     /** A „Forgatag számokban” öt száma — a kulcsok utótagjai, a lapon ebben a sorrendben. */
+    /** A kártyák sorrend szerinti fény-színe (2026: lib/glow GLOW_PALETTE — ugyanazok az értékek, a téma firka-színeiből).
+     *  Használói: a kezdőlap galéria-sávja és a Galéria lap év-rácsa (2026-ban is egy forrás). */
+    public const FENYEK = ['var(--doodle-pink)', 'var(--doodle-lime)', 'var(--doodle-yellow)', 'var(--doodle-blue)', 'var(--doodle-purple)',
+        'color-mix(in srgb,var(--doodle-red) 70%,#fff)', 'var(--accent-a)'];
+
     public const SZAMOK = ['programs', 'venues', 'days', 'partners', 'meetings'];
 
     public static function allapot(): string
@@ -186,7 +191,7 @@ class Kezdolap
             ->sortBy([fn ($a, $b) => ($a->tier?->sort ?? PHP_INT_MAX) <=> ($b->tier?->sort ?? PHP_INT_MAX), ['sort', 'asc'], ['id', 'asc']])
             ->map(function (Sponsor $s) {
                 $logo = null;
-                if ($s->logo !== null) {
+                if ($s->logo !== null && ! $s->logo->tulNagy()) { // túl nagy logóból nincs változat → a név látszik (üres doboz helyett)
                     [$w, $h] = self::meretben($s->logo, 360, 192);
                     $logo = ['src' => self::kepUrl($s->logo, ['w' => 360, 'h' => 192, 'fit' => 'max', 'q' => 82]), 'w' => $w ?? 360, 'h' => $h ?? 192];
                 }

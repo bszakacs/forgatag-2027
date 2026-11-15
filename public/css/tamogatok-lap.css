@@ -1,0 +1,100 @@
+/* ============================================================================
+ *  A 2026-os TÁMOGATÓK LAP stílusa — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-17).
+ *  Forrás: ../forgatag-os/frontend/src/tamogatok/style.css. A csempe stílusa a közös tamogatok.css-ben (2026: lib/sponsor-tile
+ *  SPONSOR_TILE_CSS — előtte töltődik, mint 2026-ban). NE SZERKESZD ÉRTELMEZVE.
+ *  Egyetlen gépies eltérés: a cím- és hangsúlybetűs szabályokban `font-weight:400` → a téma vastagsága (var(--head-wght) /
+ *  var(--accent-wght); ugyanaz az érték — TemaTest). A `.tmg-intro h1` 2026-ban kétszer adott vastagságot (400, majd a témáét) —
+ *  most mindkettő a témáé.
+ * ========================================================================== */
+/* ============================================================================
+   TÁMOGATÓK oldal — a designs/forgatag_2026_tamogatok.html stílusa, változatlanul.
+   Token-szabály: nincs :root-felülírás; a saját --tmg-* nevek MIND téma-tokenre
+   vannak kötve, ezért a /tema színezése ezen az oldalon is érvényesül.
+   ============================================================================ */
+/* A saját tokenek MIND téma-tokenre vannak kötve (token-szabály), és csak
+   erre az oldalra szűkítve élnek. Új :root nincs. */
+[data-section^="sponsors-"]{
+  --tmg-tile:var(--lap-card,#FFFFFF);        /* világos csempe a logók alá */
+  --tmg-tile-line:var(--lap-line,rgba(0,0,0,.10));
+  --tmg-fg:var(--fg);
+  --tmg-muted:var(--fg-muted);
+  --tmg-faint:var(--fg-faint);
+  --tmg-accent:var(--accent-b);
+  --tmg-panel:var(--panel);
+  --tmg-line:var(--line);
+}
+
+/* ---------- fejszekció ---------- */
+.tmg-intro{padding:var(--section-pad-y) 0 var(--sp-7)}
+.tmg-wrap{max-width:var(--content-max);margin:0 auto;padding:0 var(--sp-5)}
+.tmg-intro h1{
+  font-family:var(--font-head);font-weight:var(--head-wght);font-size:var(--text-hero);line-height:var(--leading-tight);
+  font-weight:var(--head-wght);letter-spacing:var(--head-track);
+  color:var(--tmg-fg);margin:0 0 var(--sp-4);max-width:20em}
+.tmg-intro h1 .tmg-em{font-family:var(--font-accent);font-weight:var(--accent-wght);font-style:italic;
+  background:var(--accent-grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tmg-lead{font-size:var(--text-body);line-height:var(--leading-body);
+  color:var(--tmg-muted);margin:0;max-width:56ch}
+
+/* ---------- VILÁGOS SÁV (a szintek és a logók) ----------
+   Teljes szélességű sáv, a tartalom benne a szokásos tartalomszélességben marad.
+   A sáv-háttér EGY forrásból jön (téma: --lap-band-bg) — ugyanaz, mint a Videó
+   archívum aftermovie-sávja és a landing világos szekciója. A sávon belül a lap
+   saját tokenjei a „nappali lap" tokenjeire mutatnak, hogy minden olvasható legyen. */
+.tmg-list{
+  background:var(--lap-band-bg);
+  border-top:1px solid var(--lap-band-line-top);
+  border-bottom:1px solid var(--lap-line);
+  padding:var(--section-pad-y) 0;
+  /* a fejszekció alsó térközét a sáv adja — ne legyen se rés, se kettős vonal */
+  margin:0}
+[data-section="sponsors-list"]{
+  --tmg-fg:var(--lap-fg);
+  --tmg-muted:var(--lap-muted);
+  --tmg-faint:var(--lap-muted);
+  --tmg-line:var(--lap-line)}
+
+/* ---------- szint-blokkok ---------- */
+.tmg-tier{margin:0 0 var(--sp-7)}
+.tmg-tier:last-child{margin-bottom:0}
+
+.tmg-head{display:flex;align-items:center;gap:var(--sp-4);margin:0 0 var(--sp-5)}
+.tmg-head h2{
+  font-family:var(--font-head);font-weight:var(--head-wght);font-size:var(--text-h3);line-height:var(--leading-tight);
+  font-weight:var(--head-wght);letter-spacing:var(--track-caps);text-transform:uppercase;
+  color:var(--tmg-fg);margin:0;white-space:nowrap}
+/* a cím utáni vonal kitölti a maradék helyet — tagolás nagybetűs cím nélkül is */
+.tmg-head::after{content:"";flex:1;height:1px;background:var(--tmg-line)}
+.tmg-count{font-size:var(--text-micro);color:var(--tmg-faint);font-variant-numeric:tabular-nums}
+
+/* ---------- logórács ---------- */
+/* A csempe MÉRETE a szinttől függ. RUGALMAS SOR (flex), nem rács: a grid csak a
+   TELJES tracksort tudja középre tenni, a hiányos utolsó sor ott balra tapadna —
+   flexnél MINDEN sor középre igazodik (ezt kérte a tulajdonos, 2026-08-18).
+   A csempe a --tmg-min alapról nő a --tmg-max határig, így a sorok tömörek maradnak. */
+.tmg-grid{display:flex;flex-wrap:wrap;gap:var(--sp-4);justify-content:center}
+.tmg-tier.is-xl .tmg-grid{--tmg-min:340px;--tmg-max:420px;--tmg-h:200px}
+.tmg-tier.is-lg .tmg-grid{--tmg-min:250px;--tmg-max:320px;--tmg-h:160px}
+.tmg-tier.is-md .tmg-grid{--tmg-min:190px;--tmg-max:250px;--tmg-h:138px}
+.tmg-tier.is-sm .tmg-grid{--tmg-min:150px;--tmg-max:200px;--tmg-h:120px}
+
+/* A CSEMPE STÍLUSA A KÖZÖS lib/sponsor-tile.ts-ben van (SPONSOR_TILE_CSS), mert a
+   kezdőlapi partner-sáv ugyanazt a csempét használja. Itt csak a méretek
+   (--tmg-min/--tmg-max/--tmg-h) állnak, szintenként — lásd fentebb. (2026-08-26) */
+
+/* ---------- záró köszönet ---------- */
+.tmg-outro{padding:var(--section-pad-y) 0}
+.tmg-thanks{padding:var(--sp-6);
+  background:var(--tmg-panel);border:1px solid var(--tmg-line);border-radius:var(--r-lap);text-align:center}
+.tmg-thanks p{margin:0;font-size:var(--text-body);line-height:var(--leading-body);color:var(--tmg-muted);
+  max-width:52ch;margin-inline:auto}
+.tmg-thanks strong{color:var(--tmg-fg)}
+
+/* ---------- mobil ---------- */
+@media(max-width:640px){
+  .tmg-tier.is-xl .tmg-grid{--tmg-min:220px;--tmg-max:340px;--tmg-h:145px}
+  .tmg-tier.is-lg .tmg-grid{--tmg-min:170px;--tmg-max:240px;--tmg-h:125px}
+  .tmg-tier.is-md .tmg-grid{--tmg-min:140px;--tmg-max:200px;--tmg-h:110px}
+  .tmg-tier.is-sm .tmg-grid{--tmg-min:118px;--tmg-max:170px;--tmg-h:95px}
+  .tmg-head h2{white-space:normal}
+}

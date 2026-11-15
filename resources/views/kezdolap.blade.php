@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @use('App\Support\Kezdolap')
+@use('App\Support\MediaLapok')
 @use('App\Support\Nyelv')
 @use('App\Support\Settings')
 @use('App\Support\Theme')
@@ -26,8 +27,7 @@
     $diak = collect(range(1, 5))->map(fn ($i) => $sz->kep("home_hero_slide_{$i}"))->filter()->values();
     $szam = fn (string $k) => Kezdolap::szam($sz->szoveg("home_stats_value_{$k}"), "home_stats_value_{$k}");
     $ezres = fn (int $n) => number_format($n, 0, '', "\u{00A0}");
-    $fenyek = ['var(--doodle-pink)', 'var(--doodle-lime)', 'var(--doodle-yellow)', 'var(--doodle-blue)', 'var(--doodle-purple)',
-        'color-mix(in srgb,var(--doodle-red) 70%,#fff)', 'var(--accent-a)'];
+    $fenyek = Kezdolap::FENYEK;
     $nyilVissza = '<svg viewBox="0 0 46 34" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 8 L14 17 L24 26"/><path d="M36 8 L26 17 L36 26"/><circle cx="9" cy="17" r="2.4" fill="var(--accent-a)" stroke="none"/></svg>';
     $nyilTovabb = '<svg viewBox="0 0 46 34" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 8 L32 17 L22 26"/><path d="M10 8 L20 17 L10 26"/><circle cx="37" cy="17" r="2.4" fill="var(--accent-a)" stroke="none"/></svg>';
     $gomb = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14" class="mk-lime" fill="none" stroke-width="6"/><circle cx="20" cy="20" r="5" class="mk-yellow"/></svg>';
@@ -188,14 +188,9 @@
 
     @if ($videok)
     <h3 class="rail-head reveal" data-hs="home_media_videos_title">{{ $sz->szoveg('home_media_videos_title') }}</h3>
-    {{-- 2026: lib/video videoArchiveCard + renderRail (a YouTube-borító maxres → sd → hq tartalékkal). --}}
-    @include('partials.rail', ['id' => 'vid-aftermovie', 'osztaly' => 'va-rail land', 'cimke' => 'Aftermovie-k', 'tartalom' => collect($videok)->map(fn ($v) =>
-        '<article class="va-card"><button class="va-thumb" type="button" data-yt="' . $v['id'] . '" aria-label="' . e(__('publikus.kp_video_lejatszasa') . ($v['cim'] !== '' ? ': ' . $v['cim'] : '')) . '">'
-        . '<img class="va-img" src="https://i.ytimg.com/vi/' . $v['id'] . '/maxresdefault.jpg" alt="" loading="lazy" '
-        . 'onload="if(this.naturalWidth&&this.naturalWidth<=120){var s=(+this.dataset.s||0);if(s<2){s++;this.dataset.s=s;this.src=\'https://i.ytimg.com/vi/' . $v['id'] . '/\'+[\'maxresdefault\',\'sddefault\',\'hqdefault\'][s]+\'.jpg\';}}" '
-        . 'onerror="var s=(+this.dataset.s||0);if(s<2){s++;this.dataset.s=s;this.src=\'https://i.ytimg.com/vi/' . $v['id'] . '/\'+[\'maxresdefault\',\'sddefault\',\'hqdefault\'][s]+\'.jpg\';}else{this.onerror=null;}">'
-        . '<span class="va-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5 L20 12 L7 19.5 Z"/></svg></span></button>'
-        . ($v['cim'] !== '' ? '<h3 class="va-title">' . e($v['cim']) . '</h3>' : '') . '</article>')->implode('')])
+    {{-- 2026: lib/video videoArchiveCard + renderRail — a csempe a Videó archívummal közös (MediaLapok::videoKartya). --}}
+    @include('partials.rail', ['id' => 'vid-aftermovie', 'osztaly' => 'va-rail land', 'cimke' => 'Aftermovie-k',
+        'tartalom' => collect($videok)->map(fn ($v) => MediaLapok::videoKartya($v))->implode('')])
     @endif
 
     @if ($galeriak)
@@ -238,13 +233,7 @@
     <div class="sp-rail-blk reveal" data-slot="sponsor-rail">
       <h3 class="rail-head" data-hs="home_sponsors_rail_title">{{ $sz->szoveg('home_sponsors_rail_title') }}</h3>
       @include('partials.rail', ['id' => 'sponsorRail', 'osztaly' => 'hp-sponsor-rail', 'auto' => true, 'cimke' => $sz->szoveg('home_sponsors_rail_title'),
-        'tartalom' => collect($partnerek)->map(function ($p) {
-            $belso = $p['logo']
-                ? '<img src="' . e($p['logo']['src']) . '" alt="' . e($p['nev']) . '" width="' . $p['logo']['w'] . '" height="' . $p['logo']['h'] . '" loading="lazy" decoding="async" />'
-                : '<span class="tmg-name">' . e($p['nev']) . '</span>';
-
-            return $p['url'] ? '<a class="tmg-item" href="' . e($p['url']) . '" target="_blank" rel="noopener noreferrer">' . $belso . '</a>' : '<div class="tmg-item">' . $belso . '</div>';
-        })->implode('')])
+        'tartalom' => collect($partnerek)->map(fn ($p) => MediaLapok::tamogatoCsempe($p))->implode('')])
     </div>
     @endif
     <div class="center-cta reveal"><a href="{{ Nyelv::ut('/rolunk') }}" class="btn btn-primary"><span data-hs="home_organizers_cta">{{ $sz->szoveg('home_organizers_cta') }}</span> →</a></div>
@@ -252,11 +241,7 @@
 </section>
 
 @if ($videok)
-{{-- 2026: lib/video VIDEO_LIGHTBOX_HTML — a lejátszó csak kattintásra töltődik (youtube-nocookie). --}}
-<div class="vid-lb" id="vidLb" hidden aria-hidden="true" role="dialog" aria-modal="true">
-  <button class="vid-lb-close" id="vidLbClose" aria-label="{{ __('publikus.bezaras') }}">✕</button>
-  <div class="vid-lb-frame" id="vidLbFrame"></div>
-</div>
+@include('partials.video-ablak')
 @endif
 @if ($galeriak)
 @include('partials.galeria-ablak')

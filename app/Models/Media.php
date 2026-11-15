@@ -167,6 +167,16 @@ class Media extends CuratorMedia
         return $hol;
     }
 
+    /**
+     * Túl nagy-e a kép ahhoz, hogy méretváltozat készüljön belőle (MediatarImport::MAX_MEGAPIXEL fölött a képkezelő nem bírja —
+     * a változat címe hibát adna, a lapon üres doboz lenne). A használója ilyenkor a kép helyett a tartalékát mutatja (pl. a
+     * támogató nevét), a médiatár jelentése pedig név szerint kéri a cseréjét.
+     */
+    public function tulNagy(): bool
+    {
+        return $this->width && $this->height && $this->width * $this->height > \App\Support\MediatarImport::MAX_MEGAPIXEL * 1_000_000;
+    }
+
     /** Null, ha törölhető; különben az ok. */
     public function torlesAkadaly(): ?string
     {

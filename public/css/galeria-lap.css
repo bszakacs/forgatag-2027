@@ -1,0 +1,20 @@
+/* ============================================================================
+ *  A 2026-os GALÉRIA LAP saját stílusa — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-17).
+ *  Forrás: ../forgatag-os/frontend/src/components/GalleryView.astro <style is:global> blokkja. A rács, az ablak és a nagy kép
+ *  a közös galeria.css-é (2026: lib/gallery GALLERY_CSS) — az ezután töltődik, mint 2026-ban (a lap stílusa a fejben, a
+ *  modulé a törzsben volt). NE SZERKESZD ÉRTELMEZVE.
+ *  A gépies eltérések (mind „2027:”-tel):
+ *   · a címbetű a téma betűje és vastagsága (`'Tingler Print', var(--font-head)` → var(--font-head); `font-weight:400` →
+ *     var(--head-wght); ugyanaz az érték — TemaTest, token-szabály);
+ *   · a 2026-ban megszűnt csoportszín (--grp-szinhaz) helyén a vele betűre egyező firka-szín (--doodle-purple — mint az alap.css-ben).
+ * ========================================================================== */
+/* Csak a Galéria-oldal fejléc-kerete (a rácsot/modalt/lightboxot a GALLERY_CSS adja). */
+.gal-page { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--sp-5); }
+.page-head { text-align: center; padding: 0 0 var(--sp-6); }
+.page-head h1 { font-size: var(--text-hero); margin: 0 0 var(--sp-4); font-family: var(--font-head);font-weight:var(--head-wght); line-height: var(--leading-tight); }
+/* 2027: font-family 'Tingler Print' → var(--font-head) + a téma vastagsága; --grp-szinhaz → --doodle-purple */
+.page-head h1 .brush {font-family: var(--font-head);font-weight:var(--head-wght); display: inline-block; transform: rotate(-3deg);
+  background: var(--accent-grad-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--doodle-purple) 70%, transparent)) drop-shadow(0 0 44px color-mix(in srgb, var(--doodle-purple) 45%, transparent)); }
+.page-head p { color: var(--fg-muted); max-width: 640px; font-size: 1.06rem; margin: 0 auto; }
+.gal-empty { color: var(--fg-muted); text-align: center; padding: var(--sp-6) 0; }

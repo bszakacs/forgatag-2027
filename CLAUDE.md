@@ -722,7 +722,7 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
   (`JELOLES_POTLAS`) a 8 helyszín programjait hozza — ha a tesztadatot törölték, semmit.
 - Tesztek: `tests/Feature/HelyszinKategoriaTest.php` (a listaszabály: `test_minden_programlista_a_kereso_soraival_es_a_keresobe_visz`).
 
-**Maradék lapok, 1. rész — kész helyben (2026-11-14, PROMPT-17):** `/fesztivalrend`, `/kezmuvesek` (rendszerlap-sablon: `oldal/<slug>`,
+**Maradék lapok, 1. rész — kész, élesben (2026-11-14, PROMPT-17):** `/fesztivalrend`, `/kezmuvesek` (rendszerlap-sablon: `oldal/<slug>`,
 `OldalController`). 🔴 **A 2026-os jelölés és CSS BETŰRE (2/e)** — a 2026-os élő lap mellé téve pixelre mérve. A „Csapat” lap NINCS (nem volt 2026-os lapja).
 - **Recept (a 2. rész is így):** stílus = a 2026-os stíluslap másolata gépies eltérésekkel a fejében („2027:”), a keret miatti kiegészítés
   külön `-szerver.css`; a szkript átirat, a felúszás a közös `.reveal`, a firkák a téma motívumaiból (`Theme::motifSprite()` a lapon, a réteg
@@ -734,6 +734,17 @@ elrendezést épített (bal oldali szűrőoszlop, lazább sorok), a tulajdonos v
   (`CraftspersonResource`). Lap-adat EGY helyen: `App\Support\Kezmuvesek` (bekezdések, 170 karakteres kivonat, képméretek). Behozatal:
   `forgatag:kezmuves-csomag` (fejlesztőgép) → `database/import/kezmuvesek-2026.json` → `forgatag:kezmuves-import` (telepítés, csak üres táblába).
 - **Közös függőleges görgető:** `partials/vrail` + `vrail.css` + `vrail.js` (a 2026-os `lib/rail` VSCROLL betűre).
+
+**Maradék lapok, 2. rész — kész helyben (2026-11-15, PROMPT-17):** `/galeria`, `/videoarchivum`, `/tamogatok` (rendszerlap-sablon, `oldal/<slug>`).
+Ugyanaz a recept; a 2026-os élő lap mellé téve pixelre mérve. Adat EGY helyen: `App\Support\MediaLapok` (`galeriaEvek`, `videoSavok`,
+`tamogatoSzintek`). **A kezdőlappal közös darabok EGY helyen** (a kezdőlap is ezeket hívja): `MediaLapok::videoKartya` (2026: videoArchiveCard),
+`MediaLapok::tamogatoCsempe` (sponsorTile), `partials/video-ablak` (VIDEO_LIGHTBOX_HTML), `partials/galeria-ablak`, `Kezdolap::FENYEK` (GLOW_PALETTE).
+- **Videó archívum:** a három sáv a lap videós blokkjainak SORRENDJÉBŐL (`MediaLapok::SAVOK`: horgony, kinézet, irány, a cím két kulcsa); a
+  harmadik utáni blokk nem látszik → piros figyelmeztetés a nyitólapon (`Figyelmeztetesek`, `MediaLapok::tobbletBlokkok`). A nyitókép „szél”
+  firkái: `videoarchivum.js` (2026: lib/decor), `.drift.decor` a `[data-decor="hero"]` rétegben.
+- **Támogatók:** a legutóbbi év, az év szintjei szerint; csempeméret a nem üres szint helyéből (is-xl/lg/md/sm), logó-doboz `MediaLapok::LOGO_DOBOZ`.
+- **Túl nagy kép (`Media::tulNagy()`, > `MediatarImport::MAX_MEGAPIXEL`):** méretváltozat nem készül → a használó a tartalékát mutatja
+  (a támogatói csempe a nevet). Új képhasználatnál ezt kérdezd, ne adj ki üres dobozt.
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 

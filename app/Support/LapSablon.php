@@ -263,6 +263,39 @@ class LapSablon
             ['fesztivalrend_thanks_brush_glow', 'Köszönjük — ecsetírás, 3. sor (fénylő, a fesztivál sorszáma)', 'sor', ['hu' => 'a 13. Vásárhelyi Forgatagon!', 'ro' => 'la a 13-a ediție a Vâltorii Mureșene!'], 'csoport' => 'zaro'],
         ],
 
+        // A GALÉRIA (PROMPT-17, 2. rész) — a 2026-os GalleryView: a cím és a bevezető 2026-ban is szerkeszthető volt (`data-hs`), az
+        // üres állapot beégetett. A galériák maguk: Tartalom → Galériák. A 2026-os román bevezetőben a hibás „Vâltoarei” alak állt —
+        // javítva „Vâltorii”-ra (CLAUDE.md 1.).
+        'galeria' => [
+            ['gallery_title', 'Cím (ecsetírás)', 'sor', ['hu' => 'Galéria', 'ro' => 'Galerie']],
+            ['gallery_intro', 'Bevezető', 'szoveg', ['hu' => 'A legjobb pillanatok, a legbulisabb esték és legtartalmasabb forgatagos hangulatok. Kattints végig az elmúlt évek fotóin!', 'ro' => 'Cele mai frumoase momente și cele mai bune seri ale edițiilor trecute — dă click și retrăiește atmosfera Vâltorii.']],
+            ['gallery_empty', 'Ha még nincs galéria', 'sor', ['hu' => 'Még nincs feltöltött galéria.', 'ro' => 'Încă nu am adăugat galerii.']],
+        ],
+
+        // A VIDEÓ ARCHÍVUM (PROMPT-17, 2. rész) — a 2026-os VideoArchiveView kulcsai a régi nevükön (a 2026-ban beírt román értékek
+        // megmaradnak). A cím két fele egymás mellé kerül — a szóköz a mező része (2026-ban is: „Videó ” + „archívum”, de „After” +
+        // „movie-k”). A videók: a lap videós blokkjai (a sorrend adja a sávot — App\Support\MediaLapok::SAVOK).
+        'videoarchivum' => [
+            ['videos_hero_title', 'Nyitócím — eleje (a végén szóköz, ha kell)', 'sor', ['hu' => 'Videó ', 'ro' => 'Arhivă '], 'csoport' => 'hero'],
+            ['videos_hero_title_accent', 'Nyitócím — kiemelt rész (ecsetírás)', 'sor', ['hu' => 'archívum', 'ro' => 'video'], 'csoport' => 'hero'],
+            ['videos_aftermovie_title', '1. sáv (az 1. videós blokk, világos) — cím eleje', 'sor', ['hu' => 'After', 'ro' => 'After'], 'csoport' => 'sav1'],
+            ['videos_aftermovie_title_accent', '1. sáv — cím kiemelt része', 'sor', ['hu' => 'movie-k', 'ro' => 'movie-uri'], 'csoport' => 'sav1'],
+            ['videos_szinejava_title', '2. sáv (a 2. videós blokk, sötét, álló videók) — cím eleje', 'sor', ['hu' => 'Vásárhely ', 'ro' => 'Târgu Mureș '], 'csoport' => 'sav2'],
+            ['videos_szinejava_title_accent', '2. sáv — cím kiemelt része', 'sor', ['hu' => 'színe-java', 'ro' => 'la superlativ'], 'csoport' => 'sav2'],
+            ['videos_mestersegem_title', '3. sáv (a 3. videós blokk, narancs) — cím eleje', 'sor', ['hu' => 'Mesterségem: ', 'ro' => 'Meseria mea: '], 'csoport' => 'sav3'],
+            ['videos_mestersegem_title_accent', '3. sáv — cím kiemelt része', 'sor', ['hu' => 'vásárhelyi', 'ro' => 'târgumureșean'], 'csoport' => 'sav3'],
+        ],
+
+        // A TÁMOGATÓK (PROMPT-17, 2. rész) — a 2026-os SponsorsView: az öt `data-hs` kulcs a régi nevén; a „Köszönjük!” 2026-ban
+        // beégetett volt (most kulcs). A támogatók: Tartalom → Támogatók (a legutóbbi év); a szint neve a szinttől (román név, ha van).
+        'tamogatok' => [
+            ['sponsors_title_a', 'Cím — eleje (a végén szóköz)', 'sor', ['hu' => 'Akik ', 'ro' => 'Cei care '], 'csoport' => 'cim'],
+            ['sponsors_title_b', 'Cím — kiemelt rész', 'sor', ['hu' => 'velünk', 'ro' => 'ne sunt'], 'csoport' => 'cim'],
+            ['sponsors_title_c', 'Cím — vége (az elején szóköz)', 'sor', ['hu' => ' tartanak', 'ro' => ' alături'], 'csoport' => 'cim'],
+            ['sponsors_lead', 'Bevezető', 'szoveg', ['hu' => 'A Vásárhelyi Forgatag tizenhárom éve azért lehet minden augusztusban a város közös ünnepe, mert vannak, akik hisznek benne. Támogatóink és partnereink nélkül nem lenne se nagyszínpad, se kézműves vásár, se ingyenes gyerekprogram.', 'ro' => 'Vâltoarea Mureșeană poate fi de treisprezece ani sărbătoarea comună a orașului în fiecare august pentru că există cei care cred în ea. Fără susținătorii și partenerii noștri nu ar exista nici scena mare, nici târgul de meșteșugari, nici programele gratuite pentru copii.']],
+            ['sponsors_thanks_strong', 'Köszönet — kiemelt eleje', 'sor', ['hu' => 'Köszönjük!', 'ro' => 'Mulțumim!'], 'csoport' => 'koszonet'],
+            ['sponsors_thanks', 'Köszönet — folytatása (az elején szóköz)', 'szoveg', ['hu' => ' Minden támogatás egy programot, egy fellépőt vagy egy gyerekfoglalkozást jelent a Forgatagon.', 'ro' => ' Fiecare sprijin înseamnă un program, un artist sau un atelier pentru copii la Vâltoare.'], 'csoport' => 'koszonet'],
+        ],
 
         // A KÉZMŰVES VÁSÁR (PROMPT-17) — a 2026-os CraftspeopleView: az öt 2026-ban is szerkeszthető kulcs (`data-hs`) a régi
         // nevén, az alapszöveg a 2026-os HU/RO szöveg; a többi látható felirat 2026-ban beégetett volt (most kulcs). A kézművesek

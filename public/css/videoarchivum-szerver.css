@@ -1,0 +1,9 @@
+/* ============================================================================
+ *  A 2026-os videó-archívum stílusának (videoarchivum.css, betűre átvéve) KIEGÉSZÍTÉSE — CSAK ami a 2027-es keretből
+ *  következik. Új kinézet itt nem lehet (CLAUDE.md 2/e).
+ * ========================================================================== */
+
+/* A 2027-es keret (publikus.css) a címsorok és bekezdések margóját nullázza; a 2026-os videó-archívumon (csak a chrome.css és a
+   saját stílusa töltött) a böngésző alapmargója élt — pl. a kártya-cím (h3.va-title) alatt-fölött. Visszaállítva (0,0,1)
+   erősséggel, így a lap saját margó-szabályai (`.va-page .rail-head{margin:…}`, `.subhero h1{margin:0}`) továbbra is nyernek. */
+:where(.va-page) :is(h1,h2,h3,h4,p){margin:revert}
