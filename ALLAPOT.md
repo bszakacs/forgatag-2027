@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-15 (PROMPT-17 **2. része**: galéria, videó-archívum, támogatók — kész HELYBEN, még NINCS feltolva/élesben; az 1. rész élesben kész)
+**Utolsó frissítés:** 2026-11-15 (PROMPT-17 kész mindkét részében — fesztiválrend, kézművesek, galéria, videó-archívum, támogatók —, ÉLESBEN telepítve és megmérve)
 
 ---
 
@@ -371,9 +371,9 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     1.: a „Vâltoarei” mindig hibás) · a naptej-ikon „SPF” felirata a rajz része, nem szöveg · a firkák csak szélesség-változásra szóródnak
     újra (mint a mozgas.js és a kezdőlap; 2026-ban telefonon a címsor mozgására is ugráltak).
 
-- **A maradék publikus lapok — 2. rész: galéria, videó-archívum, támogatók** (`PROMPT-17`, 2026-11-15) — **kész HELYBEN, még NINCS
-  feltolva és élesben** („MOST folyik”, 10.). **Ezzel a menü egyetlen pontja sem ad 404-et** (helyben mérve: a főoldal minden belső linkje
-  200, a `/programok/` 301 a perjel nélküli címre).
+- **A maradék publikus lapok — 2. rész: galéria, videó-archívum, támogatók** (`PROMPT-17`, 2026-11-15) — **kész, ÉLESBEN telepítve
+  és mérve (`e5f8ff7b`)** („MOST folyik”, 10.). **Ezzel a menü egyetlen pontja sem ad 404-et** (élesben mérve, HU és RO: a főoldal minden
+  belső linkje 200, a `/programok/` 301 a perjel nélküli címre).
   - **BETŰRE a 2026-osból (2/e):** a jelölés a 2026-os `GalleryView`, `VideoArchiveView`, `SponsorsView` (osztályok, sorrend); a stílus a
     2026-os stíluslap másolata (`galeria-lap.css` = a GalleryView stílusblokkja, `videoarchivum.css`, `tamogatok-lap.css` — gépies eltérések
     a fejükben), a 2026-os betöltési sorrendben a közös modulokkal (galéria → `galeria.css`; videó → `rail.css` + `video.css`; támogatók →
@@ -398,8 +398,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     a csempeméret a szint helyéből (mint 2026-ban).
   - **⚠ A Balázs Ferenc Önképző Kör logója még mindig a 109 megapixeles (14765×7384) — JELZEM (a feladat kérte).** Méretváltozat nem
     készül belőle, ezért a lapon üres doboz lett volna. **Most a csempén — a kezdőlapi sávban is — a támogató NEVE látszik helyette**
-    (`Media::tulNagy()`, a médiatár-behozatal 40 MP-es határával). **Teendő: a logót kisebbre cserélni** (médiatár → a kép „Csere” fülén),
-    és onnantól magától a logó jön.
+    (`Media::tulNagy()`, a médiatár-behozatal 40 MP-es határával). **Élesben (proba) a logót már kicserélték** — ott a logó látszik
+    (400×200, 0,44 s); a helyi adatbázisban még a régi van. A tartalék a jövőbeli óriásképekre marad.
   - **Firka-leltár javítva:** a 2026-os videó-archívum nyitóképén VANNAK „szélben” sodródó firkák (asztalon 16, mobilon 8 — a korábbi
     leltár 0-t írt, mert csak a `.decor` osztályt számolta). Átemelve a téma motívumaiból: 16/16 kirajzolva, `[data-decor="hero"]`.
     A galéria és a támogatók lapján 2026-ban sem volt firka.
@@ -487,10 +487,16 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    Támogatók, Videó archívum — a két videós horgony is).
    **Hátra (a felhasználóval, az ő belépésével):** az adminban Tartalom → Kézművesek (lista, egy kézműves szerkesztése), és egy szöveg
    átírása Aloldalak → Fesztiválrend → Szerkeszthető szövegek alatt — megjelenik-e a lapon.
-10. **A maradék lapok 2. része (PROMPT-17: galéria, videó-archívum, támogatók)** — **helyben kész, NINCS feltolva és telepítve.**
-   Telepítés után a naplóban: `LAPSZÖVEG: galeria: 3 új kulcs`, `videoarchivum: 3 új kulcs, 5 üres mező kitöltve`, `tamogatok: 6 új kulcs`
-   (migráció nincs). Élesben megnézendő és mérendő: a három lap HU és RO, 375 px; a galéria egy éve → kép → Esc; egy videó lejátszása;
-   a menü egyetlen pontja sem 404; **a válaszidő — a galéria a legnehezebb lap** (12 borító a lapon, a képlista külön kérés).
+10. **A maradék lapok 2. része (PROMPT-17: galéria, videó-archívum, támogatók)** — **élesben telepítve (2026-11-15, `e5f8ff7b`) és megnézve.**
+   **Élesben mérve (proba.forgatag.ro):** mindhárom lap HU és RO 200; galéria 13 év (élesben megvan a 2026-os is, 107 képpel — a 2026-os
+   élő oldal ebből csak 100-at mutat: a már ismert 2026-os 100-as korlát), 26 videó (románul 8), 112 támogató 10 szintben; a menüből
+   egyetlen hibalap sincs. **375 px-en:** vízszintes görgetés nincs; videó 307 / 540 / 637 / 570 (románul 307 / 540), támogatók 358 / 7742 /
+   251 (románul 384 / 7762 / 251) — betűre a 2026-os számok; a videó nyitóképének 8/8 firkája kirajzolva; a galéria végig: 2026 → 107 kép →
+   nagy kép („1 / 107”, 1600 px) → Esc; mind a 112 logó 200 és kép. **Válaszidő (háromszor, tömörítve):** galéria 0,40–0,43 s (5 kB) ·
+   a képlista (`/galeria-adat.json`, csak az első megnyitáskor) 0,64–1,1 s (169 kB) · videó-archívum 0,58–0,64 s (23 kB; románul 0,36–0,41)
+   · támogatók 0,36–0,41 s (12 kB) · kezdőlap 0,47–0,58 s.
+   ⚠ **Mérési tanulság:** rejtett böngészőpanelben (és rejtett mérőablakban) a lusta képek NEM töltődnek — „nem töltődött be” mérést ott
+   közvetlen kéréssel ellenőrizz (curl / `new Image()`), mielőtt hibának hiszed.
 
 ## Ami ezután jön, ebben a sorrendben
 
@@ -621,9 +627,6 @@ nem nyúlunk.**
 - **ÚJ (PROMPT-17) — a fesztiválrend záró ecsetírása:** „a **13.** Vásárhelyi Forgatagon!” (románul „la a 13-a ediție…”) — a 2026-os
   szöveg, a sorszámot nem találtam ki. Ha 2027-ben a 14., az adminban kell átírni (Aloldalak → Fesztiválrend → „Köszönjük — ecsetírás,
   3. sor”). A két dátum-kulcs már a 2027-es dátumot mutatja (aug. 25–29.).
-- **ÚJ (PROMPT-17, 2. rész) — a 2026-os galéria (108 kép) nincs a 2027-es adatbázisban.** A 2026-os élő oldalon már 13 év látszik: a 2026-os
-  galéria a mentés (2026-10-21) UTÁN került fel (PROMPT-16). A 2027-es Galéria lapon ezért 2025 a legújabb év. Behozzuk? (A képek a 2026-os
-  élő oldalról / a NAS-ról jönnének — egy rövid, külön lépés.)
 - **ÚJ (PROMPT-17, 2. rész) — a támogatók bevezetőjében „tizenhárom éve” / „de treisprezece ani” áll** (a 2026-os szöveg). 2027-ben
   átírandó az adminban (Aloldalak → Támogatóink → Bevezető), mint a fesztiválrend „13.” sorszáma — nem írtam át magamtól.
 - **ÚJ (PROMPT-17) — a kézművesek listája a 2026-os 67 kézműves** (mind látható). A 2026-os modellnek nem volt éve; ha a 2027-es vásáron
