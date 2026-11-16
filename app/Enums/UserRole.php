@@ -99,6 +99,15 @@ enum UserRole: string
         return in_array($this, [self::SuperAdmin, self::Coordinator], true);
     }
 
+    /**
+     * A helyszínek térkép-adata (/admin/terkep-szerkeszto, PROMPT-18). A helyszín közös törzsadat (nem kategóriához kötött),
+     * ezért ugyanaz a kör, mint a közös tartalomnál. Az arculat-szerkesztő NEM (PROMPT-18, kifejezetten).
+     */
+    public function canEditVenues(): bool
+    {
+        return in_array($this, [self::SuperAdmin, self::Coordinator], true);
+    }
+
     /** Az arculat (/admin/tema) szerkesztése és publikálása. */
     public function canEditTheme(): bool
     {

@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="@eszkoz('css/terkep-lap.css')">
 @endpush
 @push('scripts')
+<script src="@eszkoz('js/terkep-szel.js')" defer></script>
 <script src="@eszkoz('js/terkep.js')" defer></script>
 @endpush
 

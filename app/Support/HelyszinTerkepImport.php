@@ -113,7 +113,7 @@ class HelyszinTerkepImport
                 if ($s['map_x'] === null && ! $s['map_edge']) {
                     $pozicioNelkul[] = $v->name . ($v->parent_id ? ' (terem — a szülő jelölője képviseli)' : '');
                 }
-                $erintetlen = ($v->map_zone?->value ?? 'none') === 'none' && $v->map_x === null && $v->map_no === null && ! $v->map_edge;
+                $erintetlen = $v->map_set_at === null && ($v->map_zone?->value ?? 'none') === 'none' && $v->map_x === null && $v->map_no === null && ! $v->map_edge;
                 if (! $erintetlen) {
                     continue;
                 }

@@ -1,0 +1,155 @@
+/* A TÉRKÉP-SZERKESZTŐ (PROMPT-18) — a 2026-os MapEditorView stílusa (me- előtag), az ADMIN színeivel.
+   A 2026-os lap a publikus téma tokenjeit használta (az oldal része volt); itt a Filament panelben vagyunk, ahol a publikus
+   téma nincs betöltve (és nem is töltjük be) — ezért a színek a Filament saját változóiból, világos és sötét módban.
+   A változók CSAK a szerkesztő dobozán élnek (.me-shell); a publikus téma tokenjeihez nincs közük. */
+
+.me-shell{
+  --me-fg:var(--gray-950);--me-muted:var(--gray-500);--me-faint:var(--gray-400);
+  --me-card:#fff;--me-raise:var(--gray-50);--me-bg:var(--gray-100);
+  --me-line:var(--gray-200);--me-line-strong:var(--gray-300);
+  --me-acc:var(--primary-500);--me-acc-fg:#111;--me-acc2:var(--primary-700);
+  --me-ok:var(--success-600);--me-danger:var(--danger-600);--me-focus:var(--primary-400);
+  display:flex;flex-direction:column;gap:18px;color:var(--me-fg)}
+.dark .me-shell{
+  --me-fg:#fff;--me-muted:var(--gray-400);--me-faint:var(--gray-500);
+  --me-card:var(--gray-900);--me-raise:var(--gray-800);--me-bg:var(--gray-950);
+  --me-line:rgba(255,255,255,.1);--me-line-strong:rgba(255,255,255,.2);
+  --me-ok:var(--success-400);--me-danger:var(--danger-400)}
+
+.me-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 24px;flex-wrap:wrap}
+.me-lead{margin:0;max-width:62em;font-size:14px;color:var(--me-muted);line-height:1.5}
+.me-lead b{color:var(--me-fg)}
+.me-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.me-status{font-size:13.5px;color:var(--me-muted)}
+.me-status.is-ok{color:var(--me-ok)}
+.me-status.is-err{color:var(--me-danger);font-weight:600}
+
+.me-btn{cursor:pointer;font:inherit;font-size:14px;font-weight:600;padding:.5em 1em;border-radius:10px;
+  border:1px solid var(--me-line-strong);background:var(--me-card);color:var(--me-fg);text-decoration:none;display:inline-block}
+.me-btn:hover{border-color:var(--me-acc)}
+.me-btn-primary{background:var(--me-acc);border-color:var(--me-acc);color:var(--me-acc-fg)}
+.me-btn-primary:disabled{opacity:.45;cursor:default}
+.me-btn[hidden]{display:none}
+
+.me-alert{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  background:color-mix(in srgb, var(--me-danger) 14%, var(--me-card));border:1px solid var(--me-danger);border-radius:14px;padding:14px 16px}
+.me-alert[hidden]{display:none}
+.me-alert b{display:block;font-size:15px;margin-bottom:2px}
+.me-alert p{margin:0;font-size:13.5px}
+.me-alert.is-info{background:color-mix(in srgb, var(--me-acc) 14%, var(--me-card));border-color:var(--me-acc)}
+
+.me-body{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:900px){ .me-body{grid-template-columns:minmax(0,1fr)} }
+.me-side{display:flex;flex-direction:column;gap:16px;position:sticky;top:76px;border-radius:14px}
+@media(max-width:900px){ .me-side{position:static} }
+.me-side.is-drop{outline:2px dashed var(--me-danger);outline-offset:4px}
+.me-block{background:var(--me-card);border:1px solid var(--me-line);border-radius:14px;padding:14px}
+.me-block[hidden]{display:none}
+.me-h{margin:0;font-weight:700;font-size:14.5px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.me-h b{background:var(--me-acc);color:var(--me-acc-fg);border-radius:999px;padding:.1em .6em;font-size:12.5px}
+.me-note{font-size:12.5px;color:var(--me-muted);margin:4px 0 8px}
+.me-note[hidden]{display:none}
+.me-selname{margin:6px 0;font-weight:600}
+.me-search,.me-lbl input[type=number],.me-lbl input[type=text]{width:100%;background:var(--me-raise);color:var(--me-fg);
+  border:1px solid var(--me-line-strong);border-radius:10px;padding:8px 10px;font:inherit;font-size:14px}
+.me-lbl{display:block;font-size:12.5px;color:var(--me-muted);margin:8px 0}
+.me-lbl[hidden]{display:none}
+.me-lbl input{margin-top:4px}
+
+.me-maptabs{display:flex;gap:6px}
+.me-maptab{flex:1;cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;padding:.6em .5em;border-radius:10px;
+  border:1px solid var(--me-line-strong);background:var(--me-card);color:var(--me-muted)}
+.me-maptab[aria-selected="true"]{background:var(--me-acc);color:var(--me-acc-fg);border-color:var(--me-acc)}
+.me-tabn{font-weight:700;opacity:.75;margin-left:.25em}
+
+.me-list{list-style:none;margin:0;padding:0;max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
+/* érintésnél: a függőleges mozdulat a lista görgetése, a vízszintesen induló a húzás (terkep-szerkeszto.js) */
+.me-chip{display:flex;align-items:center;gap:6px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;
+  background:var(--me-raise);border:1px solid var(--me-line);border-radius:10px;padding:7px 9px;font-size:13.5px;line-height:1.25}
+.me-chip:hover{border-color:var(--me-acc)}
+.me-chip.is-drag{opacity:.35}
+.me-chip.is-child{margin-left:14px}
+.me-chip.is-sel{outline:2px solid var(--me-acc);outline-offset:-1px}
+.me-chip .me-cname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me-chip.is-placed{opacity:.55;background:transparent;cursor:pointer}
+.me-chip.is-placed:hover{opacity:.9}
+.me-chip .me-cno{flex:0 0 auto;font-weight:700;font-size:11.5px;border-radius:999px;padding:.1em .5em;background:var(--me-acc);color:var(--me-acc-fg)}
+.me-chip.is-todo{font-weight:700;border-color:color-mix(in srgb, var(--me-danger) 55%, var(--me-line))}
+.me-chip.is-todo::before{content:"";flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:var(--me-danger)}
+.me-chip.is-edge{opacity:.8;background:transparent;cursor:pointer}
+.me-chip .me-cedge{flex:0 0 auto;font-size:10.5px;font-weight:700;border-radius:999px;padding:.15em .5em;
+  background:var(--me-raise);color:var(--me-muted);border:1px solid var(--me-line-strong)}
+.me-chip .me-cdirty{flex:0 0 auto;color:var(--me-acc2);font-size:11px}
+.me-msg{font-size:13px;color:var(--me-muted);padding:10px 2px;line-height:1.45}
+
+.me-fs{border:1px solid var(--me-line);border-radius:10px;padding:10px;margin:10px 0}
+.me-fs legend{margin:0;padding:0 4px}
+.me-radio{display:flex;align-items:center;gap:8px;font-size:13px;padding:3px 0;cursor:pointer}
+.me-bearing{display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(3,38px);gap:4px;margin-top:6px}
+.me-bearing button{cursor:pointer;font:inherit;font-size:16px;line-height:1;border-radius:8px;
+  border:1px solid var(--me-line-strong);background:var(--me-raise);color:var(--me-fg)}
+.me-bearing button[aria-checked="true"]{background:var(--me-acc);color:var(--me-acc-fg);border-color:var(--me-acc);font-weight:700}
+.me-bcenter{display:grid;place-content:center;font-size:11px;color:var(--me-faint)}
+
+.me-map{background:var(--me-card);border:1px solid var(--me-line);border-radius:14px;padding:12px;min-width:0}
+.me-toolbar{display:flex;align-items:center;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.me-hint{font-size:12.5px;color:var(--me-muted);margin:0}
+.me-zoom{display:flex;align-items:center;gap:6px}
+.me-zoom button{width:32px;height:32px;cursor:pointer;border-radius:8px;border:1px solid var(--me-line-strong);
+  background:var(--me-raise);color:var(--me-fg);font:inherit;font-size:16px}
+.me-zoom span{font-size:13px;color:var(--me-muted);min-width:3.4em;text-align:center}
+
+.me-canvas{overflow:auto;background:var(--me-bg);border-radius:10px;max-height:78vh}
+.me-canvas[hidden]{display:none}
+/* A SZEGÉLY: ide ejtve a helyszín a térkép SZÉLÉRE kerül (irányjelvénnyel) */
+.me-frame{box-sizing:border-box;padding:38px;width:100%;border:2px dashed transparent;border-radius:10px;
+  background:repeating-linear-gradient(45deg, transparent 0 10px, color-mix(in srgb, var(--me-muted) 10%, transparent) 10px 20px)}
+.me-frame.is-drop{border-color:var(--me-acc);background-color:color-mix(in srgb, var(--me-acc) 12%, transparent)}
+@media(max-width:640px){ .me-frame{padding:26px} }
+.me-layer{position:relative;width:100%;background:#1d1a2b}
+.me-layer img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.me-hit{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+/* jelölő: a helye SZÁZALÉK, ezért nagyításnál is a helyén marad */
+.me-mk{position:absolute;transform:translate(-50%,-50%);cursor:grab;touch-action:none;user-select:none;
+  width:34px;height:34px;display:grid;place-content:center;border-radius:50%;
+  background:var(--me-acc);color:var(--me-acc-fg);border:2px solid #fff;font-weight:700;font-size:13px;
+  box-shadow:0 3px 10px rgba(0,0,0,.5);z-index:2}
+.me-mk:hover{outline:2px solid var(--me-focus);outline-offset:2px}
+.me-mk.is-sel{background:var(--danger-500);color:#fff;z-index:3;outline:3px solid #fff;outline-offset:1px}
+.me-mk.is-drag{opacity:.6;cursor:grabbing}
+.me-mk.is-flash,.me-offwrap .pk-offmap.is-flash{animation:meFlash 1.4s ease-out}
+@keyframes meFlash{
+  0%,100%{box-shadow:0 3px 10px rgba(0,0,0,.5)}
+  15%,45%{box-shadow:0 0 0 10px color-mix(in srgb, var(--me-focus) 55%, transparent), 0 3px 10px rgba(0,0,0,.5)}
+  30%,60%{box-shadow:0 0 0 2px var(--me-focus), 0 3px 10px rgba(0,0,0,.5)}
+}
+@media(prefers-reduced-motion:reduce){ .me-mk.is-flash{animation:none;outline:3px solid var(--me-focus);outline-offset:3px} }
+.me-mktip{position:absolute;top:110%;left:50%;transform:translateX(-50%);white-space:nowrap;
+  background:var(--me-card);color:var(--me-fg);border:1px solid var(--me-line-strong);border-radius:8px;padding:2px 6px;
+  font-size:11.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .15s}
+.me-mk:hover .me-mktip,.me-mk.is-sel .me-mktip{opacity:1}
+
+/* SZÉLSŐ JELVÉNY — a publikus térkép .pk-offmap jelölése (programok/_terkep) és elhelyezése (terkep-szel.js); a kinézete
+   itt az admin színeivel (a publikus terkep.css a téma tokenjeire épül, az itt nincs). */
+.me-offwrap{position:absolute;inset:0;z-index:4;pointer-events:none}
+.me-offwrap .pk-offmap{pointer-events:auto;position:absolute;display:flex;align-items:center;gap:.5em;cursor:pointer;font:inherit;
+  padding:.38em .6em;border-radius:999px;white-space:nowrap;background:var(--me-card);border:1px solid var(--me-line-strong);
+  color:var(--me-fg);font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.me-offwrap .pk-offmap[aria-pressed="true"]{border-color:var(--danger-500);box-shadow:0 0 0 2px var(--danger-500)}
+.me-offwrap .pk-offnum{width:24px;height:24px;flex:0 0 auto;display:grid;place-content:center;border-radius:50%;
+  font-weight:700;font-size:12px;background:var(--me-acc);color:var(--me-acc-fg)}
+.me-offwrap .pk-offtxt b{font-size:12.5px}
+.me-offwrap .pk-offmap svg{width:15px;height:15px;flex:0 0 auto;transform:rotate(calc(var(--pk-rot, 90deg) - 90deg))}
+
+/* húzás közbeni „szellem” — a dokumentum tetején (a z-index a lebegő elemeké: a panel saját rétegei fölött) */
+.me-ghost{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-50%);
+  background:var(--danger-500);color:#fff;border:2px solid #fff;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700;
+  box-shadow:0 6px 18px rgba(0,0,0,.5);white-space:nowrap}
+
+/* koppintásos elhelyezés: „élesített” helyszín — a térkép fölött, görgetéskor is látszik */
+.me-armed{position:sticky;top:64px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 0 10px;padding:10px 12px;border-radius:10px;font-size:13.5px;font-weight:600;
+  background:color-mix(in srgb, var(--me-acc) 22%, var(--me-card));border:1px solid var(--me-acc)}
+.me-armed[hidden]{display:none}
+@media(max-width:900px){ .me-list{max-height:34vh} }

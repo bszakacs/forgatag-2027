@@ -746,6 +746,24 @@ Ugyanaz a recept; a 2026-os élő lap mellé téve pixelre mérve. Adat EGY hely
 - **Túl nagy kép (`Media::tulNagy()`, > `MediatarImport::MAX_MEGAPIXEL`):** méretváltozat nem készül → a használó a tartalékát mutatja
   (a támogatói csempe a nevet). Új képhasználatnál ezt kérdezd, ne adj ki üres dobozt.
 
+**Térkép-szerkesztő — kész helyben (2026-11-16, PROMPT-18):** `/admin/terkep-szerkeszto` (`App\Filament\Pages\TerkepSzerkeszto`), menü:
+Tartalom → Térkép-szerkesztő (tulajdonosi döntés, 2026-11-16 — nincs új menüpont/csoport). Jog: `UserRole::canEditVenues` (szuperadmin,
+koordinátor); az arculat-szerkesztő NEM — a Livewire-mentés is megkérdezi (`abort_unless`), nem csak a lap.
+- **Felület:** a 2026-os `MapEditorView` (oldalsáv: fülek, MINDEN helyszín szülő → termei, a teendő kiemelve; kiválasztott jelölő: sorszám,
+  rövid név, „a térképen” ⇄ „a szélén” + 8 irány; nagyítás; felvillanás; helyi vázlat a böngészőben). Kliens: `public/js/terkep-szerkeszto.js`
+  + `public/css/terkep-szerkeszto.css` (az ADMIN színeivel — a publikus téma itt nincs betöltve). A Directus-belépés kódja NEM jött át: a mentés
+  a panel munkamenetén megy (`$wire.mentes`) — a 2026-os 401 itt szerkezetileg nem létezik.
+- **Húzás:** Pointer Events, bővítmény NÉLKÜL; a koordináta a rajzon ülő 0–100-as SVG-rétegből (`.me-hit`) `getScreenCTM().inverse()`-szel.
+  A rajz körüli **szegélyre** ejtve = a térkép SZÉLÉRE kerül, az ejtés irányával. Érintésnél a listában a függőleges mozdulat görget, a
+  vízszintes húz; telefonon (egymás alatt a lista és a térkép) **koppintás a helyszínre → koppintás a térképre** helyez el.
+- **Író-út EGY helyen: `App\Support\TerkepMentes`** — három érvényes állapot (térképen: zóna + x/y · szélén: zóna + irány, x/y nincs ·
+  levéve: minden üres), minden-vagy-semmi tranzakció, emberi hibaszöveg. Minden mentés kitölti a `venues.map_set_at`-et: a telepítés
+  2026-os behozatala (`HelyszinTerkepImport`) ehhez a helyszínhez már nem nyúl (a LEVETTET sem teszi vissza).
+- **A szélső jelvény elhelyezése EGY helyen:** `public/js/terkep-szel.js` (`fgPlaceOffmap`, a 2026-os lib/offmap) — a publikus térkép
+  (`terkep.js` előtt betöltve) és a szerkesztő is ezt hívja.
+- Tesztek: `tests/Feature/TerkepSzerkesztoTest.php` (jog szerepkörönként, a három állapot + a publikus térkép adata, minden-vagy-semmi,
+  a behozatal nem írja felül).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a

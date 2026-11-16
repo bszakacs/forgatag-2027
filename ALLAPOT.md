@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-15 (PROMPT-17 kész mindkét részében — fesztiválrend, kézművesek, galéria, videó-archívum, támogatók —, ÉLESBEN telepítve és megmérve)
+**Utolsó frissítés:** 2026-11-16 (PROMPT-18: a térkép-szerkesztő kész helyben; élesítés és a Várkert behúzása hátra)
 
 ---
 
@@ -408,7 +408,28 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     címe „Arhivă”+„video” szóköz nélkül áll — a 2026-ban beírt adat, 2026-ban is így látszott · a galéria román bevezetőjében a hibás
     „Vâltoarei” → „Vâltorii” · a kártya-fény `--grp-szinhaz` → `--doodle-purple` (betűre egyező, mint az alap.css-ben).
 
+- **Térkép-szerkesztő** (`PROMPT-18`, 2026-11-16) — **kész HELYBEN**; élesítés: lásd „Ami MOST folyik”. `/admin/terkep-szerkeszto`,
+  menü: Tartalom → Térkép-szerkesztő (tulajdonosi döntés 2026-11-16). Részletek: `CLAUDE.md` 8. pont „Térkép-szerkesztő”.
+  - A 2026-os szerkesztő felülete, a Directus-belépés nélkül (a mentés a panel munkamenetén megy — 401-es hiba nem lehet).
+  - **Húzás egérrel és ujjal** (Pointer Events, bővítmény nélkül, `getScreenCTM().inverse()`); a térkép körüli **szegélyre** ejtve a
+    helyszín a **térkép szélére** kerül, irányjelvénnyel; telefonon **koppintás a helyszínre, aztán a térképre**.
+  - **Helyben mérve (böngészőből, valódi egérhúzással):** egy helyszín a térképre, egy a szegélyre (jobbra → „jobbra (kelet)” jelvény) →
+    Mentés → mindkettő megjelent a `/terkep`-en, a programkeresőben és a helyszínlapon (45-ös szám); visszavéve. Érintés (szimulált
+    érintés-eseményekkel, 375 px): függőleges ujjmozdulat a listát görgeti, koppintás + koppintás elhelyez, jelölő ujjal a szegélyre → szélső jelvény.
+    **Valódi tableten/telefonon még nem próbáltuk.**
+  - **Kultúrpalota, nagyterem — elhelyezve HELYBEN** (a Kultúrpalota épületén, a kisterem túloldalán, 32,85% / 66,73%, **30-as szám** — a
+    számsorban üresen állt). Élesben ugyanígy el kell helyezni (a helyi adatbázis nem megy ki).
+  - **Vár, Várkert — a tulajdonos húzza be** (a pontos helyét nem lehet a rajzból kiolvasni): Tartalom → Térkép-szerkesztő → Vártérkép →
+    a listában a piros pöttyös „Vár, Várkert” → húzd a helyére (vagy koppints rá, aztán a térképen a helyére) → **Mentés**.
+  - Új mező: `venues.map_set_at` (a szerkesztőben beállított helyszínt a telepítés 2026-os térkép-behozatala nem írja felül). **211 teszt zöld.**
+  - Döntések (egy-egy sor): a helyszínt koordinátor és szuperadmin szerkesztheti (mint a közös tartalmat) · a mentés minden-vagy-semmi ·
+    a 2026-os helyi vázlat (böngészőben őrzött mentetlen munka) megmaradt (lejárt munkamenet ellen) · a szélső jelvény a szerkesztőben az
+    admin színeivel, de a publikus elhelyezővel.
+
 ## Ami MOST folyik
+
+0. **A térkép-szerkesztő élesítése (PROMPT-18)** — lásd lent az eredményt (ha üres: még nincs telepítve). Teendő: telepítés; élesben a
+   Kultúrpalota nagyterem behúzása (30); arculat-szerkesztő fiókkal a `/admin/terkep-szerkeszto` begépelve → 403; a Várkert (tulajdonos).
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
    kihagyva; galéria 467/467, logó 112/112; hiba 0; a 3 zip törölve. **Tennivaló (1):** a „Balázs Ferenc Önképző Kör”
@@ -535,7 +556,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    kényelmesebb, de a 2026-os változat egy több mint ezer soros külön alkalmazás volt.
    **A tulajdonos dönti el, amikor a lapok megvannak, és látja, mennyire kényelmes az admin.**
 
-8. **A térkép-szerkesztő** — független a többitől, rövid kör, bárhova beilleszthető.
+8. ~~**A térkép-szerkesztő**~~ — **kész helyben (2026-11-16, PROMPT-18)**, fent; a Várkert behúzása a tulajdonosé.
    ⚠ **Első teendője (tulajdonosi rögzítés, 2026-11-04 — NEM a szervezők listája):** két helyszín valóban
    beállítatlan, mert 2026-ban sem volt pozíciója, pedig a város belsejében van: **Vár, Várkert** és
    **Kultúrpalota, nagyterem** — két húzás a szerkesztőben. (Az Állatkert, a vikendtelep és a Fociakadémia

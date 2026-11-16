@@ -12,7 +12,7 @@ class Venue extends Model
     protected $fillable = [
         'slug', 'name', 'name_ro', 'short_name', 'address', 'address_ro',
         'gps_lat', 'gps_lng', 'gps_approximate', 'aliases', 'parent_id',
-        'map_zone', 'map_x', 'map_y', 'map_no', 'map_edge', 'map_bearing',
+        'map_zone', 'map_x', 'map_y', 'map_no', 'map_edge', 'map_bearing', 'map_set_at',
     ];
 
     protected function casts(): array
@@ -22,6 +22,7 @@ class Venue extends Model
             'aliases' => 'array',
             'map_zone' => MapZone::class,
             'map_edge' => 'boolean',
+            'map_set_at' => 'datetime',
         ];
     }
 
