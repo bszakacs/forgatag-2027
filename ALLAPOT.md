@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-16 (PROMPT-18: a térkép-szerkesztő kész helyben; élesítés és a Várkert behúzása hátra)
+**Utolsó frissítés:** 2026-11-16 (PROMPT-18: a térkép-szerkesztő telepítve; a belépéses élő próba és a Várkert behúzása hátra)
 
 ---
 
@@ -428,7 +428,10 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 
 ## Ami MOST folyik
 
-0. **A térkép-szerkesztő élesítése (PROMPT-18)** — lásd lent az eredményt (ha üres: még nincs telepítve). Teendő: telepítés; élesben a
+0. **A térkép-szerkesztő élesítése (PROMPT-18)** — **telepítve (2026-11-16, `34eb079a`, a tulajdonos indította).** Belépés nélkül mérve:
+   `/admin/terkep-szerkeszto` → 302 a belépésre (az útvonal él), a három új JS/CSS 200, a `/terkep` változatlan (41 jelölő + 3 szélső
+   jelvény: Fociakadémia ↑, Víkendtelep ↑, Állatkert →), az új közös elhelyezőt (`terkep-szel.js`) a `/terkep` és a `/programok` is
+   betölti; `/terkep` 0,47–0,50 s. **Belépéssel még NEM mérve** (a Chrome-bővítmény lekapcsolódott). Teendő: telepítés; élesben a
    Kultúrpalota nagyterem behúzása (30); arculat-szerkesztő fiókkal a `/admin/terkep-szerkeszto` begépelve → 403; a Várkert (tulajdonos).
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
