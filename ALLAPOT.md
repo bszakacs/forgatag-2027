@@ -431,7 +431,10 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 0. **A térkép-szerkesztő élesítése (PROMPT-18)** — **telepítve (2026-11-16, `34eb079a`, a tulajdonos indította).** Belépés nélkül mérve:
    `/admin/terkep-szerkeszto` → 302 a belépésre (az útvonal él), a három új JS/CSS 200, a `/terkep` változatlan (41 jelölő + 3 szélső
    jelvény: Fociakadémia ↑, Víkendtelep ↑, Állatkert →), az új közös elhelyezőt (`terkep-szel.js`) a `/terkep` és a `/programok` is
-   betölti; `/terkep` 0,47–0,50 s. **Belépéssel még NEM mérve** (a Chrome-bővítmény lekapcsolódott). Teendő: telepítés; élesben a
+   betölti; `/terkep` 0,47–0,50 s. **Belépéssel még NEM mérve** (a Chrome-bővítmény lekapcsolódott).
+   **Élesben (2026-11-16, a tulajdonos húzta be a szerkesztővel):** a Kultúrpalota, nagyterem a `/terkep`-en saját jelölővel (33,37% /
+   66,08%), a helyszínlapon **47-es** számmal (a szerkesztő a következő szabad számot adta; a 30-as üresen maradt — ha kell, a
+   „Sorszám a jelölőn” mezőben átírható). **Hátra:** a Várkert behúzása (tulajdonos) · arculat-szerkesztő fiókkal a közvetlen cím → 403. Teendő: telepítés; élesben a
    Kultúrpalota nagyterem behúzása (30); arculat-szerkesztő fiókkal a `/admin/terkep-szerkeszto` begépelve → 403; a Várkert (tulajdonos).
 
 1. **A médiatár élő próbája** — a behozatal élesben kész: 1031/1031 a médiatárba, 26/26 a zárt tárba, 34 szándékosan
