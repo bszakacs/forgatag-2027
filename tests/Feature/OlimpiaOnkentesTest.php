@@ -367,4 +367,18 @@ class OlimpiaOnkentesTest extends TestCase
             ->call('save')
             ->assertHasFormErrors(['volunteer.open', 'olympics.open']);
     }
+
+    public function test_a_kitolto_gomb_a_fesztivalnapokbol_tolti_ki_es_utana_nyithato(): void
+    {
+        $this->mint(UserRole::SuperAdmin);
+        Livewire::test(Beallitasok::class)
+            ->set('data.volunteer.days', [])
+            ->callAction(\Filament\Actions\Testing\TestAction::make('onkentesNapokKitoltes')->schemaComponent('onkentes_napok_gombok', 'form'))
+            ->call('save')
+            ->assertHasNoFormErrors();
+        $this->assertSame(
+            ['aug. 24. (kedd – nulladik nap)', 'aug. 25. (szerda)', 'aug. 26. (csütörtök)', 'aug. 27. (péntek)', 'aug. 28. (szombat)', 'aug. 29. (vasárnap)', 'aug. 30. (hétfő – utómunkálatok)'],
+            array_column(\App\Support\Onkentes::napok(), 'label'),
+        );
+    }
 }

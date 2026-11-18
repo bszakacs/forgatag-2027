@@ -219,7 +219,7 @@ class Beallitasok extends Page
                             return;
                         }
                         if (collect((array) $get('volunteer.days'))->filter(fn ($n) => filled($n['date'] ?? null))->isEmpty()) {
-                            $fail('Nyitás előtt add meg az önkéntes-napokat.');
+                            $fail('Nyitás előtt add meg az önkéntes-napokat: lent, az „Önkéntes-napok” listánál a „Kitöltés a fesztivál napjaiból” gomb (majd a felugró ablakban a megerősítés), vagy „Új nap”.');
                         }
                         if (self::sorok($get('volunteer.areas')) === []) {
                             $fail('Nyitás előtt add meg a területeket.');
@@ -262,7 +262,7 @@ class Beallitasok extends Page
                             $lista[] = ['date' => $napok[array_key_last($napok)]['date']->addDay()->toDateString(), 'note' => 'utómunkálatok'];
                             $set('volunteer.days', collect($lista)->mapWithKeys(fn ($n) => [(string) \Illuminate\Support\Str::uuid() => $n])->all());
                         }),
-                ])->columnSpanFull(),
+                ])->columnSpanFull()->key('onkentes_napok_gombok'),
                 Text::make(fn (Get $get) => 'Az űrlapon így látszanak: ' . (collect((array) $get('volunteer.days'))
                     ->filter(fn ($n) => filled($n['date'] ?? null))->sortBy('date')
                     ->map(fn ($n) => \App\Support\Onkentes::napFelirat(\Carbon\CarbonImmutable::parse($n['date']), (string) ($n['note'] ?? '')))
