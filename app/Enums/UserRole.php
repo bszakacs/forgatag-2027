@@ -37,7 +37,7 @@ enum UserRole: string
             self::SuperAdmin => 'Mindent lát és mindent kezel, az admin-felhasználókat is.',
             self::Coordinator => 'Minden programot lát, jóváhagy és visszaküld; kezeli a programgazdákat és a Beállításokat.',
             self::CategoryOwner => 'CSAK a saját kategóriái programjait látja; átnézi, jóváhagyásra küldi vagy visszaküldi őket. Jóváhagyni nem tud.',
-            self::Translator => 'Minden programot lát (olvasásra); a fordítás-szerkesztés a fordítási körben jön.',
+            self::Translator => 'Minden programot lát (olvasásra), és a programok román fordítását szerkeszti, átnézi, jóváhagyja. Mást nem módosíthat.',
             self::ThemeEditor => 'CSAK az arculat-szerkesztőhöz (Arculat / /admin/tema) fér hozzá, semmi máshoz.',
             self::ReadOnly => 'Minden programot lát, de semmit nem módosíthat.',
         };
@@ -64,6 +64,15 @@ enum UserRole: string
     public function canApprovePrograms(): bool
     {
         return in_array($this, [self::SuperAdmin, self::Coordinator], true);
+    }
+
+    /**
+     * A programok román fordításának szerkesztése és státusza (átnézve / jóváhagyva) — a program lapján, egy képernyőn a
+     * magyarral (CLAUDE.md 5.). A kategóriagazda NEM: a fordítás közös nyelvi munka, nem a kategória gazdájáé.
+     */
+    public function canTranslate(): bool
+    {
+        return in_array($this, [self::SuperAdmin, self::Coordinator, self::Translator], true);
     }
 
     public function canManageProgramManagers(): bool

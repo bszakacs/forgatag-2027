@@ -7,7 +7,9 @@ use App\Enums\Gyujtemeny;
 use App\Enums\ProgramSource;
 use App\Enums\ProgramStatus;
 use App\Enums\ReviewAction;
+use App\Enums\TranslatableField;
 use App\Enums\TranslationStatus;
+use App\Services\Forditas\GepiForditas;
 use App\Models\Scopes\ProgramScope;
 use App\Models\Scopes\RowAccess;
 use App\Support\BekuldesLevelek;
@@ -79,6 +81,25 @@ class ProgramItem extends Model
         static::creating(function (self $program): void {
             if (blank($program->slug)) {
                 $program->slug = self::uniqueSlug($program->title);
+            }
+        });
+
+        // FORDÍTÁS (CLAUDE.md 5.): ha a magyar cím / leírás / jegyinfó változott, az átnézett román sor AZONNAL elavul,
+        // és a gépi fordítás a kérés végén lefut (a válasz után — a beküldő nem vár rá). Bárhonnan történik a mentés.
+        // (Külön `created` és `updated`: a `wasRecentlyCreated` ugyanazon a példányon a későbbi mentéseknél is igaz marad.)
+        static::created(function (self $program): void {
+            if (in_array($program->status->value, ProgramStatus::translatableValues(), true)) {
+                GepiForditas::utemez($program->id);
+            }
+        });
+        static::updated(function (self $program): void {
+            $mezok = array_values(array_filter(TranslatableField::cases(), fn (TranslatableField $m) => $program->wasChanged($m->value)));
+            if ($mezok !== []) {
+                GepiForditas::forrasValtozott($program, $mezok);
+            }
+            if (($mezok !== [] || $program->wasChanged('status'))
+                && in_array($program->status->value, ProgramStatus::translatableValues(), true)) {
+                GepiForditas::utemez($program->id);
             }
         });
 

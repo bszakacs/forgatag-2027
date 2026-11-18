@@ -54,3 +54,6 @@ deployment:
     # probalhato. Csak egyszer (jeloles: storage/app/import-2026/programok-teszt.json) — a Tesztadatok torlese utan
     # nem jon vissza. A borito a mediatar "Programok 2026" kepe (a mediatar-behozatal UTAN).
     - $PHP artisan forgatag:program-teszt-import
+    # A GEPI FORDITAS allapota a naploba (PROMPT-19): proba-futas — NEM ir, NEM hiv API-t, csak megszamolja, mi a teendo
+    # (naprakesz / emberi / elavult / forditando). A valodi forditas a mentes utan es a cron-ban fut (forgatag:forditas).
+    - $PHP artisan forgatag:forditas --proba

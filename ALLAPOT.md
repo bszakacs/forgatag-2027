@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-16 (PROMPT-18: a térkép-szerkesztő telepítve; a belépéses élő próba és a Várkert behúzása hátra)
+**Utolsó frissítés:** 2026-11-18 (PROMPT-19: a fordítási lánc kész helyben, 226 teszt zöld; a kulcs beírása, a cron és az élő próba hátra)
 
 ---
 
@@ -425,8 +425,43 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   - Döntések (egy-egy sor): a helyszínt koordinátor és szuperadmin szerkesztheti (mint a közös tartalmat) · a mentés minden-vagy-semmi ·
     a 2026-os helyi vázlat (böngészőben őrzött mentetlen munka) megmaradt (lejárt munkamenet ellen) · a szélső jelvény a szerkesztőben az
     admin színeivel, de a publikus elhelyezővel.
+- **A fordítási lánc, HU → RO (PROMPT-19)** — **kész helyben (2026-11-18).** Részletek: CLAUDE.md 8. pont, „Fordítási lánc”.
+  - **Gépi fordítás CSAK a programok címére, leírására, jegyinfójára** (a vázlatra is), a program mentése után magától (a válasz
+    elküldése után — a beküldő nem vár), plusz pótló futás (`forgatag:forditas`, cron) és „Futtatás most” gomb a Beállításokban.
+    Hírhez, laphoz, kategóriához, helyszínhez, menühöz nem nyúl (teszt is őrzi).
+  - **Az emberi fordítás sérthetetlen** (reviewed / approved / outdated — teszttel). A magyar szöveg változásakor az átnézett sor
+    AZONNAL „Elavult” lesz, a román oldalon a magyar látszik; a gépi sort a gép újrafordítja.
+  - **Feltűnő ellensúly:** programlista „⚠ Elavult fordítás” fül piros számlálóval (a közzétett programoké is — a „Teendő” fülön azok
+    nem lennének rajta), a program lapján pirosan keretezett sor, a nyitólapon piros figyelmeztetés.
+  - **Költség:** a változatlant nem fordítja újra (lenyomat); üres futásnál API-hívás NINCS (teszt + a naplóban „API-hívás: 0”).
+    **Helyben mérve a 2026-os tesztprogramokon (próbafutás):** 250 gépi sor naprakész, 233 emberi megőrizve, 2 elavult, **6 fordítandó**
+    — tehát az első éles futás ~1 hívás (+1 ellenőrző), nem 180 programnyi.
+  - **Védett nevek + ő/ű-ellenőrzés:** a lista a Beállítások új „Gépi fordítás” blokkjában (kezdőérték: `seed/do-not-translate.json`,
+    69 név + 4 kötött alak). A futás után ellenőriz: kiesett védett név, hiányzó kötött alak, „Vâltoarei”, ő/ű a román szövegben (a védett
+    nevek — Csicsergő, Szűcsök Bástyája — kivéve), tényadat-gyanú (második hívás, más modellel). **A jelzett gépi sor nem megy ki a román
+    oldalra**, amíg ember át nem nézi.
+  - **Fordító szerepkör:** csak a Programok lapot látja, a saját munkasorán nyit; a program lapján „Román fordítás” gomb: mezőnként a
+    magyar, alatta a szerkeszthető román és az állapot. Helyben böngészőből végignézve (asztal + 375 px, vízszintes görgetés nincs).
+  - **A Claude-hívás formája** álválasz-szerverrel ellenőrizve (helyes végpont, modell, JSON-séma, gyorsítótár, a válasz feldolgozása).
+    **Valódi API-hívás még NEM volt** — ahhoz a kulcs kell (lent).
+  - Új csomag a vendorban: `anthropic-ai/sdk` 1.10 (a hivatalos PHP SDK, + 4 függősége).
+  - Döntések (egy-egy sor): modell `claude-sonnet-5`, ellenőrző `claude-opus-5` (a 2026-os páros; .env-ből felülírható) · a 2026-os
+    tényadat-ellenőrző második hívás megmaradt · a jelzett gépi fordítás nem publikus · a modell és a kulcs .env-ben, a védett nevek a
+    Beállításokban · a mentés utáni futás parancssorból NEM indul (a telepítés behozatala ne fordítson) · kézzel átírt szöveg nem lehet
+    „gépi” · üresre törölt román = a sor törlődik · az admin programlapján a hibás `rgb(var(--danger-600))` színek javítva (eddig nem hatottak).
 
 ## Ami MOST folyik
+
+0. **A fordítási lánc élesítése (PROMPT-19)** — **TULAJDONOSI TEENDŐ (3 lépés):**
+   (1) **Az API-kulcs ELŐBB:** cPanel → Fájlkezelő → `public_html/forgatag2027/.env` → új sor: `ANTHROPIC_API_KEY=` + a kulcs (a
+   console.anthropic.com-on: API Keys). ⚠ A beállításokat a telepítés gyorsítótárazza — ezért a kulcs a telepítés UTÁN beírva csak a
+   következő telepítéskor hat (akkor elég a Deploy gombot még egyszer megnyomni).
+   (2) **Telepítés** (Update from Remote → Deploy). A naplóban: `TÖRZSADATOK: beállítások / translation — betöltve (69 védett név, 4
+   kötött alak)` és `FORDÍTÁS: próbafutás … fordítandó: N`.
+   (3) **Cron** (cPanel → Cron Jobs, 15 percenként): `/opt/alt/php84/usr/bin/php /home/forgatag/public_html/forgatag2027/artisan forgatag:forditas >/dev/null 2>&1`
+   **Élesben megnézendő (velem):** a Beállítások „Gépi fordítás” blokkja (be van-e kapcsolva) → „Futtatás most” (a 6 mező) → egy program
+   lapján a román → egy átnézett sor magyarját átírva „Elavult” lesz, és a `/ro/program/…` lapon a magyar látszik → ismételt futás:
+   „API-hívás: 0” → fordító fiókkal csak a Programok látszik.
 
 0. **A térkép-szerkesztő élesítése (PROMPT-18)** — **telepítve (2026-11-16, `34eb079a`, a tulajdonos indította).** Belépés nélkül mérve:
    `/admin/terkep-szerkeszto` → 302 a belépésre (az útvonal él), a három új JS/CSS 200, a `/terkep` változatlan (41 jelölő + 3 szélső
@@ -569,7 +604,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
    NEM hiányzik: a térkép szélén, irányjelvénnyel vannak.) A GPS nem kell: a rendszer a rajzolt térkép
    pozícióin működik.
 
-9. **A fordítási lánc** — a lapok után, hogy legyen mit fordítani és hol ellenőrizni.
+9. ~~**A fordítási lánc**~~ — **kész helyben (2026-11-18, PROMPT-19)**, fent; az élesítés a tulajdonos 3 lépése után.
 10. **Élesbe tétel** — **a legutolsó lépés**, lásd lentebb. Addig nem téma.
 
 **A három hátralévő űrlap** (szabadulószoba `PROMPT-03`, olimpia, önkéntes) **levél a fán**: semmi

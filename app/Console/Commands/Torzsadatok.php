@@ -84,6 +84,22 @@ class Torzsadatok extends Command
             Settings::save([$blokk => $ertek]);
             $this->info("TÖRZSADATOK: beállítások / {$blokk} — betöltve.");
         }
+
+        // A „Gépi fordítás” blokk kezdőértéke a seed/do-not-translate.json (a védett nevek EGYETLEN kezdő forrása, PROMPT-19).
+        if (Settings::has('translation')) {
+            $this->line('TÖRZSADATOK: beállítások / translation — már megvan, nem nyúltam hozzá.');
+
+            return;
+        }
+        $dnt = json_decode((string) @file_get_contents(base_path('seed/do-not-translate.json')), true);
+        if (! is_array($dnt) || ! is_array($dnt['terms'] ?? null)) {
+            throw new RuntimeException('seed/do-not-translate.json hiányzik vagy hibás JSON.');
+        }
+        Settings::save(['translation' => [
+            'terms' => array_values($dnt['terms']),
+            'bound' => collect($dnt['kotott_forditasok'] ?? [])->map(fn ($ro, $hu) => ['hu' => $hu, 'ro' => $ro])->values()->all(),
+        ]]);
+        $this->info('TÖRZSADATOK: beállítások / translation — betöltve (' . count($dnt['terms']) . ' védett név, ' . count($dnt['kotott_forditasok'] ?? []) . ' kötött alak).');
     }
 
     private function kategoriak(): int

@@ -12,6 +12,7 @@ use App\Filament\Resources\Resource;
 use App\Models\ProgramItem;
 use App\Models\ProgramOccurrence;
 use App\Models\ProgramReviewEvent;
+use App\Services\Forditas\GepiForditas;
 use App\Services\ProgramReview;
 use App\Support\Festival;
 use App\Support\SubmissionForm;
@@ -234,7 +235,7 @@ class ProgramItemResource extends Resource
                 TextEntry::make('idopontok')->label('Időpontok')->hiddenLabel()
                     ->state(fn (ProgramItem $r) => $r->occurrences->map(fn (ProgramOccurrence $o) => self::occurrenceLine($o))->all())
                     ->listWithLineBreaks()->bulleted()
-                    ->placeholder(new HtmlString('<span style="color:rgb(var(--danger-600))">Nincs időpont.</span>')),
+                    ->placeholder(new HtmlString('<span style="color:var(--danger-600)">Nincs időpont.</span>')),
                 TextEntry::make('schedule_note')->label('Megjegyzés az időponthoz')->placeholder('—')->inlineLabel(),
             ]),
 
@@ -248,13 +249,14 @@ class ProgramItemResource extends Resource
                 TextEntry::make('updated_at')->label('Utoljára módosítva')->dateTime('Y. m. d. H:i'),
             ]),
 
-            // A fordítás helye — előkészítve. Az ELAVULT sor pirosan, feltűnően (CLAUDE.md 5.).
-            Section::make('Román fordítás')->columnSpanFull()->collapsible()->schema([
-                TextEntry::make('forditasok')->label('Román fordítás')->hiddenLabel()
-                    ->state(fn (ProgramItem $r) => self::translationLines($r))
-                    ->listWithLineBreaks()->html()
-                    ->placeholder('Még nincs fordítás. (A gépi fordítás a fordítási körben indul — cím, leírás, jegyinformáció.)'),
-            ]),
+            // A FORDÍTÁS EGY KÉPERNYŐN A MAGYARRAL (CLAUDE.md 5.): mezőnként balra a magyar, jobbra a román, az állapottal.
+            // Az ELAVULT sor pirosan, feltűnően. Szerkesztés: a lap tetején a „Román fordítás” gomb (fordító, koordinátor).
+            Section::make('Román fordítás')->columnSpanFull()->collapsible()
+                ->description('Balra a magyar (a beküldött szöveg), jobbra a román. A román oldalon csak a naprakész fordítás látszik — ahol nincs, ott a magyar.')
+                ->schema([
+                    TextEntry::make('forditasok')->label('Román fordítás')->hiddenLabel()
+                        ->state(fn (ProgramItem $r) => new HtmlString(self::forditasTabla($r))),
+                ]),
 
             Section::make('Jóváhagyási napló')->columnSpanFull()->collapsible()->schema([
                 TextEntry::make('naplo')->label('Jóváhagyási napló')->hiddenLabel()
@@ -313,25 +315,69 @@ class ProgramItemResource extends Resource
         return $sorok;
     }
 
-    /** @return list<string> HTML-sorok; az elavult piros és vastag */
-    private static function translationLines(ProgramItem $r): array
+    /**
+     * Mezőnként egy sor: magyar | román + állapot + a gépi ellenőrzés jelzése. Keskeny képernyőn egymás alá tör.
+     * Az állapot szövege EGY helyről: forditasAllapot (a szerkesztő ablak is ezt mutatja).
+     */
+    private static function forditasTabla(ProgramItem $r): string
     {
-        $cimke = [
-            TranslatableField::Title->value => 'Cím',
-            TranslatableField::Description->value => 'Leírás',
-            TranslatableField::TicketInfo->value => 'Jegyinformáció',
-        ];
+        $html = '';
+        foreach (TranslatableField::cases() as $mezo) {
+            $hu = trim((string) $r->{$mezo->value});
+            $t = $r->translations->first(fn ($x) => $x->locale === 'ro' && $x->field === $mezo);
+            if ($hu === '' && ! $t) {
+                continue;
+            }
+            [$allapot, $szin] = self::forditasAllapot($r, $mezo);
+            $piros = $szin === 'danger';
+            $keret = $piros ? 'border:2px solid var(--danger-600);background:var(--danger-50)' : 'border:1px solid rgb(0 0 0 / .1)';
+            $html .= '<div style="margin-bottom:1rem;padding:.75rem;border-radius:.5rem;' . $keret . '">'
+                . '<div style="font-weight:600;margin-bottom:.5rem">' . e($mezo->label()) . ' · <span style="color:' . self::szin($szin) . ';font-weight:' . ($piros ? '700' : '600') . '">' . e($allapot) . '</span></div>'
+                . '<div style="display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))">'
+                . '<div><div style="font-size:.75rem;opacity:.7">MAGYAR</div>' . ($hu === '' ? '<em>(üres)</em>' : nl2br(e($hu))) . '</div>'
+                . '<div lang="ro"><div style="font-size:.75rem;opacity:.7">ROMÁN</div>' . ($t && trim((string) $t->translated_text) !== '' ? nl2br(e((string) $t->translated_text)) : '<em>(még nincs)</em>') . '</div>'
+                . '</div>'
+                . ($t && filled($t->check_note)
+                    ? '<div style="margin-top:.5rem;color:' . self::szin('warning') . '"><strong>A gépi ellenőrzés jelzése:</strong><br>' . nl2br(e((string) $t->check_note)) . '</div>'
+                    : '')
+                . '</div>';
+        }
 
-        return $r->translations->sortBy(fn ($t) => array_search($t->field->value, array_keys($cimke), true))
-            ->map(function ($t) use ($cimke) {
-                $elavult = $t->status === TranslationStatus::Outdated;
-                $fej = '<strong>' . e($cimke[$t->field->value] ?? $t->field->value) . '</strong> · '
-                    . ($elavult
-                        ? '<strong style="color:rgb(var(--danger-600))">⚠ ' . e($t->status->label()) . '</strong>'
-                        : e($t->status->label()));
+        return $html !== '' ? $html : '<em>Nincs fordítandó szöveg.</em>';
+    }
 
-                return $fej . '<br>' . nl2br(e((string) $t->translated_text));
-            })->values()->all();
+    /** @return array{0: string, 1: string} a fordítás állapota emberi nyelven + szín (danger / warning / success / gray) */
+    public static function forditasAllapot(ProgramItem $r, TranslatableField $mezo): array
+    {
+        $t = $r->translations->first(fn ($x) => $x->locale === 'ro' && $x->field === $mezo);
+        if (! $t) {
+            return [GepiForditas::vanKulcs() ? 'Még nincs fordítás — a gépi fordítás hamarosan elkészül.' : 'Még nincs fordítás (a gépi fordítás ki van kapcsolva: nincs API-kulcs).', 'gray'];
+        }
+        if ($t->status === TranslationStatus::Outdated) {
+            return ['⚠ ELAVULT — a magyar szöveg változott a fordítás óta. A román oldalon addig a MAGYAR látszik.', 'danger'];
+        }
+        if ($t->source_text_hash !== null && ! $t->isCurrentFor($r)) {
+            return [$t->status === TranslationStatus::MachineTranslated
+                ? 'Gépi fordítás — a magyar szöveg változott, az újrafordítás folyamatban.'
+                : '⚠ A magyar szöveg változott — nézd át (a román oldalon addig a magyar látszik).', $t->status === TranslationStatus::MachineTranslated ? 'gray' : 'danger'];
+        }
+        if ($t->status === TranslationStatus::MachineTranslated) {
+            return filled($t->check_note)
+                ? ['Gépi fordítás, JELZÉSSEL — átnézésig a román oldalon a magyar látszik.', 'warning']
+                : ['Gépi fordítás — nincs átnézve (a román oldalon már látszik).', 'warning'];
+        }
+
+        return [$t->status->label(), 'success'];
+    }
+
+    private static function szin(string $szin): string
+    {
+        return match ($szin) {
+            'danger' => 'var(--danger-600)',
+            'warning' => 'var(--warning-600)',
+            'success' => 'var(--success-600)',
+            default => 'inherit',
+        };
     }
 
     /** @param list<string> $sorok */

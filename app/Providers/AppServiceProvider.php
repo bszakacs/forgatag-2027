@@ -21,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // A gépi fordító (PROMPT-19): élesben a Claude API; a tesztek hamis gépet kötnek ide. Futásonként friss példány
+        // (a használat-számláló futásonkénti).
+        $this->app->bind(\App\Services\Forditas\Forditogep::class, \App\Services\Forditas\ClaudeForditogep::class);
     }
 
     /**

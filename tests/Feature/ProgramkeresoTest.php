@@ -312,7 +312,7 @@ class ProgramkeresoTest extends TestCase
     public function test_keresés_a_cimben_es_a_roman_forditasban(): void
     {
         $p = $this->program('Népzenei est', [['2027-08-26', '20:00']]);
-        $p->translations()->create(['field' => 'title', 'translated_text' => 'Seară de muzică populară', 'status' => 'reviewed', 'source_text_hash' => 'x']);
+        $p->translations()->create(['field' => 'title', 'translated_text' => 'Seară de muzică populară', 'status' => 'reviewed', 'source_text_hash' => \App\Models\ProgramItemTranslation::hashSource('Népzenei est')]);
         $this->program('Bábszínház', [['2027-08-26', '10:00']]);
 
         $this->assertStringContainsString('Népzenei est', $this->talalatok('/programok?q=zenei'));
@@ -324,11 +324,11 @@ class ProgramkeresoTest extends TestCase
     public function test_romanul_a_legjobb_forditas_latszik_az_elavult_helyett_a_magyar(): void
     {
         $atnezett = $this->program('Népzenei est', [['2027-08-26', '20:00']]);
-        $atnezett->translations()->create(['field' => 'title', 'translated_text' => 'Seară de muzică populară', 'status' => 'reviewed', 'source_text_hash' => 'x']);
+        $atnezett->translations()->create(['field' => 'title', 'translated_text' => 'Seară de muzică populară', 'status' => 'reviewed', 'source_text_hash' => \App\Models\ProgramItemTranslation::hashSource('Népzenei est')]);
         $elavult = $this->program('Bábelőadás', [['2027-08-26', '10:00']]);
         $elavult->translations()->create(['field' => 'title', 'translated_text' => 'Titlu vechi greșit', 'status' => 'outdated', 'source_text_hash' => 'x']);
         $gepi = $this->program('Kiállítás', [['2027-08-26', '11:00']]);
-        $gepi->translations()->create(['field' => 'title', 'translated_text' => 'Expoziție', 'status' => 'machine_translated', 'source_text_hash' => 'x']);
+        $gepi->translations()->create(['field' => 'title', 'translated_text' => 'Expoziție', 'status' => 'machine_translated', 'source_text_hash' => \App\Models\ProgramItemTranslation::hashSource('Kiállítás')]);
 
         $t = $this->talalatok('/ro/programok?nap=mind');
         $this->assertStringContainsString('Seară de muzică populară', $t);

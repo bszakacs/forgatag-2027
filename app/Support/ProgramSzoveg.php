@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Enums\TranslatableField;
 use App\Enums\TranslationStatus;
 use App\Models\ProgramItem;
+use App\Models\ProgramItemTranslation;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
@@ -27,14 +28,31 @@ final class ProgramSzoveg
         }
 
         $legjobb = $program->translations
-            ->filter(fn ($t) => $t->locale === 'ro' && $t->field === $mezo && $t->status->publicRank() > 0
-                && trim((string) $t->translated_text) !== '')
+            ->filter(fn ($t) => $t->locale === 'ro' && $t->field === $mezo && self::megjelenitheto($t, $program))
             ->sortByDesc(fn ($t) => $t->status->publicRank())
             ->first();
 
         return $legjobb === null
             ? ['szoveg' => $eredeti, 'gepi' => false]
             : ['szoveg' => (string) $legjobb->translated_text, 'gepi' => $legjobb->status === TranslationStatus::MachineTranslated];
+    }
+
+    /**
+     * Mehet-e ki a román oldalra. Nem: az `outdated`; az üres; amelyik NEM a mostani magyar szövegből készült (a lenyomat
+     * eltér — a gép még nem fordította újra, vagy az elavult-jelölés még nem futott le); és a GÉPI sor, amelyen a futás
+     * utáni ellenőrzés jelzett (védett név, „Vâltoarei”, ő/ű, tényadat) — azt előbb embernek kell átnéznie.
+     */
+    public static function megjelenitheto(ProgramItemTranslation $t, ProgramItem $program): bool
+    {
+        if ($t->status->publicRank() === 0 || trim((string) $t->translated_text) === '') {
+            return false;
+        }
+        if ($t->source_text_hash !== null && ! $t->isCurrentFor($program)) {
+            return false;
+        }
+
+        return $t->status !== TranslationStatus::MachineTranslated
+            || ($t->source_text_hash !== null && blank($t->check_note));
     }
 
     public static function cim(ProgramItem $program): string

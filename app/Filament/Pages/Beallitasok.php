@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Enums\NotificationTopic;
+use App\Services\Forditas\GepiForditas;
 use App\Support\Festival;
 use App\Support\Settings;
 use App\Support\Submission;
@@ -11,6 +12,7 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -37,7 +39,7 @@ use Filament\Support\Icons\Heroicon;
 class Beallitasok extends Page
 {
     /** A lapon szerkesztett blokkok (a settings tábla sorai). */
-    private const BLOKKOK = ['festival', 'submission', 'public', 'notifications'];
+    private const BLOKKOK = ['festival', 'submission', 'public', 'notifications', 'translation'];
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
@@ -72,6 +74,7 @@ class Beallitasok extends Page
                 $this->bekuldesBlokk(),
                 $this->publikusBlokk(),
                 $this->ertesitesBlokk(),
+                $this->forditasBlokk(),
                 $this->tesztadatBlokk(),
             ]);
     }
@@ -216,6 +219,80 @@ class Beallitasok extends Page
             // levelezési beállítása (.env, SMTP) — azt itt nem kell, és nem is lehet megadni.
             ->description('Témánként azok a koordinátorok, akik értesítést kapnak. Egy témához több cím is megadható.')
             ->schema($temak);
+    }
+
+    /**
+     * GÉPI FORDÍTÁS (PROMPT-19, CLAUDE.md 5.): a védett nevek és a kötött román alakok (szervezői adat, 2/b — kezdőértékük a
+     * seed/do-not-translate.json), alatta a gép állapota és az utolsó futás. A modell és a kulcs technikai beállítás (.env).
+     * Soronkénti szövegmező, NEM címke-mező: abban az Enter nélkül beírt érték mentéskor némán elveszett (2026-10-12).
+     */
+    private function forditasBlokk(): Section
+    {
+        return Section::make('Gépi fordítás (magyar → román)')
+            ->description('CSAK a beküldött programok címét, leírását és jegyinformációját fordítja gép (Claude). A saját tartalmakat (hírek, lapok, kategória- és helyszínnevek, menü) kézzel fordítjuk. A kézzel átnézett fordítást a gép soha nem írja felül.')
+            ->columns(2)
+            ->schema([
+                Text::make(fn () => self::forditasAllapot())->columnSpanFull()
+                    ->color(fn () => (GepiForditas::utolsoFutas()['allapot'] ?? null) === 'hiba' || ! GepiForditas::vanKulcs() ? 'danger' : null),
+                Actions::make([
+                    Action::make('forditasMost')->label('Gépi fordítás futtatása most')->color('gray')
+                        ->disabled(fn () => ! GepiForditas::vanKulcs())
+                        ->requiresConfirmation()
+                        ->modalHeading('Gépi fordítás futtatása most')
+                        ->modalDescription('Minden program fordítatlan vagy megváltozott mezőjét lefordítja. A változatlan szöveget nem fordítja újra, a kézzel átnézettekhez nem nyúl. Sok programnál percekig is tarthat.')
+                        ->modalSubmitActionLabel('Futtatás')
+                        ->action(function (): void {
+                            abort_unless(static::canAccess(), 403);
+                            @set_time_limit(600);
+                            $j = app(GepiForditas::class)->futtat(null, 'Beállítások gomb');
+                            $n = Notification::make()->title('Gépi fordítás: ' . GepiForditas::allapotSzoveg($j))
+                                ->body("Lefordítva: {$j['forditva']} mező · jelzéssel: {$j['jelzett']} · elavult (emberre vár): {$j['elavult_osszes']} · API-hívás: {$j['api_hivas']}");
+                            $j['allapot'] === 'hiba' ? $n->danger()->persistent()->send() : $n->success()->send();
+                        }),
+                ])->columnSpanFull(),
+                Textarea::make('translation.terms')->label('Változatlanul hagyandó nevek')->rows(10)
+                    ->helperText('Egy sorba egy név. A gép ezeket betűre pontosan, magyarul hagyja a román szövegben (márkanevek, helyszínek, programnevek — pl. Ebforgatag, Csicsergő). Ami köznév, azt NE ide írd: azt le kell fordítani.')
+                    ->formatStateUsing(fn ($state) => implode("\n", (array) $state))
+                    ->dehydrateStateUsing(fn ($state) => self::sorok($state)),
+                Repeater::make('translation.bound')->label('Kötött román alakok')
+                    ->helperText('A szervezők által eldöntött hivatalos román név — a gép mindig ezt használja (pl. Vásárhelyi Forgatag → Vâltoarea Mureșeană). A ragozását a rendszer ismeri.')
+                    ->schema([
+                        TextInput::make('hu')->label('Magyarul')->required()->maxLength(120),
+                        TextInput::make('ro')->label('Románul')->required()->maxLength(120),
+                    ])
+                    ->columns(2)->defaultItems(0)->addActionLabel('Új kötött alak')
+                    ->rule(fn (Get $get) => function (string $attribute, mixed $value, \Closure $fail) use ($get) {
+                        $nevek = array_map('mb_strtolower', self::sorok($get('translation.terms')));
+                        foreach ((array) $value as $k) {
+                            if (in_array(mb_strtolower(trim((string) ($k['hu'] ?? ''))), $nevek, true)) {
+                                $fail('„' . $k['hu'] . '” mindkét listán szerepel — egy név vagy változatlan marad, vagy kötött román alakja van.');
+                            }
+                        }
+                    }),
+            ]);
+    }
+
+    /** Az utolsó futás és a gép állapota emberi nyelven (néma hiba tilos: a hiba itt is látszik). */
+    private static function forditasAllapot(): string
+    {
+        $sor = GepiForditas::vanKulcs()
+            ? 'A gépi fordítás BE van kapcsolva (modell: ' . config('forditas.modell') . ').'
+            : 'A gépi fordítás KI van kapcsolva: nincs ANTHROPIC_API_KEY a szerveri .env-ben. A beküldés ettől működik, csak román fordítás nem készül.';
+        $j = GepiForditas::utolsoFutas();
+
+        return $sor . ' ' . ($j === null
+            ? 'Még nem futott.'
+            : 'Utolsó futás: ' . \Carbon\CarbonImmutable::parse($j['vege'] ?? $j['kezdet'])->timezone(config('app.timezone'))->format('Y. m. d. H:i')
+                . ' (' . $j['indito'] . ') — ' . GepiForditas::allapotSzoveg($j)
+                . ". Lefordítva: {$j['forditva']} · jelzéssel: {$j['jelzett']} · elavult, emberre vár: {$j['elavult_osszes']} · API-hívás: {$j['api_hivas']}, kb. {$j['koltseg_usd']} USD.");
+    }
+
+    /** @return list<string> soronkénti lista (üres sorok és ismétlések nélkül) */
+    private static function sorok(mixed $ertek): array
+    {
+        $d = is_array($ertek) ? $ertek : preg_split('/\R/u', (string) $ertek);
+
+        return array_values(array_unique(array_filter(array_map('trim', $d), fn ($s) => $s !== '')));
     }
 
     /**

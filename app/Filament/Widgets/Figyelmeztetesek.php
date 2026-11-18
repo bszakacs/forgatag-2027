@@ -2,7 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\ProgramItem;
 use App\Models\User;
+use App\Services\Forditas\GepiForditas;
 use App\Support\MediaLapok;
 use App\Support\SubmissionForm;
 use App\Support\Tesztadat;
@@ -50,6 +52,26 @@ class Figyelmeztetesek extends Widget
                 'szoveg' => 'A lap a 2026-os felépítés szerint három sávot mutat: az első három videós blokkot (Aftermovie-k, Vásárhely színe-java, '
                     . 'Mesterségem). A negyedik és a további blokkok videói nem jelennek meg. Javítás: Tartalom → Aloldalak → Videó archívum — '
                     . 'a videókat a meglévő három blokk valamelyikébe kell tenni.',
+            ];
+        }
+        // GÉPI FORDÍTÁS (PROMPT-19): a hiba, a kikapcsolt gép és az ELAVULT fordítás nem lehet néma.
+        $futas = GepiForditas::utolsoFutas();
+        if (($futas['allapot'] ?? null) === 'hiba') {
+            $u[] = [
+                'cim' => 'A gépi fordítás legutóbbi futása hibával állt meg',
+                'szoveg' => ($futas['hiba'] ?? '') . ' — ami a hiba előtt elkészült, az bent van; a többit a következő futás pótolja. Részletek: Beállítások → Gépi fordítás.',
+            ];
+        }
+        if (! GepiForditas::vanKulcs()) {
+            $u[] = [
+                'cim' => 'A gépi fordítás ki van kapcsolva',
+                'szoveg' => 'Nincs ANTHROPIC_API_KEY a szerveri .env-ben, ezért a beküldött programokhoz nem készül román fordítás (a román oldalon a magyar szöveg látszik). A kulcsot a tulajdonos írja be.',
+            ];
+        }
+        if (($elavult = ProgramItem::query()->withOutdatedTranslation()->count()) > 0) {
+            $u[] = [
+                'cim' => "{$elavult} program román fordítása ELAVULT",
+                'szoveg' => 'A magyar szöveg a fordítás óta megváltozott; a román oldalon addig a magyar látszik. Programok → „⚠ Elavult fordítás” fül → a program lapján „Román fordítás”.',
             ];
         }
         if (($db = Tesztadat::total()) > 0) {

@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\ProgramItems\Pages;
 
+use App\Enums\TranslatableField;
+use App\Enums\TranslationStatus;
 use App\Filament\Resources\ProgramItems\ProgramItemResource;
 use App\Models\ProgramHighlight;
 use App\Models\ProgramItem;
+use App\Models\ProgramItemTranslation;
+use App\Services\Forditas\KeziForditas;
 use App\Services\ProgramReview;
 use App\Services\ReviewStepRefused;
 use App\Support\Festival;
@@ -12,12 +16,17 @@ use App\Support\Submission;
 use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\HtmlString;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Egy program lapja = a jóváhagyás helye. Fent a figyelmeztetések (miért nem hagyható jóvá,
@@ -128,10 +137,56 @@ class ViewProgramItem extends ViewRecord
                     $this->record = ProgramItemResource::getEloquentQuery()->findOrFail($this->program()->getKey());
                 }),
 
+            // A ROMÁN FORDÍTÁS egy képernyőn a magyarral (CLAUDE.md 5.). Mezőnként: a magyar (csak olvasható), a román és az
+            // állapota. A szabályokat a szerver (KeziForditas) ellenőrzi; a gép a kézzel átnézett sort többé nem írja felül.
+            Action::make('forditas')->label('Román fordítás')->color('gray')->icon('heroicon-o-language')
+                ->badge(fn () => $this->program()->translations->contains('status', TranslationStatus::Outdated) ? '!' : null)
+                ->badgeColor('danger')
+                ->visible(fn () => (bool) Auth::user()?->role?->canTranslate())
+                ->modalHeading('Román fordítás')
+                ->modalDescription('Mezőnként fent a magyar szöveg, alatta a román. „Átnézve” / „Jóváhagyva” = emberi fordítás: a gépi fordítás többé nem írja felül. Ha a magyar szöveg később megváltozik, a sor „Elavult” lesz, és a román oldalon addig a magyar látszik.')
+                ->modalWidth('5xl')
+                ->fillForm(fn () => collect(TranslatableField::cases())->mapWithKeys(fn (TranslatableField $m) => [$m->value => [
+                    'ro' => $this->sor($m)?->translated_text,
+                    'status' => $this->sor($m)?->status?->value,
+                ]])->all())
+                ->schema(fn () => collect(TranslatableField::cases())
+                    ->filter(fn (TranslatableField $m) => filled($this->program()->{$m->value}) || $this->sor($m))
+                    ->map(fn (TranslatableField $m) => Section::make($m->label())
+                        ->description(fn () => ProgramItemResource::forditasAllapot($this->program(), $m)[0])
+                        ->schema([
+                            Text::make(new HtmlString('<div style="white-space:pre-line;padding:.5rem .75rem;border-radius:.375rem;background:var(--gray-100)"><span style="font-size:.75rem;opacity:.7">MAGYAR</span><br>'
+                                . e((string) $this->program()->{$m->value}) . '</div>')),
+                            Text::make($this->sor($m)?->check_note ? 'A gépi ellenőrzés jelzése: ' . $this->sor($m)->check_note : '')
+                                ->color('warning')->visible(filled($this->sor($m)?->check_note)),
+                            Textarea::make("{$m->value}.ro")->label('Román')->rows($m === TranslatableField::Description ? 8 : 2)
+                                ->extraInputAttributes(['lang' => 'ro']),
+                            Select::make("{$m->value}.status")->label('Állapot')
+                                ->options(KeziForditas::valaszthatoStatuszok($this->sor($m)?->status))
+                                ->placeholder('—'),
+                        ]))
+                    ->values()->all())
+                ->modalSubmitActionLabel('Mentés')
+                ->action(function (array $data) {
+                    try {
+                        $db = KeziForditas::ment($this->program(), Auth::user(), $data);
+                        Notification::make()->success()->title($db > 0 ? "A fordítás elmentve ({$db} mező)." : 'Nem változott semmi.')->send();
+                    } catch (ValidationException $e) {
+                        Notification::make()->danger()->persistent()->title('A fordítás NEM lett elmentve')
+                            ->body(implode(' ', array_map(fn ($u) => $u[0], $e->errors())))->send();
+                    }
+                    $this->record = ProgramItemResource::getEloquentQuery()->findOrFail($this->program()->getKey());
+                }),
+
             Action::make('foto')->label('Fotó teljes méretben')->color('gray')->icon('heroicon-o-photo')
                 ->visible(fn () => $this->program()->hasPhotoFile())
                 ->url(fn () => ProgramItemResource::photoUrl($this->program()), shouldOpenInNewTab: true),
         ];
+    }
+
+    private function sor(TranslatableField $mezo): ?ProgramItemTranslation
+    {
+        return $this->program()->translations->first(fn ($t) => $t->locale === 'ro' && $t->field === $mezo);
     }
 
     /** Egy lépés: az elutasítás oka a felületen jelenik meg, utána a lap a friss állapotot mutatja. */

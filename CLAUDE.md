@@ -377,7 +377,8 @@ csak a hiányzó blokkot hozza létre).
 Admin-lapok közös alapja: `App\Filament\Resources\Resource`; a gombok magyar címe az `AppServiceProvider`-ben.
 
 A médiatár, a galériák és a támogatók (logóval) elkészültek — lásd lent, „Médiatár”.
-**A 2/b elv miatt még átköltözik:** a védett nevek (`do-not-translate.json` → tábla, a fordítási fázisban).
+**A védett nevek átköltöztek (2026-11-18, PROMPT-19):** a Beállítások „Gépi fordítás” blokkjába (`settings.translation`); a
+`do-not-translate.json` csak a kezdőérték.
 
 **2. Programbeküldő űrlap — kész helyben (2026-10-12).** `/bekuldes` (belépés: `/bekuldes/belepes`).
 Mezők/szabályok/hibaszövegek a 2026-os `submit-api`-ból; a leírás EGY helyen: `App\Support\SubmissionForm`
@@ -763,6 +764,34 @@ koordinátor); az arculat-szerkesztő NEM — a Livewire-mentés is megkérdezi 
   (`terkep.js` előtt betöltve) és a szerkesztő is ezt hívja.
 - Tesztek: `tests/Feature/TerkepSzerkesztoTest.php` (jog szerepkörönként, a három állapot + a publikus térkép adata, minden-vagy-semmi,
   a behozatal nem írja felül).
+
+**Fordítási lánc (HU → RO) — kész helyben (2026-11-18, PROMPT-19).** Döntések: 5. pont. A 2026-os `tooling/translate.mjs` átirata.
+- **Futtató EGY helyen: `App\Services\Forditas\GepiForditas`** — hatókör: a program címe/leírása/jegyinfója (`TranslatableField`),
+  `ProgramStatus::translatableValues()` állapotban (a vázlaton is). Csak a `program_item_translations`-t írja. Négy garancia: zár
+  (`Cache::lock`) · üres futásnál API-hívás NINCS (a gépet meg sem szólítja) · kulcs nélkül `nincs_kulcs`, nem törik · hibánál az adott
+  csomagból semmi nem íródik, a hiba látszik. A változatlant nem fordítja újra (`source_text_hash` = sha256 a levágott szövegből,
+  a 2026-ossal azonos — a behozott 2026-os sorok naprakésznek számítanak).
+- **Indítás:** (1) `ProgramItem` `created`/`updated` → `GepiForditas::utemez` → nevesített `defer()` (a válasz UTÁN; egy kérés = egy
+  futás; parancssorban NEM ütemez — a telepítés behozatalai ne fordítsanak); (2) `forgatag:forditas` (cPanel cron; `--proba`, `--limit`);
+  (3) Beállítások → Gépi fordítás → „Futtatás most”. A telepítés `--proba`-t futtat (a naplóba a számok, API-hívás nélkül).
+- **Elavulás:** a magyar mező változásakor a `updated` esemény az átnézett/jóváhagyott sort AZONNAL `outdated`-re teszi
+  (`forrasValtozott`); a futás is ellenőrzi a lenyomatot. A gépi sort a gép újrafordítja.
+- **Megjelenítés: `ProgramSzoveg::megjelenitheto`** — nem megy ki: `outdated`, üres, eltérő lenyomatú, és a JELZETT gépi sor
+  (`check_note`: kiesett védett név, kötött alak, „Vâltoarei”, ő/ű, tényadat-gyanú) — ott a magyar látszik.
+- **A gép: `Forditogep` interfész** → `ClaudeForditogep` (hivatalos `anthropic-ai/sdk`, a vendorban; strukturált JSON-válasz,
+  gyorsítótárazott rendszerprompt; második hívás: tényadat-ellenőrzés MÁS modellel). Beállítás: `config/forditas.php` (.env:
+  `ANTHROPIC_API_KEY`, `FORDITAS_MODELL` = `claude-sonnet-5`, `FORDITAS_ELLENORZO_MODELL`, `FORDITAS_ELLENORZES`). Teszt: hamis gép.
+- **Nyelvi szabályok EGY helyen: `App\Support\Forditas\VedettNevek`** (prompt + utólagos ellenőrzés). A listák: Beállítások →
+  „Gépi fordítás” (`settings.translation`: `terms`, `bound`); a ragozás (Vâltoarea/Vâltoare/Vâltorii) a kódban. Az ő/ű-ellenőrzés a
+  védett neveket előbb kiveszi (Csicsergő, Szűcsök Bástyája magyarul marad).
+- **Kézi fordítás: `KeziForditas::ment`** (egy író-út; kézzel írt szöveg nem lehet „gépi”; az „Elavult” csak érintetlen szövegen
+  maradhat; emberi státusz = friss lenyomat, a jelzés törlődik; üresre törölve = a sor törlődik). Felület: a program lapján „Román
+  fordítás” gomb + „Román fordítás” szakasz (mezőnként magyar | román, az elavult pirosan keretezve). Jog: `UserRole::canTranslate`
+  (szuperadmin, koordinátor, fordító — a kategóriagazda NEM). A fordító a programlistán a saját munkasorán nyit.
+- **Kötelező ellensúly:** programlista „⚠ Elavult fordítás” fül (piros számláló, a közzétett programé is) + „Átnézendő fordítás” fül;
+  a nyitólap `Figyelmeztetesek`: elavult darabszám, a legutóbbi futás hibája, kikapcsolt gép. Az utolsó futás jelentése: `settings`
+  `translation_run` sora (a Beállításokban kiírva) + `storage/logs` „FORDÍTÁS:” sor (API-hívás száma, token, becsült USD).
+- Tesztek: `tests/Feature/ForditasTest.php` (15).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
