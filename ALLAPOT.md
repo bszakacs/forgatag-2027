@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-18 (PROMPT-19 + titkos beállítások: az API-kulcs az adminból is cserélhető; 232 teszt zöld; telepítés, kulcs, cron, élő próba hátra)
+**Utolsó frissítés:** 2026-11-18 (PROMPT-19 + titkos beállítások feltolva; cron beállítva; az API-kulcs CSAK KÉSŐBB lesz — addig az élő próba szünetel)
 
 ---
 
@@ -463,7 +463,13 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 
 ## Ami MOST folyik
 
-0. **A fordítási lánc élesítése (PROMPT-19)** — **TULAJDONOSI TEENDŐ (3 lépés):**
+0. **A fordítási lánc élesítése (PROMPT-19)** — **SZÜNETEL: nincs még API-kulcs, később lesz (tulajdonos, 2026-11-18).**
+   **Állás 2026-11-18:** a szerveren a legutóbbi commit `5f533af2` (a cPanel Git felülete mutatja — a tulajdonos küldte), és **a cron
+   beállítva** (15 percenként `forgatag:forditas` — kulcs nélkül csendben kihagy, nem hiba). **A Deploy is lefutott** (a tulajdonos
+   belépve látta: a Beállításokban ott a Titkos beállítások / API-kulcs mező). Amíg nincs kulcs, a nyitólapon a „gépi fordítás ki van
+   kapcsolva” figyelmeztetés látszik — ez szándékos, nem hiba.
+   **Amikor lesz kulcs:** szuperadminként Beállítások → Titkos beállítások → Megadás, aztán az alábbi élő próba.
+   Az eredeti 3 lépés:
    (1) **Telepítés** (Update from Remote → Deploy). A naplóban: egy új migráció (`secret_settings`), `TÖRZSADATOK: beállítások /
    translation — betöltve (69 védett név, 4 kötött alak)` és `FORDÍTÁS: próbafutás … fordítandó: N`.
    (2) **Az API-kulcs — szuperadminként az adminban:** Beállítások → Titkos beállítások → „Claude API-kulcs” → Megadás (a
