@@ -80,6 +80,15 @@ enum UserRole: string
         return in_array($this, [self::SuperAdmin, self::Coordinator], true);
     }
 
+    /**
+     * Titkos beállítások (API-kulcs, később reCAPTCHA, SMTP-jelszó — App\Support\Titkok): CSAK a szuperadmin. A koordinátor
+     * sem: a kulcs pénzt költ, nem csak adatot ad.
+     */
+    public function canManageSecrets(): bool
+    {
+        return $this === self::SuperAdmin;
+    }
+
     public function canManageUsers(): bool
     {
         return $this === self::SuperAdmin;

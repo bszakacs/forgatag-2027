@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-18 (PROMPT-19: a fordítási lánc kész helyben, 226 teszt zöld; a kulcs beírása, a cron és az élő próba hátra)
+**Utolsó frissítés:** 2026-11-18 (PROMPT-19 + titkos beállítások: az API-kulcs az adminból is cserélhető; 232 teszt zöld; telepítés, kulcs, cron, élő próba hátra)
 
 ---
 
@@ -449,15 +449,26 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     tényadat-ellenőrző második hívás megmaradt · a jelzett gépi fordítás nem publikus · a modell és a kulcs .env-ben, a védett nevek a
     Beállításokban · a mentés utáni futás parancssorból NEM indul (a telepítés behozatala ne fordítson) · kézzel átírt szöveg nem lehet
     „gépi” · üresre törölt román = a sor törlődik · az admin programlapján a hibás `rgb(var(--danger-600))` színek javítva (eddig nem hatottak).
+- **Titkos beállítások (2026-11-18, a PROMPT-19 kiegészítése)** — kész helyben. Az API-kulcs az adminból is megadható/cserélhető
+  (Beállítások → „Titkos beállítások”), ÁLTALÁNOS mechanizmussal: `App\Support\Titkok` (új titok = egy sor a `KULCSOK`-ban — jöhet a
+  reCAPTCHA, később az SMTP-jelszó). Részletek: CLAUDE.md 8. pont, „Titkos beállítások”.
+  - **CSAK szuperadmin** látja és állítja (a koordinátor, a fordító, az arculat-szerkesztő nem — teszttel, a szerver is ellenőrzi).
+  - **Írható, de nem olvasható:** nincs mező a tárolt értékkel; csak „be van-e állítva, honnan, ki és mikor cserélte”, plusz „Csere” (üres
+    jelszómező) és „Törlés”. Mérve: a lap HTML-jében és a Livewire-állapotban az érték nem szerepel.
+  - **Elsőbbség: az ADMINBAN megadott érték NYER**, a szerveri .env csak tartalék. A felület kiírja, melyik van használatban (és ha
+    mindkettőben van érték). Ha a tárolt érték nem fejthető vissza (megváltozott az APP_KEY), azt pirosan kiírja, és NEM esik vissza
+    csendben a .env-re.
+  - Titkosítás: a Laravel beépített titkosítása (APP_KEY), tábla: `secret_settings` (új migráció). Helyben böngészőből végigpróbálva
+    (megadás → csere üres mezővel → törlés, asztal + 375 px). 232 teszt zöld (új: `TitkokTest`, 6).
 
 ## Ami MOST folyik
 
 0. **A fordítási lánc élesítése (PROMPT-19)** — **TULAJDONOSI TEENDŐ (3 lépés):**
-   (1) **Az API-kulcs ELŐBB:** cPanel → Fájlkezelő → `public_html/forgatag2027/.env` → új sor: `ANTHROPIC_API_KEY=` + a kulcs (a
-   console.anthropic.com-on: API Keys). ⚠ A beállításokat a telepítés gyorsítótárazza — ezért a kulcs a telepítés UTÁN beírva csak a
-   következő telepítéskor hat (akkor elég a Deploy gombot még egyszer megnyomni).
-   (2) **Telepítés** (Update from Remote → Deploy). A naplóban: `TÖRZSADATOK: beállítások / translation — betöltve (69 védett név, 4
-   kötött alak)` és `FORDÍTÁS: próbafutás … fordítandó: N`.
+   (1) **Telepítés** (Update from Remote → Deploy). A naplóban: egy új migráció (`secret_settings`), `TÖRZSADATOK: beállítások /
+   translation — betöltve (69 védett név, 4 kötött alak)` és `FORDÍTÁS: próbafutás … fordítandó: N`.
+   (2) **Az API-kulcs — szuperadminként az adminban:** Beállítások → Titkos beállítások → „Claude API-kulcs” → Megadás (a
+   console.anthropic.com-on: API Keys). Azonnal hat, telepítés nem kell. *(A .env is működik tartaléknak, de az csak a következő
+   telepítés után hat — az admin egyszerűbb, és a kolléganő is cserélheti, ha szuperadmin.)*
    (3) **Cron** (cPanel → Cron Jobs, 15 percenként): `/opt/alt/php84/usr/bin/php /home/forgatag/public_html/forgatag2027/artisan forgatag:forditas >/dev/null 2>&1`
    **Élesben megnézendő (velem):** a Beállítások „Gépi fordítás” blokkja (be van-e kapcsolva) → „Futtatás most” (a 6 mező) → egy program
    lapján a román → egy átnézett sor magyarját átírva „Elavult” lesz, és a `/ro/program/…` lapon a magyar látszik → ismételt futás:
@@ -657,6 +668,11 @@ nem nyúlunk.**
 - **A jóváhagyási és változási napló üres** — 2026-ban nem írt bele semmi.
 - **A mentés hitelesítő adatokat tartalmaz** (Directus-tokenek nyílt szövegben) és személyes adatot.
   Ne kerüljön felhőbe szinkronizált mappába.
+- 🔴 **A 2027-es ADATBÁZIS-MENTÉS IS TITOK (2026-11-18):** a titkos beállítások (API-kulcs, később reCAPTCHA, SMTP-jelszó) a
+  `secret_settings` táblában vannak — titkosítva, DE a mentéssel együtt kerülnek el, és aki az APP_KEY-t is megszerzi (a szerveri
+  .env-ben), vissza tudja fejteni őket. Ezért **minden adatbázis-mentést titokként kell kezelni**: ne kerüljön felhőbe szinkronizált,
+  megosztott vagy levélben küldött helyre, és a mentés és a `.env` ne legyen ugyanott. Ha egy mentés kiszivárog: a kulcsokat le kell
+  cserélni (a kibocsátónál visszavonni, az adminban újat megadni). A napi mentés megépítésekor (CLAUDE.md „Feljegyezve”) ez szabály.
 - **A NAS napi mentése hibás volt** (`pg_dump | gzip` — a sikert a gzip adta vissza). A mostani
   mentés ép, de a régebbiekre nem lehet támaszkodni.
 - **A 9 lapblokk mind gazdátlan volt** (egy nem létező laphoz kötve, próbaszöveggel) — nem jött át (2026-10-28).

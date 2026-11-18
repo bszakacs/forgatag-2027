@@ -65,7 +65,7 @@ class Figyelmeztetesek extends Widget
         if (! GepiForditas::vanKulcs()) {
             $u[] = [
                 'cim' => 'A gépi fordítás ki van kapcsolva',
-                'szoveg' => 'Nincs ANTHROPIC_API_KEY a szerveri .env-ben, ezért a beküldött programokhoz nem készül román fordítás (a román oldalon a magyar szöveg látszik). A kulcsot a tulajdonos írja be.',
+                'szoveg' => 'Nincs Claude API-kulcs, ezért a beküldött programokhoz nem készül román fordítás (a román oldalon a magyar szöveg látszik). Szuperadmin adhatja meg: Beállítások → Titkos beállítások.',
             ];
         }
         if (($elavult = ProgramItem::query()->withOutdatedTranslation()->count()) > 0) {

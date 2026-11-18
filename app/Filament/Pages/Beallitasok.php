@@ -8,6 +8,7 @@ use App\Support\Festival;
 use App\Support\Settings;
 use App\Support\Submission;
 use App\Support\Tesztadat;
+use App\Support\Titkok;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -75,6 +76,7 @@ class Beallitasok extends Page
                 $this->publikusBlokk(),
                 $this->ertesitesBlokk(),
                 $this->forditasBlokk(),
+                $this->titkokBlokk(),
                 $this->tesztadatBlokk(),
             ]);
     }
@@ -272,12 +274,75 @@ class Beallitasok extends Page
             ]);
     }
 
+    /**
+     * TITKOS BEÁLLÍTÁSOK (App\Support\Titkok) — CSAK SZUPERADMIN látja. ÍRHATÓ, DE NEM OLVASHATÓ: nincs mező, ami a tárolt
+     * értéket tartalmazná (az űrlap állapotába sem kerül); titkonként csak az állapot (be van-e állítva, honnan, ki és mikor
+     * cserélte) és két gomb: „Új érték megadása” (felugró ablak, üres jelszómező) és „Törlés”. Nem a BLOKKOK része (nem a
+     * settings táblában él).
+     */
+    private function titkokBlokk(): Section
+    {
+        $sorok = [];
+        foreach (array_keys(Titkok::KULCSOK) as $kulcs) {
+            $sorok[] = Section::make(Titkok::KULCSOK[$kulcs]['felirat'])->compact()
+                ->description(Titkok::KULCSOK[$kulcs]['sugo'])
+                ->schema([
+                    Text::make(fn () => Titkok::allapot($kulcs)['szoveg'])
+                        ->color(fn () => Titkok::allapot($kulcs)['forras'] === null ? 'danger' : null),
+                    Text::make(fn () => (string) Titkok::allapot($kulcs)['hiba'])->color('danger')
+                        ->visible(fn () => Titkok::allapot($kulcs)['hiba'] !== null),
+                    Actions::make([
+                        Action::make("titok_{$kulcs}")->label(fn () => Titkok::allapot($kulcs)['forras'] === 'admin' ? 'Csere új értékre' : 'Megadás')
+                            ->icon('heroicon-o-key')
+                            ->modalHeading(Titkok::KULCSOK[$kulcs]['felirat'])
+                            ->modalDescription('Az új érték titkosítva kerül az adatbázisba, és azonnal ez lesz használatban. A régi érték elvész. Megadás után senki nem tudja itt visszaolvasni — csak lecserélni.')
+                            ->schema([
+                                TextInput::make('ertek')->label('Új érték')->password()->revealable(false)
+                                    ->required()->maxLength(500)->autocomplete('new-password'),
+                            ])
+                            ->modalSubmitActionLabel('Mentés')
+                            ->action(function (array $data) use ($kulcs): void {
+                                abort_unless(self::szuperadmin(), 403);
+                                Titkok::beallit($kulcs, (string) $data['ertek'], auth('web')->user());
+                                Notification::make()->success()->title('Elmentve: ' . Titkok::KULCSOK[$kulcs]['felirat'])
+                                    ->body('Mostantól ez van használatban.')->send();
+                            }),
+                        Action::make("titok_{$kulcs}_torles")->label('Törlés')->color('danger')->outlined()
+                            ->visible(fn () => Titkok::allapot($kulcs)['forras'] === 'admin')
+                            ->requiresConfirmation()
+                            ->modalHeading('Törlöd az adminban megadott értéket?')
+                            ->modalDescription(fn () => Titkok::allapot($kulcs)['env_is']
+                                ? 'Utána a szerveri .env értéke (' . Titkok::KULCSOK[$kulcs]['env'] . ') lesz használatban.'
+                                : 'A szerveri .env-ben NINCS érték — utána a funkció kikapcsol, amíg újat nem adsz meg.')
+                            ->modalSubmitActionLabel('Törlöm')
+                            ->action(function () use ($kulcs): void {
+                                abort_unless(self::szuperadmin(), 403);
+                                Titkok::torol($kulcs, auth('web')->user());
+                                Notification::make()->success()->title('Törölve: ' . Titkok::KULCSOK[$kulcs]['felirat'])->send();
+                            }),
+                    ])->key("titok_{$kulcs}_gombok"),
+                ]);
+        }
+
+        return Section::make('Titkos beállítások (csak szuperadmin)')
+            ->description('Pénzt költő vagy hozzáférést adó kulcsok. Csak megadni és cserélni lehet, visszaolvasni nem. Az itt megadott érték NYER a szerveri .env-ben lévő fölött; ha itt nincs, a .env értéke él.')
+            ->visible(fn () => self::szuperadmin())
+            ->schema($sorok);
+    }
+
+    private static function szuperadmin(): bool
+    {
+        $u = auth('web')->user();
+
+        return $u instanceof \App\Models\User && $u->role->canManageSecrets();
+    }
+
     /** Az utolsó futás és a gép állapota emberi nyelven (néma hiba tilos: a hiba itt is látszik). */
     private static function forditasAllapot(): string
     {
         $sor = GepiForditas::vanKulcs()
             ? 'A gépi fordítás BE van kapcsolva (modell: ' . config('forditas.modell') . ').'
-            : 'A gépi fordítás KI van kapcsolva: nincs ANTHROPIC_API_KEY a szerveri .env-ben. A beküldés ettől működik, csak román fordítás nem készül.';
+            : 'A gépi fordítás KI van kapcsolva: nincs Claude API-kulcs (szuperadmin adhatja meg lent, a Titkos beállításokban). A beküldés ettől működik, csak román fordítás nem készül.';
         $j = GepiForditas::utolsoFutas();
 
         return $sor . ' ' . ($j === null

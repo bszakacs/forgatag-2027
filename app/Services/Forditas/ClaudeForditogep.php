@@ -4,6 +4,7 @@ namespace App\Services\Forditas;
 
 use Anthropic\Client;
 use Anthropic\Messages\Message;
+use App\Support\Titkok;
 use RuntimeException;
 
 /**
@@ -201,9 +202,9 @@ final class ClaudeForditogep implements Forditogep
 
     private function kliens(): Client
     {
-        $kulcs = (string) config('forditas.kulcs');
+        $kulcs = (string) Titkok::ertek('anthropic_api_key');   // admin > .env; visszafejthetetlen → látható hiba
         if ($kulcs === '') {
-            throw new RuntimeException('Nincs ANTHROPIC_API_KEY a szerveri .env-ben.');
+            throw new RuntimeException('Nincs Claude API-kulcs (Beállítások → Titkos beállítások, vagy a szerveri .env).');
         }
 
         return $this->kliens ??= new Client(apiKey: $kulcs, requestOptions: ['maxRetries' => 3, 'timeout' => 180.0]);

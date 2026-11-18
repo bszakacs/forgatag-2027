@@ -780,7 +780,7 @@ koordinátor); az arculat-szerkesztő NEM — a Livewire-mentés is megkérdezi 
   (`check_note`: kiesett védett név, kötött alak, „Vâltoarei”, ő/ű, tényadat-gyanú) — ott a magyar látszik.
 - **A gép: `Forditogep` interfész** → `ClaudeForditogep` (hivatalos `anthropic-ai/sdk`, a vendorban; strukturált JSON-válasz,
   gyorsítótárazott rendszerprompt; második hívás: tényadat-ellenőrzés MÁS modellel). Beállítás: `config/forditas.php` (.env:
-  `ANTHROPIC_API_KEY`, `FORDITAS_MODELL` = `claude-sonnet-5`, `FORDITAS_ELLENORZO_MODELL`, `FORDITAS_ELLENORZES`). Teszt: hamis gép.
+  a kulcs `Titkok::ertek('anthropic_api_key')` — admin > `ANTHROPIC_API_KEY`; `FORDITAS_MODELL` = `claude-sonnet-5`, `FORDITAS_ELLENORZO_MODELL`, `FORDITAS_ELLENORZES`). Teszt: hamis gép.
 - **Nyelvi szabályok EGY helyen: `App\Support\Forditas\VedettNevek`** (prompt + utólagos ellenőrzés). A listák: Beállítások →
   „Gépi fordítás” (`settings.translation`: `terms`, `bound`); a ragozás (Vâltoarea/Vâltoare/Vâltorii) a kódban. Az ő/ű-ellenőrzés a
   védett neveket előbb kiveszi (Csicsergő, Szűcsök Bástyája magyarul marad).
@@ -792,6 +792,20 @@ koordinátor); az arculat-szerkesztő NEM — a Livewire-mentés is megkérdezi 
   a nyitólap `Figyelmeztetesek`: elavult darabszám, a legutóbbi futás hibája, kikapcsolt gép. Az utolsó futás jelentése: `settings`
   `translation_run` sora (a Beállításokban kiírva) + `storage/logs` „FORDÍTÁS:” sor (API-hívás száma, token, becsült USD).
 - Tesztek: `tests/Feature/ForditasTest.php` (15).
+
+**Titkos beállítások — kész helyben (2026-11-18).** API-kulcs most; reCAPTCHA, SMTP-jelszó később — UGYANEZZEL.
+- **EGY helyen: `App\Support\Titkok`** (`KULCSOK`: felirat, súgó, a .env-tartalék CONFIG-kulcsa — nem `env()`, az a gyorsítótárazott
+  beállításnál üres). Tábla: `secret_settings` (`SecretSetting`: `encrypted` cast = Laravel titkosítás az APP_KEY-jel; a `value` rejtett,
+  tömbbe/JSON-ba nem kerül; `SecretSettingPolicy` = minden tiltva). **Új titok = új sor a `KULCSOK`-ban**, a felhasználás helyén
+  `Titkok::ertek('kulcs')` — a config-ot közvetlenül ne olvasd.
+- **Jog: `UserRole::canManageSecrets`** = CSAK szuperadmin (a `Titkok::beallit/torol` is ellenőrzi, nem csak a felület).
+- **Írható, de nem olvasható:** a felület (Beállítások → „Titkos beállítások”, csak szuperadminnak látszik; nem a `BLOKKOK` része) csak
+  `Titkok::allapot()`-ot kap: be van-e állítva, honnan, ki/mikor cserélte. Megadás/csere: felugró ablak üres jelszómezővel; törlés.
+  Az érték nem kerül naplóba (csak a tény: „TITOK: … cserélve (név)”).
+- **Elsőbbség: ADMIN > .env** (a fájlhoz nem férő kolléga is cserélhet); a felület kiírja, melyik él. Visszafejthetetlen tárolt érték
+  (megváltozott APP_KEY) → piros jelzés + `ertek()` HIBÁT dob, NEM esik vissza csendben a .env-re.
+- ⚠ **A mentés titok:** a titkosított érték a mentésbe is bekerül; az APP_KEY-jel együtt visszafejthető (ALLAPOT.md).
+- Tesztek: `tests/Feature/TitkokTest.php` (6).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
@@ -836,6 +850,8 @@ koordinátor); az arculat-szerkesztő NEM — a Livewire-mentés is megkérdezi 
   nem csúszhat a beküldés megnyitása utánra.
   ⚠ A 2026-os NAS-mentés tanulsága: a `pg_dump | gzip` a gzip sikerét jelzi, nem a pg_dumpét —
   az új mentés a zárójelet („dump complete”) is ellenőrizze, különben a félbeszakadt mentés néma.
+  🔴 **A mentés TITOK** (2026-11-18): benne vannak a titkosított titkos beállítások (`secret_settings`), amelyek az APP_KEY-jel
+  visszafejthetők — a mentés ne kerüljön a `.env` mellé, felhőbe szinkronizált vagy megosztott helyre.
 
 ### A 2026-os adatok mentése (2026-10-21) — az ALAPANYAG
 **Helye: `E:\Work\mysites\forgatag.ro\MENTES-2026\2026-10-21\`** (a fejlesztőgépen; NEM git-tároló,

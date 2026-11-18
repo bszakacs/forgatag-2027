@@ -9,6 +9,7 @@ use App\Models\ProgramItem;
 use App\Models\ProgramItemTranslation;
 use App\Support\Forditas\VedettNevek;
 use App\Support\Settings;
+use App\Support\Titkok;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -45,7 +46,7 @@ final class GepiForditas
 
     public static function vanKulcs(): bool
     {
-        return trim((string) config('forditas.kulcs')) !== '';
+        return Titkok::van('anthropic_api_key');   // admin (Titkos beállítások) > szerveri .env
     }
 
     /**
@@ -352,7 +353,7 @@ final class GepiForditas
         return match ($j['allapot'] ?? null) {
             'kesz' => 'kész',
             'nincs_teendo' => 'nem volt mit fordítani (API-hívás nem történt)',
-            'nincs_kulcs' => 'KIMARADT: nincs ANTHROPIC_API_KEY a szerveri .env-ben',
+            'nincs_kulcs' => 'KIMARADT: nincs Claude API-kulcs (Beállítások → Titkos beállítások, vagy a szerveri .env)',
             'fut_mar' => 'kimaradt: egy másik fordítás épp futott',
             'proba' => 'próbafutás (nem írt, nem hívott API-t)',
             'hiba' => 'HIBA: ' . ($j['hiba'] ?? 'ismeretlen'),
