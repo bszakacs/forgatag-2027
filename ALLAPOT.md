@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-18 este (PROMPT-20: Családi Olimpia + önkéntes űrlap kész helyben, 262 teszt zöld; élesítés: „Ami MOST folyik” 0. pont)
+**Utolsó frissítés:** 2026-11-18 éjjel (PROMPT-20: a két jelentkező űrlap telepítve, kinyitva, élesben mérve; hátra a felhasználó belépéses próbái és a próbaadatok törlése)
 
 ---
 
@@ -493,16 +493,24 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 
 ## Ami MOST folyik
 
-0. **A két jelentkező űrlap élesítése (PROMPT-20)** — helyben kész, **feltolva; telepíteni kell** (Update from Remote → Deploy HEAD Commit).
-   A naplóban: új migráció (`olympics_teams`, `volunteer_applications`), `TÖRZSADATOK: beállítások / olympics — betöltve`, `… / volunteer — betöltve`,
-   `LAPSZÖVEG: olimpia: a rendszerlap létrehozva`, `… onkentes: a rendszerlap létrehozva`.
-   **A felhasználó teendői (belépve):** (1) **cPanel → Select PHP Version → Options: `post_max_size` legalább 24M** (két 10 MB-os dokumentum egy
-   kérésben; a Beállítások „Önkéntesek” blokkja pirosan jelzi, ha kevés). (2) Beállítások → Családi Olimpia: az olimpia napja, a koordinátor címe,
-   **nyitva** (a próbára). (3) Beállítások → Önkéntesek: „Kitöltés a fesztivál napjaiból”, a koordinátor címe, nyitva. (4) Felhasználók: egy
-   Olimpia-koordinátor és egy Önkéntes-koordinátor fiók, ha kell.
-   **Élesben megnézendő (velem):** két ablakból ugyanarra a színre · a létszám feletti várólista · 16 alatt a két fájl · a feltöltött fájl közvetlen
-   címmel · zárva a végpont · méz-bödön · 375 px · kategóriagazda-fiókkal a `/admin/olimpia` és `/admin/onkentesek` begépelve → 403.
-   ⚠ A próbajelentkezéseket utána az adminban törölni kell (Jelentkezések → … → Törlés).
+0. **A két jelentkező űrlap élesítése (PROMPT-20)** — **telepítve (`1a0e5780`), kinyitva és ÉLESBEN MÉRVE (2026-11-18), belépés nélkül:**
+   · **zárva a végpont is nemet mond** (mindkét űrlap 403 + a zárt üzenet, a kinyitás előtt mérve);
+   · **két ablakból ugyanarra a színre:** két böngészőfülön (Piros) — az első bement, a második a 2026-os üzenetet kapta, a Piros „elfogyott” lett,
+     **a beírt adatok (név, 5 tag, életkorok, e-mail, nyilatkozat-pipa) megmaradtak**, Kékkel bement; plusz két VALÓBAN EGYIDEJŰ kérés (Sárga,
+     ~0,07 s): 200 + 409, a friss listában a Sárga tiltva;
+   · **gyakorisági korlát:** a 6. beküldésre 429, emberi üzenettel (a beírt adatok megmaradtak) · **félig kitöltött tag:** 422 („6. csapattag: ha
+     megadod a nevet, az életkort is add meg.”) · **méz-bödön:** látszólagos siker, a szín szabad maradt (nincs mentés) — mindkét űrlapon;
+   · **önkéntes:** 16 alatt fájl nélkül 422 (mindkét fájl kötelező), PDF-nek álcázott HTML 422, valódi PDF + PNG 200; **a zárt tár kívülről nem
+     érhető el** (a `forgatag2027/storage/...` mappa 403, a találgatott címek 404, a dokumentum admin-címe belépésre visz);
+   · **375 px:** mindkét űrlap, vízszintes görgetés nincs; válaszidő 0,33–0,49 s.
+   · **Várólista élesben NEM mérve** (a 6 helyhez 6 csapat kellene, a korlát 15 percenként 5-öt enged) — tesztben igen.
+   Kinyitáskor kiderült: a Beállítások mentése egy hiba miatt egészben elmarad (ha nincs olimpia-nap, az önkéntes-napok sem mentődnek) — a
+   „Kitöltés a fesztivál napjaiból” gombot ÉS a felugró megerősítést is meg kell nyomni; a hibaüzenet most ezt meg is mondja (`3d464bb1`, telepítendő).
+   **Hátra (a felhasználóval, belépve):** (1) a koordinátori levelek megérkeztek-e (3 olimpia-csapat, 1 önkéntes) és a kapitányi visszaigazolás
+   (`proba1/proba2/verseny1@example.com` — nem létező címek, ezért ezek nem érkeznek meg); (2) Jelentkezések → Önkéntesek → a próba-jelentkező →
+   a két dokumentum megnyílik; (3) **kategóriagazda-fiókkal** a `/admin/olimpia` és `/admin/onkentesek` begépelve → 403; (4) a **`post_max_size`
+   legalább 24M** (cPanel → Select PHP Version → Options); (5) **a próbajelentkezések törlése**: Jelentkezések → Családi Olimpia (3 „PRÓBA…” csapat)
+   és Önkéntesek (1 „PRÓBA Kiskorú”), lapjukon „Törlés”; utána, ha még nem kell, a két űrlap visszazárása.
 
 0. **A fordítási lánc élesítése (PROMPT-19)** — **SZÜNETEL: nincs még API-kulcs, később lesz (tulajdonos, 2026-11-18).**
    **Állás 2026-11-18:** a szerveren a legutóbbi commit `5f533af2` (a cPanel Git felülete mutatja — a tulajdonos küldte), és **a cron
