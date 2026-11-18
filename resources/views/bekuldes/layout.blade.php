@@ -15,7 +15,10 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+{{-- A beküldő lapok nem kerülnek keresőbe; a publikus jelentkező űrlapok (olimpia, önkéntes) igen — 2026-ban sem volt rajtuk tiltás. --}}
+@sectionMissing('indexelheto')
 <meta name="robots" content="noindex">
+@endif
 <title>@yield('title') – {{ $fesztNev }} {{ \App\Support\Festival::year() }}</title>
 {{-- A szín, betű, forma, mozgás és firka MIND a publikált témából jön (App\Support\Theme) — itt semmi nincs beégetve.
      Téma nélkül a lap hibával áll meg (nincs csendes tartalék). --}}
@@ -28,6 +31,7 @@
 <link rel="stylesheet" href="@eszkoz('fonts/fonts.css')">
 <link rel="stylesheet" href="{{ Theme::cssUrl() }}">
 <link rel="stylesheet" href="@eszkoz('css/bekuldes.css')">
+@stack('styles')
 </head>
 <body>
 <div class="wrap @yield('wrapClass')">

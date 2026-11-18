@@ -74,6 +74,18 @@ class Figyelmeztetesek extends Widget
                 'szoveg' => 'A magyar szöveg a fordítás óta megváltozott; a román oldalon addig a magyar látszik. Programok → „⚠ Elavult fordítás” fül → a program lapján „Román fordítás”.',
             ];
         }
+        // A publikus jelentkező űrlapok (PROMPT-20): nyitva, de senki nem kap értesítést — 2026-ban pont ez okozott bajt.
+        foreach ([
+            [\App\Enums\NotificationTopic::Olympics, \App\Support\Olimpia::nyitva(...), 'Családi Olimpia'],
+            [\App\Enums\NotificationTopic::Volunteer, \App\Support\Onkentes::nyitva(...), 'Önkéntesek'],
+        ] as [$tema, $nyitva, $blokk]) {
+            if (\App\Support\Settings::has($tema->blokk()) && $nyitva() && \App\Support\Notifier::cimek($tema) === []) {
+                $u[] = [
+                    'cim' => "A(z) „{$blokk}” jelentkezés nyitva van, de nincs koordinátori cím",
+                    'szoveg' => "Az új jelentkezésekről SENKI nem kap levelet. Beállítások → {$blokk} → a koordinátor e-mail-címe.",
+                ];
+            }
+        }
         if (($db = Tesztadat::total()) > 0) {
             $u[] = [
                 'cim' => "Tesztadat van az adatbázisban ({$db} db)",

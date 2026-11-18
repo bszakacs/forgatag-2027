@@ -29,7 +29,12 @@ class Notifier
             return false;
         }
         if ($cimek === []) {
-            self::naplo("ÉRTESÍTÉS KIMARADT: a(z) „{$topic->label()}” témához nincs koordinátori cím a Beállítások / Értesítések blokkban.", [
+            $blokk = match ($topic->blokk()) {
+                'olympics' => 'Családi Olimpia',
+                'volunteer' => 'Önkéntesek',
+                default => 'Értesítések',
+            };
+            self::naplo("ÉRTESÍTÉS KIMARADT: a(z) „{$topic->label()}” témához nincs koordinátori cím a Beállítások / {$blokk} blokkban.", [
                 'targy' => $mail->subject,
             ]);
 

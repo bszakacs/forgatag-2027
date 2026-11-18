@@ -331,7 +331,9 @@ class ForditasTest extends TestCase
         Settings::save(['submission' => ['open' => false, 'closed_message' => 'Zárva.', 'deadline' => null],
             'public' => ['coming_soon' => false, 'coming_soon_title_hu' => 'H', 'coming_soon_title_ro' => null, 'coming_soon_text_hu' => 'H',
                 'coming_soon_text_ro' => null, 'footer_text_hu' => 'L', 'footer_text_ro' => null, 'home_state' => 'utana', 'countdown_time' => '10:00'],
-            'notifications' => ['topics' => ['program_submission' => ['k@forgatag.test']]]]);
+            'notifications' => ['topics' => ['program_submission' => ['k@forgatag.test']]]]
+            // a Beállítások lap többi blokkja (a mentés a kötelező mezőiket is ellenőrzi) — a kezdőértékek a seedből
+            + array_intersect_key(json_decode((string) file_get_contents(base_path('seed/settings.json')), true), array_flip(['olympics', 'volunteer'])));
         $this->program();
         $this->futtat();
 

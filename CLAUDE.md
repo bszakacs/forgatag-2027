@@ -284,7 +284,8 @@ adatbázis-lekérdezés. **A látható viselkedésre és a kinézetre viszont ig
 ## 4. Jogosultság — ez a legkockázatosabb rész
 
 Szerepek: szuperadmin · programkoordinátor (jóváhagyó) · **kategóriagazda (SOR-SZINTŰ jog: csak a
-saját kategóriája)** · fordító · arculat-szerkesztő · csak-olvasó.
+saját kategóriája)** · fordító · arculat-szerkesztő · olimpia-koordinátor · önkéntes-koordinátor · csak-olvasó.
+**Az önkéntes-jelentkezéseket (kiskorúak adatai) CSAK a szuperadmin és az önkéntes-koordinátor látja** (`UserRole::canManageVolunteers`).
 
 ⚠️ **A sor-szintű szűkítés felületenként hat** (lista, globális keresés, kapcsolat-kezelők, export,
 import). Ha egyet kihagyunk, az adatszivárgás. **Kötelező: modell-szintű globális scope, NEM
@@ -806,6 +807,26 @@ koordinátor); az arculat-szerkesztő NEM — a Livewire-mentés is megkérdezi 
   (megváltozott APP_KEY) → piros jelzés + `ertek()` HIBÁT dob, NEM esik vissza csendben a .env-re.
 - ⚠ **A mentés titok:** a titkosított érték a mentésbe is bekerül; az APP_KEY-jel együtt visszafejthető (ALLAPOT.md).
 - Tesztek: `tests/Feature/TitkokTest.php` (6).
+
+**Jelentkező űrlapok: Családi Olimpia + önkéntes — kész helyben (2026-11-18, PROMPT-20).** `/olimpia`, `/onkentes` (csak magyar,
+BELÉPÉS NÉLKÜL; a beküldő lapok keretében: `bekuldes.layout` + `jelentkezes.css`). A szabadulószoba nem épült meg (tulajdonosi döntés).
+- **Közös védelem EGY helyen:** `App\Support\PublikusUrlap` (méz-bödön `website` → látszólagos siker, nincs mentés; a lap szövegei) ·
+  `throttle:jelentkezes` (IP + űrlap, 15 perc / 5 — `AppServiceProvider`) · a vezérlő ELSŐ lépése a nyitva/zárva (403). Új publikus űrlap = ugyanez.
+- **Beállítások:** `olympics` és `volunteer` blokk (`Olimpia`, `Onkentes` olvassa). A koordinátori cím tárolása a meglévő `notifications.topics.<téma>`
+  (egy forrás), de a mezője a saját blokkban ül (`NotificationTopic::blokk()`; az Értesítések blokk kihagyja). Üresen piros (lap + nyitólap).
+  ⚠ **Az önkéntes-napok SAJÁT lista** (`volunteer.days`: dátum + megjegyzés) — NEM a programnapok (`Festival::days`).
+- **Olimpia — a színfoglalás az ADATBÁZISÉ:** `olympics_teams` egyedi kulcs (year, color_key). `App\Services\OlimpiaJelentkezes`: az ELVITT színt
+  szándékosan NEM ellenőrzi előre (a beszúrás `UniqueConstraintViolationException`-je → 409 + friss lista, `_szinek`/`_kapacitas` partial — ugyanaz
+  rajzolja az első betöltést). Kapacitás: a számolás + beszúrás `Cache::lock` alatt; utána `helyreTesz()` (csak LEFOKOZ, a `status_manual`-hoz nem
+  nyúl). Visszalépés → `OlympicsTeam::saving` üríti a `color_key`-t. A szín KULCSA a Beállításokban rejtett mező (átnevezéskor megmarad).
+- **Önkéntes — kiskorúak adatai:** `App\Services\OnkentesJelentkezes`: a dokumentum a `local` (zárt) lemezre, `onkentesek/<év>/<véletlen>.<ext>`,
+  a típus `finfo`-val a TARTALOMBÓL (a `getMimeType()` tesztben a kiterjesztésből mondana — ne arra építs). Admin-letöltés:
+  `Admin\OnkentesFajlController` (panel-útvonal + policy, más szerepkörnek 404). Törléskor a fájlok is törlődnek. A levélbe egészségügyi adat nem kerül.
+- **Admin:** „Jelentkezések” menücsoport (`NavigationGroup::Jelentkezesek`): `Olimpia\OlympicsTeamResource`, `Onkentesek\VolunteerApplicationResource`.
+  Új csapat/jelentkezés CSAK az űrlapról. Jog: `UserRole::canManageOlympics` / `canManageVolunteers`.
+- **Szövegek:** `LapSablon::SABLONOK['olimpia'|'onkentes']` (szűrt HTML, `{datum}`/`{max}`/`{idoszak}` a Beállításokból); a nyilatkozatok
+  (`Olimpia::NYILATKOZAT`, `Onkentes::HOZZAJARULAS`) a kódban, SZÓ SZERINT a 2026-osból, és a rekordon is (bizonyíték) — ne fogalmazd át.
+- Tesztek: `tests/Feature/OlimpiaOnkentesTest.php` (30).
 
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 

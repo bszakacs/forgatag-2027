@@ -18,6 +18,40 @@
     "deadline": null
   },
 
+  "_olympics": "Családi Olimpia (PROMPT-20). A 8 szín és a 6 csapat a 2026-os (olympics-api / apply-schema OLYMPICS_COLORS). Az olimpia napja NINCS kitalálva: üres, a szervezők adják meg.",
+  "olympics": {
+    "open": false,
+    "closed_message": "A Családi Olimpia jelentkezés jelenleg zárva van.",
+    "event_date": null,
+    "max_teams": 6,
+    "colors": [
+      { "key": "lila", "name": "Lila", "hex": "#6B4FBB", "active": true },
+      { "key": "narancssarga", "name": "Narancssárga", "hex": "#F5911E", "active": true },
+      { "key": "sarga", "name": "Sárga", "hex": "#F2C31C", "active": true },
+      { "key": "zold", "name": "Zöld", "hex": "#8DC63F", "active": true },
+      { "key": "piros", "name": "Piros", "hex": "#E13E42", "active": true },
+      { "key": "feher", "name": "Fehér", "hex": "#FFFFFF", "active": true },
+      { "key": "kek", "name": "Kék", "hex": "#3AA0E0", "active": true },
+      { "key": "fekete", "name": "Fekete", "hex": "#221C47", "active": true }
+    ]
+  },
+
+  "_volunteer": "Önkéntesek (PROMPT-20). A területek, a korhatár és a zárt üzenet a 2026-os volunteer-api-ból. Az önkéntes-napok NINCSENEK kitalálva: üres lista — a Beállításokban egy gomb kitölti a fesztiválnapokból (előtte nulladik nap, utána utómunkálatok), a szervező ellenőrzi.",
+  "volunteer": {
+    "open": false,
+    "closed_message": "Az önkéntes jelentkezés lezárult. Köszönjük mindenkinek, aki jelentkezett — hamarosan keresünk mindenkit. Jövőre újra várunk!",
+    "minor_age": 16,
+    "days": [],
+    "areas": [
+      "Gyermekprogramok",
+      "Infó pont",
+      "Partner és sportprogramok",
+      "Területrendezés",
+      "Logisztika (rendezvény-eszközök, pl. babzsákok, kültéri játékok)",
+      "Adminisztráció (iroda, kiállítás-felügyelet, étkeztetés)"
+    ]
+  },
+
   "public": {
     "coming_soon": false,
     "coming_soon_title_hu": "Hamarosan",
@@ -32,7 +66,9 @@
 
   "notifications": {
     "topics": {
-      "program_submission": []
+      "program_submission": [],
+      "olympics": [],
+      "volunteer": []
     }
   }
 }

@@ -3,6 +3,8 @@
 use App\Http\Controllers\Bekuldes\BelepesController;
 use App\Http\Controllers\Bekuldes\JelszoController;
 use App\Http\Controllers\Bekuldes\UrlapController;
+use App\Http\Controllers\Jelentkezes\OlimpiaController;
+use App\Http\Controllers\Jelentkezes\OnkentesController;
 use App\Http\Controllers\Publikus\HirekController;
 use App\Http\Controllers\Publikus\KezdolapController;
 use App\Http\Controllers\Publikus\OldalController;
@@ -42,6 +44,16 @@ Route::prefix('bekuldes')->name('bekuldes.')->group(function () {
 });
 
 /*
+ * A két publikus jelentkező űrlap (PROMPT-20) — BELÉPÉS NÉLKÜL, csak magyarul (mint 2026-ban, akkor saját aldomainen:
+ * olimpia.forgatag.ro, onkentes.forgatag.ro). Védelem: méz-bödön (a vezérlőben), IP-alapú gyakorisági korlát (itt), és a
+ * nyitva/zárva a VÉGPONTON is (a vezérlőben). A „Hamarosan” mód nem takarja el őket (ahogy a beküldő űrlapot sem).
+ */
+Route::get('olimpia', [OlimpiaController::class, 'show'])->name('olimpia');
+Route::post('olimpia', [OlimpiaController::class, 'store'])->middleware('throttle:jelentkezes')->name('olimpia.bekuld');
+Route::get('onkentes', [OnkentesController::class, 'show'])->name('onkentes');
+Route::post('onkentes', [OnkentesController::class, 'store'])->middleware('throttle:jelentkezes')->name('onkentes.bekuld');
+
+/*
  * PUBLIKUS OLDAL — magyar a gyökérben, román a /ro/ előtag alatt (mint 2026-ban). Mindkét nyelv UGYANAZOKAT az
  * útvonalakat kapja (nevek: hu.* és ro.*). A „Hamarosan” mód CSAK ezen a csoporton fut: az admin, a beküldő
  * űrlap és a médiatár képei ezen kívül vannak, tehát a kapcsoló nem zárhatja ki őket.
@@ -69,7 +81,7 @@ foreach (['hu' => '', 'ro' => 'ro'] as $nyelv => $elotag) {
             Route::get('terkep', [TaxonController::class, 'terkep'])->name('terkep');
             // Aloldal a slugja alapján — a foglalt első szavak (admin, beküldés, rendszer-útvonalak) kizárva.
             Route::get('{lap}', [OldalController::class, 'show'])
-                ->where('lap', '(?!(?:admin|bekuldes|curator|livewire|filament|storage|up|ro|hamarosan|hirek|programok|nap|ma|program|helyszinek|helyszin|kategoriak|kategoria|terkep)$)[a-z0-9]+(?:-[a-z0-9]+)*')
+                ->where('lap', '(?!(?:admin|bekuldes|olimpia|onkentes|curator|livewire|filament|storage|up|ro|hamarosan|hirek|programok|nap|ma|program|helyszinek|helyszin|kategoriak|kategoria|terkep)$)[a-z0-9]+(?:-[a-z0-9]+)*')
                 ->name('oldal');
         });
 }

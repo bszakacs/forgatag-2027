@@ -357,6 +357,29 @@ class LapSablon
             ['programs_now_before', '„Most zajlik” a fesztivál ELŐTT — szöveg (a dátumot a rendszer írja elé)', 'szoveg', ['hu' => 'Válassz napot a fenti sávból, és tervezz előre!', 'ro' => 'Alege o zi din bara de sus și plănuiește din timp!']],
             ['programs_now_after', '„Most zajlik” a fesztivál UTÁN — szöveg', 'szoveg', ['hu' => 'A fesztivál véget ért, ezért most nem zajlik program. A napokra kattintva a program továbbra is megnézhető.', 'ro' => 'Festivalul s-a încheiat, așa că acum nu se desfășoară niciun program. Programul rămâne disponibil pe zile.']],
         ],
+        // A CSALÁDI OLIMPIA jelentkező űrlapja (/olimpia, PROMPT-20) — a 2026-os olympics-api/public/index.html bevezetője és
+        // tudnivalói, betűre (csak magyar, mint 2026-ban). Kiemelés: <strong>, <em> (szűrt HTML). A {…} helyére a rendszer írja
+        // a Beállítások értékét: {datum} = az olimpia napja, {max} = a csapatlétszám. Az űrlap mezői, a nyilatkozat (bizonyíték!)
+        // és a hibaszövegek a kódban (App\Services\OlimpiaJelentkezes, App\Support\Olimpia).
+        'olimpia' => [
+            ['olimpia_kicker', 'Bevezető — felső sor (a <em>…</em> rész kiemelt)', 'sor', 'Játék, mozgás, <em>nevetés</em> — családoknak'],
+            ['olimpia_title', 'Bevezető — cím', 'sor', '3. Családi Olimpia a Forgatagon'],
+            ['olimpia_intro_1', 'Bevezető — 1. bekezdés', 'szoveg', 'A Vásárhelyi Forgatag keretében idén is megszervezzük a Családi Olimpiát.'],
+            ['olimpia_intro_2', 'Bevezető — 2. bekezdés ({datum} = az olimpia napja a Beállításokból; amíg nincs megadva, a bekezdés nem látszik)', 'szoveg', '<strong>{datum}</strong>, a reggeli órákban várjuk a játékkedvelő családokat a marosvásárhelyi várba. Az olimpia <strong>9 és 11 óra között</strong> zajlik majd.'],
+            ['olimpia_who_title', 'Tudnivalók — cím', 'sor', 'Kik jelentkezhetnek?'],
+            ['olimpia_who_1', 'Tudnivalók — 1. bekezdés', 'szoveg', '<strong>5–7 főből álló csapatokat</strong> várunk (családok, baráti társaságok). A csapatokban kötelezően legalább <strong>2 gyerek és 2 felnőtt</strong> kell hogy legyen. A legfiatalabb gyerek legalább <strong>6 éves</strong> legyen.'],
+            ['olimpia_who_2', 'Tudnivalók — 2. bekezdés ({max} = a csapatok száma a Beállításokból)', 'szoveg', '<strong>Legtöbb {max} csapatot</strong> tudunk fogadni. A jelentkezés sorrendjét vesszük figyelembe. A többi család várólistára kerül, s amennyiben lesz olyan csapat, aki visszalép, akkor értesítjük a várólistán sorban következő csapatot.'],
+            ['olimpia_who_3', 'Tudnivalók — 3. bekezdés', 'szoveg', 'A Családi Olimpia lényege a <strong>JÁTÉK</strong>, az, hogy a családok jól érezzék magukat, nevessenek, mozogjanak, és csak másodlagos az, hogy ki nyeri meg az olimpiát.'],
+            ['olimpia_who_4', 'Tudnivalók — 4. bekezdés', 'szoveg', 'A versenyre jelentkező csapattagok <strong>kényelmes öltözetben</strong> érkezzenek, hozzanak magukkal esőköpenyt, csereruhát, vidámságot, és akár egy szurkolótábor is jól jöhet.'],
+            ['olimpia_color_note', 'Csapatszín — figyelmeztetés (a „FIGYELEM!!!” után)', 'szoveg', 'Ilyen színű pólóban kell majd megjelennie a csapat összes tagjának az olimpián. (Ha egy jelentkező egy színt már kiválasztott, a többieknek nincs lehetőségük ugyanazt bejelölni. A fennmaradó színek közül választhatnak.)'],
+        ],
+        // Az ÖNKÉNTES jelentkező űrlap (/onkentes, PROMPT-20) — a 2026-os volunteer-api/public/index.html bevezetője, betűre.
+        // {idoszak} = az önkéntes-napok időszaka (Beállítások → Önkéntesek; 2026: „2026. augusztus 25–31.”, beégetve).
+        'onkentes' => [
+            ['onkentes_kicker', 'Bevezető — felső sor (a <em>…</em> rész kiemelt)', 'sor', 'Legyél te is a <em>Forgatag</em> csapatában'],
+            ['onkentes_title', 'Bevezető — cím', 'sor', 'Önkéntes-jelentkezés'],
+            ['onkentes_intro', 'Bevezető — szöveg ({idoszak} = az önkéntes-napok a Beállításokból)', 'szoveg', '{idoszak} között keresünk lelkes önkénteseket a Vásárhelyi Forgatagra. Töltsd ki az űrlapot, és felvesszük veled a kapcsolatot!'],
+        ],
     ];
 
     /**
@@ -369,6 +392,10 @@ class LapSablon
             'seo_description_hu' => 'A Vásárhelyi Forgatag programja: szűrés nap, helyszín és kategória szerint, kereséssel.',
             'seo_description_ro' => 'Programul Festivalului Vâltoarea Mureșeană: filtrare după zi, locație și categorie, cu căutare.',
         ],
+        // A két publikus jelentkező űrlap (PROMPT-20) szövegeinek otthona. A lapot NEM az OldalController szolgálja ki, hanem a
+        // saját útvonala (/olimpia, /onkentes); itt csak a szerkeszthető szövegei élnek (Tartalom → Aloldalak).
+        'olimpia' => ['title_hu' => 'Családi Olimpia – jelentkezés'],
+        'onkentes' => ['title_hu' => 'Önkéntes-jelentkezés'],
     ];
 
     public static function van(string $slug): bool

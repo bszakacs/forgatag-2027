@@ -44,6 +44,8 @@ class ProgramBekuldesTest extends TestCase
             'submission' => ['open' => true, 'closed_message' => 'A programbeküldés jelenleg zárva van.', 'deadline' => null],
             // A Beállítások lap minden blokkja kell (a mentés a kötelező mezőit is ellenőrzi) — a kezdőértékek a seedből.
             'public' => json_decode((string) file_get_contents(base_path('seed/settings.json')), true)['public'],
+            'olympics' => json_decode((string) file_get_contents(base_path('seed/settings.json')), true)['olympics'],
+            'volunteer' => json_decode((string) file_get_contents(base_path('seed/settings.json')), true)['volunteer'],
             'notifications' => [
                 'topics' => ['program_submission' => ['koordinator@forgatag.test']]],
         ]);

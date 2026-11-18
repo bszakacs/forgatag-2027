@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Controllers\Admin\OnkentesFajlController;
 use App\Http\Controllers\Admin\ProgramFotoController;
 use App\Enums\NavigationGroup;
 use App\Support\Eszkoz;
@@ -125,6 +126,9 @@ class AdminPanelProvider extends PanelProvider
             ->authenticatedRoutes(function () {
                 Route::get('programok/{program}/foto', ProgramFotoController::class)
                     ->whereNumber('program')->name('program-foto');
+                // Az önkéntes-jelentkezés dokumentumai (kiskorúak adatai, zárt tár) — a controller a policy-t is kérdezi.
+                Route::get('onkentes-dokumentum/{jelentkezes}/{tipus}', OnkentesFajlController::class)
+                    ->whereNumber('jelentkezes')->where('tipus', 'szuloi|motivacios')->name('onkentes-dokumentum');
                 // Az Arculat-szerkesztő (/admin/tema) végpontjai — mind a TemaController jog-őre mögött.
                 // Az élő előnézet NEM hív szervert; ezek csak a mentés/publikálás/feltöltés útjai.
                 Route::prefix('tema-api')->name('tema.')->controller(TemaController::class)->group(function () {

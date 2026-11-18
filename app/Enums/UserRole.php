@@ -17,6 +17,8 @@ enum UserRole: string
     case CategoryOwner = 'category_owner';
     case Translator = 'translator';
     case ThemeEditor = 'theme_editor';
+    case OlympicsCoordinator = 'olympics_coordinator';
+    case VolunteerCoordinator = 'volunteer_coordinator';
     case ReadOnly = 'read_only';
 
     public function label(): string
@@ -27,6 +29,8 @@ enum UserRole: string
             self::CategoryOwner => 'Kategóriagazda',
             self::Translator => 'Fordító',
             self::ThemeEditor => 'Arculat-szerkesztő',
+            self::OlympicsCoordinator => 'Olimpia-koordinátor',
+            self::VolunteerCoordinator => 'Önkéntes-koordinátor',
             self::ReadOnly => 'Csak olvasó',
         };
     }
@@ -38,6 +42,8 @@ enum UserRole: string
             self::Coordinator => 'Minden programot lát, jóváhagy és visszaküld; kezeli a programgazdákat és a Beállításokat.',
             self::CategoryOwner => 'CSAK a saját kategóriái programjait látja; átnézi, jóváhagyásra küldi vagy visszaküldi őket. Jóváhagyni nem tud.',
             self::Translator => 'Minden programot lát (olvasásra), és a programok román fordítását szerkeszti, átnézi, jóváhagyja. Mást nem módosíthat.',
+            self::OlympicsCoordinator => 'CSAK a Családi Olimpia jelentkezéseit látja és kezeli (várólista, visszalépés). A programokhoz nincs köze.',
+            self::VolunteerCoordinator => 'CSAK az önkéntes-jelentkezéseket látja és kezeli — érzékeny, kiskorúakat is érintő személyes adat. Rajta kívül csak a szuperadmin látja.',
             self::ThemeEditor => 'CSAK az arculat-szerkesztőhöz (Arculat / /admin/tema) fér hozzá, semmi máshoz.',
             self::ReadOnly => 'Minden programot lát, de semmit nem módosíthat.',
         };
@@ -124,6 +130,24 @@ enum UserRole: string
     public function canEditVenues(): bool
     {
         return in_array($this, [self::SuperAdmin, self::Coordinator], true);
+    }
+
+    /**
+     * A Családi Olimpia jelentkezései (PROMPT-20). 2026-ban külön „Olimpia-koordinátor” szerep vitte; a programkoordinátor is
+     * kezelheti. A kategóriagazda, a fordító és a csak-olvasó NEM (gyerekek neve és életkora van benne).
+     */
+    public function canManageOlympics(): bool
+    {
+        return in_array($this, [self::SuperAdmin, self::Coordinator, self::OlympicsCoordinator], true);
+    }
+
+    /**
+     * Az önkéntes-jelentkezések — KISKORÚAK adatai (egészségügyi megjegyzés, szülői hozzájárulás). CSAK akinek tényleg kell:
+     * a szuperadmin és az önkéntes-koordinátor (2026-ban is csak ő és az admin). A programkoordinátor NEM.
+     */
+    public function canManageVolunteers(): bool
+    {
+        return in_array($this, [self::SuperAdmin, self::VolunteerCoordinator], true);
     }
 
     /** Az arculat (/admin/tema) szerkesztése és publikálása. */

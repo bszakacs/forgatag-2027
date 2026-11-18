@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-18 (PROMPT-19 + titkos beállítások feltolva; cron beállítva; az API-kulcs CSAK KÉSŐBB lesz — addig az élő próba szünetel)
+**Utolsó frissítés:** 2026-11-18 este (PROMPT-20: Családi Olimpia + önkéntes űrlap kész helyben, 262 teszt zöld; élesítés: „Ami MOST folyik” 0. pont)
 
 ---
 
@@ -460,8 +460,49 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     csendben a .env-re.
   - Titkosítás: a Laravel beépített titkosítása (APP_KEY), tábla: `secret_settings` (új migráció). Helyben böngészőből végigpróbálva
     (megadás → csere üres mezővel → törlés, asztal + 375 px). 232 teszt zöld (új: `TitkokTest`, 6).
+- **Két publikus jelentkező űrlap: Családi Olimpia (`/olimpia`) és önkéntes (`/onkentes`)** (`PROMPT-20`, 2026-11-18) — **kész HELYBEN,
+  egy körben mindkettő** (nem kellett kettévágni). A szabadulószoba NEM (tulajdonosi döntés). Részletek: CLAUDE.md 8. pont, „Jelentkező űrlapok”.
+  - **Belépés nélkül, védve:** méz-bödön (kitöltve: látszólagos siker, NINCS mentés, nincs levél), IP-nként és űrlaponként 15 percenként 5
+    beküldés (a 2026-os szabály és szöveg), és a nyitva/zárva a **végponton is** (zárva 403 + a zárt üzenet). Teszttel mind.
+  - **Olimpia — atomi színfoglalás:** az egyediség az ADATBÁZIS egyedi kulcsa (év + szín). **Helyben mérve:** két egyidejű beküldés ugyanarra
+    a színre → az egyik 200, a másik 409 a 2026-os szöveggel („A(z) „Piros" színt az előbb elvitte…”), friss színlistával; a böngészőben a régi
+    lapról beküldve a Piros „elfogyott” lett, **a beírt adatok (csapatnév, tagok, nyilatkozat-pipa) megmaradtak**, másik színnel ment.
+    Létszámkorlát (Beállítások, 6) → utána **várólista** a jelentkezés sorrendjében; a számolás + beírás zár alatt, utána **sorrend-javítás**
+    (ha két jelentkezés mégis versenyzett, a későbbit várólistára teszi; előléptetni nem léptet). **Visszalépéskor a szín azonnal felszabadul.**
+    7 tag, 1–5 kötelező, **félig kitöltött tag hiba**. Visszaigazoló levél a kapitánynak AZONNAL + értesítés a koordinátornak (2026-os szövegek).
+  - **Önkéntes — kiskorúak adatai:** a két dokumentum a **ZÁRT tárba** (`storage/app/private/onkentesek/<év>/`, véletlen névvel), soha nem a
+    médiatárba; a típust a fájl **tartalmából** dönti el (egy „PDF”-nek nevezett HTML-t elutasít — böngészőben is kipróbálva). **Közvetlen címmel
+    nem érhető el** (helyben a pontos fájlnévvel próbálva: 403 / 404, az admin-útvonal belépésre visz). **16 alatt a szülői hozzájárulás ÉS a
+    motivációs levél kötelező** (a böngésző és a szerver is), felette opcionális, de a formátum akkor is ellenőrzött. Az egészségügyi megjegyzés
+    kötelező; a koordinátori levélbe NEM kerül bele (csak az adminban látszik).
+  - **Az önkéntes-napok SAJÁT lista** a Beállításokban (nulladik nap és utómunkálatok nap is, megjegyzéssel) — nem a programnapok. Egy gomb
+    kitölti a fesztiválnapokból (előtte „nulladik nap”, utána „utómunkálatok”), átírható. A felirat a 2026-os alakban: „aug. 24. (kedd – nulladik nap)”.
+  - **Beállítások: két ÚJ BLOKK** („Családi Olimpia”, „Önkéntesek”), nem menüpont. Bennük a koordinátor címe — **üresen PIROS figyelmeztetés**
+    (a nyitólapon is, ha az űrlap nyitva van). Nyitni csak olimpia-nappal és színnel, illetve önkéntes-napokkal és területekkel lehet.
+  - **Admin: új „Jelentkezések” menücsoport** (Családi Olimpia · Önkéntesek). **Két új szerepkör** (mint 2026-ban): **Olimpia-koordinátor** (csak
+    az olimpia) és **Önkéntes-koordinátor** (csak az önkéntesek). Az önkénteseket **csak a szuperadmin és az önkéntes-koordinátor** látja — a
+    programkoordinátor sem (teszttel, 6 szerepkörrel, a közvetlen címet és a dokumentum-címet is begépelve: 403 / 404). Olimpia: „Visszalépett”
+    és „Előléptetés a várólistáról” gomb (csak ha van szabad hely). Az önkéntes adatai nem szerkeszthetők, csak az állapot és a belső jegyzet.
+  - **Szövegek:** a bevezetők és a „Kik jelentkezhetnek?” a 2026-os szöveggel, szerkeszthetők (Tartalom → Aloldalak → Családi Olimpia /
+    Önkéntes-jelentkezés); az olimpia dátuma és a csapatszám a Beállításokból kerül bele. A nyilatkozatok szó szerint, a rekordon is eltárolva.
+  - 375 px-en mindkét űrlap végig (vízszintes görgetés nincs). **262 teszt zöld** (új: `OlimpiaOnkentesTest`, 30).
+  - Döntések (egy-egy sor): a két űrlap a beküldő lapok keretében (a 2026-os olympics/volunteer stílus ugyanaz volt) · csak magyarul (2026-ban is) ·
+    a dokumentumok rendes fájlfeltöltésként (2026: base64) · az olimpia-koordinátor mellett a programkoordinátor is kezeli az olimpiát, az
+    önkénteseket NEM · az önkéntes NEM kap visszaigazoló levelet (2026-ban sem, a lap szövege ígéri a kapcsolatfelvételt) · a koordinátori
+    címek a meglévő „értesítések” tárolóban, csak a mezőjük ül a saját blokkban (egy forrás) · a 2026-os 34 önkéntes-melléklet továbbra sem jön át.
 
 ## Ami MOST folyik
+
+0. **A két jelentkező űrlap élesítése (PROMPT-20)** — helyben kész, **feltolva; telepíteni kell** (Update from Remote → Deploy HEAD Commit).
+   A naplóban: új migráció (`olympics_teams`, `volunteer_applications`), `TÖRZSADATOK: beállítások / olympics — betöltve`, `… / volunteer — betöltve`,
+   `LAPSZÖVEG: olimpia: a rendszerlap létrehozva`, `… onkentes: a rendszerlap létrehozva`.
+   **A felhasználó teendői (belépve):** (1) **cPanel → Select PHP Version → Options: `post_max_size` legalább 24M** (két 10 MB-os dokumentum egy
+   kérésben; a Beállítások „Önkéntesek” blokkja pirosan jelzi, ha kevés). (2) Beállítások → Családi Olimpia: az olimpia napja, a koordinátor címe,
+   **nyitva** (a próbára). (3) Beállítások → Önkéntesek: „Kitöltés a fesztivál napjaiból”, a koordinátor címe, nyitva. (4) Felhasználók: egy
+   Olimpia-koordinátor és egy Önkéntes-koordinátor fiók, ha kell.
+   **Élesben megnézendő (velem):** két ablakból ugyanarra a színre · a létszám feletti várólista · 16 alatt a két fájl · a feltöltött fájl közvetlen
+   címmel · zárva a végpont · méz-bödön · 375 px · kategóriagazda-fiókkal a `/admin/olimpia` és `/admin/onkentesek` begépelve → 403.
+   ⚠ A próbajelentkezéseket utána az adminban törölni kell (Jelentkezések → … → Törlés).
 
 0. **A fordítási lánc élesítése (PROMPT-19)** — **SZÜNETEL: nincs még API-kulcs, később lesz (tulajdonos, 2026-11-18).**
    **Állás 2026-11-18:** a szerveren a legutóbbi commit `5f533af2` (a cPanel Git felülete mutatja — a tulajdonos küldte), és **a cron
@@ -624,8 +665,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 9. ~~**A fordítási lánc**~~ — **kész helyben (2026-11-18, PROMPT-19)**, fent; az élesítés a tulajdonos 3 lépése után.
 10. **Élesbe tétel** — **a legutolsó lépés**, lásd lentebb. Addig nem téma.
 
-**A három hátralévő űrlap** (szabadulószoba `PROMPT-03`, olimpia, önkéntes) **levél a fán**: semmi
-nem épül rájuk, bárhova beilleszthetők — például egy nagyobb darab után rövidebb körként.
+**A hátralévő űrlap: a szabadulószoba** (`PROMPT-03`) — **egyelőre NEM kell** (tulajdonosi döntés, 2026-11-18). Az olimpia és az önkéntes
+kész (PROMPT-20). Ha jön: ugyanaz a minta (`App\Support\PublikusUrlap`, `throttle:jelentkezes`, Beállítások-blokk, `NotificationTopic::blokk`).
 
 ## Az élesbe tétel
 
@@ -715,6 +756,11 @@ nem nyúlunk.**
   átírandó az adminban (Aloldalak → Támogatóink → Bevezető), mint a fesztiválrend „13.” sorszáma — nem írtam át magamtól.
 - **ÚJ (PROMPT-17) — a kézművesek listája a 2026-os 67 kézműves** (mind látható). A 2026-os modellnek nem volt éve; ha a 2027-es vásáron
   mások lesznek, az adminban rejthetők/törölhetők (Tartalom → Kézművesek). Évhez kötni (mint a támogatókat) új mező lenne — szólj, ha kell.
+- **ÚJ (PROMPT-20) — a Családi Olimpia bevezetőjében a 2026-os tények állnak:** a cím „**3.** Családi Olimpia a Forgatagon”, az időpont
+  „9 és 11 óra között”, a helyszín „a marosvásárhelyi várba”, „5–7 fős csapatok, legalább 2 gyerek és 2 felnőtt, legalább 6 éves”. Az olimpia
+  NAPJA és a csapatszám már a Beállításokból jön; a többit nyitás előtt az adminban kell ellenőrizni (Tartalom → Aloldalak → Családi Olimpia).
+- **ÚJ (PROMPT-20) — az önkéntes-napok 2027-es listája:** üresen indul (dátumot nem találok ki); a Beállításokban egy gomb kitölti a
+  fesztiválnapokból a 2026-os minta szerint (előtte egy nulladik nap, utána egy utómunkálatok nap) — a szervezők erősítsék meg.
 - **ÚJ — a logón még „13.” áll** (a 2026-os logó). A 2027-es logót az Arculatban kell feltölteni (logó + fejléc-logó).
 - **ÚJ — világos mód a publikus oldalon?** Most sötét-only (mint 2026-ban). Ha kell váltó, szólj.
 
@@ -731,7 +777,8 @@ nem nyúlunk.**
 - **ÚJ — a zárt tár 26 fotója:** 2026-ban beküldött, de meg nem jelent programok fotói
   (`storage/app/private/bekuldesek-2026/`, mellettük `LISTA.json`). Megtartsuk vagy töröljük?
 - **ÚJ — az önkéntesek 34 melléklete** (szülői hozzájárulás, motivációs levél) szándékosan NEM jött át
-  (személyes adat). A mentésben megvannak; ha az önkéntes-űrlap köre kéri, onnan hozható.
+  (személyes adat). A mentésben megvannak. *(PROMPT-20: az önkéntes-űrlap kész, és nem kérte — a 2026-os jelentkezések nem jönnek át, a
+  mellékletek sem. Ha mégis kell, onnan hozható, a zárt tárba.)*
 - **ÚJ — a „Kedvenc programjaim” lap:** 2026-ban a NAS-ra hívott (kedvencek-API); a 13 lappal együtt átjött
   (egy az egyben), de a funkció a 2027-es rendszerben még nincs meg. Kell-e 2027-ben kedvenclista?
 - Napi automatikus adatbázis-mentés: **be kell állítani, és egyszer vissza is kell tölteni.**

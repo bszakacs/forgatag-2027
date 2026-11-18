@@ -46,6 +46,10 @@ class AppServiceProvider extends ServiceProvider
         // Beküldés + javítás: IP-nként óránként 30 — egy szervezet egy gépről is bőven elfér benne.
         RateLimiter::for('bekuldes', fn (Request $r) => Limit::perHour(30)->by('bekuldes|' . $r->ip())
             ->response(fn () => response()->json(['ok' => false, 'errors' => ['Túl sok beküldés rövid idő alatt. Próbáld újra egy óra múlva; ha sürgős, keresd a szervezőt.']], 429)));
+        // A két publikus jelentkező űrlap (olimpia, önkéntes — PROMPT-20): IP-nként és űrlaponként 15 percenként 5 beküldés
+        // (a 2026-os olympics-api / volunteer-api szabálya és szövege). Belépés nélküli végpont — ez nem opcionális.
+        RateLimiter::for('jelentkezes', fn (Request $r) => Limit::perMinutes(15, 5)->by('jelentkezes|' . $r->path() . '|' . $r->ip())
+            ->response(fn () => response()->json(['ok' => false, 'errors' => ['Túl sok beküldés rövid idő alatt. Próbáld pár perc múlva.']], 429)));
         // Belépési kísérletek IP-nként (a fiókonkénti zárolás a BelepesControllerben van).
         RateLimiter::for('bekuldes-belepes', fn (Request $r) => Limit::perMinutes(15, 30)->by('belepes|' . $r->ip())
             ->response(fn () => back()->withErrors(['email' => 'Túl sok sikertelen próbálkozás. Próbáld újra pár perc múlva.'])));

@@ -23,12 +23,14 @@ enum NavigationGroup: string implements HasIcon, HasLabel
 {
     // A sorrend a menü sorrendje (a Filament a felsorolás sorrendjében rakja ki a csoportokat).
     case Tartalom = 'tartalom';
+    case Jelentkezesek = 'jelentkezesek';
     case Felhasznalok = 'felhasznalok';
 
     public function getLabel(): string
     {
         return match ($this) {
             self::Tartalom => 'Tartalom',
+            self::Jelentkezesek => 'Jelentkezések',
             self::Felhasznalok => 'Felhasználók',
         };
     }
@@ -37,6 +39,7 @@ enum NavigationGroup: string implements HasIcon, HasLabel
     {
         return match ($this) {
             self::Tartalom => Heroicon::OutlinedNewspaper,
+            self::Jelentkezesek => Heroicon::OutlinedClipboardDocumentList,
             self::Felhasznalok => Heroicon::OutlinedUsers,
         };
     }
