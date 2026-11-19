@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-19 (PROMPT-21: kedvencek + naptár-export kész helyben, 270 teszt zöld; hátra a telepítés, az élő próba és a valódi telefonos naptár-próba)
+**Utolsó frissítés:** 2026-11-19 este (PROMPT-21: kedvencek + naptár-export telepítve és élesben mérve; hátra a valódi telefonos naptár-próba)
 
 ---
 
@@ -491,7 +491,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     önkénteseket NEM · az önkéntes NEM kap visszaigazoló levelet (2026-ban sem, a lap szövege ígéri a kapcsolatfelvételt) · a koordinátori
     címek a meglévő „értesítések” tárolóban, csak a mezőjük ül a saját blokkban (egy forrás) · a 2026-os 34 önkéntes-melléklet továbbra sem jön át.
 
-- **Kedvencek és naptár-export** (`PROMPT-21`, 2026-11-19) — **kész HELYBEN** (telepítés és élő próba: „MOST folyik”). Részletek: CLAUDE.md 8. pont.
+- **Kedvencek és naptár-export** (`PROMPT-21`, 2026-11-19) — **kész, élesben mérve** (részletek: „MOST folyik”). Részletek: CLAUDE.md 8. pont.
   - **Bekapcsolva:** a szív a kereső sorain/kártyáin (a napi nézet, kategória- és helyszínlap ugyanezt a sablont használja), a felugró ablak
     „Mentés” és „Naptárba” gombja, a program lapjának szíve és „Mind a naptárba” gombja, a fejléc szíve (pöttyel, ha van mentett program —
     2026-os elem, eddig hiányzott), és a **„Kedvenc programjaim” lap** (`/kedvencek`, `/ro/kedvencek`) mindkét állapota (üres + ajánló; feltöltött).
@@ -517,10 +517,16 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
 
 ## Ami MOST folyik
 
-0. **A kedvencek és a naptár élesítése (PROMPT-21)** — helyben kész, **telepítésre vár**. A telepítés magától futtatja a migrációt és a
-   lapszövegeket (a `.cpanel.yml`-ben benne van). Utána élesben: szív → link-értesítés; szűrés után a szív; másik böngészőben a link ugyanazt
-   hozza; adatok törlése után a link visszahozza; **valódi telefonon** (iPhone ÉS Android) a „Naptárba → Apple Naptár / egyéb (.ics)” megnyílik,
-   és egy 23:00–00:30 program a **következő nap 00:30-kor** ér véget; 375 px és román.
+0. **A kedvencek és a naptár élesítése (PROMPT-21)** — **telepítve (`a308facb`) és ÉLESBEN MÉRVE (2026-11-19, proba.forgatag.ro):**
+   · a lapok 200, 0,3–0,65 s; a programkereső forrásában 104 szív, mind semleges (`aria-pressed="false"`), egy sem tiltott;
+   · szív → a link-értesítés **2 mp-en belül** megjelent, a „Link másolása” működik; **szűrés után** (keresőszó) a szív a helyén, a szerver listája egyezik;
+   · a program lapjáról mentett program azonnali lapváltás után is felment (a sorban váró művelet a kedvencek lapján felment);
+   · **a böngésző tárolóját törölve a link visszahozta a listát** (2 program, 4 időpont); 375 px-en és románul végig, vízszintes görgetés nincs;
+   · **naptárfájl élesben:** `text/calendar`, a Műhely Banda (péntek 23:00–00:30) → `DTSTART 20270827T200000Z`, `DTEND 20270827T213000Z` =
+     péntek 23:00 – **szombat 00:30** helyi idő. A próbalisták törölve.
+   **Nem mért:** (1) **valódi telefon** — iPhone-on és Androidon a „Naptárba → Apple Naptár / egyéb (.ics)” megnyílik-e a naptárban (a tulajdonosé);
+   (2) a „másik böngésző” a Chrome-mal nem ment (a bővítmény nem válaszolt) — helyette tiszta tárolóval ugyanabban a böngészőben mérve, ami a
+   szerver szempontjából ugyanaz (a lista a kulcson él, nem a böngészőn).
    ⚠ **Tartalmi apróság (a tulajdonosé):** a román lapcím a 2026-ból behozott szöveg („Vâltoarea” + „mea”), és az első részéből hiányzik a záró
    szóköz → „Vâltoareamea”. Javítás: Tartalom → Aloldalak → Kedvenc programjaim → „Főcím — eleje” (román) végére egy szóköz.
 
