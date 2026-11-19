@@ -10,7 +10,7 @@
 .pk-day input,.pk-now input,.pk-chip input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
 .pk-day:has(input:focus-visible),.pk-now:has(input:focus-visible),.pk-chip:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
 .pk-opt[hidden]{display:none}
-.pk-mghost:disabled,.pk-save:disabled,[data-section] .btn:disabled{opacity:.45;cursor:default;transform:none}
+.pk-mghost:disabled,[data-section] .btn:disabled{opacity:.45;cursor:default;transform:none}
 .pk-nojs{margin-top:var(--sp-4)}
 /* TULAJDONOSI DÖNTÉS (2026-11-01) — eltérés a 2026-ostól: a jobb oldali térkép-sáv (asztalon) görgethető marad, de a
    natív görgetősávja nem látszik (2026-ban rávitelkor megjelent). */

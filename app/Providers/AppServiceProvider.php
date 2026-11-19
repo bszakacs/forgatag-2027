@@ -50,6 +50,12 @@ class AppServiceProvider extends ServiceProvider
         // (a 2026-os olympics-api / volunteer-api szabálya és szövege). Belépés nélküli végpont — ez nem opcionális.
         RateLimiter::for('jelentkezes', fn (Request $r) => Limit::perMinutes(15, 5)->by('jelentkezes|' . $r->path() . '|' . $r->ip())
             ->response(fn () => response()->json(['ok' => false, 'errors' => ['Túl sok beküldés rövid idő alatt. Próbáld pár perc múlva.']], 429)));
+        // A kedvenclista végpontja (PROMPT-21): IP-nként tág korlát (egy fesztivál-wifi / mobilszolgáltató mögött sok látogató
+        // osztozik egy IP-n), az új lista létrehozása szűkebb. A szöveget a kliens írja ki, nyelvenként (`hiba: sok`).
+        RateLimiter::for('kedvencek', fn (Request $r) => Limit::perMinute(300)->by('kedvencek|' . $r->ip())
+            ->response(fn () => response()->json(['ok' => false, 'hiba' => 'sok'], 429)));
+        RateLimiter::for('kedvencek-uj', fn (Request $r) => Limit::perMinutes(10, 30)->by('kedvencek-uj|' . $r->ip())
+            ->response(fn () => response()->json(['ok' => false, 'hiba' => 'sok'], 429)));
         // Belépési kísérletek IP-nként (a fiókonkénti zárolás a BelepesControllerben van).
         RateLimiter::for('bekuldes-belepes', fn (Request $r) => Limit::perMinutes(15, 30)->by('belepes|' . $r->ip())
             ->response(fn () => back()->withErrors(['email' => 'Túl sok sikertelen próbálkozás. Próbáld újra pár perc múlva.'])));

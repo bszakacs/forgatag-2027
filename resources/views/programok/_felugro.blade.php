@@ -1,4 +1,5 @@
 @use('App\Support\Festival')
+@use('App\Support\Naptar')
 @use('App\Support\Nyelv')
 @use('App\Support\ProgramJelzesek')
 @use('App\Support\ProgramSzoveg')
@@ -10,9 +11,13 @@
      * szerver végzi. A listából EZ nyílik; a címsorban `?program=<slug>` (megosztható). A kártya htmx-szel CSAK ezt az
      * elemet kéri le (#pkModal), a bezárás ugyanígy. Egyetlen jelölési eltérés: a leírás tárolója `div` (2026: `p`,
      * amibe a JS tett `p`-ket — szerveroldali HTML-ben `p` nem lehet `p`-ben).
-     * A négy gomb a 2026-os helyén van; a „Mutasd a térképen” és a „Megosztás” működik, a „Naptárba” a naptár-, a
-     * „Mentés” a kedvencek-körben kapcsol be (addig tiltva — ALLAPOT.md).
+     * A négy gomb a 2026-os helyén van. „Naptárba” (PROMPT-21): a NÉZETT időpont (2026 ugyanígy) — a választólista
+     * (public/js/naptar.js) a webes naptárakat és a valódi .ics címet (/program/<slug>.ics?idopont=) kínálja. „Mentés”: a szív
+     * (public/js/kedvencek.js, data-save) — semlegesen érkezik, a böngésző jelöli meg.
+     * $kedvencLap: a „Kedvenc programjaim” lapja kérte (2026: program-modal.js beallit — url: null, mentes: false): a bezárás
+     * helyben zár (a címsor nem változik), és a „Mentés” rejtett, mert ott a kártya szíve ment.
      */
+    $kedvencLap ??= false;
     $p = $felugro['program'] ?? null;
     $zarUrl = $szures->mas([])->url();
 @endphp
@@ -33,10 +38,10 @@
       $fellepo = trim((string) ($p->extra_fields['performer_name'] ?? $p->extra_fields['book_author'] ?? ''));
       $gepi = $cim['gepi'] || $leiras['gepi'] || $jegy['gepi'];
   @endphp
-  <a class="pk-scrim" href="{{ $zarUrl }}" data-pk-close tabindex="-1" aria-hidden="true"></a>
+  <a class="pk-scrim" href="{{ $kedvencLap ? '#' : $zarUrl }}" data-pk-close tabindex="-1" aria-hidden="true"></a>
   <div class="pk-dialog">
-    <a class="pk-close" href="{{ $zarUrl }}" data-pk-close aria-label="{{ __('publikus.bezaras') }}"
-       hx-get="{{ $zarUrl }}" hx-target="#pkModal" hx-select="#pkModal" hx-swap="outerHTML" hx-push-url="true">
+    <a class="pk-close" href="{{ $kedvencLap ? '#' : $zarUrl }}" data-pk-close aria-label="{{ __('publikus.bezaras') }}"
+       @unless ($kedvencLap) hx-get="{{ $zarUrl }}" hx-target="#pkModal" hx-select="#pkModal" hx-swap="outerHTML" hx-push-url="true" @endunless>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </a>
     <div class="pk-dialog-scroll">
@@ -66,12 +71,12 @@
             <span class="pk-only-narrow">{{ $sz->szoveg('programs_modal_map_cta_short') }}</span>
           </button>
           {{-- 2026: lemondott program nem kerül naptárba — ott a gomb rejtett. --}}
-          <button class="pk-mghost" type="button" id="pkMIcs" @if ($p->status === ProgramStatus::Cancelled) hidden @endif disabled>
+          <button class="pk-mghost" type="button" id="pkMIcs" aria-haspopup="menu" aria-expanded="false" @if ($p->status === ProgramStatus::Cancelled || ! $sor) hidden @else data-naptar="{{ Naptar::gombAdat($p, collect([$sor]), Nyelv::ut('/program/' . $p->slug . '.ics') . '?idopont=' . $sor->idopont->id) }}" @endif>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v3M17 3v3M4 8h16M5 6h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/></svg>
             <span class="pk-only-wide">{{ $sz->szoveg('programs_modal_ics') }}</span>
             <span class="pk-only-narrow">{{ $sz->szoveg('programs_modal_ics_short') }}</span>
           </button>
-          <button class="pk-mghost" type="button" id="pkMSave" aria-pressed="false" disabled>
+          <button class="pk-mghost" type="button" id="pkMSave" aria-pressed="false" data-save="{{ $p->id }}" @if ($kedvencLap) hidden @endif>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.6A4.4 4.4 0 0 1 12 7a4.4 4.4 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg>
             <span>{{ $sz->szoveg('programs_modal_save') }}</span>
           </button>

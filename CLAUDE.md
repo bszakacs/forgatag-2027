@@ -828,6 +828,32 @@ BELÉPÉS NÉLKÜL; a beküldő lapok keretében: `bekuldes.layout` + `jelentkez
   (`Olimpia::NYILATKOZAT`, `Onkentes::HOZZAJARULAS`) a kódban, SZÓ SZERINT a 2026-osból, és a rekordon is (bizonyíték) — ne fogalmazd át.
 - Tesztek: `tests/Feature/OlimpiaOnkentesTest.php` (30).
 
+**Kedvencek és naptár-export — kész helyben (2026-11-19, PROMPT-21).** Tulajdonosi döntés: a kedvencek kellenek; belépés és személyes adat NINCS.
+- 🔴 **A SZÍV SEMLEGESEN ÉRKEZIK.** A lap forrásában soha nincs látogatói adat (mi van megjelölve, a lista kulcsa): a lapok gyorsítótárazhatók,
+  és egy gyorsítótárazott lap különben valaki MÁS szíveit mutatná. Szív = bármely `[data-save="<program-id>"]` gomb, `aria-pressed="false"`-szal,
+  `disabled` nélkül (kártya: `programok/_kartyak`, felugró ablak „Mentés”, program lapja `.fav-btn`); a jelölést a **`public/js/kedvencek.js`**
+  teszi rá betöltéskor ÉS minden htmx-csere után (`htmx:afterSettle`/`htmx:load`), a kattintás a dokumentumon ül. Teszt őrzi (`KedvencekTest`).
+- **Tárolás:** böngésző (`fg-kedvencek`, `fg-kedvenc-lista` = a kulcs, `fg-kedvenc-ops` = a fel nem ment műveletek) + szerver
+  (`favorite_lists`: 32 hexa kulcs + program-id-k, `FavoriteList`, policy: minden tiltva). **Író-út EGY helyen: `App\Support\Kedvencek`.**
+  A kliens MŰVELETEKET küld (`[[id, true|false]]`), nem a teljes listát — két eszköz nem írja felül egymást; zárolt sor, tranzakció; max 300.
+  Végpont: `KedvencListaController` (`/kedvencek-api/lista`, nyelvtől független, CSRF nélkül — `bootstrap/app.php`; korlát: `throttle:kedvencek`
+  300/perc/IP, új lista `kedvencek-uj` 30/10 perc — tág, mert egy fesztivál-wifi mögött sok látogató ül egy IP-n). Nem létező kulcs: 404 → a
+  kliens a helyi listát új listaként (új linkkel) tölti fel — semmi nem vész el. Hiba → értesítés (néma hiba tilos), a művelet a sorban vár.
+- **A LINK (`/kedvencek?lista=<kulcs>`) az egyetlen út vissza a listához:** az első szívnél a lap alján értesítés a linkkel + másolással; a
+  „Kedvenc programjaim” lapon a lista FÖLÖTT. Megnyitáskor a link listája lesz az eszközé, a helyi tételek beleolvadnak (`fgKedvenc.megnyit`).
+- **A lap:** `oldal/kedvencek` (rendszerlap-sablon, `noindex` — `@section('robots')`), a 2026-os `kedvenceim/body.html` jelölése; CSS: `kedvencek.css`
+  (a 2026-os másolata — a kivezetett e-mailes ablak `.fg-auth*` szabályai nélkül) + `programkereso.css` + `kedvencek-szerver.css`; JS:
+  `kedvencek-lap.js`. A kártyákat a szerver rajzolja a látogató listájából (`/kedvencek/kartyak?p=…` → `kedvencek/_lista`, a kereső `_kartyak`
+  sablonjával, `kedvenc: true` + átfedés-jelzés). A felugró ablak a keresőé, `X-Kedvencek: 1` fejléccel kérve (`$kedvencLap`: címsor nem változik,
+  „Mentés” rejtett — 2026 ugyanígy). Szövegek: `LapSablon::SABLONOK['kedvencek']` (a 2026-os `fav_*` kulcsok; a `fav_locked_*`/`auth_*` → `fav_link_*`),
+  a rövid feliratok `lang/*/publikus.php` `kv_*`, `cal_*`. A fejléc szíve (`fg-fav-btn` + `#favDot`) a 2026-os SiteHeader-ből.
+- **Naptár: `App\Support\Naptar`** — a fájl a SZERVEREN készül (`/program/<slug>.ics`, `?idopont=` = csak az az egy; `/kedvencek/naptar.ics?p=…`),
+  mert az iOS csak valódi https-címet ad át a Naptárnak. 🔴 **A valódi pillanat:** a `ProgramSor` skálájából (≥ 1440 perc = másnap), falióra-időre
+  visszaváltva, a fesztivál időzónájából UTC-be (a 23:00–00:30 MÁSNAP 00:30-kor ér véget). Vég nélkül 1 óra + jelzés. A választólista
+  (Google · Outlook · M365 · Yahoo · Apple/.ics): `public/js/naptar.js` + `naptar.css` (a 2026-os calendar-menu), a gomb `data-naptar` adata
+  (`Naptar::gombAdat`) — a böngészőben nincs időzóna-számolás. Lemondott program: nincs gomb, a fájl 404.
+- Tesztek: `tests/Feature/KedvencekTest.php` (8).
+
 ### Adósságok — nyilvántartva, később szabályt sértenének (tulajdonosi rögzítés, 2026-10-12)
 
 1. ~~**`public/css/tema.css` IDEIGLENES.**~~ **Törlesztve (2026-10-21):** a fájl törölve, minden lap a

@@ -4,7 +4,7 @@
 > **Ezt a fájlt minden kör VÉGÉN frissíteni kell** — a 2026-os `HANDOFF.md` azért vált
 > használhatatlanná, mert senki nem frissítette.
 
-**Utolsó frissítés:** 2026-11-18 éjjel (PROMPT-20: a két jelentkező űrlap telepítve, kinyitva, élesben mérve; hátra a felhasználó belépéses próbái és a próbaadatok törlése)
+**Utolsó frissítés:** 2026-11-19 (PROMPT-21: kedvencek + naptár-export kész helyben, 270 teszt zöld; hátra a telepítés, az élő próba és a valódi telefonos naptár-próba)
 
 ---
 
@@ -172,8 +172,8 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   - **A gombok helye megvan, a működésük a saját körükben kapcsol be (addig tiltva, halványan):**
     · ~~**térkép-kör (2. rész):** a térkép maga, a felugró ablak „Mutasd a térképen” gombja, a mobil „Térkép” gomb, a helyszínlista
       térképszámai~~ — **kész (PROMPT-12, 2/a rész)**;
-    · **kedvencek-kör:** a szív a sorokon/kártyákon és a felugró ablak „Mentés” gombja;
-    · **naptár-kör:** a felugró ablak „Naptárba” gombja;
+    · ~~**kedvencek-kör:** a szív a sorokon/kártyákon és a felugró ablak „Mentés” gombja~~ — **kész (PROMPT-21)**;
+    · ~~**naptár-kör:** a felugró ablak „Naptárba” gombja~~ — **kész (PROMPT-21)**;
     · ~~**mozgás-/dekor-kör:** a lapon szórt firkák és a kártyák felúszása~~ — **kész (PROMPT-13)**; a kereső kártyái 2026-ban sem úsztak fel;
     · ~~**ellenőrizendő a 2. részben:** a napi nézet és a program lapja a 2026-os `DailyProgramView`/`ProgramDetailView` mellé téve~~ —
       **megtörtént (PROMPT-15)**: mindkettő a 2026-os jelöléssel újraépítve és mérve (lent).
@@ -320,7 +320,7 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
   | Fesztiválrend | 14 (nyitókép) | — a lap még nincs (8. pont) | **14 / 14** (PROMPT-17) |
   | Kézművesek | 37 | — a lap még nincs (8. pont) | **34 / 34** (PROMPT-17; a lap hosszától függ) |
   | Videó archívum | **16** (nyitókép, „szél” — a korábbi leltár itt tévesen 0-t írt) | — a lap még nincs | **16 / 16** (PROMPT-17) |
-  | Kedvencek | 20 | — a funkció nyitott kérdés | — |
+  | Kedvencek | 20 | — a lap még nincs | **15 / 15** (PROMPT-21; a lista hosszától függ) |
   | Rólunk, hírlista, hír, napi nézet, program lapja, helyszín-, kategória-, galéria-, támogatók-, térkép-lap, 404 | 0 | 0 | 0 (egyezik) |
   | Hamarosan (2027-es lap) | — | 2 (beágyazott, mindig látszott) | 2 |
 
@@ -491,7 +491,39 @@ A felhasználó **nem fejlesztő** — magyarul, laikusbarátan, tömören.
     önkénteseket NEM · az önkéntes NEM kap visszaigazoló levelet (2026-ban sem, a lap szövege ígéri a kapcsolatfelvételt) · a koordinátori
     címek a meglévő „értesítések” tárolóban, csak a mezőjük ül a saját blokkban (egy forrás) · a 2026-os 34 önkéntes-melléklet továbbra sem jön át.
 
+- **Kedvencek és naptár-export** (`PROMPT-21`, 2026-11-19) — **kész HELYBEN** (telepítés és élő próba: „MOST folyik”). Részletek: CLAUDE.md 8. pont.
+  - **Bekapcsolva:** a szív a kereső sorain/kártyáin (a napi nézet, kategória- és helyszínlap ugyanezt a sablont használja), a felugró ablak
+    „Mentés” és „Naptárba” gombja, a program lapjának szíve és „Mind a naptárba” gombja, a fejléc szíve (pöttyel, ha van mentett program —
+    2026-os elem, eddig hiányzott), és a **„Kedvenc programjaim” lap** (`/kedvencek`, `/ro/kedvencek`) mindkét állapota (üres + ajánló; feltöltött).
+  - **Belépés és személyes adat nincs:** a lista egy véletlen kulcshoz tartozik; **a link** (`/kedvencek?lista=…`) az egyetlen út vissza hozzá.
+    **Az első szívnél** a lap alján feltűnő értesítés jelenik meg a linkkel és „Link másolása” gombbal; a kedvencek lapján a link a lista
+    FÖLÖTT áll (rózsaszín keretben), telefonon „Elküldöm magamnak” (a rendszer megosztója).
+  - **A gyorsítótárazhatóság megmaradt:** a lapok semleges szívvel érkeznek, a jelölést a böngésző teszi rá (teszt: a kereső, a felugró ablak, a
+    program lapja és a kedvencek lapja forrásában egy szív sincs megjelölve, és a lista kulcsa sehol nem szerepel).
+  - **Helyben mérve (böngészőben):** szív → a szív megtelt, a fejléc pöttye megjelent, a szerver válasza után a link-értesítés (helyben a lassú Docker miatt ~10 mp; élesben mérendő); **szűrés után** (keresőszó,
+    htmx-csere) a szív a helyén (mindhárom napon, ahol a program szerepel); a felugró ablak „Mentés”-e tudja, hogy mentve van; „Naptárba” → a
+    2026-os választólista, Esc csak a listát zárja. Kedvencek lapja: 3 program / 6 időpont / 4 nap, **átfedés-jelzés**, levétel + visszavonás
+    (a szerver is visszakapta); **a böngésző tárolóját törölve a lap üres, a linket megnyitva visszajött a teljes lista**; 375 px-en és
+    románul végig (vízszintes görgetés nincs); a felugró ablak itt helyben nyílik és zár (a címsor marad).
+  - **Naptár:** a fájl a szerveren készül (az iPhone csak így adja át a Naptárnak). **A 23:00–00:30 program a naptárban péntek 23:00 – SZOMBAT
+    00:30** (mérve és teszttel; a 00:30-as kezdés is a következő hajnalra kerül). Az egész lista is letölthető egy fájlban („Az egész lista a naptárba”).
+  - **270 teszt zöld** (új: `KedvencekTest`, 8; a `MaradekLapokTest` a kedvencek lapját is ellenőrzi).
+  - Döntések (egy-egy sor): a 2026-os e-mail-cím helyén link (a PROMPT-21 szerint személyes adatot nem kérünk) — a 2026-os „Más böngészőben is látni
+    szeretnéd?” doboz ugyanaz, benne a link, és a lista fölé került (a link nem lehet egy hosszú lista alján eldugva) · a kezelősor a listával
+    együtt látszik (2026: csak e-mail-címmel), új eleme az egész lista naptárba · „A listám elrejtése ezen az eszközön” = a lista eltűnik erről az
+    eszközről, a linkkel visszahozható (két lépésben, mint a törlés) · a kártya a kereső kártyája (a CLAUDE.md listázási szabálya; 2026-ban is
+    „ugyanaz a kártya”) · a felugró ablak „Mentés” gombja megjelölve sem színeződik (2026-ban sem) · a régi 2026-os böngészőbeli kedvencek
+    (más kulccsal, 2026-os programokra) nem jönnek át · a kedvenclisták nem évülnek el (később takarítható: ami egy évig nem változott).
+
 ## Ami MOST folyik
+
+0. **A kedvencek és a naptár élesítése (PROMPT-21)** — helyben kész, **telepítésre vár**. A telepítés magától futtatja a migrációt és a
+   lapszövegeket (a `.cpanel.yml`-ben benne van). Utána élesben: szív → link-értesítés; szűrés után a szív; másik böngészőben a link ugyanazt
+   hozza; adatok törlése után a link visszahozza; **valódi telefonon** (iPhone ÉS Android) a „Naptárba → Apple Naptár / egyéb (.ics)” megnyílik,
+   és egy 23:00–00:30 program a **következő nap 00:30-kor** ér véget; 375 px és román.
+   ⚠ **Tartalmi apróság (a tulajdonosé):** a román lapcím a 2026-ból behozott szöveg („Vâltoarea” + „mea”), és az első részéből hiányzik a záró
+   szóköz → „Vâltoareamea”. Javítás: Tartalom → Aloldalak → Kedvenc programjaim → „Főcím — eleje” (román) végére egy szóköz.
+
 
 0. **A két jelentkező űrlap élesítése (PROMPT-20)** — **telepítve (`1a0e5780`), kinyitva és ÉLESBEN MÉRVE (2026-11-18), belépés nélkül:**
    · **zárva a végpont is nemet mond** (mindkét űrlap 403 + a zárt üzenet, a kinyitás előtt mérve);
@@ -787,7 +819,6 @@ nem nyúlunk.**
 - **ÚJ — az önkéntesek 34 melléklete** (szülői hozzájárulás, motivációs levél) szándékosan NEM jött át
   (személyes adat). A mentésben megvannak. *(PROMPT-20: az önkéntes-űrlap kész, és nem kérte — a 2026-os jelentkezések nem jönnek át, a
   mellékletek sem. Ha mégis kell, onnan hozható, a zárt tárba.)*
-- **ÚJ — a „Kedvenc programjaim” lap:** 2026-ban a NAS-ra hívott (kedvencek-API); a 13 lappal együtt átjött
-  (egy az egyben), de a funkció a 2027-es rendszerben még nincs meg. Kell-e 2027-ben kedvenclista?
+- ~~**ÚJ — a „Kedvenc programjaim” lap:** kell-e 2027-ben kedvenclista?~~ — **eldöntve (tulajdonos, 2026-11-19): kell; megépült (PROMPT-21).**
 - Napi automatikus adatbázis-mentés: **be kell állítani, és egyszer vissza is kell tölteni.**
   Nem elég beállítani — lásd a NAS tanulságát.

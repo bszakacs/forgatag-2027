@@ -24,6 +24,8 @@
   --z-menu:120;
   --z-header:200;
   --z-modal:300;
+  --z-popover:400;  /* a felugró ablakból nyíló választólista (naptár — 2026: 400) */
+  --z-toast:500;    /* a kedvenc-értesítés: minden fölött (PROMPT-21) */
 }
 
 /* ---------- ALAP ---------- */
@@ -97,6 +99,25 @@ header.site-hd .search svg{flex:0 0 auto;opacity:.7}
 header.site-hd .lang{display:flex;border:var(--border-w) solid var(--line);border-radius:var(--r-pill);overflow:hidden;font-size:.82rem;font-weight:600}
 header.site-hd .lang a{padding:.55em .75em;color:var(--fg-faint)}
 header.site-hd .lang a.on{background:var(--accent-b);color:var(--accent-contrast)}
+/* KEDVENCEIM-gomb (PROMPT-21) — a 2026-os chrome.css szabályai betűre; a chrome saját token-nevei a téma tokenjeire
+   kötve, ahogy 2026-ban is: --ink = --fg, --surface = --panel. */
+header.site-hd .cart-btn{display:flex;align-items:center;justify-content:center;
+  box-sizing:border-box;
+  width:40px;height:40px;flex:0 0 auto;position:relative;
+  border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.07);
+  color:var(--fg);cursor:pointer;text-decoration:none;transition:.18s ease}
+header.site-hd .fg-fav-btn svg{width:19px;height:19px}
+header.site-hd .fg-fav-btn:hover{border-color:var(--doodle-pink);
+  background:color-mix(in srgb, var(--doodle-pink) 18%, transparent)}
+header.site-hd .fg-fav-btn:hover svg{stroke:var(--doodle-pink)}
+header.site-hd .fg-fav-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+header.site-hd .fg-fav-btn[aria-current="page"]{border-color:var(--doodle-pink);
+  background:color-mix(in srgb, var(--doodle-pink) 22%, transparent)}
+header.site-hd .fg-fav-btn[aria-current="page"] svg{fill:var(--doodle-pink);stroke:var(--doodle-pink)}
+header.site-hd .fav-dot{position:absolute;top:1px;right:1px;width:9px;height:9px;
+  border-radius:50%;background:var(--doodle-pink);
+  box-shadow:0 0 0 2px var(--panel)}
+header.site-hd .fav-dot[hidden]{display:none}
 header.site-hd .burger{display:none;position:relative;width:42px;height:42px;border:var(--border-w) solid var(--line-strong);border-radius:10px}
 header.site-hd .burger i{position:absolute;left:11px;width:20px;height:2px;background:var(--fg);border-radius:2px;
   transition:transform var(--dur-1) var(--ease),opacity var(--dur-1) var(--ease),top var(--dur-1) var(--ease)}
@@ -281,3 +302,32 @@ main:has(.hm){padding:0}
 /* Mozgás: a téma „minimális” fokozata és az operációs rendszer kérése egyaránt leveszi. */
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 html[data-motion="minimal"] *{animation:none!important;transition:none!important}
+
+/* ===========================================================================
+   KEDVENC-ÉRTESÍTÉS (PROMPT-21, public/js/kedvencek.js) — 2027-es elem, 2026-ban nem volt: a lista LÉTREJÖTTEKOR feltűnően
+   felkínálja a lista linkjét (a link az egyetlen út vissza a listához), és a mentési hibát kimondja (néma hiba tilos).
+   Formája a 2026-os Kedvenceim visszavonás-sávjáé (.kv-undo): lebegő panel a lap alján, téma-tokenekkel.
+   ======================================================================== */
+.fg-kvtoast{position:fixed;left:50%;bottom:var(--sp-5);transform:translateX(-50%);z-index:var(--z-toast);
+  width:min(520px,calc(100vw - 2*var(--sp-4)));display:flex;flex-direction:column;gap:var(--sp-3);
+  padding:var(--sp-4) var(--sp-5);background:var(--panel);color:var(--fg);font-family:var(--font-body);
+  border:1px solid var(--doodle-pink);border-radius:var(--r-card);box-shadow:0 26px 60px -22px rgba(0,0,0,.85);
+  animation:fgKvToastIn .28s var(--ease) both}
+.fg-kvtoast.is-hiba{border-color:var(--doodle-red)}
+@keyframes fgKvToastIn{from{opacity:0;transform:translateX(-50%) translateY(14px)}to{opacity:1;transform:translateX(-50%)}}
+.fg-kvtoast-txt{margin:0;padding-right:var(--sp-6);font-size:var(--text-small);line-height:1.45}
+.fg-kvtoast-x{position:absolute;top:var(--sp-2);right:var(--sp-2);width:34px;height:34px;border-radius:50%;cursor:pointer;
+  border:1px solid var(--line);background:transparent;color:var(--fg);font:inherit;font-size:1.1rem;line-height:1}
+.fg-kvtoast-x:focus-visible,.fg-kvtoast button:focus-visible,.fg-kvtoast a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.fg-kvtoast-link{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.fg-kvtoast-link input{flex:1 1 220px;min-width:0;font:inherit;font-size:.86rem;color:var(--fg);padding:.6em .75em;
+  border-radius:var(--r-field,10px);border:1px solid var(--line-strong);background:color-mix(in srgb, var(--bg) 55%, transparent)}
+.fg-kvtoast-btn{font:inherit;font-size:var(--text-small);font-weight:700;cursor:pointer;padding:.6em 1.1em;border-radius:var(--r-pill);
+  border:0;background:var(--doodle-pink);color:var(--accent-contrast);text-decoration:none;white-space:nowrap}
+.fg-kvtoast-btn.is-ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong)}
+.fg-kvtoast-sor{display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center}
+@media(max-width:560px){
+  .fg-kvtoast{left:var(--sp-3);right:var(--sp-3);bottom:var(--sp-3);width:auto;transform:none;padding:var(--sp-4)}
+  @keyframes fgKvToastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+}
+@media(prefers-reduced-motion:reduce){.fg-kvtoast{animation:none}}

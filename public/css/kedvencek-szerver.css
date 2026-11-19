@@ -1,0 +1,22 @@
+/* ============================================================================
+ *  KEDVENC PROGRAMJAIM — a 2027-es kiegészítés (PROMPT-21). A 2026-os stíluslap változatlanul: kedvencek.css.
+ *  Ami itt van, az a 2026-os laptól eltérő, megindokolt rész:
+ *   · A LISTA LINKJE (a 2026-os e-mail-ajánlat helyén, ugyanabban a .fg-locked.is-offer dobozban): a lista FÖLÖTT, és
+ *     feltűnően (rózsaszín keret, mint a szív) — a link az egyetlen út vissza a listához (tulajdonosi döntés).
+ *   · a kezelősor „naptárba” eleme link (a.kv-tool), a jegyzet a kezelősoron kívül áll (üres listánál is látszik).
+ * ========================================================================== */
+[data-section] .fg-locked.is-offer.kv-link{margin:0 0 var(--sp-6);border-color:var(--doodle-pink);
+  background:color-mix(in srgb, var(--doodle-pink) 9%, transparent)}
+/* a 2026-os `.fg-locked.is-offer{display:flex}` a [hidden]-nél később áll és ugyanolyan erős — 2026-ban a JS írta mellé a
+   display:none-t; itt egy erősebb szabály rejti */
+.fg-locked.is-offer.kv-link[hidden]{display:none}
+.kv-linkrow{flex:1 1 100%;display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-3);align-items:center}
+.kv-linkrow input{flex:1 1 260px;min-width:0;font-family:inherit;font-size:.92rem;color:var(--fg);
+  padding:.72em .9em;border-radius:var(--r-field);border:1px solid var(--line-strong);
+  background:color-mix(in srgb, var(--bg) 55%, transparent)}
+.kv-linkrow input:focus{outline:none;border-color:var(--accent-b);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent-b) 28%, transparent)}
+.kv-linkrow .btn:disabled{opacity:.5;cursor:progress;transform:none}
+a.kv-tool{display:inline-block;text-decoration:none}
+[data-section] .kv-toolnote{margin-top:var(--sp-3)}
+[data-section] .kv-toolnote:empty{display:none}

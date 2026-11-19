@@ -39,6 +39,10 @@
 @if ($leiras !== '')
 <meta name="description" content="{{ $leiras }}">
 @endif
+@if ($szakasz('robots') !== '')
+{{-- A személyes lapok (Kedvenc programjaim — 2026: noindex) ne kerüljenek a keresőkbe. --}}
+<meta name="robots" content="{{ $szakasz('robots') }}">
+@endif
 <link rel="canonical" href="{{ $szakasz('canonical') ?: $cimek[$ny] }}">
 <link rel="alternate" hreflang="hu" href="{{ $cimek['hu'] }}">
 <link rel="alternate" hreflang="ro" href="{{ $cimek['ro'] }}">
@@ -87,6 +91,15 @@
 @if ($keret)
 @include('partials.footer', ['fesztNev' => $fesztNev])
 @endif
+{{-- KEDVENCEK (PROMPT-21): a szívek és a lista kezelője minden lapon. A beállítás CSAK nyelvi adat (címek, feliratok) —
+     látogatói adat a lap forrásába nem kerülhet (gyorsítótárazható lap); a jelölést a böngésző teszi rá. --}}
+<script type="application/json" id="fgKedvencCfg">{!! json_encode([
+    'api' => '/kedvencek-api/lista',
+    'lap' => \App\Support\Nyelv::ut('/kedvencek'),
+    't' => collect(['kv_mentve', 'kv_uj_lista', 'kv_lista_megnyitasa', 'kv_link_masolasa', 'kv_masolva', 'kv_masolas_kezzel', 'kv_szinkron_hiba', 'kv_sok', 'kv_nincs_tarolo', 'bezaras',
+        'cal_valassz', 'cal_google', 'cal_outlook', 'cal_m365', 'cal_yahoo', 'cal_apple'])->mapWithKeys(fn ($k) => [$k => __('publikus.' . $k)]),
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+<script src="@eszkoz('js/kedvencek.js')" defer></script>
 @stack('scripts')
 </body>
 </html>

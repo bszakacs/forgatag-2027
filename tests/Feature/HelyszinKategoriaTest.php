@@ -234,7 +234,8 @@ class HelyszinKategoriaTest extends TestCase
         $this->assertStringContainsString('<dd>90 perc</dd>', $html);
         $this->assertStringContainsString('<dd>✓</dd>', $html);
         $this->assertStringNotContainsString('nem-link', $html, 'nem http-s link nem jelenik meg (2026: extraItems)');
-        $this->assertMatchesRegularExpression('#<button class="pd-ghost" id="pd-ics" type="button" disabled>#', $html);
+        // PROMPT-21: a „Naptárba” működik — minden időpont a program .ics fájljában.
+        $this->assertMatchesRegularExpression('#<button class="pd-ghost" id="pd-ics" type="button" aria-haspopup="menu" aria-expanded="false" data-naptar="[^"]*/program/' . $p->slug . '\.ics&quot;#', $html);
         $this->assertStringContainsString('2 időpont kerül a naptárba', $html);
     }
 

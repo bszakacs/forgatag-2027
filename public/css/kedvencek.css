@@ -1,0 +1,433 @@
+/* ============================================================================
+ *  A 2026-os KEDVENCEIM STÍLUSLAPJA — BETŰRE átvéve (CLAUDE.md 2/e, PROMPT-21).
+ *  Forrás: ../forgatag-os/frontend/src/kedvenceim/style.css (2026-10-12-i befagyasztott állapot).
+ *  NE SZERKESZD ÉRTELMEZVE: ami itt változik, az a 2026-os lap kinézetétől tér el. A 2027-es kiegészítés KÜLÖN: kedvencek-szerver.css.
+ *  Gépies eltérések:
+ *   · a cím- és hangsúlybetűs szabályokban a téma vastagsága (var(--head-wght) / var(--accent-wght) — értéke ugyanúgy 400;
+ *     CLAUDE.md 6. és a TemaTest szabálya), mint a programkereso.css-ben;
+ *   · a „BELÉPTETŐ ABLAK” (.fg-auth*, az e-mail-cím bekérése) szabályai KIMARADTAK: 2027-ben e-mail-cím nincs, a lista a linkjéhez
+ *     tartozik (tulajdonosi döntés, PROMPT-21) — holt szabály nem maradhat. A .fg-locked doboz megmaradt (abban áll a link).
+ * ========================================================================== */
+/* ==== a főoldalról átvett MEGOSZTOTT alap (váz, gombok, pcard/rail, csúszka,
+   firka-dekor, beúszás) — változtatás nélkül, hogy egy nyelvet beszéljünk ==== */
+/* ===========================================================================
+   1. ALAP / MEGOSZTOTT — mindent a [data-section] alá szűkítek, hogy a rendszer
+      fejlécére/láblécére semmi ne szivárogjon át.
+   ======================================================================== */
+[data-section]{position:relative;z-index:1;
+  /* nincs Amphora árnyék-token — lokális, hogy egy helyen legyen.
+     Kiterjedése szándékosan ≤32px lefelé, hogy a görgethető sávban ne vágódjon. */
+  --fgl-shadow:0 16px 40px -24px rgba(0,0,0,.65);
+  /* hely a hover-glow-nak a görgethető sávokon belül (fel / le).
+     A glow max. kiterjedése 26px fel / 32px le -> ez mindkét irányban tartalék. */
+  --fgl-glow-top:calc(var(--sp-6) + var(--sp-2));
+  --fgl-glow-bottom:var(--sp-7)}
+[data-section],[data-section] *,[data-section] *::before,[data-section] *::after{box-sizing:border-box}
+[data-section] h1,[data-section] h2,[data-section] h3,[data-section] p{margin:0}
+[data-section] a{color:inherit;text-decoration:none}
+[data-section] h1,[data-section] h2,[data-section] h3{
+  font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  line-height:1.03;letter-spacing:-.015em}
+[data-section] .brush{font-family:var(--font-accent);font-weight:var(--accent-wght);font-synthesis:none;
+  color:var(--accent-b);letter-spacing:0;line-height:.9}
+
+.wrap{max-width:var(--content-max);margin:0 auto;padding:0 var(--sp-5)}
+
+/* háttér-atmoszféra (a régi body-gradiens) — fix réteg, a szekciók alatt */
+.fgl-atmo{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(900px 480px at 88% -6%, color-mix(in srgb, var(--accent-b) 12%, transparent), transparent 60%),
+    radial-gradient(760px 460px at 2% 4%,  color-mix(in srgb, var(--doodle-pink) 10%, transparent), transparent 58%),
+    radial-gradient(900px 700px at 50% 120%, color-mix(in srgb, var(--doodle-blue) 10%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-raise) 48%, var(--bg-raise) 100%);
+}
+
+/* szekció-váz */
+.blk{position:relative;padding:var(--section-pad-y) 0;overflow:hidden}
+.blk > .wrap{position:relative;z-index:2}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-5);
+  margin-bottom:calc(var(--sp-6) + var(--sp-1));flex-wrap:wrap;position:relative;z-index:2}
+.sec-head h2{font-size:clamp(2.3rem,4.8vw,3.6rem)}
+.sec-head h2 .brush{font-size:1.16em;margin-left:.12em;
+  /* narancs glow a kiemelt szavakon (ugyanaz a recept, mint az aloldali .glow) */
+  filter:drop-shadow(0 0 12px var(--accent-b)) drop-shadow(0 0 38px var(--accent-c))}
+/* világos háttéren tompítva, hogy ne mosódjon szét */
+.blk.light .sec-head h2 .brush,.blk.white .sec-head h2 .brush{
+  filter:drop-shadow(0 0 9px color-mix(in srgb, var(--accent-b) 55%, transparent))
+         drop-shadow(0 0 24px color-mix(in srgb, var(--accent-c) 40%, transparent))}
+.sec-head.center{justify-content:center;text-align:center}
+
+.rail-head{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:clamp(1.9rem,3.4vw,2.7rem);color:var(--fg);line-height:1;
+  margin:var(--sp-5) 0 var(--sp-4);letter-spacing:.005em}
+.rail-head.spaced{margin-top:calc(var(--sp-6) - var(--sp-1))}
+
+.sec-cta{display:flex;justify-content:flex-end;margin-top:var(--sp-5)}
+.center-cta{display:flex;justify-content:center;margin-top:var(--sp-5)}
+.media-cta{display:flex;flex-wrap:wrap;gap:var(--sp-3);justify-content:center;
+  margin-top:calc(var(--sp-6) - var(--sp-1))}
+
+/* ===========================================================================
+   2. GOMBOK
+   ======================================================================== */
+[data-section] .btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--font-body);
+  font-weight:700;font-size:.98rem;border-radius:var(--r-pill);padding:.75em 1.35em;cursor:pointer;
+  border:1px solid transparent;transition:var(--dur-1) var(--ease)}
+[data-section] .btn:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+[data-section] .btn-primary{background:var(--accent-grad);color:var(--accent-contrast);
+  box-shadow:0 8px 22px -10px color-mix(in srgb, var(--accent-b) 70%, transparent)}
+[data-section] .btn-primary:hover{transform:translateY(-2px);
+  box-shadow:0 14px 30px -10px color-mix(in srgb, var(--accent-b) 80%, transparent)}
+[data-section] .btn-ghost{border-color:var(--line-strong);color:var(--fg);
+  background:color-mix(in srgb, var(--fg) 3%, transparent)}
+[data-section] .btn-ghost:hover{background:color-mix(in srgb, var(--fg) 8%, transparent);
+  border-color:var(--fg-muted)}
+
+/* Firka-palettás gombok (médiatár alja) — a --accent-grad receptje a saját színükből
+   képezve (világosabb -> alapszín -> sötétebb), sötét felirattal, mint a .btn-primary. */
+[data-section] .btn-fill{
+  --fgl-btn:var(--doodle-pink);
+  background:linear-gradient(135deg,
+    color-mix(in srgb, var(--fgl-btn) 70%, white) 0%,
+    var(--fgl-btn) 55%,
+    color-mix(in srgb, var(--fgl-btn) 86%, black) 100%);
+  color:var(--accent-contrast);border-color:transparent;
+  box-shadow:0 8px 22px -10px color-mix(in srgb, var(--fgl-btn) 70%, transparent)}
+[data-section] .btn-fill.pink{--fgl-btn:var(--doodle-pink)}
+[data-section] .btn-fill.orange{--fgl-btn:var(--doodle-orange)}
+[data-section] .btn-fill.lime{--fgl-btn:var(--doodle-lime)}
+[data-section] .btn-fill:hover{transform:translateY(-2px);
+  box-shadow:0 14px 30px -10px color-mix(in srgb, var(--fgl-btn) 85%, transparent),
+             0 0 40px -16px color-mix(in srgb, var(--fgl-btn) 70%, transparent)}
+
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(238px,1fr);gap:var(--sp-4);
+  overflow-x:auto;padding:var(--fgl-glow-top) 2px var(--fgl-glow-bottom)}
+
+.pcard{background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r-card);display:flex;flex-direction:column;transition:var(--dur-1) var(--ease)}
+.pcard:hover{transform:translateY(-4px);border-color:var(--line-strong);box-shadow:var(--fgl-shadow)}
+.pcard .thumb{height:154px;background-size:cover;background-position:center;position:relative;
+  overflow:hidden;border-radius:calc(var(--r-card) - 1px) calc(var(--r-card) - 1px) 0 0}
+.pcard .thumb::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%, color-mix(in srgb, var(--panel) 90%, transparent))}
+.pcard .body{padding:var(--sp-3) var(--sp-4) var(--sp-4)}
+.pcard h3{font-family:var(--font-body);font-weight:700;font-size:1.08rem;color:var(--fg);line-height:1.32}
+/* Safari-fix: a kártyáról levesszük a levágást, hogy a címek leszálló szárait
+   (g, y, ó) semmi ne vághassa scroll/hover újrarajzoláskor */
+.rail-highlight .pcard{position:relative;overflow:visible}
+.rail-highlight .pcard .body{position:relative;z-index:1;padding:var(--sp-4) var(--sp-4) var(--sp-5)}
+.rail-highlight .pcard h3{margin:0;line-height:1.3;padding-bottom:.08em}
+
+/* ===========================================================================
+   8b. CSÚSZKA — ugyanaz, mint a videóarchívum aloldalon (.railnav/.railline/.railknob)
+       A natív scrollbar mindenhol el van rejtve, a görgetést a csúszka vezérli.
+   ======================================================================== */
+.rail,.vid-rail,.grid3{scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:auto}
+.rail::-webkit-scrollbar,.vid-rail::-webkit-scrollbar,.grid3::-webkit-scrollbar{display:none;height:0}
+.rail:focus-visible,.vid-rail:focus-visible,.grid3:focus-visible{
+  outline:2px solid var(--focus);outline-offset:8px;border-radius:var(--r-field)}
+
+.railnav{display:flex;align-items:center;gap:var(--sp-4);margin-top:var(--sp-1);padding:0 2px}
+.railnav[hidden]{display:none}
+.railarrow{flex:none;width:46px;height:34px;background:none;border:0;padding:0;cursor:pointer;
+  color:var(--doodle-lime);transition:transform var(--dur-1) var(--ease),color var(--dur-1)}
+.railarrow:hover{transform:translateY(-1px);color:var(--accent-a)}
+.railarrow:disabled{opacity:.3;cursor:default;transform:none}
+.railarrow:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:var(--r-field)}
+.railarrow svg{width:100%;height:100%;display:block;
+  filter:drop-shadow(0 0 6px var(--doodle-lime)) drop-shadow(0 0 14px var(--doodle-green))}
+.railarrow:hover svg{filter:drop-shadow(0 0 8px var(--accent-a)) drop-shadow(0 0 18px var(--accent-b))}
+.railarrow:disabled svg{filter:none}
+
+.railline{position:relative;flex:1;height:34px}
+.railline::before,.railline::after{content:"";position:absolute;left:2px;right:2px;top:50%;height:4px;
+  transform:translateY(-50%);border-radius:var(--r-pill);
+  background:linear-gradient(90deg,
+    var(--doodle-pink) 0%, var(--doodle-orange) 20%, var(--doodle-yellow) 38%,
+    var(--doodle-lime) 56%, var(--doodle-blue) 76%, var(--doodle-purple) 100%)}
+.railline::after{filter:blur(9px);opacity:.9;z-index:0}   /* ez adja a színes glow-t */
+.railline::before{z-index:1}
+.railknob{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);width:34px;height:34px;
+  z-index:2;cursor:grab;touch-action:none}
+.railknob:active{cursor:grabbing}
+.railknob:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:var(--r-pill)}
+.railknob svg{width:100%;height:100%;display:block;
+  filter:drop-shadow(0 0 7px var(--doodle-lime)) drop-shadow(0 0 16px var(--doodle-yellow))
+         drop-shadow(0 2px 5px rgba(20,15,45,.5))}
+.railknob .mk-lime{stroke:var(--doodle-lime)}
+.railknob .mk-yellow{fill:var(--doodle-yellow)}
+/* meleg sávon és világos szekcióban tompított glow + sötétebb nyilak */
+.highlight-band .railline::after,.blk.light .railline::after{opacity:.55;filter:blur(7px)}
+.highlight-band .railarrow{color:var(--bg)}
+.highlight-band .railarrow svg{filter:drop-shadow(0 0 6px var(--doodle-purple)) drop-shadow(0 0 14px var(--accent-contrast))}
+.highlight-band .railarrow:hover{color:var(--accent-contrast)}
+
+/* ===========================================================================
+   9. FIRKA-DEKOR (assets.pdf motívumok) — csak --doodle-* tokenszínekkel
+   ======================================================================== */
+.fgl-decor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+/* szekción belüli háttér-dekor (ott, ahol a szekció háttere átlátszatlan):
+   a szekció háttere fölött, de a tartalom (.wrap) ALATT */
+.sec-decor{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.hero .decor-layer{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.decor{position:absolute;pointer-events:none;will-change:transform;
+  animation:fglFloatDown var(--doodle-float-dur) var(--ease) infinite alternate}
+.decor svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 10px rgba(20,10,45,.18))}
+@keyframes fglFloatDown{
+  from{transform:translate(0,0) rotate(var(--fgl-r0,0deg))}
+  to{transform:translate(var(--fgl-dx,0px),var(--fgl-dy,60px)) rotate(var(--fgl-r1,0deg))}
+}
+/* a heróban helyben lengenek (nem sodródnak lefelé) */
+.decor.hero-decor{animation-name:fglFloatHero}
+@keyframes fglFloatHero{
+  0%  {transform:translate(calc(var(--fgl-ax) * -1), calc(var(--fgl-ay) * -1)) rotate(var(--fgl-r0,0deg))}
+  100%{transform:translate(var(--fgl-ax), var(--fgl-ay)) rotate(var(--fgl-r1,0deg))}
+}
+.reveal{opacity:0;transform:translateY(var(--sp-5));
+  transition:opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease)}
+.reveal.in{opacity:1;transform:none}
+/* ===========================================================================
+   12. CSÖKKENTETT MOZGÁS
+   ======================================================================== */
+@media(prefers-reduced-motion:reduce){
+  [data-section] *{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+  .decor{animation:none}
+}
+
+/* ===========================================================================
+   KEDVENCEIM — saját osztályok. Prefix: .kv-*  (KedVencek)
+   Újrahasznosít a Programkeresőből: .pcard (kártya), .pk-gtitle / .pk-gn
+   (csoportcím), .pk-time / .pk-venue / .pk-save (kártya-belső), .btn.btn-fill.
+   Lokális segédváltozók: --kv-*, SOHA nem a :root-on.
+   ======================================================================== */
+[data-section^="fav-"], .kv-undo{
+  --kv-warn:var(--doodle-red);
+}
+
+/* ---------- 1. OLDALCÍM ---------- */
+[data-section="fav-intro"]{padding:var(--sp-8) 0 var(--sp-5);overflow:visible}
+.kv-intro{text-align:center;padding-bottom:var(--sp-3)}
+.kv-intro h1{font-size:clamp(2.4rem,5.6vw,4.4rem);line-height:1.04}
+/* „Az én” fehér (a h1 alapszíne), a „Forgatagom” narancs és világít */
+.kv-intro h1 .brush{color:var(--accent-b);
+  filter:drop-shadow(0 0 12px var(--accent-b)) drop-shadow(0 0 38px var(--accent-c))}
+/* A váz `[data-section] p{margin:0}` szabálya (0,1,1) erősebb, mint egy sima
+   osztály (0,1,0), ezért a felső margó csendben elveszett. Elem-szelektorral
+   emeljük a fajsúlyt — ez a csapda a projektben már többször előfordult. */
+[data-section] .kv-sum{margin-top:var(--sp-6);font-size:1rem;color:var(--fg-muted);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.55em}
+.kv-sum b{color:var(--fg);font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:1.7rem;margin-right:.1em}
+.kv-sum .kv-dot{opacity:.45}
+/* az ütközés nem statikus adat, hanem teendő -> gomb */
+.kv-sum .kv-jump{display:inline-flex;align-items:center;gap:.4em;cursor:pointer;
+  font-family:inherit;font-size:.95rem;font-weight:700;
+  padding:.38em .85em;border-radius:var(--r-pill);
+  color:#fff;background:color-mix(in srgb, var(--kv-warn) 88%, black);
+  border:1px solid color-mix(in srgb, var(--kv-warn) 70%, black)}
+.kv-sum .kv-jump:hover{background:color-mix(in srgb, var(--kv-warn) 78%, black)}
+.kv-sum .kv-jump:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.kv-sum .kv-jump svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2}
+
+/* ---------- MEGOSZTOTT KÁRTYA-BELSŐ ----------
+   Ezek a szabályok a Programkeresőn születtek, és ott is ugyanígy néznek ki.
+   ÉLESBEN a rendszer közös stíluslapjába tartoznak, nem ide — az előnézetben
+   viszont minden lap önálló dokumentum, ezért itt is szerepelniük kell.
+   Az OSZTÁLYNEVEK SZÁNDÉKOSAN .pk-* maradtak: ugyanaz a komponens, nem másolat. */
+.pk-gtitle{display:flex;align-items:baseline;gap:var(--sp-3);
+  margin:var(--sp-6) 0 var(--sp-4);padding-bottom:var(--sp-2);border-bottom:1px solid var(--line)}
+.pk-gtitle:first-child{margin-top:0}
+.pk-gtitle h2{font-size:clamp(1.7rem,3vw,2.3rem)}
+.pk-gtitle .pk-gn{font-size:var(--text-small);color:var(--fg-muted);white-space:nowrap}
+.pk-time{font-size:var(--text-small);font-weight:700;letter-spacing:.04em;color:var(--accent-a);
+  font-variant-numeric:tabular-nums}
+.pk-time.is-allday{color:var(--doodle-lime)}
+.pk-venue{display:flex;align-items:center;gap:.42em;font-size:var(--text-small);color:var(--fg-muted)}
+.pk-venue svg{width:13px;height:13px;flex:0 0 auto;opacity:.75}
+.pk-flag{font-size:var(--text-micro);color:var(--fg-muted);padding:.3em .55em;
+  border:1px solid var(--line);border-radius:var(--r-pill)}
+.pk-flag.is-price{color:var(--accent-a);border-color:color-mix(in srgb, var(--accent-b) 45%, transparent);
+  background:color-mix(in srgb, var(--accent-b) 12%, transparent);font-weight:700}
+.pk-flag.is-lang{color:var(--doodle-blue);
+  border-color:color-mix(in srgb, var(--doodle-blue) 45%, transparent);
+  background:color-mix(in srgb, var(--doodle-blue) 12%, transparent);font-weight:700}
+.pk-save{position:absolute;top:var(--sp-3);right:var(--sp-3);z-index:3;
+  width:36px;height:36px;display:grid;place-content:center;cursor:pointer;
+  border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.28);
+  background:rgba(20,14,44,.72);color:#fff;transition:var(--dur-1) var(--ease)}
+.pk-save svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
+.pk-save:hover{background:rgba(20,14,44,.88);transform:scale(1.08)}
+.pk-save:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pk-save[aria-pressed="true"]{color:var(--doodle-pink);border-color:var(--doodle-pink)}
+.pk-save[aria-pressed="true"] svg{fill:var(--doodle-pink)}
+
+/* ---------- 2. NAPOK ÉS KÁRTYÁK ---------- */
+.kv-day{margin-bottom:var(--sp-7)}
+
+/* A nap programjai VÍZSZINTES SÁVBAN, alattuk a rendszer csúszkájával.
+   A kártyák szélessége FIX, nem 1fr: így egy 1-2 elemes nap kártyái ugyanakkorák,
+   mint egy 5 eleműé — különben napról napra ugrálna a kártyaméret. */
+/* align-items:stretch -> a sávon belül minden kártya a legmagasabbhoz igazodik,
+   ugyanúgy, mint a programkereső rácsában */
+/* A LISTÁZÁS a programkeresőé (.pk-grid + .pk-card): egy rács, egy kártyaméret,
+   egy térköz — mobilon ugyanaz a lista-sor. Itt CSAK a Kedvenceim sajátja marad
+   (átfedés-jelzés). A korábbi vízszintes sáv (.kv-rail) kivezetve, 2026-08-22. */
+
+.kv-card{position:relative;overflow:visible;--kv-glow:var(--doodle-purple)}
+[data-section] .kv-card .body{position:static;padding:var(--sp-4) var(--sp-4) var(--sp-5);
+  display:flex;flex-direction:column;gap:.42em}
+.kv-card h3{font-family:var(--font-head);font-weight:var(--head-wght);font-synthesis:none;
+  font-size:1.34rem;line-height:1.22;letter-spacing:-.01em;padding-bottom:.06em}
+.kv-cardlink{color:inherit}
+.kv-cardlink::after{content:"";position:absolute;inset:0;z-index:1;border-radius:var(--r-card)}
+.kv-cardlink:focus-visible{outline:none}
+.kv-card:focus-within{border-color:var(--focus)}
+.kv-card:hover{transform:translateY(-4px);border-color:var(--kv-glow);
+  box-shadow:var(--fgl-shadow),0 0 0 1px var(--kv-glow),
+    0 8px 26px -8px color-mix(in srgb, var(--kv-glow) 78%, transparent)}
+
+/* ütközés-jelzés: figyelmeztetés, NEM tiltás — a felhasználó szándékosan is
+   tarthat nyitva két lehetőséget, ezért nem akadályozzuk meg semmiben */
+/* a flex-oszlopban a chipek alapból teljes szélességre nyúlnának */
+.kv-card .pk-flag{align-self:flex-start}
+.kv-clash{display:inline-flex;align-items:center;gap:.42em;align-self:flex-start;
+  font-size:var(--text-micro);font-weight:700;padding:.32em .62em;border-radius:var(--r-pill);
+  color:#fff;background:color-mix(in srgb, var(--kv-warn) 82%, black);
+  border:1px solid color-mix(in srgb, var(--kv-warn) 60%, black)}
+.kv-clash svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;flex:0 0 auto}
+.kv-card.is-clash{border-color:color-mix(in srgb, var(--kv-warn) 55%, transparent)}
+/* az ütközéshez ugráskor rövid kiemelés, hogy a szem megtalálja */
+@keyframes kvPing{0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--kv-warn) 70%, transparent)}
+  100%{box-shadow:0 0 0 16px transparent}}
+.kv-card.is-ping{animation:kvPing 1.1s var(--ease) 2}
+
+/* ---------- 3. ÜRES ÁLLAPOT ---------- */
+.kv-empty[hidden]{display:none}
+.kv-empty-card{max-width:52ch;margin:0 auto var(--sp-8);text-align:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);
+  padding:var(--sp-7) var(--sp-5) var(--sp-6)}
+.kv-empty-heart{display:grid;place-content:center;width:64px;height:64px;margin:0 auto var(--sp-4);
+  border-radius:50%;background:color-mix(in srgb, var(--doodle-pink) 18%, transparent);
+  border:1px solid color-mix(in srgb, var(--doodle-pink) 45%, transparent)}
+.kv-empty-heart svg{width:30px;height:30px;fill:none;stroke:var(--doodle-pink);stroke-width:1.8}
+.kv-empty-card h2{font-size:clamp(1.6rem,3vw,2.1rem);margin-bottom:var(--sp-3)}
+.kv-empty-card p{color:var(--fg-muted);line-height:var(--leading-body);margin-bottom:var(--sp-5)}
+.kv-empty-card b{color:var(--fg)}
+.kv-suggest{margin-top:var(--sp-6)}
+
+/* ---------- 4. VISSZAVONÁS ---------- */
+.kv-undo{position:fixed;left:50%;bottom:var(--sp-5);transform:translateX(-50%) translateY(0);
+  z-index:170;display:flex;align-items:center;gap:var(--sp-4);
+  padding:var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-5);border-radius:var(--r-pill);
+  background:var(--bg-raise);border:1px solid var(--line-strong);
+  box-shadow:0 18px 44px -20px rgba(0,0,0,.9);
+  animation:kvUndoIn var(--dur-2) var(--ease) both}
+.kv-undo[hidden]{display:none}
+@keyframes kvUndoIn{from{opacity:0;transform:translateX(-50%) translateY(14px)}
+  to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.kv-undo-txt{font-size:var(--text-small);color:var(--fg-muted);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.kv-undo-txt b{color:var(--fg)}
+.kv-undo-btn{cursor:pointer;font-family:inherit;font-size:var(--text-small);font-weight:700;
+  padding:.5em .95em;border-radius:var(--r-pill);white-space:nowrap;
+  color:var(--accent-contrast);background:var(--accent-b);
+  border:1px solid color-mix(in srgb, var(--accent-c) 55%, transparent)}
+.kv-undo-btn:hover{background:var(--accent-a)}
+.kv-undo-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---------- 5. MODAL ---------- */
+/* A POPUP KINÉZETE EGY FORRÁSBÓL jön: programkereso/style.css (a markup a
+   programkereso/modal.html, a kitöltés a lib/program-modal.js). A makett saját
+   modal-CSS-e innen KIKERÜLT (2026-08-22): a másolat régi méretei éltek tovább —
+   a borító 230 px magas maradt, ezért a 4:3-as arány mellett csak ~307 px széles
+   lett a 662 px-es ablakban. Ide modal-szabály többé ne kerüljön.
+   ------------------------------------------------------------------------ */
+
+/* ---------- 5. LÁBJEGYZET ---------- */
+.kv-note{margin-top:var(--sp-7);text-align:center;font-size:var(--text-micro);
+  color:var(--fg-muted)}
+
+/* ---------- 6. RESZPONZÍV ---------- */
+@media(max-width:720px){
+  [data-section="fav-intro"]{padding:var(--sp-6) 0 var(--sp-3)}
+  /* A kártya mérete/tördelése MOBILON is a programkeresőé (lista-sor, 80×80 kép) —
+     itt nem méretezünk újra semmit (2026-08-22). */
+  .kv-clash{font-size:.62rem;padding:.26em .5em}
+  .pk-time,.pk-venue{font-size:var(--text-micro)}
+  .pk-venue svg{width:11px;height:11px}
+  .pk-flag{font-size:.62rem;padding:.26em .45em}
+  .pk-save{width:30px;height:30px;top:var(--sp-2);right:var(--sp-2)}
+  .pk-save svg{width:14px;height:14px}
+  [data-section] .kv-sum{margin-top:var(--sp-5);font-size:var(--text-small);gap:.4em}
+  .kv-sum b{font-size:1.3rem}
+  .kv-undo{left:var(--sp-4);right:var(--sp-4);bottom:var(--sp-4);transform:none;
+    justify-content:space-between;padding-left:var(--sp-4)}
+  @keyframes kvUndoIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .kv-undo-txt{max-width:none}
+  .kv-empty-card{padding:var(--sp-6) var(--sp-4) var(--sp-5)}
+  /* modal mobilon is KÁRTYA, nem teljes képernyő */
+  .pk-modal{padding:var(--sp-4);align-items:flex-end}
+  .pk-dialog{max-height:84vh;border-radius:var(--r-lap)}
+  .pk-mbody{padding:var(--sp-2) var(--sp-4) var(--sp-5)}
+  .pk-mimg{height:180px}
+  .pk-mmeta{grid-template-columns:1fr;gap:var(--sp-1)}
+  .pk-mmeta dt{margin-top:var(--sp-2)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .kv-card.is-ping{animation:none}
+  .kv-undo{animation:none}
+}
+
+
+/* ---- a bejelentkezést váró aloldal ---- */
+.fg-locked{max-width:46ch;margin:var(--sp-8) auto;text-align:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);
+  padding:var(--sp-7) var(--sp-5)}
+.fg-locked[hidden]{display:none}
+.fg-locked h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:var(--sp-3)}
+[data-section] .fg-locked p{color:var(--fg-muted);line-height:var(--leading-body);
+  margin-bottom:var(--sp-5)}
+
+
+/* ---- fejléc: „Az én Forgatagom” szív ikon ----------------------------
+   A keresősáv BAL oldalán áll, a rendszer .cart-btn alakját örökli, hogy a
+   fejléc gombjai egységesek maradjanak. A régi felhasználó-ikon helyére lép. */
+.fg-fav-btn{text-decoration:none;transition:var(--dur-1) var(--ease)}
+.fg-fav-btn svg{width:19px;height:19px}
+.fg-fav-btn:hover{border-color:var(--doodle-pink);
+  background:color-mix(in srgb, var(--doodle-pink) 18%, transparent)}
+.fg-fav-btn:hover svg{stroke:var(--doodle-pink)}
+.fg-fav-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* az aktuális lapon kitöltött szív jelzi, hogy ott vagyunk */
+.fg-fav-btn[aria-current="page"]{border-color:var(--doodle-pink);
+  background:color-mix(in srgb, var(--doodle-pink) 22%, transparent)}
+.fg-fav-btn[aria-current="page"] svg{fill:var(--doodle-pink);stroke:var(--doodle-pink)}
+
+
+/* ---- Kedvenceim: a lista kezelése (elrejtés / törlés) --------------------- */
+/* A KEZELŐSOR: ha be van írva a cím, a két gomb MINDIG látszik (tulajdonosi kérés,
+   2026-08-22 — a lecsukható változat rossz irány volt). */
+.kv-tools{margin-top:var(--sp-6);padding-top:var(--sp-4);border-top:1px solid var(--line)}
+.kv-toolrow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3)}
+.kv-tool{font:inherit;font-size:var(--text-small);cursor:pointer;color:var(--fg-muted);
+  background:transparent;border:1px solid var(--line-strong);border-radius:var(--r-pill);
+  padding:.55em 1.1em}
+.kv-tool:hover{color:var(--fg);border-color:var(--accent-b)}
+.kv-tool:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* a törlés MÁSODIK koppintásra hajtódik végre — addig ez a figyelmeztető állapot */
+.kv-tool.is-danger:hover{color:var(--doodle-red);border-color:var(--doodle-red)}
+.kv-tool.is-armed{color:#fff;background:var(--doodle-red);border-color:var(--doodle-red)}
+.kv-toolnote{flex:1 1 100%;margin:var(--sp-2) 0 0;font-size:var(--text-small);color:var(--fg-muted)}
+.kv-toolnote.is-err{color:var(--doodle-red)}
+
+/* AJÁNLAT-panel: ugyanaz a doboz, de a lista ALATT áll és nem harsog — a cím
+   megadása lehetőség (másik eszköz), nem feltétel (2026-08-22). */
+.fg-locked.is-offer{max-width:none;margin:var(--sp-6) 0 0;text-align:left;
+  display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3) var(--sp-5);
+  background:color-mix(in srgb, var(--fg) 4%, transparent);padding:var(--sp-5)}
+.fg-locked.is-offer h2{flex:1 1 100%;font-size:1.15rem;margin-bottom:0}
+[data-section] .fg-locked.is-offer p{flex:1 1 320px;margin-bottom:0;font-size:var(--text-small)}
+.fg-locked.is-offer .btn{flex:0 0 auto}

@@ -1,0 +1,23 @@
+/* ============================================================================
+ *  NAPTÁR-VÁLASZTÓ (Google · Outlook.com · Microsoft 365 · Yahoo · Apple/egyéb) — a 2026-os lib/calendar-menu.ts
+ *  CAL_MENU_CSS szövege BETŰRE (CLAUDE.md 2/e, PROMPT-21). A lista a public/js/naptar.js-é.
+ *  EGYETLEN gépies eltérés: a `z-index:400` helyett a közös rétegskála (`var(--z-popover)`, értéke 400 — publikus.css).
+ * ========================================================================== */
+.fgcal-menu{position:fixed;z-index:var(--z-popover);min-width:250px;max-width:320px;padding:8px;
+  display:flex;flex-direction:column;gap:2px;
+  background:var(--panel);border:1px solid var(--line-strong);border-radius:14px;
+  box-shadow:0 26px 60px -26px rgba(0,0,0,.85);font-family:inherit}
+.fgcal-h{margin:2px 8px 6px;font-size:.76rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--fg-faint)}
+.fgcal-i{display:block;width:100%;text-align:left;padding:.6em .75em;border:0;border-radius:9px;
+  background:transparent;color:var(--fg);font:inherit;font-size:.94rem;font-weight:600;
+  text-decoration:none;cursor:pointer}
+.fgcal-i:hover,.fgcal-i:focus-visible{background:color-mix(in srgb, var(--fg) 9%, transparent);
+  color:var(--accent-a);outline:none}
+.fgcal-apple{margin-top:2px;border-top:1px solid var(--line);border-radius:0 0 9px 9px;padding-top:.7em}
+.fgcal-note{margin:6px 8px 2px;font-size:.78rem;line-height:1.35;color:var(--fg-muted)}
+@media(max-width:560px){
+  .fgcal-menu{left:8px !important;right:8px;top:auto !important;bottom:8px;max-width:none;
+    padding-bottom:max(8px, env(safe-area-inset-bottom, 0px))}
+  .fgcal-i{padding:.75em .8em;font-size:1rem}
+}

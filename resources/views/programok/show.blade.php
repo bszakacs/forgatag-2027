@@ -13,7 +13,8 @@
      * megosztott linkeknek szól, ezért minden útja a programkeresőbe, UGYANERRE a programra visz (…/programok?program=<slug>).
      * Ritmus: a hír-cikk lapé (publikus.css cikk-része + az article.css két szabálya az alap-szerver.css-ben), a saját
      * szabályai: public/css/programlap.css (a 2026-os <style> blokk betűre).
-     * A „Naptárba” gomb a naptár-körig tiltott, a szív a kedvencek-körig (mint a programkeresőben); a „Megosztás” működik.
+     * „Naptárba” (PROMPT-21): MINDEN időpont egy fájlban (/program/<slug>.ics), a webes naptárakba az első (2026 ugyanígy);
+     * a szív a kedvencek közös kezelőjére (public/js/kedvencek.js, data-save) — semlegesen érkezik.
      */
     $ny = Nyelv::aktualis();
     $cim = ProgramSzoveg::mezo($program, TranslatableField::Title);
@@ -48,9 +49,11 @@
 @include('partials.alap-fej')
 @push('styles')
 <link rel="stylesheet" href="@eszkoz('css/programlap.css')">
+<link rel="stylesheet" href="@eszkoz('css/naptar.css')">
 @endpush
 @push('scripts')
 <script src="@eszkoz('js/programlap.js')" defer></script>
+<script src="@eszkoz('js/naptar.js')" defer></script>
 @endpush
 
 @section('content')
@@ -130,13 +133,13 @@
     <div class="pd-actions2">
       <a class="art-btn" href="{{ $kereso }}">{{ __('publikus.b_megnyitas_kereso') }} →</a>
       @if ($program->status !== ProgramStatus::Cancelled)
-        <button class="pd-ghost" id="pd-ics" type="button" disabled>
+        <button class="pd-ghost" id="pd-ics" type="button" aria-haspopup="menu" aria-expanded="false" data-naptar="{{ \App\Support\Naptar::gombAdat($program, $sorok, Nyelv::ut('/program/' . $program->slug . '.ics')) }}">
           <span class="pd-only-wide">{{ $occ->count() > 1 ? __('publikus.b_naptarba_mind') : __('publikus.b_naptarba') }}</span>
           <span class="pd-only-narrow">{{ __('publikus.b_naptar') }}</span>
         </button>
       @endif
       <button class="pd-ghost" id="pd-share" type="button" data-copied="{{ __('publikus.b_masolva') }}">↗ {{ __('publikus.b_megosztas') }}</button>
-      <button class="fav-btn fav-btn-lg" data-id="{{ $program->id }}" type="button" aria-pressed="false" aria-label="{{ __('publikus.b_kedvencekhez') }}" disabled></button>
+      <button class="fav-btn fav-btn-lg" data-id="{{ $program->id }}" data-save="{{ $program->id }}" type="button" aria-pressed="false" aria-label="{{ __('publikus.b_kedvencekhez') }}"></button>
     </div>
     @if ($program->status !== ProgramStatus::Cancelled && $occ->count() > 1)
       <p class="pd-icsnote">{{ $occ->count() }} {{ __('publikus.b_naptar_tobb') }}</p>

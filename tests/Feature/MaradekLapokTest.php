@@ -30,7 +30,8 @@ class MaradekLapokTest extends TestCase
 
     /** A lapok, amelyek ebben a körben épültek: slug → a lap címe. */
     private const LAPOK = ['fesztivalrend' => 'Fesztiválrend', 'kezmuvesek' => 'Kézműves vásár',
-        'galeria' => 'Galéria', 'videoarchivum' => 'Videó archívum', 'tamogatok' => 'Támogatóink'];
+        'galeria' => 'Galéria', 'videoarchivum' => 'Videó archívum', 'tamogatok' => 'Támogatóink',
+        'kedvencek' => 'Kedvenc programjaim'];
 
     /** Egy médiatár-kép (hamis tárban), a megadott mérettel. */
     private function kep(int $w = 800, int $h = 600): Media

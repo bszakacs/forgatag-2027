@@ -9,8 +9,6 @@
 :where(main) :is(h1,h2,h3,h4,p,figure,blockquote){margin:revert}
 
 
-/* A kedvenc-szív a kedvencek köréig tiltott (mint a programkeresőben: halvány, nem kattintható). */
-.fav-btn:disabled{opacity:.45;cursor:default}
 
 /* A beküldött szövegekből épített linkek (jegyinfó, leírás) — a 2026-os lib/linkify.ts LINKIFY_CSS-e BETŰRE
    (2026-ban a napi nézet és a program lapja maga töltötte be). */

@@ -29,6 +29,13 @@
           @endforeach
         </nav>
       @endif
+      {{-- KEDVENCEIM (2026: SiteHeader fg-fav-btn, PROMPT-21) — a látogató személyes listája, a sáv utolsó látható eleme (mobilon
+           is). A pötty (van-e mentett program) a böngészőben kapcsol (public/js/kedvencek.js) — a lap semlegesen érkezik. --}}
+      <a class="cart-btn fg-fav-btn" href="{{ Nyelv::ut('/kedvencek') }}" aria-label="{{ __('publikus.kv_fejlec') }}" data-comp="fav-link"
+         @if (request()->is('kedvencek', 'ro/kedvencek')) aria-current="page" @endif>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.6A4.4 4.4 0 0 1 12 7a4.4 4.4 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg>
+        <span class="fav-dot" id="favDot" hidden aria-hidden="true"></span>
+      </a>
       {{-- JavaScript nélkül a link a #mobile panelre ugrik (CSS :target nyitja); Alpine-nal helyben nyit/zár. --}}
       <a class="burger" href="#mobile" role="button" aria-controls="mobile" aria-label="{{ __('publikus.menu_nyitas') }}"
          aria-expanded="false" :aria-expanded="menu.toString()" @click.prevent="menu = ! menu"><i></i><i></i><i></i></a>

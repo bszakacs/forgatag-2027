@@ -18,7 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // A kedvenclista végpontja (PROMPT-21) CSRF-token nélkül: a publikus lapok gyorsítótárazhatók, ezért látogatónkénti
+        // tokent nem hordozhatnak; a listát a 32 karakteres véletlen kulcsa védi (routes/web.php).
+        $middleware->validateCsrfTokens(except: ['kedvencek-api/*']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

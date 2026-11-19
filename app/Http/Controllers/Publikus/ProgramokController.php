@@ -43,9 +43,15 @@ class ProgramokController extends Controller
         $felugro = $this->felugro($sz);
 
         // A felugró ablak nyitása/zárása CSAK az ablakot kéri (a kártya és a bezáró gomb htmx-célja: #pkModal).
+        // A „Kedvenc programjaim” lapja ugyanezt az ablakot kéri (X-Kedvencek): ott a címsor nem változik, a bezárás helyben
+        // zár, és a „Mentés” rejtett (a lapon a kártya szíve ment — 2026: program-modal.js `mentes: false`).
         if ($htmx && $request->header('HX-Target') === 'pkModal') {
-            return response()->view('programok._felugro', ['szures' => $sz, 'sz' => $szovegek, 'felugro' => $felugro, 'ny' => Nyelv::aktualis()])
-                ->header('HX-Push-Url', $sz->url());
+            $kedvencLap = $request->header('X-Kedvencek') === '1';
+            $valasz = response()->view('programok._felugro', ['szures' => $sz, 'sz' => $szovegek, 'felugro' => $felugro, 'ny' => Nyelv::aktualis(), 'kedvencLap' => $kedvencLap]);
+
+            $valasz->header('Vary', 'HX-Request, HX-Target, X-Kedvencek');
+
+            return $kedvencLap ? $valasz : $valasz->header('HX-Push-Url', $sz->url());
         }
 
         $kereso = new ProgramKereso($sz);
@@ -115,13 +121,36 @@ class ProgramokController extends Controller
             ->with(['category', 'extraCategories', 'venue.parent', 'cover', 'translations', 'occurrences'])
             ->firstOrFail();
 
-        $sorok = $program->occurrences
+        return response()->view('programok.show', ['program' => $program, 'sorok' => $this->sorok($program)]);
+    }
+
+    /**
+     * NAPTÁRBA (`/program/<slug>.ics`, PROMPT-21): a program MINDEN fesztiválnapi időpontja egy fájlban (a program lapjának
+     * gombja); `?idopont=<id>`-vel CSAK az az egy (a felugró ablak gombja — a nézett időpont, mint 2026-ban). Lemondott
+     * program nem kerül naptárba (a gomb sem látszik). Az időpontok: App\Support\Naptar.
+     */
+    public function naptar(Request $request, string $slug): Response
+    {
+        $program = ProgramItem::query()->publicVisible()->where('slug', $slug)
+            ->with(['category', 'venue.parent', 'cover', 'translations', 'occurrences'])->firstOrFail();
+        abort_if($program->status === \App\Enums\ProgramStatus::Cancelled, 404);
+        $sorok = $this->sorok($program);
+        if ($request->filled('idopont')) {
+            $sorok = $sorok->filter(fn (ProgramSor $s) => $s->idopont->id === (int) $request->query('idopont'))->values();
+        }
+        abort_if($sorok->isEmpty(), 404);
+
+        return \App\Support\Naptar::valasz(\App\Support\Naptar::ics($sorok), 'forgatag-' . $program->slug . '.ics');
+    }
+
+    /** A program fesztiválnapi időpontjai sorként, időrendben (a lap és a naptárfájl közös forrása). */
+    private function sorok(ProgramItem $program): \Illuminate\Support\Collection
+    {
+        return $program->occurrences
             ->filter(fn ($o) => Festival::isProgramDay($o->date->format('Y-m-d')))
             ->each(fn ($o) => $o->setRelation('programItem', $program))
             ->map(fn ($o) => new ProgramSor($o))
             ->sortBy(fn (ProgramSor $s) => $s->nap() . sprintf('%05d', $s->kezd))->values();
-
-        return response()->view('programok.show', ['program' => $program, 'sorok' => $sorok]);
     }
 
     /**

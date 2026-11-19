@@ -316,6 +316,29 @@ class LapSablon
             ['news_title_accent', 'Lista — cím kiemelt része', 'sor', ['hu' => 'történik', 'ro' => 'festivalului'], 'csoport' => 'cim'],
             ['news_empty', 'Lista — szöveg, ha még nincs hír', 'szoveg', ['hu' => 'Egyelőre nincs közzétett hír. Nézz vissza hamarosan!', 'ro' => 'Deocamdată nu există știri publicate. Revino în curând!']],
         ],
+        // KEDVENC PROGRAMJAIM (/kedvencek, PROMPT-21) — a 2026-os kedvenceim/body.html `data-hs` kulcsai a régi nevükön, az
+        // alapszöveg a 2026-os HU/RO (FavoritesView RO_TEXT). A 2026-os e-mailes rész (fav_locked_*, auth_*) helyén a LINK (fav_link_*):
+        // 2027-ben személyes adatot nem kérünk, a lista egy megosztható linkhez tartozik (tulajdonosi döntés, PROMPT-21).
+        // A futás közbeni, rövid felületi feliratok (darabszámok, átfedés, hibaüzenetek): lang/*/publikus.php `kv_*`.
+        'kedvencek' => [
+            ['fav_title_a', 'Főcím — eleje', 'sor', ['hu' => 'Az én ', 'ro' => 'Forgatagul '], 'csoport' => 'cim'],
+            ['fav_title_b', 'Főcím — kiemelt rész (ecsetírás)', 'sor', ['hu' => 'Forgatagom', 'ro' => 'meu'], 'csoport' => 'cim'],
+            ['fav_link_title', 'A lista linkje — cím', 'sor', ['hu' => 'Ez a listád linkje — mentsd el!', 'ro' => 'Acesta este linkul listei tale — salvează-l!']],
+            ['fav_link_text', 'A lista linkje — magyarázat', 'szoveg', ['hu' => 'Belépés nincs: a listád ehhez a linkhez tartozik. Ha törlöd a böngésződ adatait, vagy telefonon, másik gépen nyitnád meg, ezzel a linkkel kapod vissza — küldd el magadnak, vagy tedd a könyvjelzőid közé. Aki megkapja, látja és szerkesztheti a listát.', 'ro' => 'Nu există autentificare: lista ta aparține acestui link. Dacă ștergi datele browserului sau vrei să o deschizi pe telefon ori pe alt calculator, cu acest link o primești înapoi — trimite-ți-l sau pune-l la marcaje. Cine îl primește, vede și poate modifica lista.']],
+            ['fav_link_copy', 'A lista linkje — „Link másolása” gomb', 'sor', ['hu' => 'Link másolása', 'ro' => 'Copiază linkul']],
+            ['fav_link_share', 'A lista linkje — „Megosztás” gomb (telefonon)', 'sor', ['hu' => 'Elküldöm magamnak', 'ro' => 'Mi-l trimit']],
+            ['fav_empty_title', 'Üres lista — cím', 'sor', ['hu' => 'Még nincs mentett programod', 'ro' => 'Încă nu ai program salvat']],
+            ['fav_empty_text', 'Üres lista — szöveg', 'szoveg', ['hu' => 'A programkereső kártyáin a jobb felső sarokban lévő szívre koppintva bármit ide menthetsz. A lista ebben a böngészőben rögtön megjelenik — belépés nélkül.', 'ro' => 'Atinge inima din colțul din dreapta sus al cardurilor din căutarea de program, și programul ajunge aici. Lista apare imediat în acest browser — fără autentificare.']],
+            ['fav_empty_cta', 'Üres lista — gomb a programkeresőhöz', 'sor', ['hu' => 'Irány a programkereső', 'ro' => 'Spre căutarea de program']],
+            ['fav_suggest_a', 'Ajánló — cím', 'sor', ['hu' => 'Ezeket ', 'ro' => 'Îți '], 'csoport' => 'ajanlo'],
+            ['fav_suggest_b', 'Ajánló — cím kiemelt része', 'sor', ['hu' => 'ajánljuk', 'ro' => 'recomandăm'], 'csoport' => 'ajanlo'],
+            ['fav_suggest_hint', 'Ajánló — megjegyzés a cím mellett', 'sor', ['hu' => 'indulásnak, amíg nincs saját listád', 'ro' => 'pentru început, cât timp nu ai listă proprie']],
+            ['fav_undo_text', 'Levétel után — „… lekerült a kedvencekről”', 'sor', ['hu' => 'lekerült a kedvencekről', 'ro' => 'a fost scos de la favorite']],
+            ['fav_undo_cta', 'Levétel után — „Visszavonás” gomb', 'sor', ['hu' => 'Visszavonás', 'ro' => 'Anulează']],
+            ['fav_ics_cta', 'Kezelősor — az egész lista a naptárba', 'sor', ['hu' => '📅 Az egész lista a naptárba', 'ro' => '📅 Toată lista în calendar']],
+            ['fav_hide_cta', 'Kezelősor — elrejtés ezen az eszközön', 'sor', ['hu' => 'A listám elrejtése ezen az eszközön', 'ro' => 'Ascunde lista mea pe acest dispozitiv']],
+            ['fav_wipe_cta', 'Kezelősor — a lista törlése', 'sor', ['hu' => 'Töröld a listámat', 'ro' => 'Șterge lista mea']],
+        ],
         // A programkereső (/programok), a napi nézet (/nap/<dátum>) és a felugró ablak szövegei. Ami 2026-ban
         // szerkeszthető volt (`data-hs="programs_*"`), az itt is az, ugyanazzal a kulccsal és alapszöveggel; a többi felületi
         // felirat (csoportcímek, jelzések) a lang/*/publikus.php-ben, mint 2026-ban az i18n-ben.
@@ -394,6 +417,8 @@ class LapSablon
         ],
         // A két publikus jelentkező űrlap (PROMPT-20) szövegeinek otthona. A lapot NEM az OldalController szolgálja ki, hanem a
         // saját útvonala (/olimpia, /onkentes); itt csak a szerkeszthető szövegei élnek (Tartalom → Aloldalak).
+        // A kedvencek lapja 2026-ban is rendszerlap volt (a behozatal hozza); ez csak a tartalék, ha a behozatal nélkül indul a rendszer.
+        'kedvencek' => ['title_hu' => 'Kedvenc programjaim', 'title_ro' => 'Programele mele favorite'],
         'olimpia' => ['title_hu' => 'Családi Olimpia – jelentkezés'],
         'onkentes' => ['title_hu' => 'Önkéntes-jelentkezés'],
     ];

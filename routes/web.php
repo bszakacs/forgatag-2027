@@ -6,6 +6,8 @@ use App\Http\Controllers\Bekuldes\UrlapController;
 use App\Http\Controllers\Jelentkezes\OlimpiaController;
 use App\Http\Controllers\Jelentkezes\OnkentesController;
 use App\Http\Controllers\Publikus\HirekController;
+use App\Http\Controllers\Publikus\KedvencekController;
+use App\Http\Controllers\Publikus\KedvencListaController;
 use App\Http\Controllers\Publikus\KezdolapController;
 use App\Http\Controllers\Publikus\OldalController;
 use App\Http\Controllers\Publikus\ProgramokController;
@@ -54,6 +56,19 @@ Route::get('onkentes', [OnkentesController::class, 'show'])->name('onkentes');
 Route::post('onkentes', [OnkentesController::class, 'store'])->middleware('throttle:jelentkezes')->name('onkentes.bekuld');
 
 /*
+ * KEDVENCLISTA (PROMPT-21) — belépés nélkül, a lista kulcsával (a megosztható link része). Nyelvtől független JSON-végpont.
+ * CSRF nélkül (bootstrap/app.php): a publikus lapok gyorsítótárazhatók, látogatónkénti tokent nem hordozhatnak; a listát a
+ * 32 karakteres véletlen kulcs védi, nem a munkamenet. Korlát: IP-nként új lista 30 / 10 perc (egy fesztivál-wifi mögött sok
+ * látogató ül egy IP-n, ezért tág), minden más 300 / perc.
+ */
+Route::prefix('kedvencek-api/lista')->name('kedvencek_api.')->middleware('throttle:kedvencek')->group(function () {
+    Route::post('/', [KedvencListaController::class, 'store'])->middleware('throttle:kedvencek-uj')->name('uj');
+    Route::get('{kulcs}', [KedvencListaController::class, 'show'])->name('lista');
+    Route::post('{kulcs}', [KedvencListaController::class, 'update'])->name('valt');
+    Route::delete('{kulcs}', [KedvencListaController::class, 'destroy'])->name('torles');
+});
+
+/*
  * PUBLIKUS OLDAL — magyar a gyökérben, román a /ro/ előtag alatt (mint 2026-ban). Mindkét nyelv UGYANAZOKAT az
  * útvonalakat kapja (nevek: hu.* és ro.*). A „Hamarosan” mód CSAK ezen a csoporton fut: az admin, a beküldő
  * űrlap és a médiatár képei ezen kívül vannak, tehát a kapcsoló nem zárhatja ki őket.
@@ -72,6 +87,8 @@ foreach (['hu' => '', 'ro' => 'ro'] as $nyelv => $elotag) {
             Route::get('programok', [ProgramokController::class, 'index'])->name('programok');
             Route::get('nap/{datum}', [ProgramokController::class, 'nap'])->where('datum', '\d{4}-\d{2}-\d{2}|allando')->name('nap');
             Route::get('ma', [ProgramokController::class, 'ma'])->name('ma');
+            // Naptárba (PROMPT-21): a program időpontjai egy .ics fájlban (?idopont= — csak az az egy).
+            Route::get('program/{slug}.ics', [ProgramokController::class, 'naptar'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('program_naptar');
             Route::get('program/{slug}', [ProgramokController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('program');
             // Helyszínek, kategóriák, a térkép lapja (PROMPT-15).
             Route::get('helyszinek', [TaxonController::class, 'helyszinek'])->name('helyszinek');
@@ -79,9 +96,13 @@ foreach (['hu' => '', 'ro' => 'ro'] as $nyelv => $elotag) {
             Route::get('kategoriak', [TaxonController::class, 'kategoriak'])->name('kategoriak');
             Route::get('kategoria/{slug}', [TaxonController::class, 'kategoria'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('kategoria');
             Route::get('terkep', [TaxonController::class, 'terkep'])->name('terkep');
+            // Kedvenc programjaim (PROMPT-21): a lap maga rendszerlap-sablon (oldal/kedvencek); a látogató listájának kártyái és
+            // naptárfájlja a böngésző kérésére (a lap forrásában nincs látogatói adat).
+            Route::get('kedvencek/kartyak', [KedvencekController::class, 'kartyak'])->name('kedvencek_kartyak');
+            Route::get('kedvencek/naptar.ics', [KedvencekController::class, 'naptar'])->name('kedvencek_naptar');
             // Aloldal a slugja alapján — a foglalt első szavak (admin, beküldés, rendszer-útvonalak) kizárva.
             Route::get('{lap}', [OldalController::class, 'show'])
-                ->where('lap', '(?!(?:admin|bekuldes|olimpia|onkentes|curator|livewire|filament|storage|up|ro|hamarosan|hirek|programok|nap|ma|program|helyszinek|helyszin|kategoriak|kategoria|terkep)$)[a-z0-9]+(?:-[a-z0-9]+)*')
+                ->where('lap', '(?!(?:admin|bekuldes|olimpia|onkentes|curator|livewire|filament|storage|up|ro|hamarosan|hirek|programok|nap|ma|program|helyszinek|helyszin|kategoriak|kategoria|terkep|kedvencek-api)$)[a-z0-9]+(?:-[a-z0-9]+)*')
                 ->name('oldal');
         });
 }

@@ -34,12 +34,14 @@
 <link rel="stylesheet" href="@eszkoz('css/programkereso.css')">
 <link rel="stylesheet" href="@eszkoz('css/programkereso-szerver.css')">
 <link rel="stylesheet" href="@eszkoz('css/terkep.css')">
+<link rel="stylesheet" href="@eszkoz('css/naptar.css')">
 @endpush
 @push('scripts')
 <script src="@eszkoz('js/rail.js')"></script>
 <script src="@eszkoz('js/programkereso.js')"></script>
 <script src="@eszkoz('js/terkep-szel.js')"></script>
 <script src="@eszkoz('js/terkep.js')"></script>
+<script src="@eszkoz('js/naptar.js')" defer></script>
 @endpush
 
 @section('content')
